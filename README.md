@@ -12,3 +12,9 @@
 新增 06-Implementation-Blueprint 目录，作为 Lawyer AI Platform v0.3 实施蓝图阶段目录。
 
 该目录负责把 v0.1 架构和 v0.2 系统设计转化为研发落地方案，覆盖 Workspace 前端、后端服务、数据库、文件存储、AI Runtime 和部署方案。
+
+## v0.4 MVP Architecture
+
+新增 07-MVP-Architecture 目录，作为 Lawyer AI Platform v0.4 MVP 架构阶段目录。
+
+该目录负责将 v0.1 Documentation Foundation、v0.2 System Design 和 v0.3 Implementation Blueprint 收敛为第一阶段可运行 MVP 的功能边界、技术栈、服务架构、数据库结构、API 草案、Agent 调度和研发路线。
