@@ -20,4 +20,10 @@
 该目录负责将 v0.1 Documentation Foundation、v0.2 System Design 和 v0.3 Implementation Blueprint 收敛为第一阶段可运行 MVP 的功能边界、技术栈、服务架构、数据库结构、API 草案、Agent 调度和研发路线。
 
 ## v0.6 Case Service
-新增 Case Service API，包括案件创建与查询接口。
+
+新增并集成 v0.6 Case Service 到 MVP backend，提供基于 FastAPI 的案件创建与查询接口。
+
+当前接口：
+
+* POST /cases：创建案件，MVP 阶段暂用内存 dict 存储。
+* GET /cases/{case_id}：查询指定案件。
