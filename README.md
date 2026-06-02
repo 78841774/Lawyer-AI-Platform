@@ -1,2 +1,8 @@
 # Lawyer-AI-Platform
 律师AI能力平台  基于 Experience Package 的律师经验数字化体系  包含： - Codex训练系统 - Experience Package标准 - 案件分析生产系统 Workspace
+
+## v0.2 System Design
+
+新增 05-System-Design 目录，作为 Lawyer AI Platform v0.2 系统设计阶段目录。
+
+该目录负责把 v0.1 的业务架构文档转化为可研发的系统接口、数据结构和运行时设计，覆盖案件事实结构、法律推理结构、经验包格式、Workspace Runtime 架构和 API 设计。
