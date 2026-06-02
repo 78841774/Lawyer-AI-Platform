@@ -1,2 +1,31 @@
-ls -lh 04-Workspace-System/Material-System.md
-ls -lh 04-Workspace-System/Runtime-Design.md
+# Material System（材料管理）规范
+
+## 一、定位
+Material System 模块管理案件相关的所有材料，包括文本、图片、PDF、证据文件等，为 Fact Extraction 和 Legal Analysis 提供统一数据入口。
+
+---
+
+## 二、功能
+1. **材料上传**
+   - 支持多种文件格式
+   - 自动分类：案件编号、类型、来源
+
+2. **材料存储**
+   - 安全存储，支持权限控制
+   - 版本管理，保证可追溯性
+
+3. **材料查询**
+   - 按案件、时间、类型、标签等维度查询
+   - 支持全文搜索和结构化查询
+
+4. **材料导出**
+   - 可导出 JSON、PDF 等标准格式
+   - 支持 Fact Extraction 调用接口
+
+---
+
+## 三、原则
+- 数据安全优先
+- 材料完整性保证
+- 支持自动化与人工复核结合
+
