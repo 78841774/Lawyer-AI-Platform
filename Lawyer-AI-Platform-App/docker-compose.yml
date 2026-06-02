@@ -1,0 +1,38 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://lawyer_ai:lawyer_ai@postgres:5432/lawyer_ai
+      STORAGE_ROOT: /app/storage
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: lawyer_ai
+      POSTGRES_PASSWORD: lawyer_ai
+      POSTGRES_DB: lawyer_ai
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/database.sql:/docker-entrypoint-initdb.d/01-database.sql:ro
+
+volumes:
+  postgres_data:
