@@ -19,7 +19,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def create_db_and_tables() -> None:
-    from app.models import case, material  # noqa: F401
+    from app.models import case, fact, material  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
 

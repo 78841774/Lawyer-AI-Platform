@@ -97,3 +97,46 @@ Then confirm the SQLite-backed data is still available:
 curl http://127.0.0.1:8001/cases/case_001
 curl http://127.0.0.1:8001/cases/case_001/materials
 ```
+
+## Fact Runtime
+
+Fact Runtime v0.9 reads uploaded material files, extracts rule-based facts, and stores them in SQLite.
+
+Extract facts for a case:
+
+```bash
+curl -X POST http://127.0.0.1:8001/cases/case_001/facts/extract
+```
+
+List facts for a case:
+
+```bash
+curl http://127.0.0.1:8001/cases/case_001/facts
+```
+
+Expected response shape:
+
+```json
+{
+  "case_id": "case_001",
+  "facts": [
+    {
+      "fact_id": "fact_001",
+      "case_id": "case_001",
+      "material_id": "material_001",
+      "content": "test material",
+      "fact_type": "material_statement",
+      "confidence": 0.8,
+      "source_text": "test material",
+      "status": "extracted",
+      "created_at": "2026-06-03T08:00:00"
+    }
+  ]
+}
+```
+
+To confirm Fact Runtime persistence, restart the backend and run:
+
+```bash
+curl http://127.0.0.1:8001/cases/case_001/facts
+```
