@@ -44,13 +44,20 @@ export type LegalAnalysisRecord = {
   analysis_id: string;
   case_id: string;
   issues: Array<{ issue: string; confidence: number }>;
-  rules: Array<{ source: string; rule: string }>;
+  rules: Array<{
+    source: string;
+    rule?: string;
+    skill_id?: string;
+    package_id?: string;
+  }>;
   reasoning: string[];
   conclusion: string;
   risk_level: string;
   confidence: number;
   status: string;
   created_at: string;
+  skill_used?: string;
+  package_used?: string;
 };
 
 export type ReportRecord = {
@@ -65,6 +72,8 @@ export type ReportRecord = {
   source_refs: {
     fact_ids?: string[];
     analysis_id?: string;
+    skill_id?: string;
+    package_id?: string;
   };
   created_at: string;
 };
@@ -109,6 +118,13 @@ export type CaseDetail = {
   facts: FactRecord[];
   analyses: LegalAnalysisRecord[];
   reports: ReportRecord[];
+};
+
+export type ExtractFactsResponse = {
+  case_id: string;
+  facts: FactRecord[];
+  skill_used?: string;
+  package_used?: string;
 };
 
 export class ApiError extends Error {
@@ -211,9 +227,8 @@ export async function getCaseFacts(caseId: string): Promise<FactRecord[]> {
   return response.facts;
 }
 
-export async function extractFacts(caseId: string): Promise<FactRecord[]> {
-  const response = await postJson<{ facts: FactRecord[] }>(`/cases/${caseId}/facts/extract`);
-  return response.facts;
+export async function extractFacts(caseId: string): Promise<ExtractFactsResponse> {
+  return postJson<ExtractFactsResponse>(`/cases/${caseId}/facts/extract`);
 }
 
 export async function getCaseAnalyses(caseId: string): Promise<LegalAnalysisRecord[]> {

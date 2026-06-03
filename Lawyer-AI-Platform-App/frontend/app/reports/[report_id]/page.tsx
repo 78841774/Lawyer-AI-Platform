@@ -53,6 +53,18 @@ export default async function ReportDetailPage({
               <div className="mt-1 text-sm text-slate-600">File: {report.storage_path}</div>
             </section>
 
+            {report.source_refs.skill_id || report.source_refs.package_id ? (
+              <section className="rounded-md border border-line bg-white p-5">
+                <div className="text-sm font-semibold text-ink">Skill Used</div>
+                <div className="mt-2 text-sm text-slate-600">
+                  Skill ID: {report.source_refs.skill_id ?? "n/a"}
+                </div>
+                <div className="mt-1 text-sm text-slate-600">
+                  Package ID: {report.source_refs.package_id ?? "n/a"}
+                </div>
+              </section>
+            ) : null}
+
             <article className="whitespace-pre-wrap rounded-md border border-line bg-white p-5 text-sm leading-6 text-slate-700">
               {report.content}
             </article>

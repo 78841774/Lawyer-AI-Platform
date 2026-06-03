@@ -152,11 +152,19 @@ class ReportService:
         reasoning: list[str]
     ) -> str:
         rule_lines = [
-            f"- Rule: {rule.get('rule', '')} Source: {rule.get('source', 'unknown')}"
+            f"- Rule: {self._format_rule_text(rule)} Source: {rule.get('source', 'unknown')}"
             for rule in rules
         ] or ["- No rules were generated."]
         reasoning_lines = [f"- Reasoning: {item}" for item in reasoning] or ["- No reasoning was generated."]
         return "\n".join(rule_lines + reasoning_lines)
+
+    def _format_rule_text(self, rule: dict[str, object]) -> str:
+        rule_text = str(rule.get("rule") or "").strip()
+        if rule_text:
+            return rule_text
+        if rule.get("source") == "Experience Package":
+            return "Skill package rule context loaded from Experience Package"
+        return ""
 
     def _get_runtime_context(self, case_id: str) -> dict[str, object] | None:
         if self.skill_runtime_service is None:

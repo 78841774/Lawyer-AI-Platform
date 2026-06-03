@@ -246,6 +246,35 @@ If a case has no legal analysis yet, run Legal Analysis Runtime first:
 curl -X POST http://127.0.0.1:8001/cases/case_001/analysis/run
 ```
 
+## Skill-Aware Frontend Check
+
+Start the backend on port 8001 and the frontend on port 3001:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+uvicorn app.main:app --host 127.0.0.1 --port 8001
+
+cd ../frontend
+npm run dev -- -p 3001
+```
+
+Open the frontend:
+
+```text
+http://localhost:3001/skills
+http://localhost:3001/cases/case_001
+```
+
+Use `case_001` to check the Skill-Aware path when a skill is already applied:
+
+* `/skills` shows the published skill and package.
+* The case detail page shows Applied Skills.
+* Extract Facts displays the skill/package used by Fact Runtime.
+* Run Legal Analysis displays the skill/package used by Legal Analysis.
+* Generate Report displays the skill/package used by Report Runtime.
+* The generated report detail page shows a Skill Used section and preserves the report body lines for Skill Used, Skill ID, and Package ID.
+
 ## Workspace API
 
 Workspace API v1.2 provides read endpoints for the frontend workspace dashboard.

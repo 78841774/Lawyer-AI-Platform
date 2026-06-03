@@ -66,12 +66,16 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
     }
   }
 
-  async function runAction(label: string, action: () => Promise<unknown>) {
+  async function runAction(label: string, action: () => Promise<string | void>) {
     setActionStatus({ loading: true, message: `${label}...`, kind: "idle" });
     try {
-      await action();
+      const resultMessage = await action();
       await loadDetail();
-      setActionStatus({ loading: false, message: `${label} completed.`, kind: "success" });
+      setActionStatus({
+        loading: false,
+        message: resultMessage ?? `${label} completed.`,
+        kind: "success"
+      });
     } catch (error) {
       setActionStatus({
         loading: false,
@@ -97,7 +101,10 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
   }
 
   async function handleApplySkill(skillId: string) {
-    await runAction("Apply Skill", () => applySkillToCase(caseId, skillId));
+    await runAction("Apply Skill", async () => {
+      const binding = await applySkillToCase(caseId, skillId);
+      return `Applied Skill: ${binding.skill_id} / Package: ${binding.package_id}`;
+    });
   }
 
   return (
@@ -157,17 +164,40 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
               <ActionButton
                 label="Extract Facts"
                 loading={actionStatus.loading}
-                onClick={() => runAction("Extract Facts", () => extractFacts(caseId))}
+                onClick={() =>
+                  runAction("Extract Facts", async () => {
+                    const result = await extractFacts(caseId);
+                    if (result.skill_used && result.package_used) {
+                      return `Fact Runtime used Skill: ${result.skill_used} / Package: ${result.package_used}`;
+                    }
+                  })
+                }
               />
               <ActionButton
                 label="Run Legal Analysis"
                 loading={actionStatus.loading}
-                onClick={() => runAction("Run Legal Analysis", () => runLegalAnalysis(caseId))}
+                onClick={() =>
+                  runAction("Run Legal Analysis", async () => {
+                    const result = await runLegalAnalysis(caseId);
+                    if (result.skill_used && result.package_used) {
+                      return `Legal Analysis used Skill: ${result.skill_used} / Package: ${result.package_used}`;
+                    }
+                  })
+                }
               />
               <ActionButton
                 label="Generate Report"
                 loading={actionStatus.loading}
-                onClick={() => runAction("Generate Report", () => generateReport(caseId))}
+                onClick={() =>
+                  runAction("Generate Report", async () => {
+                    const result = await generateReport(caseId);
+                    const skillId = result.source_refs.skill_id;
+                    const packageId = result.source_refs.package_id;
+                    if (skillId && packageId) {
+                      return `Report generated with Skill: ${skillId} / Package: ${packageId}`;
+                    }
+                  })
+                }
               />
             </div>
           </section>
@@ -201,7 +231,9 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                 <ListItem
                   key={binding.binding_id ?? `${binding.skill_id}-${binding.package_id}`}
                   title={binding.skill_id}
-                  meta={`${binding.package_id} · ${binding.status}`}
+                  meta={`Package: ${binding.package_id} · Status: ${binding.status} · Applied: ${
+                    binding.created_at ? formatDate(binding.created_at) : "n/a"
+                  }`}
                 />
               ))}
             </DataPanel>
