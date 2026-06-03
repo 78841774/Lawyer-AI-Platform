@@ -4,13 +4,21 @@ from pathlib import Path
 from fastapi import UploadFile
 
 from app.models.material import Material
+from app.repositories.case_repository import CaseRepository
+from app.repositories.material_repository import MaterialRepository
 
 
 class MaterialService:
-    def __init__(self, storage_root: str) -> None:
+    def __init__(
+        self,
+        *,
+        material_repository: MaterialRepository,
+        case_repository: CaseRepository,
+        storage_root: str
+    ) -> None:
+        self.material_repository = material_repository
+        self.case_repository = case_repository
         self.storage_root = Path(storage_root)
-        self._materials: dict[str, list[Material]] = {}
-        self._counter = 0
 
     def save_material(
         self,
@@ -18,8 +26,10 @@ class MaterialService:
         file: UploadFile,
         material_type: str = "document"
     ) -> Material:
-        self._counter += 1
-        material_id = f"material_{self._counter:03d}"
+        if self.case_repository.get_by_case_id(case_id) is None:
+            raise ValueError("case not found")
+
+        material_id = self.material_repository.next_material_id()
         filename = Path(file.filename or f"{material_id}.bin").name
 
         target_dir = self.storage_root / "original-files" / case_id
@@ -29,7 +39,7 @@ class MaterialService:
         with target_path.open("wb") as output_file:
             shutil.copyfileobj(file.file, output_file)
 
-        material = Material(
+        return self.material_repository.create(
             material_id=material_id,
             case_id=case_id,
             filename=filename,
@@ -37,8 +47,6 @@ class MaterialService:
             storage_path=str(target_path),
             status="uploaded"
         )
-        self._materials.setdefault(case_id, []).append(material)
-        return material
 
     def list_materials(self, case_id: str) -> list[Material]:
-        return self._materials.get(case_id, [])
+        return self.material_repository.list_by_case_id(case_id)
