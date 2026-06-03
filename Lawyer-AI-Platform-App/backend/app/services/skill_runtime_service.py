@@ -19,16 +19,15 @@ class SkillRuntimeService:
         skill = self.skill_repository.get_by_skill_id(skill_id)
         if skill is None:
             raise ValueError("skill not found")
-
-        published = self.workspace_skill_repository.get_published_skill(skill_id)
-        if published is None:
+        if skill.status != "published":
             raise ValueError("skill not published")
 
-        _, package = published
+        package = self.workspace_skill_repository.get_published_package_for_skill(skill_id)
+        if package is None:
+            raise ValueError("package not published")
+
         runtime_package = self.package_loader.load(package.package_id)
-        summary = self.package_loader.summarize(runtime_package)
-        summary["status"] = "loaded"
-        return summary
+        return self.package_loader.summarize(runtime_package)
 
     def get_case_runtime_context(self, case_id: str) -> dict[str, object] | None:
         bindings = [

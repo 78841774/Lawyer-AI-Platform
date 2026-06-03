@@ -3,7 +3,9 @@ from pathlib import Path
 
 
 class SkillPackageLoader:
-    def __init__(self, package_root: str = "../experience-packages") -> None:
+    def __init__(self, package_root: str | None = None) -> None:
+        if package_root is None:
+            package_root = str(Path(__file__).resolve().parents[3] / "experience-packages")
         self.package_root = Path(package_root)
 
     def load(self, package_id: str) -> dict[str, object]:
@@ -14,12 +16,12 @@ class SkillPackageLoader:
         package_json = self._read_json(package_dir / "package.json")
         skill_json = self._read_json(package_dir / "skill.json")
         prompts = {
-            "fact_prompt": self._read_text(package_dir / "prompts" / "fact_prompt.txt"),
-            "analysis_prompt": self._read_text(package_dir / "prompts" / "analysis_prompt.txt"),
-            "report_prompt": self._read_text(package_dir / "prompts" / "report_prompt.txt")
+            "fact": self._read_text(package_dir / "prompts" / "fact_prompt.txt"),
+            "analysis": self._read_text(package_dir / "prompts" / "analysis_prompt.txt"),
+            "report": self._read_text(package_dir / "prompts" / "report_prompt.txt")
         }
         templates = {
-            "report_template": self._read_text(package_dir / "templates" / "report_template.md")
+            "report": self._read_text(package_dir / "templates" / "report_template.md")
         }
 
         return {
@@ -28,7 +30,8 @@ class SkillPackageLoader:
             "domain": str(package_json.get("domain") or skill_json.get("domain")),
             "version": str(package_json.get("version") or skill_json.get("version")),
             "prompts": prompts,
-            "templates": templates
+            "templates": templates,
+            "loaded": True
         }
 
     def summarize(self, package: dict[str, object]) -> dict[str, object]:
@@ -39,8 +42,9 @@ class SkillPackageLoader:
             "package_id": package.get("package_id"),
             "domain": package.get("domain"),
             "version": package.get("version"),
-            "prompts": self._summarize_text_map(prompts),
-            "templates": self._summarize_text_map(templates)
+            "loaded": bool(package.get("loaded")),
+            "prompts_loaded": self._loaded_text_map(prompts),
+            "templates_loaded": self._loaded_text_map(templates)
         }
 
     def _read_json(self, path: Path) -> dict[str, object]:
@@ -59,14 +63,10 @@ class SkillPackageLoader:
             raise ValueError(f"package file missing: {path.name}")
         return path.read_text(encoding="utf-8")
 
-    def _summarize_text_map(self, value: object) -> dict[str, dict[str, object]]:
+    def _loaded_text_map(self, value: object) -> dict[str, bool]:
         if not isinstance(value, dict):
             return {}
         return {
-            str(key): {
-                "loaded": bool(str(item).strip()),
-                "length": len(str(item))
-            }
+            str(key): bool(str(item).strip())
             for key, item in value.items()
         }
-

@@ -82,8 +82,10 @@ def get_workspace_skill_runtime(
             raise HTTPException(status_code=404, detail=str(error)) from error
         if str(error) == "skill not published":
             raise HTTPException(status_code=400, detail=str(error)) from error
+        if str(error) == "package not published":
+            raise HTTPException(status_code=400, detail=str(error)) from error
         if str(error).startswith("package"):
-            raise HTTPException(status_code=500, detail=str(error)) from error
+            raise HTTPException(status_code=400, detail=str(error)) from error
         raise HTTPException(status_code=500, detail="skill runtime load failed") from error
 
 
