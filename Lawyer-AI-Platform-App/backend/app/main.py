@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.cases import router as cases_router
+from app.api.experience_packages import router as experience_packages_router
 from app.api.facts import router as facts_router
 from app.api.health import router as health_router
 from app.api.legal_analysis import router as legal_analysis_router
@@ -46,3 +47,4 @@ app.include_router(facts_router)
 app.include_router(legal_analysis_router)
 app.include_router(reports_router)
 app.include_router(skills_router)
+app.include_router(experience_packages_router)

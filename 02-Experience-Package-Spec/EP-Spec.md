@@ -258,6 +258,67 @@ Patch
 
 答辩阶段
 
+⸻
+
+七、v2.3 Experience Package Builder
+
+v2.3 在主后端实现 Experience Package Builder。
+
+该 Builder 将已通过评估的 validated skill 导出为标准 Experience Package。
+
+前置条件：
+
+* skill 必须存在
+* skill 必须完成 evaluation
+* validation_status 必须为 validated
+
+接口：
+
+```text
+POST /skills/{skill_id}/packages/build
+GET /experience-packages
+GET /experience-packages/{package_id}
+GET /experience-packages/{package_id}/manifest
+```
+
+数据库表：
+
+```text
+experience_packages
+```
+
+字段：
+
+* package_id
+* skill_id
+* name
+* domain
+* version
+* status
+* manifest_json
+* package_path
+* created_at
+
+本地导出目录：
+
+```text
+Lawyer-AI-Platform-App/experience-packages/{package_id}/
+├── package.json
+├── skill.json
+├── prompts/
+│   ├── fact_prompt.txt
+│   ├── analysis_prompt.txt
+│   └── report_prompt.txt
+├── templates/
+│   └── report_template.md
+└── tests/
+    └── test_case.json
+```
+
+v2.3 生成的 Experience Package 状态为 built。
+
+built 表示包已构建完成，但尚未进入正式 Package Registry 发布流程。
+
 执行阶段
 
 再审阶段

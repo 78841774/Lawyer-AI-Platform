@@ -490,3 +490,65 @@ evaluation_details
 SQLite compatibility note:
 
 v2.2 adds `evaluation_details`, `validation_status`, and `validated_at` to the `skills` table. Local SQLite development uses a startup compatibility check to add missing columns. Production should use Alembic migrations for this schema change.
+
+## Experience Package Builder
+
+Experience Package Builder v2.3 exports a validated Skill Candidate as a standard local Experience Package.
+
+Build a package from `skill_001`:
+
+```bash
+curl -X POST http://127.0.0.1:8001/skills/skill_001/packages/build
+```
+
+Expected response shape:
+
+```json
+{
+  "package_id": "ep_001",
+  "skill_id": "skill_001",
+  "name": "Contract Dispute Experience Package",
+  "domain": "contract_dispute",
+  "version": "0.1.0",
+  "status": "built",
+  "package_path": "../experience-packages/ep_001"
+}
+```
+
+List packages:
+
+```bash
+curl http://127.0.0.1:8001/experience-packages
+```
+
+Get package metadata:
+
+```bash
+curl http://127.0.0.1:8001/experience-packages/ep_001
+```
+
+Get package manifest:
+
+```bash
+curl http://127.0.0.1:8001/experience-packages/ep_001/manifest
+```
+
+Generated packages are written under:
+
+```text
+Lawyer-AI-Platform-App/experience-packages/{package_id}/
+```
+
+Package files:
+
+```text
+package.json
+skill.json
+prompts/fact_prompt.txt
+prompts/analysis_prompt.txt
+prompts/report_prompt.txt
+templates/report_template.md
+tests/test_case.json
+```
+
+Generated packages are ignored by git, except `Lawyer-AI-Platform-App/experience-packages/.gitkeep`.

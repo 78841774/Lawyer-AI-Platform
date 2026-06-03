@@ -220,3 +220,61 @@ Experience Package 发布后不可直接修改。
 
 Workspace System 只能加载 Published 状态的 Experience Package。
 
+## 九、v2.3 Builder Runtime
+
+v2.3 将 Package Build System 落到主后端。
+
+运行时模块：
+
+```text
+app/skill_training/package_builder.py
+app/skill_training/package_validator.py
+app/skill_training/package_manifest.py
+app/services/experience_package_service.py
+app/api/experience_packages.py
+```
+
+构建入口：
+
+```text
+POST /skills/{skill_id}/packages/build
+```
+
+构建前校验：
+
+- skill 存在
+- skill 已完成 evaluation
+- validation_status = validated
+
+v2.3 输出结构：
+
+```text
+Lawyer-AI-Platform-App/experience-packages/{package_id}/
+├── package.json
+├── skill.json
+├── prompts/
+│   ├── fact_prompt.txt
+│   ├── analysis_prompt.txt
+│   └── report_prompt.txt
+├── templates/
+│   └── report_template.md
+└── tests/
+    └── test_case.json
+```
+
+package.json 包含：
+
+- package_id
+- skill_id
+- name
+- domain
+- version
+- status
+- entrypoints
+- validation
+
+v2.3 的 status 为 built。
+
+built 不是 Published。
+
+后续仍需 Package Registry、发布审批和 Workspace 加载策略。
