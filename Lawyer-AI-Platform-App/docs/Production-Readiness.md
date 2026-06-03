@@ -1,0 +1,123 @@
+# Production Readiness
+
+v2.9 adds the foundation needed to move from local MVP development toward a real deployment.
+
+## Local Mode
+
+Local mode remains the default:
+
+```bash
+APP_ENV=local
+DATABASE_URL=sqlite:///./local.db
+LLM_PROVIDER=mock
+```
+
+Start the backend locally:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+APP_ENV=local DATABASE_URL=sqlite:///./local.db LLM_PROVIDER=mock python -m uvicorn app.main:app --host 127.0.0.1 --port 8001
+```
+
+When `APP_ENV=local`, the backend runs SQLAlchemy `create_all` on startup so the SQLite database remains easy to use for demos and development.
+
+## Docker PostgreSQL Mode
+
+Docker Compose provides a local PostgreSQL service for deployment-style testing:
+
+```bash
+cd Lawyer-AI-Platform-App
+docker compose up --build
+```
+
+The backend container uses:
+
+```bash
+APP_ENV=production
+DATABASE_URL=postgresql+psycopg2://lawyer_ai:lawyer_ai_local@postgres:5432/lawyer_ai
+LLM_PROVIDER=mock
+```
+
+No real API key is stored in `docker-compose.yml`.
+
+## DATABASE_URL
+
+Supported database URLs:
+
+```bash
+sqlite:///./local.db
+postgresql+psycopg2://lawyer_ai:lawyer_ai_local@postgres:5432/lawyer_ai
+```
+
+SQLite is intended for local development. PostgreSQL is intended for production-like environments.
+
+## APP_ENV
+
+`APP_ENV=local` enables local startup conveniences, including automatic table creation.
+
+`APP_ENV=production` disables automatic `create_all`. Production environments should create and evolve schema with Alembic migrations.
+
+## Alembic Plan
+
+v2.9 adds Alembic configuration and an empty versions directory. Alembic reads `DATABASE_URL` from the backend settings.
+
+Check migration state:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+alembic current
+```
+
+No initial migration is generated in v2.9. Before v3.0, generate an initial migration from the SQLAlchemy models and use migrations for production schema changes.
+
+## Secrets Handling
+
+Do not commit `.env` or real API keys. Use environment variables or a deployment secret manager for:
+
+```bash
+DEEPSEEK_API_KEY
+OPENAI_API_KEY
+POSTGRES_PASSWORD
+```
+
+`.env.example` contains placeholders only.
+
+## LLM Provider Configuration
+
+Default local provider:
+
+```bash
+LLM_PROVIDER=mock
+```
+
+DeepSeek Live Mode:
+
+```bash
+LLM_PROVIDER=deepseek
+DEEPSEEK_API_KEY=your_key
+DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_TIMEOUT_SECONDS=30
+```
+
+If `LLM_PROVIDER=deepseek` is set without `DEEPSEEK_API_KEY`, the backend still starts and `/llm/test` returns a structured error.
+
+## Ready Now
+
+* Environment-driven backend configuration.
+* Local SQLite defaults.
+* PostgreSQL connection support through SQLAlchemy and `psycopg2`.
+* Docker Compose PostgreSQL service.
+* Alembic foundation.
+* Mock and DeepSeek LLM provider configuration.
+
+## Not Ready Yet
+
+* User login and authorization.
+* Production secret manager integration.
+* Generated initial Alembic migration.
+* Managed cloud deployment.
+* Production logging, monitoring, backup, and restore process.
+* Formal end-to-end test suite.

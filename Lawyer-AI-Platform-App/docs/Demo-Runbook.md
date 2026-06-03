@@ -20,6 +20,14 @@ Open a terminal from the repository root:
 bash Lawyer-AI-Platform-App/scripts/start-backend.sh
 ```
 
+The local demo uses:
+
+```bash
+APP_ENV=local
+DATABASE_URL=sqlite:///./local.db
+LLM_PROVIDER=mock
+```
+
 The backend runs at:
 
 ```text
@@ -30,7 +38,11 @@ Check backend health in another terminal:
 
 ```bash
 curl http://127.0.0.1:8001/health
+curl http://127.0.0.1:8001/llm/status
+curl http://127.0.0.1:8001/dashboard/stats
 ```
+
+For production-style PostgreSQL testing, use Docker Compose from `Lawyer-AI-Platform-App`. Do not put real DeepSeek or OpenAI API keys in committed files.
 
 ## 3. Start Frontend
 

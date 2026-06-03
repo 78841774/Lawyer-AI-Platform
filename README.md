@@ -43,3 +43,9 @@
 * Skill Versioning：定义 v1、v1.1、v2 的兼容性与升级策略。
 * Skill Lifecycle：定义 Draft、Candidate、Validated、Published、Deprecated 生命周期。
 * Example Contract Dispute Skill：以合同纠纷技能说明 Skill Factory 的落地方式。
+
+## v2.9 Production Readiness Foundation
+
+新增生产化基础改造：后端支持 `APP_ENV`、环境变量驱动的 `DATABASE_URL`、本地 SQLite 默认模式、PostgreSQL Docker Compose 模式和 Alembic 基础结构。
+
+当前阶段仍不包含用户登录和正式云部署，真实生产环境应使用 Alembic migration、外部密钥管理、日志监控和备份恢复流程。

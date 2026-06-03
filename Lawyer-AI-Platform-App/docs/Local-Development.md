@@ -8,7 +8,7 @@ Start the backend from the backend directory:
 cd Lawyer-AI-Platform-App/backend
 source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8001
+APP_ENV=local DATABASE_URL=sqlite:///./local.db LLM_PROVIDER=mock uvicorn app.main:app --reload --port 8001
 ```
 
 The backend uses SQLite for local development. The database file is created at:
@@ -18,6 +18,16 @@ Lawyer-AI-Platform-App/backend/local.db
 ```
 
 Tables are created automatically on backend startup.
+
+Local mode uses these defaults:
+
+```bash
+APP_ENV=local
+DATABASE_URL=sqlite:///./local.db
+LLM_PROVIDER=mock
+```
+
+When `APP_ENV=local`, SQLAlchemy creates missing local tables on startup. In production-style environments, set `APP_ENV=production` and use Alembic migrations instead of automatic table creation.
 
 ## Health Check
 
@@ -30,6 +40,25 @@ Expected response:
 ```json
 {"status":"ok"}
 ```
+
+## Database And Alembic
+
+Install backend dependencies and check Python files:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m compileall app
+```
+
+Check Alembic state:
+
+```bash
+APP_ENV=local DATABASE_URL=sqlite:///./local.db alembic current
+```
+
+v2.9 includes Alembic wiring but does not yet include an initial migration. Before v3.0, generate the initial migration and use Alembic for production schema changes.
 
 ## LLM Adapter
 
