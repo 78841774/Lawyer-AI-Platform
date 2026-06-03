@@ -36,6 +36,40 @@ class MockLLMClient:
                 "Conclusion: 案件具备初步法律分析条件."
             )
 
+        if context and context.get("runtime_metadata", {}).get("task") == "report_generation":
+            skill = context.get("skill")
+            skill_lines: list[str] = []
+            if isinstance(skill, dict) and skill.get("skill_id"):
+                package = context.get("package")
+                package_id = package.get("package_id") if isinstance(package, dict) else None
+                skill_lines = [
+                    f"Skill Used: {skill.get('skill_name')}",
+                    f"Skill ID: {skill.get('skill_id')}",
+                    f"Package ID: {package_id}"
+                ]
+            return "\n".join(
+                [
+                    "# Preliminary Legal Report",
+                    "",
+                    *skill_lines,
+                    "",
+                    "## Executive Summary",
+                    "The mock LLM generated a preliminary legal report from the available facts and legal analysis.",
+                    "",
+                    "## Facts Summary",
+                    "The case facts were reviewed and summarized for legal analysis.",
+                    "",
+                    "## Legal Issues",
+                    "是否存在可分析的法律事实",
+                    "",
+                    "## Legal Analysis",
+                    "The configured LLM adapter evaluated facts, rules, reasoning, and the latest analysis record.",
+                    "",
+                    "## Preliminary Conclusion",
+                    "案件具备初步法律分析条件."
+                ]
+            )
+
         clean_prompt = " ".join(prompt.strip().split())
         if not clean_prompt:
             return "Mock LLM response: no prompt provided."

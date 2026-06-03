@@ -69,7 +69,7 @@ def generate_report(
 ) -> dict[str, Any]:
     service = get_report_service(db)
     try:
-        report = service.generate_report(case_id)
+        result = service.generate_report_with_runtime(case_id)
     except ValueError as error:
         if str(error) == "case not found":
             raise HTTPException(status_code=404, detail=str(error)) from error
@@ -85,10 +85,17 @@ def generate_report(
             ) from error
         if is_runtime_error(error):
             raise HTTPException(status_code=400, detail=str(error)) from error
+        if str(error) == "llm generation failed":
+            raise HTTPException(status_code=500, detail=str(error)) from error
         raise HTTPException(status_code=500, detail="report generation failed") from error
     except Exception as error:
         raise HTTPException(status_code=500, detail="report generation failed") from error
-    return serialize_report(report)
+    response = serialize_report(result.report)
+    response["llm_provider"] = result.llm_provider
+    response["llm_status"] = result.llm_status
+    response["skill_used"] = result.skill_used
+    response["package_used"] = result.package_used
+    return response
 
 
 @router.get("")

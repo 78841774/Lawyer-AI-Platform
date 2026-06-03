@@ -269,7 +269,9 @@ curl http://127.0.0.1:8001/cases/case_001/analysis
 
 ## Report Runtime
 
-Report Runtime v1.1 reads saved facts and the latest legal analysis, generates a preliminary Markdown report, saves a report row in SQLite, and writes the Markdown file under `storage/reports/`.
+Report Runtime v2.7-D reads saved facts and the latest legal analysis, builds a report prompt, calls the configured LLM Adapter, and stores the generated Markdown report in SQLite and under `storage/reports/`.
+
+Local development uses `LLM_PROVIDER=mock`, so no external API is called.
 
 Generate a report for a case:
 
@@ -288,9 +290,17 @@ Expected response shape:
   "status": "generated",
   "version": 1,
   "storage_path": "../storage/reports/case_001/report_001.md",
+  "llm_provider": "mock",
+  "llm_status": "success",
+  "skill_used": "skill_002",
+  "package_used": "ep_002",
   "source_refs": {
     "fact_ids": ["fact_001"],
-    "analysis_id": "analysis_001"
+    "analysis_id": "analysis_001",
+    "skill_id": "skill_002",
+    "package_id": "ep_002",
+    "llm_provider": "mock",
+    "llm_status": "success"
   },
   "created_at": "2026-06-03T08:00:00"
 }
@@ -305,6 +315,18 @@ Legal Issues
 Legal Analysis
 Preliminary Conclusion
 ```
+
+When a case has an applied published skill, the generated report content includes:
+
+```text
+Skill Used: Contract Dispute Skill Candidate
+Skill ID: skill_002
+Package ID: ep_002
+```
+
+LLM output must include Executive Summary, Facts Summary, Legal Issues, Legal Analysis, and Preliminary Conclusion sections. If the LLM output is incomplete, Report Runtime falls back to the existing template-generated report content.
+
+If the LLM adapter returns an error status, Report Runtime returns `llm generation failed`.
 
 If a case has no legal analysis yet, run Legal Analysis Runtime first:
 
