@@ -51,6 +51,7 @@ export default async function ReportDetailPage({
                 <RuntimeRow label="llm_status" value={report.source_refs.llm_status ?? "暂无"} />
                 <RuntimeRow label="skill_id" value={report.source_refs.skill_id ?? "暂无"} />
                 <RuntimeRow label="package_id" value={report.source_refs.package_id ?? "暂无"} />
+                <RuntimeRow label="material_refs" value={formatMaterialRefs(report.source_refs.material_refs)} />
               </div>
               <div className="mt-3 text-sm text-slate-600">storage_path: {report.storage_path || "暂无"}</div>
             </section>
@@ -136,9 +137,11 @@ function SourceRefsView({ value }: { value: unknown }) {
   }
   if (Array.isArray(value)) {
     return value.length > 0 ? (
-      <ul className="list-inside list-disc space-y-1">
+      <ul className="space-y-2">
         {value.map((item, index) => (
-          <li key={index}>{String(item)}</li>
+          <li key={index} className="rounded-md border border-line bg-white p-2">
+            <SourceRefsView value={item} />
+          </li>
         ))}
       </ul>
     ) : (
@@ -153,7 +156,11 @@ function SourceRefsView({ value }: { value: unknown }) {
           <div key={key} className="grid gap-1 md:grid-cols-[160px_1fr]">
             <dt className="font-medium text-ink">{key}</dt>
             <dd className="break-words">
-              {Array.isArray(entryValue) ? entryValue.join(", ") || "暂无" : String(entryValue ?? "暂无")}
+              {isNestedSourceRefValue(entryValue) ? (
+                <SourceRefsView value={entryValue} />
+              ) : (
+                String(entryValue ?? "暂无")
+              )}
             </dd>
           </div>
         ))}
@@ -163,6 +170,25 @@ function SourceRefsView({ value }: { value: unknown }) {
     );
   }
   return <span>{String(value)}</span>;
+}
+
+function isNestedSourceRefValue(value: unknown) {
+  return Array.isArray(value) || (typeof value === "object" && value !== null);
+}
+
+function formatMaterialRefs(value: unknown) {
+  if (!Array.isArray(value) || value.length === 0) {
+    return "暂无";
+  }
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object") {
+        return String(item);
+      }
+      const material = item as Record<string, unknown>;
+      return String(material.relative_path || material.filename || material.material_id || "暂无");
+    })
+    .join(", ");
 }
 
 function StatusMessage({ message }: { message: string }) {

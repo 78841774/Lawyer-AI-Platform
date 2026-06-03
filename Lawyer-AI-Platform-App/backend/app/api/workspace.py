@@ -31,8 +31,10 @@ def serialize_case(case: Case) -> dict[str, Any]:
     return {
         "case_id": case.case_id,
         "title": case.title,
+        "description": case.description,
         "client_name": case.client_name,
         "counterparty_name": case.counterparty_name,
+        "opposing_party": case.opposing_party,
         "case_type": case.case_type,
         "contract_type": case.contract_type,
         "dispute_amount": case.dispute_amount,
@@ -40,11 +42,26 @@ def serialize_case(case: Case) -> dict[str, Any]:
         "objective": case.objective,
         "jurisdiction": case.jurisdiction,
         "intake_notes": case.intake_notes,
+        "intake_status": None,
+        "priority": case.priority,
+        "tags": parse_case_tags(case.tags),
         "workspace_id": case.workspace_id,
         "owner_user_id": case.owner_user_id,
         "created_at": case.created_at,
         "updated_at": case.updated_at
     }
+
+
+def parse_case_tags(value: str | None) -> list[str]:
+    if not value:
+        return []
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError:
+        return [value]
+    if not isinstance(parsed, list):
+        return []
+    return [str(item) for item in parsed]
 
 
 def serialize_report(report: Report) -> dict[str, Any]:

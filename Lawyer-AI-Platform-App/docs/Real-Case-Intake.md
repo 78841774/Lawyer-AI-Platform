@@ -73,3 +73,46 @@ This phase does not add:
 * Skill Training main-chain changes.
 
 Use only sanitized materials in local testing.
+
+## v3.4-C E2E Validation
+
+v3.4-C adds an end-to-end local validation path:
+
+```text
+Intake -> Folder Materials -> Intake Status -> Facts -> Analysis -> Report
+```
+
+The backend exposes:
+
+```text
+GET /cases/{case_id}/intake/status
+```
+
+The status response includes counts and next-step flags:
+
+* `materials_count`
+* `facts_count`
+* `analyses_count`
+* `reports_count`
+* `ready_for_fact_extraction`
+* `ready_for_analysis`
+* `ready_for_report`
+* `next_recommended_action`
+
+Recommended actions:
+
+* `upload_material`
+* `extract_facts`
+* `run_analysis`
+* `generate_report`
+* `review_report`
+
+The local validation script is:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+python scripts/validate_real_case_intake_v3_4.py
+```
+
+The script uses temporary sanitized text files and does not write test material files into the repository.

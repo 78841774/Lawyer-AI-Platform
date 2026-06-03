@@ -4,6 +4,7 @@ import type {
   CaseSkillBinding,
   DashboardStats,
   Fact,
+  IntakeStatus,
   LegalAnalysis,
   Material,
   Report,
@@ -27,6 +28,7 @@ export type {
   CaseSkillBinding,
   DashboardStats,
   Fact as FactRecord,
+  IntakeStatus as IntakeStatusRecord,
   LegalAnalysis as LegalAnalysisRecord,
   Material as MaterialRecord,
   Report as ReportRecord,
@@ -62,6 +64,7 @@ export type WorkspaceSkillDetail = {
 
 export type CaseDetail = {
   case: Case;
+  intakeStatus: IntakeStatus | null;
   materials: Material[];
   facts: Fact[];
   analyses: LegalAnalysis[];
@@ -70,14 +73,18 @@ export type CaseDetail = {
 
 export type CaseCreatePayload = {
   title: string;
+  description?: string | null;
   client_name?: string | null;
   counterparty_name?: string | null;
+  opposing_party?: string | null;
   case_type?: string | null;
   contract_type?: string | null;
   dispute_amount?: string | null;
   objective?: string | null;
   jurisdiction?: string | null;
   intake_notes?: string | null;
+  priority?: string | null;
+  tags?: string[];
 };
 
 export type ExtractFactsResponse = {
@@ -256,7 +263,8 @@ export const caseApi = {
   },
   create: (payload: string | CaseCreatePayload) =>
     postJson<Case>("/cases", typeof payload === "string" ? { title: payload } : payload),
-  get: (caseId: string) => request<Case>(`/cases/${caseId}`)
+  get: (caseId: string) => request<Case>(`/cases/${caseId}`),
+  intakeStatus: (caseId: string) => request<IntakeStatus>(`/cases/${caseId}/intake/status`)
 };
 
 export const materialApi = {
@@ -372,6 +380,7 @@ export const getWorkspaceCases = workspaceApi.cases;
 export const getCases = caseApi.listWithLocalFallback;
 export const createCase = caseApi.create;
 export const getCase = caseApi.get;
+export const getCaseIntakeStatus = caseApi.intakeStatus;
 export const getCaseMaterials = materialApi.listByCase;
 export const uploadMaterial = materialApi.upload;
 export const uploadMaterialsBatch = materialApi.uploadBatch;
@@ -403,8 +412,9 @@ export const publishSkillToRegistry = skillRegistryApi.publish;
 export const deprecateSkillInRegistry = skillRegistryApi.deprecate;
 
 export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
-  const [caseRecord, materials, facts, analyses, reports] = await Promise.all([
+  const [caseRecord, intakeStatus, materials, facts, analyses, reports] = await Promise.all([
     caseApi.get(caseId),
+    caseApi.intakeStatus(caseId).catch(() => null),
     materialApi.listByCase(caseId),
     factApi.listByCase(caseId),
     analysisApi.listByCase(caseId),
@@ -413,6 +423,7 @@ export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
 
   return {
     case: caseRecord,
+    intakeStatus,
     materials,
     facts,
     analyses,

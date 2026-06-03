@@ -7,10 +7,12 @@ from app.llm.prompt_context import PromptContextBuilder
 from app.models.case import Case
 from app.models.fact import Fact
 from app.models.legal_analysis import LegalAnalysis
+from app.models.material import Material
 from app.models.report import Report
 from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.legal_analysis_repository import LegalAnalysisRepository
+from app.repositories.material_repository import MaterialRepository
 from app.repositories.report_repository import ReportRepository
 from app.services.skill_runtime_service import SkillRuntimeService
 
@@ -30,6 +32,7 @@ class ReportService:
         *,
         report_repository: ReportRepository,
         fact_repository: FactRepository,
+        material_repository: MaterialRepository,
         legal_analysis_repository: LegalAnalysisRepository,
         case_repository: CaseRepository,
         storage_root: str,
@@ -37,6 +40,7 @@ class ReportService:
     ) -> None:
         self.report_repository = report_repository
         self.fact_repository = fact_repository
+        self.material_repository = material_repository
         self.legal_analysis_repository = legal_analysis_repository
         self.case_repository = case_repository
         self.storage_root = Path(storage_root)
@@ -60,6 +64,10 @@ class ReportService:
             raise ValueError("analysis required")
 
         runtime_context = self._get_runtime_context(case_id)
+        material_lookup = {
+            material.material_id: material
+            for material in self.material_repository.list_by_case_id(case_id)
+        }
         latest_analysis = analyses[-1]
         report_id = self.report_repository.next_report_id()
         version = self.report_repository.next_version(case_id)
@@ -68,12 +76,14 @@ class ReportService:
             case_id=case_id,
             title=title,
             facts=facts,
+            material_lookup=material_lookup,
             analysis=latest_analysis,
             runtime_context=runtime_context
         )
         llm_response = self._generate_llm_report(
             case=case,
             facts=facts,
+            material_lookup=material_lookup,
             latest_analysis=latest_analysis,
             runtime_context=runtime_context
         )
@@ -92,6 +102,7 @@ class ReportService:
         llm_status = self._response_value(llm_response, "status")
         source_refs = {
             "fact_ids": [fact.fact_id for fact in facts],
+            "material_refs": self._build_material_refs(facts, material_lookup),
             "analysis_id": latest_analysis.analysis_id,
             "llm_provider": llm_provider,
             "llm_status": llm_status
@@ -137,6 +148,7 @@ class ReportService:
         case_id: str,
         title: str,
         facts: list[Fact],
+        material_lookup: dict[str, Material],
         analysis: LegalAnalysis,
         runtime_context: dict[str, object] | None = None
     ) -> str:
@@ -178,18 +190,21 @@ class ReportService:
         *,
         case: Case,
         facts: list[Fact],
+        material_lookup: dict[str, Material],
         latest_analysis: LegalAnalysis,
         runtime_context: dict[str, object] | None
     ) -> dict[str, object]:
         prompt = self._build_report_prompt(
             case=case,
             facts=facts,
+            material_lookup=material_lookup,
             latest_analysis=latest_analysis,
             runtime_context=runtime_context
         )
         context = self._build_llm_context(
             case=case,
             facts=facts,
+            material_lookup=material_lookup,
             latest_analysis=latest_analysis,
             runtime_context=runtime_context
         )
@@ -203,6 +218,7 @@ class ReportService:
         *,
         case: Case,
         facts: list[Fact],
+        material_lookup: dict[str, Material],
         latest_analysis: LegalAnalysis,
         runtime_context: dict[str, object] | None
     ) -> str:
@@ -215,7 +231,11 @@ class ReportService:
             )
 
         fact_lines = [
-            f"- {fact.fact_id}: {fact.content} (type: {fact.fact_type}, status: {fact.status})"
+            (
+                f"- {fact.fact_id}: {fact.content} "
+                f"(type: {fact.fact_type}, status: {fact.status}, "
+                f"material: {self._format_material_path(material_lookup.get(fact.material_id))})"
+            )
             for fact in facts
         ]
         return "\n".join(
@@ -248,10 +268,11 @@ class ReportService:
         *,
         case: Case,
         facts: list[Fact],
+        material_lookup: dict[str, Material],
         latest_analysis: LegalAnalysis,
         runtime_context: dict[str, object] | None
     ) -> dict[str, object]:
-        return self.prompt_context_builder.build(
+        context = self.prompt_context_builder.build(
             case=case,
             facts=facts,
             analysis=latest_analysis,
@@ -263,6 +284,34 @@ class ReportService:
                 "package_used": self._runtime_value(runtime_context, "package_id")
             }
         )
+        context["material_refs"] = self._build_material_refs(facts, material_lookup)
+        return context
+
+    def _build_material_refs(
+        self,
+        facts: list[Fact],
+        material_lookup: dict[str, Material]
+    ) -> list[dict[str, str | None]]:
+        seen_material_ids: set[str] = set()
+        material_refs: list[dict[str, str | None]] = []
+        for fact in facts:
+            if fact.material_id in seen_material_ids:
+                continue
+            seen_material_ids.add(fact.material_id)
+            material = material_lookup.get(fact.material_id)
+            material_refs.append(
+                {
+                    "material_id": fact.material_id,
+                    "filename": material.filename if material else None,
+                    "relative_path": (material.relative_path or material.filename) if material else None
+                }
+            )
+        return material_refs
+
+    def _format_material_path(self, material: Material | None) -> str:
+        if material is None:
+            return "unknown"
+        return material.relative_path or material.filename
 
     def _finalize_llm_content(
         self,

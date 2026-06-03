@@ -42,8 +42,10 @@ export type Workspace = {
 export type Case = {
   case_id: string;
   title: string;
+  description?: string | null;
   client_name?: string | null;
   counterparty_name?: string | null;
+  opposing_party?: string | null;
   case_type?: string | null;
   contract_type?: string | null;
   dispute_amount?: string | null;
@@ -51,6 +53,9 @@ export type Case = {
   objective?: string | null;
   jurisdiction?: string | null;
   intake_notes?: string | null;
+  intake_status?: string | null;
+  priority?: string | null;
+  tags?: string[] | null;
   workspace_id: string;
   owner_user_id: string;
   created_at: string;
@@ -90,6 +95,20 @@ export type Fact = {
   created_at: string;
 };
 
+export type IntakeStatus = {
+  case_id: string;
+  intake_status: string;
+  has_materials: boolean;
+  materials_count: number;
+  facts_count: number;
+  analyses_count: number;
+  reports_count: number;
+  ready_for_fact_extraction: boolean;
+  ready_for_analysis: boolean;
+  ready_for_report: boolean;
+  next_recommended_action: string | null;
+};
+
 export type LegalAnalysis = {
   analysis_id: string;
   case_id: string;
@@ -119,6 +138,11 @@ export type ReportSourceRefs = {
   package_id?: string;
   llm_provider?: string | null;
   llm_status?: string | null;
+  material_refs?: Array<{
+    material_id?: string | null;
+    filename?: string | null;
+    relative_path?: string | null;
+  }>;
 } & Record<string, unknown>;
 
 export type Report = {

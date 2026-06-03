@@ -147,10 +147,21 @@ Lawyer-AI-Platform-App/backend/local.db
 Lawyer-AI-Platform-App/storage/original-files/
 Lawyer-AI-Platform-App/storage/ocr-files/
 Lawyer-AI-Platform-App/storage/reports/
+Lawyer-AI-Platform-App/runtime/
+storage/
+runtime/
+training_samples/closed_cases/
+training_samples/sanitized/
 Lawyer-AI-Platform-App/skills/*
 !Lawyer-AI-Platform-App/skills/.gitkeep
 Lawyer-AI-Platform-App/experience-packages/*
 !Lawyer-AI-Platform-App/experience-packages/.gitkeep
+
+# Real case material files
+*.pdf
+*.docx
+*.xlsx
+*.zip
 
 # Python cache
 __pycache__/

@@ -19,8 +19,10 @@ class CaseRepository:
         *,
         case_id: str,
         title: str,
+        description: str | None,
         client_name: str | None,
         counterparty_name: str | None,
+        opposing_party: str | None,
         case_type: str | None,
         contract_type: str | None,
         dispute_amount: str | None,
@@ -28,14 +30,18 @@ class CaseRepository:
         objective: str | None,
         jurisdiction: str | None,
         intake_notes: str | None,
+        priority: str | None,
+        tags: str | None,
         workspace_id: str,
         owner_user_id: str
     ) -> Case:
         case = Case(
             case_id=case_id,
             title=title,
+            description=description,
             client_name=client_name,
             counterparty_name=counterparty_name,
+            opposing_party=opposing_party,
             case_type=case_type,
             contract_type=contract_type,
             dispute_amount=dispute_amount,
@@ -43,6 +49,8 @@ class CaseRepository:
             objective=objective,
             jurisdiction=jurisdiction,
             intake_notes=intake_notes,
+            priority=priority,
+            tags=tags,
             workspace_id=workspace_id,
             owner_user_id=owner_user_id
         )

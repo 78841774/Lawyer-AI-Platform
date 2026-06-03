@@ -188,12 +188,36 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
 
           <WorkflowSection title="案件概览">
             <div className="grid gap-4 md:grid-cols-3">
+              <InfoRow label="标题" value={detail.case.title} />
               <InfoRow label="案件类型" value={displayValue(detail.case.case_type)} />
+              <InfoRow label="案件描述" value={displayValue(detail.case.description || detail.case.objective)} />
+              <InfoRow label="管辖地区" value={displayValue(detail.case.jurisdiction)} />
+              <InfoRow label="客户名称" value={displayValue(detail.case.client_name)} />
+              <InfoRow label="相对方" value={displayValue(detail.case.opposing_party || detail.case.counterparty_name)} />
+              <InfoRow label="优先级" value={displayValue(detail.case.priority)} />
+              <InfoRow label="标签" value={formatTags(detail.case.tags)} />
               <InfoRow label="状态" value={detail.case.status} />
               <InfoRow label="工作空间 ID" value={detail.case.workspace_id} />
               <InfoRow label="所属用户 ID" value={detail.case.owner_user_id} />
               <InfoRow label="创建时间" value={formatDate(detail.case.created_at)} />
               <InfoRow label="更新时间" value={formatDate(detail.case.updated_at)} />
+            </div>
+          </WorkflowSection>
+
+          <WorkflowSection title="Intake 状态">
+            <div className="grid gap-4 md:grid-cols-3">
+              <InfoRow label="intake_status" value={displayValue(detail.intakeStatus?.intake_status)} />
+              <InfoRow label="materials_count" value={String(detail.intakeStatus?.materials_count ?? 0)} />
+              <InfoRow label="facts_count" value={String(detail.intakeStatus?.facts_count ?? 0)} />
+              <InfoRow label="analyses_count" value={String(detail.intakeStatus?.analyses_count ?? 0)} />
+              <InfoRow label="reports_count" value={String(detail.intakeStatus?.reports_count ?? 0)} />
+              <InfoRow label="next_recommended_action" value={formatNextAction(detail.intakeStatus?.next_recommended_action)} />
+              <InfoRow label="ready_for_fact_extraction" value={formatBoolean(detail.intakeStatus?.ready_for_fact_extraction)} />
+              <InfoRow label="ready_for_analysis" value={formatBoolean(detail.intakeStatus?.ready_for_analysis)} />
+              <InfoRow label="ready_for_report" value={formatBoolean(detail.intakeStatus?.ready_for_report)} />
+            </div>
+            <div className="rounded-md border border-line bg-slate-50 px-3 py-2 text-sm text-muted">
+              {formatActionHint(detail.intakeStatus?.next_recommended_action)}
             </div>
           </WorkflowSection>
 
@@ -211,6 +235,9 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
           </WorkflowSection>
 
           <WorkflowSection title="材料">
+            <div className="rounded-md border border-line bg-slate-50 px-3 py-2 text-sm text-muted">
+              {formatActionHint(detail.intakeStatus?.next_recommended_action)}
+            </div>
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="min-w-64 flex-1">
                 <label htmlFor="material" className="text-sm font-medium text-ink">
@@ -347,6 +374,40 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
             </ListArea>
           </WorkflowSection>
 
+          <WorkflowSection title="运行结果摘要">
+            <div className="grid gap-4 lg:grid-cols-3">
+              <SummaryCard
+                title="最近一次事实抽取"
+                rows={[
+                  ["fact count", String(detail.facts.length)],
+                  ["latest fact_id", detail.facts.at(-1)?.fact_id ?? "暂无"],
+                  ["source_refs", formatSourceRefs(detail.facts.at(-1)?.source_refs)]
+                ]}
+              />
+              <SummaryCard
+                title="最近一次法律分析"
+                rows={[
+                  ["analysis_id", detail.analyses.at(-1)?.analysis_id ?? "暂无"],
+                  ["llm_provider", detail.analyses.at(-1)?.llm_provider ?? "暂无"],
+                  ["llm_status", detail.analyses.at(-1)?.llm_status ?? "暂无"],
+                  ["skill_used", detail.analyses.at(-1)?.skill_used ?? "暂无"],
+                  ["package_used", detail.analyses.at(-1)?.package_used ?? "暂无"]
+                ]}
+              />
+              <SummaryCard
+                title="最近一次报告生成"
+                rows={[
+                  ["report_id", detail.reports.at(-1)?.report_id ?? "暂无"],
+                  ["llm_provider", detail.reports.at(-1)?.llm_provider ?? detail.reports.at(-1)?.source_refs.llm_provider ?? "暂无"],
+                  ["llm_status", detail.reports.at(-1)?.llm_status ?? detail.reports.at(-1)?.source_refs.llm_status ?? "暂无"],
+                  ["skill_used", detail.reports.at(-1)?.skill_used ?? detail.reports.at(-1)?.source_refs.skill_id ?? "暂无"],
+                  ["package_used", detail.reports.at(-1)?.package_used ?? detail.reports.at(-1)?.source_refs.package_id ?? "暂无"],
+                  ["source_refs", formatSourceRefs(detail.reports.at(-1)?.source_refs)]
+                ]}
+              />
+            </div>
+          </WorkflowSection>
+
           <WorkflowSection title="技能">
             <div className="grid gap-4 lg:grid-cols-2">
               <div>
@@ -446,6 +507,28 @@ function MaterialTree({ materials }: { materials: Material[] }) {
   );
 }
 
+function SummaryCard({
+  title,
+  rows
+}: {
+  title: string;
+  rows: Array<[string, string]>;
+}) {
+  return (
+    <article className="rounded-md border border-line bg-slate-50 p-3">
+      <h3 className="text-sm font-semibold text-ink">{title}</h3>
+      <div className="mt-3 space-y-2">
+        {rows.map(([label, value]) => (
+          <div key={label} className="flex items-start justify-between gap-3 text-xs">
+            <span className="text-muted">{label}</span>
+            <span className="max-w-[65%] break-words text-right font-medium text-ink">{value || "暂无"}</span>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
 function groupMaterialsByFolder(materials: Material[]) {
   const grouped = new Map<string, Material[]>();
   for (const material of materials) {
@@ -542,7 +625,7 @@ function RuntimeTraceSection({
                     ["source_material_id", fact.material_id],
                     ["confidence", String(fact.confidence)],
                     ["created_at", formatDate(fact.created_at)],
-                    ["source_refs", "暂无"]
+                    ["source_refs", formatSourceRefs(fact.source_refs)]
                   ]}
                 />
               ))}
@@ -663,6 +746,38 @@ function formatBoolean(value: boolean | undefined) {
 
 function displayValue(value?: string | null) {
   return value && value.trim() ? value : "暂无";
+}
+
+function formatTags(value?: string[] | null) {
+  return value && value.length > 0 ? value.join(", ") : "暂无";
+}
+
+function formatNextAction(value?: string | null) {
+  const actionMap: Record<string, string> = {
+    upload_material: "请先上传案件材料",
+    extract_facts: "可以开始抽取事实",
+    run_analysis: "可以运行法律分析",
+    generate_report: "可以生成报告",
+    review_report: "可以查看并复核报告"
+  };
+  if (!value) {
+    return "暂无建议";
+  }
+  return actionMap[value] ?? "暂无建议";
+}
+
+function formatActionHint(value?: string | null) {
+  const hintMap: Record<string, string> = {
+    upload_material: "请先上传材料，再进行事实抽取。",
+    extract_facts: "材料已上传，可以开始事实抽取。",
+    run_analysis: "事实已生成，可以运行法律分析。",
+    generate_report: "法律分析已生成，可以生成报告。",
+    review_report: "报告已生成，可以查看报告详情。"
+  };
+  if (!value) {
+    return "暂无建议";
+  }
+  return hintMap[value] ?? "暂无建议";
 }
 
 function formatSourceRefs(value: unknown) {

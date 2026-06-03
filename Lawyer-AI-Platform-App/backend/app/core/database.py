@@ -75,12 +75,16 @@ def _ensure_sqlite_case_columns() -> None:
     required_columns = {
         "workspace_id": "VARCHAR(64) DEFAULT 'workspace_local_001'",
         "owner_user_id": "VARCHAR(64) DEFAULT 'user_local_001'",
+        "description": "TEXT",
         "client_name": "TEXT",
         "counterparty_name": "TEXT",
+        "opposing_party": "TEXT",
         "contract_type": "TEXT",
         "dispute_amount": "TEXT",
         "jurisdiction": "TEXT",
-        "intake_notes": "TEXT"
+        "intake_notes": "TEXT",
+        "priority": "VARCHAR(40)",
+        "tags": "TEXT"
     }
     with engine.begin() as connection:
         existing_columns = {

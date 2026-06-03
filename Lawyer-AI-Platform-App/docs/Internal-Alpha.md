@@ -20,6 +20,8 @@ v3.4-A adds a Real Case Intake foundation for richer case creation fields while 
 
 v3.4-B adds folder-aware material intake so local users can upload a case material folder while preserving relative paths and directory context.
 
+v3.4-C adds local end-to-end validation and hardening for the real case intake loop.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -274,6 +276,24 @@ v3.4-B extends material intake without changing the Skill Training main chain:
 * Fact extraction responses include material `source_refs` where available.
 
 This phase does not add complex OCR, zip automatic extraction, PDF parsing enhancement, formal legal review, or team approval. Local testing should use sanitized materials only.
+
+## Real Case Intake E2E Validation
+
+v3.4-C validates the internal alpha loop:
+
+```text
+Real Case Intake -> Folder-aware Material Upload -> Intake Status -> Fact Extraction -> Legal Analysis -> Report Generation -> Runtime Trace -> Report Detail Review
+```
+
+Added hardening:
+
+* `GET /cases/{case_id}/intake/status` returns material/fact/analysis/report counts and next recommended action.
+* Case Detail displays Intake status, next-step hints, material folder grouping, and recent runtime result summaries.
+* Fact extraction responses expose `source_refs` with material `filename` and `relative_path`.
+* Report generation `source_refs` includes `material_refs` where available.
+* `scripts/validate_real_case_intake_v3_4.py` runs the local E2E check with temporary sanitized text samples.
+
+This phase does not add complex OCR, zip automatic extraction, DeepSeek Live testing, Skill Training changes, production deployment, or formal legal opinion generation.
 
 Navigation groups are reserved for:
 

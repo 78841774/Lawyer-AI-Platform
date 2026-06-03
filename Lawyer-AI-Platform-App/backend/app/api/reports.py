@@ -10,6 +10,7 @@ from app.models.report import Report
 from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.legal_analysis_repository import LegalAnalysisRepository
+from app.repositories.material_repository import MaterialRepository
 from app.repositories.report_repository import ReportRepository
 from app.repositories.skill_repository import SkillRepository
 from app.repositories.workspace_skill_repository import WorkspaceSkillRepository
@@ -23,6 +24,7 @@ def get_report_service(db: Session) -> ReportService:
     return ReportService(
         report_repository=ReportRepository(db),
         fact_repository=FactRepository(db),
+        material_repository=MaterialRepository(db),
         legal_analysis_repository=LegalAnalysisRepository(db),
         case_repository=CaseRepository(db),
         storage_root=settings.storage_root,
