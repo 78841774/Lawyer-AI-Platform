@@ -140,3 +140,63 @@ To confirm Fact Runtime persistence, restart the backend and run:
 ```bash
 curl http://127.0.0.1:8001/cases/case_001/facts
 ```
+
+## Legal Analysis Runtime
+
+Legal Analysis Runtime v1.0 reads saved facts, generates a rule-based legal analysis, and stores it in SQLite.
+
+Run legal analysis for a case:
+
+```bash
+curl -X POST http://127.0.0.1:8001/cases/case_001/analysis/run
+```
+
+List legal analyses for a case:
+
+```bash
+curl http://127.0.0.1:8001/cases/case_001/analysis
+```
+
+The list endpoint returns all analysis records for the case in creation order.
+
+Expected run response shape:
+
+```json
+{
+  "analysis_id": "analysis_001",
+  "case_id": "case_001",
+  "issues": [
+    {
+      "issue": "是否存在可分析的法律事实",
+      "confidence": 0.8
+    }
+  ],
+  "rules": [
+    {
+      "source": "MVP Rule Engine",
+      "rule": "基于已抽取事实进行初步法律问题识别"
+    }
+  ],
+  "reasoning": [
+    "系统已发现 1 条案件事实",
+    "其中 1 条事实可用于进一步法律分析"
+  ],
+  "conclusion": "案件具备初步法律分析条件",
+  "risk_level": "medium",
+  "confidence": 0.75,
+  "status": "completed",
+  "created_at": "2026-06-03T08:00:00"
+}
+```
+
+If a case has no facts yet, run Fact Runtime first:
+
+```bash
+curl -X POST http://127.0.0.1:8001/cases/case_001/facts/extract
+```
+
+To confirm Legal Analysis Runtime persistence, restart the backend and run:
+
+```bash
+curl http://127.0.0.1:8001/cases/case_001/analysis
+```
