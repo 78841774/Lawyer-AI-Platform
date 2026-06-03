@@ -66,3 +66,21 @@ def generate_report(
     except Exception as error:
         raise HTTPException(status_code=500, detail="report generation failed") from error
     return serialize_report(report)
+
+
+@router.get("")
+def list_case_reports(
+    case_id: str,
+    db: Session = Depends(get_db)
+) -> dict[str, Any]:
+    service = get_report_service(db)
+    try:
+        reports = service.list_reports(case_id)
+    except ValueError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except Exception as error:
+        raise HTTPException(status_code=500, detail="report query failed") from error
+    return {
+        "case_id": case_id,
+        "reports": [serialize_report(report) for report in reports]
+    }

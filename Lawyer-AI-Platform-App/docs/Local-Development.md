@@ -328,3 +328,44 @@ http://127.0.0.1:8001
 ```
 
 Override it with `NEXT_PUBLIC_API_BASE_URL` if needed.
+
+## Demo Flow Polish
+
+Demo Flow Polish v1.4 lets a user run the full MVP workflow in the browser.
+
+Start the backend:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+uvicorn app.main:app --reload --port 8001
+```
+
+Start the frontend:
+
+```bash
+cd Lawyer-AI-Platform-App/frontend
+npm install
+npm run dev -- -p 3001
+```
+
+Open:
+
+```text
+http://localhost:3001
+```
+
+Browser demo flow:
+
+```text
+1. Open /cases/new.
+2. Create a case with a title.
+3. Upload a .txt material on the case detail page.
+4. Click Extract Facts.
+5. Click Run Legal Analysis.
+6. Click Generate Report.
+7. Open /reports.
+8. Open the generated report detail page.
+```
+
+The case detail page refreshes its materials, facts, legal analyses, and reports after each action.

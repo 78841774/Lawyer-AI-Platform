@@ -10,11 +10,17 @@ export default async function CaseListPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        <header>
+        <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-ink">Case List</h1>
             <p className="mt-2 text-sm text-slate-600">All cases returned by the Workspace API.</p>
           </div>
+          <Link
+            href="/cases/new"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white"
+          >
+            New Case
+          </Link>
         </header>
 
         {error ? <StatusMessage message={error} /> : null}

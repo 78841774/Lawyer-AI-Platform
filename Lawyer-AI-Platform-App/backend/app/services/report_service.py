@@ -71,6 +71,11 @@ class ReportService:
             source_refs=json.dumps(source_refs, ensure_ascii=False)
         )
 
+    def list_reports(self, case_id: str) -> list[Report]:
+        if self.case_repository.get_by_case_id(case_id) is None:
+            raise ValueError("case not found")
+        return self.report_repository.list_by_case_id(case_id)
+
     def _write_report_file(self, *, case_id: str, report_id: str, content: str) -> Path:
         target_dir = self.storage_root / "reports" / case_id
         target_dir.mkdir(parents=True, exist_ok=True)
