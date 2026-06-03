@@ -12,6 +12,8 @@ v3.2-C localizes the main frontend product copy for Chinese legal professionals 
 
 v3.3-A adds the frontend auth shell: the dashboard resolves the current user, current workspace, and current auth mode through authenticated API calls.
 
+v3.3-C adds Runtime Trace UI surfaces for case detail, report detail, and runtime status pages. It only displays fields already returned by the backend APIs.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -197,6 +199,23 @@ The Dashboard auth card resolves:
 * 当前用户 through `GET /users/me`.
 * 当前工作空间 through `GET /workspaces` followed by `GET /workspaces/{workspace_id}`.
 * 当前认证模式 through `GET /auth/status`.
+
+## Runtime Trace UI
+
+v3.3-C displays runtime trace information without changing backend storage or Skill Training:
+
+* Case Detail shows LLM runtime status, fact extraction records, legal analysis records, report runtime records, and an audit-trail empty state.
+* Report Detail shows report runtime metadata, including `llm_provider`, `llm_status`, `skill_used`, `package_used`, and `source_refs` when present.
+* Runtime page shows Provider, Model, Configured, and Base URL Configured status.
+* Missing backend fields are rendered as `暂无`, `暂无运行记录`, or `暂无引用来源`.
+
+Current persisted runtime data is limited:
+
+* Report `source_refs` persists `fact_ids`, `analysis_id`, `llm_provider`, `llm_status`, and optionally `skill_id` / `package_id`.
+* Fact list records persist `fact_id`, `material_id`, `confidence`, `status`, and `created_at`, but not independent `source_refs` or LLM metadata.
+* Legal analysis list records persist `analysis_id`, `case_id`, `status`, `risk_level`, `confidence`, and `created_at`, but not independent LLM metadata.
+
+No `/skill-candidates/*` API, Skill Candidate table, Real Business Intake flow, or production deployment is added in this phase.
 
 Navigation groups are reserved for:
 

@@ -317,6 +317,7 @@ export const uploadMaterial = materialApi.upload;
 export const getCaseFacts = factApi.listByCase;
 export const extractFacts = factApi.extract;
 export const getCaseAnalyses = analysisApi.listByCase;
+export const getCaseAnalysis = analysisApi.listByCase;
 export const runLegalAnalysis = analysisApi.run;
 export const getCaseReports = reportApi.listByCase;
 export const getReports = reportApi.list;
@@ -326,6 +327,7 @@ export const getWorkspaceSkills = skillApi.listPublished;
 export const getWorkspaceSkill = skillApi.getPublished;
 export const applySkillToCase = skillApi.applyToCase;
 export const getCaseSkills = skillApi.listForCase;
+export const getLlmStatus = runtimeApi.llmStatus;
 
 export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
   const [caseRecord, materials, facts, analyses, reports] = await Promise.all([

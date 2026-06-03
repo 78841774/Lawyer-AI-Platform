@@ -65,6 +65,27 @@ export default async function ReportDetailPage({
               </section>
             ) : null}
 
+            <section className="rounded-md border border-line bg-white p-5">
+              <div className="text-sm font-semibold text-ink">报告运行信息</div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <RuntimeRow label="report_id" value={report.report_id} />
+                <RuntimeRow label="case_id" value={report.case_id} />
+                <RuntimeRow label="report_type" value={report.report_type} />
+                <RuntimeRow label="llm_provider" value={report.llm_provider ?? report.source_refs.llm_provider ?? "暂无"} />
+                <RuntimeRow label="llm_status" value={report.llm_status ?? report.source_refs.llm_status ?? "暂无"} />
+                <RuntimeRow label="skill_used" value={report.skill_used ?? report.source_refs.skill_id ?? "暂无"} />
+                <RuntimeRow label="package_used" value={report.package_used ?? report.source_refs.package_id ?? "暂无"} />
+                <RuntimeRow label="created_at" value={formatDate(report.created_at)} />
+                <RuntimeRow label="updated_at" value={report.updated_at ? formatDate(report.updated_at) : "暂无"} />
+              </div>
+              <div className="mt-5">
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted">引用来源 source_refs</div>
+                <div className="mt-2 rounded-md border border-line bg-paper p-3 text-sm text-slate-600">
+                  <SourceRefsView value={report.source_refs} />
+                </div>
+              </div>
+            </section>
+
             <article className="whitespace-pre-wrap rounded-md border border-line bg-white p-5 text-sm leading-6 text-slate-700">
               {report.content}
             </article>
@@ -93,6 +114,53 @@ function MetaCard({ label, value }: { label: string; value: string }) {
       <div className="mt-2 text-sm font-semibold text-ink">{value}</div>
     </div>
   );
+}
+
+function RuntimeRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-line p-3">
+      <div className="text-xs text-slate-500">{label}</div>
+      <div className="mt-1 break-words text-sm font-medium text-ink">{value || "暂无"}</div>
+    </div>
+  );
+}
+
+function SourceRefsView({ value }: { value: unknown }) {
+  if (!value) {
+    return <span>暂无引用来源</span>;
+  }
+  if (typeof value === "string") {
+    return <span>{value || "暂无引用来源"}</span>;
+  }
+  if (Array.isArray(value)) {
+    return value.length > 0 ? (
+      <ul className="list-inside list-disc space-y-1">
+        {value.map((item, index) => (
+          <li key={index}>{String(item)}</li>
+        ))}
+      </ul>
+    ) : (
+      <span>暂无引用来源</span>
+    );
+  }
+  if (typeof value === "object") {
+    const entries = Object.entries(value as Record<string, unknown>);
+    return entries.length > 0 ? (
+      <dl className="space-y-2">
+        {entries.map(([key, entryValue]) => (
+          <div key={key} className="grid gap-1 md:grid-cols-[160px_1fr]">
+            <dt className="font-medium text-ink">{key}</dt>
+            <dd className="break-words">
+              {Array.isArray(entryValue) ? entryValue.join(", ") || "暂无" : String(entryValue ?? "暂无")}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    ) : (
+      <span>暂无引用来源</span>
+    );
+  }
+  return <span>{String(value)}</span>;
 }
 
 function StatusMessage({ message }: { message: string }) {

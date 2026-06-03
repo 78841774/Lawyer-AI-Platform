@@ -89,9 +89,20 @@ export type LegalAnalysis = {
   confidence: number;
   status: string;
   created_at: string;
+  llm_provider?: string | null;
+  llm_status?: string | null;
   skill_used?: string;
   package_used?: string;
 };
+
+export type ReportSourceRefs = {
+  fact_ids?: string[];
+  analysis_id?: string;
+  skill_id?: string;
+  package_id?: string;
+  llm_provider?: string | null;
+  llm_status?: string | null;
+} & Record<string, unknown>;
 
 export type Report = {
   report_id: string;
@@ -102,15 +113,13 @@ export type Report = {
   status: string;
   version: number;
   storage_path: string;
-  source_refs: {
-    fact_ids?: string[];
-    analysis_id?: string;
-    skill_id?: string;
-    package_id?: string;
-    llm_provider?: string | null;
-    llm_status?: string | null;
-  };
+  source_refs: ReportSourceRefs;
+  llm_provider?: string | null;
+  llm_status?: string | null;
+  skill_used?: string | null;
+  package_used?: string | null;
   created_at: string;
+  updated_at?: string | null;
 };
 
 export type Skill = {

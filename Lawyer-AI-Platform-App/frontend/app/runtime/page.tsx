@@ -16,7 +16,7 @@ export default async function RuntimePage() {
         <SectionHeader
           eyebrow="AIHome.law 运行状态"
           title="运行状态"
-          description="查看模型提供方、模型配置与后续运行指标预留位。"
+          description="运行状态用于确认当前案件处理、法律分析、报告生成所使用的模型提供方和配置状态。"
         />
 
         {error ? <StatusMessage message={error} /> : null}
@@ -37,6 +37,8 @@ export default async function RuntimePage() {
               <InfoRow label="模型" value={runtime?.model ?? "-"} />
               <InfoRow label="已配置" value={formatBoolean(runtime?.configured)} />
               <InfoRow label="Base URL 已配置" value={formatBoolean(runtime?.base_url_configured)} />
+              <InfoRow label="llm_provider" value={runtime?.provider ?? "-"} />
+              <InfoRow label="llm_status" value={runtime?.configured ? "configured" : "not_configured"} />
               <InfoRow label="未来 token 用量" value="暂不可用" />
               <InfoRow label="未来延迟" value="暂不可用" />
               <InfoRow label="未来成本" value="暂不可用" />

@@ -11,6 +11,7 @@ import {
   generateReport,
   getCaseDetail,
   getCaseSkills,
+  getLLMStatus,
   getWorkspaceSkills,
   runLegalAnalysis,
   uploadMaterial,
@@ -20,6 +21,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
+import type { RuntimeStatus } from "@/types";
 
 type ActionStatus = {
   loading: boolean;
@@ -44,6 +46,7 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
   const [actionStatus, setActionStatus] = useState<ActionStatus>(initialActionStatus);
   const [availableSkills, setAvailableSkills] = useState<WorkspaceSkillRecord[]>([]);
   const [appliedSkills, setAppliedSkills] = useState<CaseSkillBinding[]>([]);
+  const [runtime, setRuntime] = useState<RuntimeStatus | null>(null);
 
   useEffect(() => {
     void loadDetail();
@@ -57,9 +60,11 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
         getWorkspaceSkills(),
         getCaseSkills(caseId)
       ]);
+      const nextRuntime = await getLLMStatus().catch(() => null);
       setDetail(nextDetail);
       setAvailableSkills(nextAvailableSkills);
       setAppliedSkills(nextAppliedSkills);
+      setRuntime(nextRuntime);
       setPageStatus(initialActionStatus);
     } catch (error) {
       setPageStatus({
@@ -315,8 +320,8 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
           </WorkflowSection>
 
           <section className="grid gap-4 lg:grid-cols-2">
-            <PlaceholderSection title="运行轨迹" />
-            <PlaceholderSection title="审计轨迹" />
+            <RuntimeTraceSection detail={detail} runtime={runtime} />
+            <AuditTrailSection />
           </section>
         </>
       ) : null}
@@ -338,17 +343,135 @@ function WorkflowSection({ title, children }: { title: string; children: React.R
   );
 }
 
-function PlaceholderSection({ title }: { title: string }) {
+function AuditTrailSection() {
   return (
     <Card>
       <CardBody>
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold text-ink">{title}</h2>
-          <Badge tone="muted">即将推出</Badge>
+          <h2 className="text-sm font-semibold text-ink">审计轨迹</h2>
+          <Badge tone="muted">audit trail</Badge>
         </div>
-        <p className="mt-3 text-sm text-muted">当前内测界面暂不可用。</p>
+        <p className="mt-3 text-sm text-muted">
+          暂无运行记录。当前后端暂未返回独立审计日志字段。
+        </p>
       </CardBody>
     </Card>
+  );
+}
+
+function RuntimeTraceSection({
+  detail,
+  runtime
+}: {
+  detail: CaseDetail;
+  runtime: RuntimeStatus | null;
+}) {
+  return (
+    <Card>
+      <CardBody>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold text-ink">运行轨迹</h2>
+          <Badge tone="muted">runtime trace</Badge>
+        </div>
+
+        <div className="mt-4 space-y-5">
+          <section>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">运行状态</h3>
+            <div className="mt-3 space-y-3">
+              <InfoRow label="模型提供方" value={runtime?.provider ?? "暂无"} />
+              <InfoRow label="模型" value={runtime?.model ?? "暂无"} />
+              <InfoRow label="已配置" value={formatBoolean(runtime?.configured)} />
+              <InfoRow label="Base URL 已配置" value={formatBoolean(runtime?.base_url_configured)} />
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">事实抽取记录</h3>
+            <TraceList empty="暂无事实抽取记录。可以先上传材料并运行事实抽取。">
+              {detail.facts.map((fact) => (
+                <TraceItem
+                  key={fact.fact_id}
+                  title={fact.fact_id}
+                  rows={[
+                    ["source_material_id", fact.material_id],
+                    ["confidence", String(fact.confidence)],
+                    ["created_at", formatDate(fact.created_at)],
+                    ["source_refs", "暂无"]
+                  ]}
+                />
+              ))}
+            </TraceList>
+          </section>
+
+          <section>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">法律分析记录</h3>
+            <TraceList empty="暂无法律分析记录。可以先运行法律分析。">
+              {detail.analyses.map((analysis) => (
+                <TraceItem
+                  key={analysis.analysis_id}
+                  title={analysis.analysis_id}
+                  rows={[
+                    ["case_id", analysis.case_id],
+                    ["analysis_type / status", analysis.status ?? "暂无"],
+                    ["llm_provider", analysis.llm_provider ?? "暂无"],
+                    ["skill_used", analysis.skill_used ?? "暂无"],
+                    ["created_at", formatDate(analysis.created_at)]
+                  ]}
+                />
+              ))}
+            </TraceList>
+          </section>
+
+          <section>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">报告记录</h3>
+            <TraceList empty="暂无运行记录。">
+              {detail.reports.map((report) => (
+                <TraceItem
+                  key={report.report_id}
+                  title={report.report_id}
+                  rows={[
+                    ["report_type", report.report_type],
+                    ["llm_provider", report.llm_provider ?? report.source_refs.llm_provider ?? "暂无"],
+                    ["llm_status", report.llm_status ?? report.source_refs.llm_status ?? "暂无"],
+                    ["skill_used", report.skill_used ?? report.source_refs.skill_id ?? "暂无"],
+                    ["package_used", report.package_used ?? report.source_refs.package_id ?? "暂无"],
+                    ["source_refs", formatSourceRefs(report.source_refs)],
+                    ["created_at", formatDate(report.created_at)]
+                  ]}
+                />
+              ))}
+            </TraceList>
+          </section>
+        </div>
+      </CardBody>
+    </Card>
+  );
+}
+
+function TraceList({ empty, children }: { empty: string; children: React.ReactNode }) {
+  const hasChildren = Array.isArray(children) ? children.length > 0 : Boolean(children);
+  return <div className="mt-3 space-y-3">{hasChildren ? children : <div className="text-sm text-muted">{empty}</div>}</div>;
+}
+
+function TraceItem({
+  title,
+  rows
+}: {
+  title: string;
+  rows: Array<[string, string]>;
+}) {
+  return (
+    <article className="rounded-md border border-line p-3">
+      <div className="text-sm font-medium text-ink">{title}</div>
+      <div className="mt-2 space-y-2">
+        {rows.map(([label, value]) => (
+          <div key={label} className="flex items-start justify-between gap-4 text-xs">
+            <span className="text-muted">{label}</span>
+            <span className="max-w-[70%] break-words text-right font-medium text-ink">{value || "暂无"}</span>
+          </div>
+        ))}
+      </div>
+    </article>
   );
 }
 
@@ -383,4 +506,33 @@ function StatusMessage({ status }: { status: ActionStatus }) {
 
 function formatDate(value: string) {
   return new Date(value).toLocaleString();
+}
+
+function formatBoolean(value: boolean | undefined) {
+  if (typeof value !== "boolean") {
+    return "暂无";
+  }
+  return value ? "是" : "否";
+}
+
+function formatSourceRefs(value: unknown) {
+  if (!value) {
+    return "暂无引用来源";
+  }
+  if (typeof value === "string") {
+    return value || "暂无引用来源";
+  }
+  if (Array.isArray(value)) {
+    return value.length > 0 ? value.join(", ") : "暂无引用来源";
+  }
+  if (typeof value === "object") {
+    const entries = Object.entries(value as Record<string, unknown>);
+    if (entries.length === 0) {
+      return "暂无引用来源";
+    }
+    return entries
+      .map(([key, entryValue]) => `${key}: ${Array.isArray(entryValue) ? entryValue.join(", ") : String(entryValue ?? "暂无")}`)
+      .join(" / ");
+  }
+  return String(value);
 }
