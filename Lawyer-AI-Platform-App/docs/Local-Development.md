@@ -285,3 +285,46 @@ Expected stats response:
   "reports": 2
 }
 ```
+
+## Frontend Workspace Dashboard
+
+Frontend Workspace Dashboard v1.3 reads the v1.2 Workspace API and renders the main workspace pages.
+
+Start the backend first:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+uvicorn app.main:app --reload --port 8001
+```
+
+Start the frontend:
+
+```bash
+cd Lawyer-AI-Platform-App/frontend
+npm install
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
+Frontend routes:
+
+```text
+/
+/cases
+/reports
+/reports/{report_id}
+```
+
+The frontend API base URL defaults to:
+
+```text
+http://127.0.0.1:8001
+```
+
+Override it with `NEXT_PUBLIC_API_BASE_URL` if needed.

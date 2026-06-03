@@ -22,3 +22,5 @@ export type LegalIssue = {
   conclusion: string;
   riskLevel: "low" | "medium" | "high";
 };
+
+export type WorkspaceSection = "dashboard" | "cases" | "reports";
