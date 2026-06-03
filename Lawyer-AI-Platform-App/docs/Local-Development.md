@@ -610,3 +610,62 @@ After deprecate:
 skill.status = deprecated
 package.status = deprecated
 ```
+
+## Workspace Skill Loader
+
+Workspace Skill Loader v2.5 exposes published skills to the case workspace.
+
+It adds the `case_skill_bindings` table:
+
+```text
+binding_id
+case_id
+skill_id
+package_id
+status
+created_at
+```
+
+List Workspace-available skills:
+
+```bash
+curl http://127.0.0.1:8001/workspace/skills
+```
+
+Get one Workspace skill:
+
+```bash
+curl http://127.0.0.1:8001/workspace/skills/skill_001
+```
+
+Apply a skill to a case:
+
+```bash
+curl -X POST http://127.0.0.1:8001/cases/case_001/skills/skill_001/apply
+```
+
+List applied skills for a case:
+
+```bash
+curl http://127.0.0.1:8001/cases/case_001/skills
+```
+
+Workspace loading rules:
+
+```text
+skill.status must be published
+package.status must be published
+```
+
+If `skill_001` was deprecated during v2.4 lifecycle testing, `POST /skill-registry/skill_001/publish` returns an error by design. Create a fresh Skill Candidate through the normal build, evaluate, package, and publish APIs before running the Workspace Skill Loader demo.
+
+Frontend routes:
+
+```text
+/skills
+/cases/{case_id}
+```
+
+The Skills page lists published Workspace skills.
+
+The case detail page shows Available Skills, an Apply Skill button, and Applied Skills.

@@ -4,12 +4,17 @@ import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import {
   ApiError,
+  applySkillToCase,
   CaseDetail,
+  CaseSkillBinding,
   extractFacts,
   generateReport,
+  getCaseSkills,
   getCaseDetail,
+  getWorkspaceSkills,
   runLegalAnalysis,
-  uploadMaterial
+  uploadMaterial,
+  WorkspaceSkillRecord
 } from "@/services/api";
 
 type ActionStatus = {
@@ -33,6 +38,8 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
     message: "Loading case..."
   });
   const [actionStatus, setActionStatus] = useState<ActionStatus>(initialActionStatus);
+  const [availableSkills, setAvailableSkills] = useState<WorkspaceSkillRecord[]>([]);
+  const [appliedSkills, setAppliedSkills] = useState<CaseSkillBinding[]>([]);
 
   useEffect(() => {
     void loadDetail();
@@ -41,7 +48,14 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
   async function loadDetail() {
     setPageStatus({ loading: true, message: "Loading case...", kind: "idle" });
     try {
-      setDetail(await getCaseDetail(caseId));
+      const [nextDetail, nextAvailableSkills, nextAppliedSkills] = await Promise.all([
+        getCaseDetail(caseId),
+        getWorkspaceSkills(),
+        getCaseSkills(caseId)
+      ]);
+      setDetail(nextDetail);
+      setAvailableSkills(nextAvailableSkills);
+      setAppliedSkills(nextAppliedSkills);
       setPageStatus(initialActionStatus);
     } catch (error) {
       setPageStatus({
@@ -80,6 +94,10 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
       await uploadMaterial(caseId, selectedFile);
       setSelectedFile(null);
     });
+  }
+
+  async function handleApplySkill(skillId: string) {
+    await runAction("Apply Skill", () => applySkillToCase(caseId, skillId));
   }
 
   return (
@@ -152,6 +170,41 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                 onClick={() => runAction("Generate Report", () => generateReport(caseId))}
               />
             </div>
+          </section>
+
+          <section className="grid gap-4 lg:grid-cols-2">
+            <DataPanel title="Available Skills" empty="No published skills available.">
+              {availableSkills.map((skill) => (
+                <article key={skill.skill_id} className="border-b border-line py-3 last:border-b-0">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-medium text-ink">{skill.skill_name}</div>
+                      <div className="mt-1 text-xs text-slate-500">
+                        {skill.skill_id} · {skill.domain} · {skill.package_id}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={actionStatus.loading}
+                      onClick={() => handleApplySkill(skill.skill_id)}
+                      className="rounded-md border border-line bg-white px-3 py-2 text-xs font-medium text-ink hover:border-accent disabled:opacity-60"
+                    >
+                      Apply Skill
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </DataPanel>
+
+            <DataPanel title="Applied Skills" empty="No skills applied to this case.">
+              {appliedSkills.map((binding) => (
+                <ListItem
+                  key={binding.binding_id ?? `${binding.skill_id}-${binding.package_id}`}
+                  title={binding.skill_id}
+                  meta={`${binding.package_id} · ${binding.status}`}
+                />
+              ))}
+            </DataPanel>
           </section>
 
           <section className="grid gap-4 lg:grid-cols-2">

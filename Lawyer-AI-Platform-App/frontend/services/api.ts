@@ -69,6 +69,40 @@ export type ReportRecord = {
   created_at: string;
 };
 
+export type WorkspaceSkillRecord = {
+  skill_id: string;
+  skill_name: string;
+  domain: string;
+  version: string;
+  package_id: string;
+  package_path: string;
+  status: string;
+};
+
+export type WorkspaceSkillDetail = {
+  skill: WorkspaceSkillRecord;
+  package: {
+    package_id: string;
+    name: string;
+    domain: string;
+    version: string;
+    status: string;
+    package_path: string;
+  };
+  prompts_summary: Record<string, { length: number; preview: string }>;
+  templates_summary: Record<string, { length: number; preview: string }>;
+};
+
+export type CaseSkillBinding = {
+  binding_id?: string;
+  case_id: string;
+  skill_id: string;
+  package_id: string;
+  status: string;
+  message?: string;
+  created_at?: string;
+};
+
 export type CaseDetail = {
   case: CaseRecord;
   materials: MaterialRecord[];
@@ -206,6 +240,27 @@ export async function getReport(reportId: string): Promise<ReportRecord> {
 
 export async function generateReport(caseId: string): Promise<ReportRecord> {
   return postJson<ReportRecord>(`/cases/${caseId}/reports/generate`);
+}
+
+export async function getWorkspaceSkills(): Promise<WorkspaceSkillRecord[]> {
+  const response = await request<{ skills: WorkspaceSkillRecord[] }>("/workspace/skills");
+  return response.skills;
+}
+
+export async function getWorkspaceSkill(skillId: string): Promise<WorkspaceSkillDetail> {
+  return request<WorkspaceSkillDetail>(`/workspace/skills/${skillId}`);
+}
+
+export async function applySkillToCase(
+  caseId: string,
+  skillId: string
+): Promise<CaseSkillBinding> {
+  return postJson<CaseSkillBinding>(`/cases/${caseId}/skills/${skillId}/apply`);
+}
+
+export async function getCaseSkills(caseId: string): Promise<CaseSkillBinding[]> {
+  const response = await request<{ skills: CaseSkillBinding[] }>(`/cases/${caseId}/skills`);
+  return response.skills;
 }
 
 export async function getCaseDetail(caseId: string): Promise<CaseDetail> {

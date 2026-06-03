@@ -271,3 +271,41 @@ package.status -> deprecated
 已废弃的 skill 不允许再次 publish。
 
 如需重新启用，应创建新版本并重新完成 Evaluation 和 Package Build。
+
+## 十一、v2.5 Workspace Skill Loader 状态
+
+v2.5 让 Workspace Runtime 加载已发布能力。
+
+Workspace 只加载：
+
+```text
+skill.status = published
+package.status = published
+```
+
+Workspace 不加载：
+
+- candidate
+- built
+- deprecated
+- needs_improvement
+- validated 但未 published 的 skill
+
+案件应用记录写入：
+
+```text
+case_skill_bindings
+```
+
+字段：
+
+- binding_id
+- case_id
+- skill_id
+- package_id
+- status
+- created_at
+
+v2.5 暂不执行真实 AI 推理。
+
+`POST /cases/{case_id}/skills/{skill_id}/apply` 仅表示该 case workspace 已绑定并准备使用该 Skill。

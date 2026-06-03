@@ -76,6 +76,50 @@ Legal Analysis
 Preliminary Conclusion
 ```
 
+## 5. Workspace Skill Loader Demo
+
+The Skill Loader demo requires a published skill and a published package.
+
+Open:
+
+```text
+http://localhost:3001/skills
+```
+
+Expected:
+
+```text
+Published Workspace skills are listed.
+```
+
+Then open a case:
+
+```text
+http://localhost:3001/cases/case_001
+```
+
+Expected:
+
+```text
+Available Skills
+Applied Skills
+```
+
+Click `Apply Skill`.
+
+The skill should appear in `Applied Skills`.
+
+If no skills are listed, check the backend:
+
+```bash
+curl http://127.0.0.1:8001/workspace/skills
+curl http://127.0.0.1:8001/skill-registry
+```
+
+Only skills with `skill.status = published` and package `status = published` are available to Workspace.
+
+If the local `skill_001` is deprecated, do not manually edit the database. Build a fresh skill candidate, evaluate it, build a package, and publish it through the official APIs.
+
 ## Troubleshooting
 
 If a port is already in use:

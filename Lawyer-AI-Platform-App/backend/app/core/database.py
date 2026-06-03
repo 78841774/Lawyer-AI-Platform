@@ -19,7 +19,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def create_db_and_tables() -> None:
-    from app.models import case, experience_package, fact, legal_analysis, material, report, skill  # noqa: F401
+    from app.models import case, case_skill_binding, experience_package, fact, legal_analysis, material, report, skill  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
     _ensure_sqlite_skill_columns()
