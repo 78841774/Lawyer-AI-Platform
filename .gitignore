@@ -161,11 +161,3 @@ __pycache__/
 .venv/
 venv/
 
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Python virtualenv
-.venv/
-venv/
