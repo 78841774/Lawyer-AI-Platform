@@ -42,7 +42,16 @@ export type WorkspaceRecord = {
 export type AuthStatus = {
   authenticated: boolean;
   user_id: string;
-  auth_mode: "dev_token" | "local_fallback";
+  auth_mode: "jwt" | "dev_token" | "local_fallback";
+  expires_at: string | null;
+};
+
+export type LoginResponse = {
+  access_token: string;
+  token_type: "bearer";
+  expires_in: number;
+  user_id: string;
+  expires_at: string;
 };
 
 export type MaterialRecord = {
@@ -165,6 +174,7 @@ export class ApiError extends Error {
 
 async function request<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: buildAuthHeaders(),
     cache: "no-store"
   });
 
@@ -179,7 +189,8 @@ async function postJson<T>(path: string, payload?: unknown): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      ...buildAuthHeaders()
     },
     body: JSON.stringify(payload ?? {}),
     cache: "no-store"
@@ -195,6 +206,7 @@ async function postJson<T>(path: string, payload?: unknown): Promise<T> {
 async function postForm<T>(path: string, formData: FormData): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
+    headers: buildAuthHeaders(),
     body: formData,
     cache: "no-store"
   });
@@ -218,6 +230,30 @@ async function buildErrorMessage(response: Response, path: string) {
   return `API request failed: ${path}`;
 }
 
+function buildAuthHeaders(): Record<string, string> {
+  const token = getStoredAccessToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+function getStoredAccessToken(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  return window.localStorage.getItem("lawyer_ai_access_token");
+}
+
+export function storeAccessToken(token: string) {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem("lawyer_ai_access_token", token);
+  }
+}
+
+export function clearAccessToken() {
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem("lawyer_ai_access_token");
+  }
+}
+
 export async function getHealth(): Promise<{ status: string }> {
   return request<{ status: string }>("/health");
 }
@@ -232,6 +268,16 @@ export async function getCurrentUser(): Promise<UserRecord> {
 
 export async function getAuthStatus(): Promise<AuthStatus> {
   return request<AuthStatus>("/auth/status");
+}
+
+export async function loginWithDevToken(
+  userId = "user_local_001",
+  devToken = "dev-local-token"
+): Promise<LoginResponse> {
+  return postJson<LoginResponse>("/auth/login", {
+    user_id: userId,
+    dev_token: devToken
+  });
 }
 
 export async function getWorkspaces(): Promise<WorkspaceRecord[]> {

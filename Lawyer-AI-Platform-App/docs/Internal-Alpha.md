@@ -4,12 +4,15 @@ v3.0 established the minimum identity and workspace foundation required for an i
 
 v3.1 adds a Dev Token / API Key authentication foundation. It is still not a formal login system.
 
+v3.2 adds JWT Auth Foundation. Local demo login exchanges `user_id + dev_token` for a JWT, but this is still not a production login system.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
 
-* Password login.
-* JWT authentication.
+* Password registration.
+* Production JWT session management.
+* OAuth or SSO.
 * Payment.
 * Complex RBAC.
 
@@ -17,6 +20,7 @@ The current identity modes are:
 
 * `local_fallback`
 * `dev_token`
+* `jwt`
 
 ## Local Demo User
 
@@ -64,6 +68,27 @@ The plaintext token is read from `LOCAL_DEV_TOKEN`; if unset, local mode uses `d
 
 The database stores only the SHA-256 token hash. It does not store the plaintext token.
 
+## Local JWT Login
+
+v3.2 adds:
+
+```bash
+POST /auth/login
+```
+
+Request:
+
+```json
+{
+  "user_id": "user_local_001",
+  "dev_token": "dev-local-token"
+}
+```
+
+Response includes a bearer JWT. The JWT contains `sub`, `exp`, and `jti`.
+
+Production deployments must replace `JWT_SECRET_KEY`; `.env.example` contains local example values only.
+
 ## Tables
 
 v3.0 adds:
@@ -97,6 +122,7 @@ GET /cases
 GET /cases/{case_id}
 POST /cases
 GET /auth/status
+POST /auth/login
 GET /auth/dev-token
 ```
 
@@ -120,7 +146,8 @@ The internal alpha only checks:
 * Case creation must target an active workspace.
 * Users can access only workspaces where they are active members.
 * Non-local environments require a token for protected endpoints.
+* Bearer JWT requests are resolved before dev token requests.
 
 ## Next Step
 
-v3.2 can connect JWT or OAuth and keep the current-user dependency boundary introduced in v3.1.
+v3.3 can replace local demo login with formal password, OAuth, or SSO authentication.

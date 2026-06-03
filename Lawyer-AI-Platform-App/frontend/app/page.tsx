@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/AppShell";
+import { AuthLoginPanel } from "@/components/AuthLoginPanel";
 import { StatCard } from "@/components/StatCard";
 import { getAuthStatus, getCurrentUser, getDashboardStats, getWorkspaces } from "@/services/api";
 
@@ -36,6 +37,8 @@ export default async function DashboardPage() {
             meta={workspace ? `${workspace.workspace_id} · ${workspace.status}` : "-"}
           />
         </section>
+
+        <AuthLoginPanel />
 
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <StatCard label="Cases" value={formatCount(stats?.cases)} helper="Active workspace cases" />

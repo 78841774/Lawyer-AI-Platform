@@ -31,7 +31,7 @@ When `APP_ENV=local`, SQLAlchemy creates missing local tables on startup. In pro
 
 ## Local Demo Identity
 
-v3.0 uses Local Demo Identity for internal alpha development. v3.1 adds Dev Token / API Key identity on top of that local user. There is no real login, no password flow, no OAuth, and no JWT.
+v3.0 uses Local Demo Identity for internal alpha development. v3.1 adds Dev Token / API Key identity on top of that local user. v3.2 adds local demo JWT login. There is no password registration, no OAuth, and no SSO.
 
 When `APP_ENV=local`, backend startup ensures:
 
@@ -48,9 +48,14 @@ The local dev token plaintext is configured with:
 
 ```bash
 LOCAL_DEV_TOKEN=dev-local-token
+JWT_SECRET_KEY=local-dev-secret-change-me
+JWT_ALGORITHM=HS256
+JWT_EXPIRATION_MINUTES=120
 ```
 
-If unset, local mode uses `dev-local-token`. The database stores only the SHA-256 token hash.
+If unset, local mode uses the values above. The database stores only the SHA-256 dev token hash.
+
+`JWT_SECRET_KEY` is a local example value. Production must replace it.
 
 Local mode allows no-token fallback to `user_local_001`. If a token is provided, it must be valid; wrong tokens return `401`.
 
@@ -88,6 +93,21 @@ curl http://127.0.0.1:8001/users/me \
 
 curl http://127.0.0.1:8001/workspaces \
   -H "X-Dev-Token: dev-local-token"
+```
+
+JWT login check:
+
+```bash
+curl -X POST http://127.0.0.1:8001/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":"user_local_001","dev_token":"dev-local-token"}'
+```
+
+Use the returned `access_token`:
+
+```bash
+curl http://127.0.0.1:8001/auth/status \
+  -H "Authorization: Bearer <JWT>"
 ```
 
 ## Database And Alembic

@@ -1,6 +1,8 @@
-# Auth Foundation v3.1
+# Auth Foundation
 
 v3.1 adds the minimum authentication foundation for the internal alpha. It is a Dev Token / API Key foundation, not a formal login system.
+
+v3.2 adds JWT Auth Foundation for local demo login, JWT verification, and request identity parsing. It is still not a complete production login system.
 
 ## Scope
 
@@ -8,10 +10,31 @@ This stage does not add:
 
 * Password login.
 * OAuth.
-* JWT sessions.
+* User registration.
+* SSO.
 * Full RBAC.
 
 The goal is to identify a request user before the platform moves to a real authentication provider.
+
+## JWT Configuration
+
+v3.2 adds:
+
+```bash
+JWT_SECRET_KEY=local-dev-secret-change-me
+JWT_ALGORITHM=HS256
+JWT_EXPIRATION_MINUTES=120
+```
+
+`JWT_SECRET_KEY` must be replaced in production. Do not commit a real secret.
+
+JWT access tokens include:
+
+* `sub` as `user_id`
+* `exp`
+* `jti`
+
+Expired or invalid JWTs return `401`.
 
 ## Dev Token Storage
 
@@ -49,12 +72,20 @@ If `LOCAL_DEV_TOKEN` is not set, the backend uses `dev-local-token` for local de
 
 ## Request Headers
 
-The backend accepts either header:
+The backend accepts these auth headers:
 
 ```bash
+Authorization: Bearer <jwt>
 Authorization: Bearer dev-local-token
 X-Dev-Token: dev-local-token
 ```
+
+Authentication priority:
+
+* Bearer JWT
+* Bearer dev token
+* `X-Dev-Token`
+* local fallback when `APP_ENV=local`
 
 If a token is provided, it must be valid. A wrong token returns `401`, even in local mode.
 
@@ -67,8 +98,31 @@ If no token is provided:
 
 ```bash
 GET /auth/status
+POST /auth/login
 GET /auth/dev-token
 ```
+
+`POST /auth/login` is an Internal Alpha login endpoint:
+
+```json
+{
+  "user_id": "user_local_001",
+  "dev_token": "dev-local-token"
+}
+```
+
+It returns:
+
+```json
+{
+  "access_token": "...",
+  "token_type": "bearer",
+  "expires_in": 7200,
+  "user_id": "user_local_001"
+}
+```
+
+This endpoint uses `user_id + dev_token` only for internal alpha. v3.3 can replace it with password, OAuth, or SSO login.
 
 `GET /auth/status` returns:
 
@@ -76,12 +130,14 @@ GET /auth/dev-token
 {
   "authenticated": true,
   "user_id": "user_local_001",
-  "auth_mode": "dev_token"
+  "auth_mode": "jwt",
+  "expires_at": "2026-06-03T12:00:00+00:00"
 }
 ```
 
 `auth_mode` can be:
 
+* `jwt`
 * `dev_token`
 * `local_fallback`
 
@@ -110,4 +166,4 @@ Runtime endpoints can be moved to the same dependency in later hardening work.
 
 ## Next Step
 
-v3.2 can replace or extend Dev Token identity with JWT or OAuth while keeping the same current-user dependency boundary.
+v3.3 can replace the internal alpha login with formal password, OAuth, or SSO authentication.

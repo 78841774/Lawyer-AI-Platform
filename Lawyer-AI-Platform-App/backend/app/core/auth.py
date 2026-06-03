@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.jwt_auth import get_current_user_from_jwt
 from app.models.user import User
 from app.repositories.identity_repository import IdentityRepository
 from app.services.identity_service import LOCAL_USER_ID
@@ -17,6 +18,7 @@ class AuthContext:
     user: User
     auth_mode: str
     token_id: str | None = None
+    expires_at: datetime | None = None
 
 
 def hash_token(token: str) -> str:
@@ -31,6 +33,14 @@ def get_auth_context(
     token = _extract_token(request)
 
     if token:
+        if _looks_like_jwt(token):
+            user, _, expires_at = get_current_user_from_jwt(token, repository)
+            return AuthContext(
+                user=user,
+                auth_mode="jwt",
+                expires_at=expires_at
+            )
+
         token_hash = hash_token(token)
         auth_token = repository.get_auth_token_by_hash(token_hash)
         if auth_token is None or auth_token.status != "active":
@@ -73,3 +83,7 @@ def _extract_token(request: Request) -> str | None:
         return dev_token
 
     return None
+
+
+def _looks_like_jwt(token: str) -> bool:
+    return token.count(".") == 2
