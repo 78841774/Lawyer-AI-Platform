@@ -46,9 +46,10 @@ export default async function CaseListPage({
         </Card>
 
         <Card>
-          <div className="grid gap-3 border-b border-line bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted md:grid-cols-8">
+          <div className="grid gap-3 border-b border-line bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted md:grid-cols-10">
             <span>案件 ID</span>
             <span className="md:col-span-2">标题</span>
+            <span className="md:col-span-2">Intake 信息</span>
             <span>状态</span>
             <span>工作空间 ID</span>
             <span>所属用户 ID</span>
@@ -60,10 +61,20 @@ export default async function CaseListPage({
               <Link
                 key={item.case_id}
                 href={`/cases/${item.case_id}`}
-                className="grid gap-3 border-b border-line px-4 py-3 text-sm last:border-b-0 hover:bg-slate-50 md:grid-cols-8"
+                className="grid gap-3 border-b border-line px-4 py-3 text-sm last:border-b-0 hover:bg-slate-50 md:grid-cols-10"
               >
                 <span className="break-words font-medium text-ink">{item.case_id}</span>
-                <span className="break-words text-ink md:col-span-2">{item.title}</span>
+                <span className="break-words text-ink md:col-span-2">
+                  <span className="font-medium">{item.title}</span>
+                  <span className="mt-1 block text-xs text-muted">
+                    客户：{displayValue(item.client_name)} / 对方：{displayValue(item.counterparty_name)}
+                  </span>
+                </span>
+                <span className="break-words text-xs text-muted md:col-span-2">
+                  <span className="block">案件类型：{displayValue(item.case_type)}</span>
+                  <span className="block">合同类型：{displayValue(item.contract_type)}</span>
+                  <span className="block">争议金额：{displayValue(item.dispute_amount)}</span>
+                </span>
                 <span className="text-muted">{item.status}</span>
                 <span className="break-words text-muted">{item.workspace_id}</span>
                 <span className="break-words text-muted">{item.owner_user_id}</span>
@@ -104,6 +115,10 @@ async function loadCases(selectedWorkspaceId?: string) {
 
 function formatDate(value: string) {
   return new Date(value).toLocaleString();
+}
+
+function displayValue(value?: string | null) {
+  return value && value.trim() ? value : "暂无";
 }
 
 function StatusMessage({ message }: { message: string }) {

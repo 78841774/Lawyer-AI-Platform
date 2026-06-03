@@ -152,12 +152,25 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
 
           <WorkflowSection title="案件概览">
             <div className="grid gap-4 md:grid-cols-3">
-              <InfoRow label="案件类型" value={detail.case.case_type} />
+              <InfoRow label="案件类型" value={displayValue(detail.case.case_type)} />
               <InfoRow label="状态" value={detail.case.status} />
               <InfoRow label="工作空间 ID" value={detail.case.workspace_id} />
               <InfoRow label="所属用户 ID" value={detail.case.owner_user_id} />
               <InfoRow label="创建时间" value={formatDate(detail.case.created_at)} />
               <InfoRow label="更新时间" value={formatDate(detail.case.updated_at)} />
+            </div>
+          </WorkflowSection>
+
+          <WorkflowSection title="Intake 信息">
+            <div className="grid gap-4 md:grid-cols-2">
+              <InfoRow label="客户名称" value={displayValue(detail.case.client_name)} />
+              <InfoRow label="对方名称" value={displayValue(detail.case.counterparty_name)} />
+              <InfoRow label="案件类型" value={displayValue(detail.case.case_type)} />
+              <InfoRow label="合同类型" value={displayValue(detail.case.contract_type)} />
+              <InfoRow label="争议金额" value={displayValue(detail.case.dispute_amount)} />
+              <InfoRow label="管辖地区" value={displayValue(detail.case.jurisdiction)} />
+              <InfoRow label="案件目标" value={displayValue(detail.case.objective)} />
+              <InfoRow label="Intake 备注" value={displayValue(detail.case.intake_notes)} />
             </div>
           </WorkflowSection>
 
@@ -513,6 +526,10 @@ function formatBoolean(value: boolean | undefined) {
     return "暂无";
   }
   return value ? "是" : "否";
+}
+
+function displayValue(value?: string | null) {
+  return value && value.trim() ? value : "暂无";
 }
 
 function formatSourceRefs(value: unknown) {

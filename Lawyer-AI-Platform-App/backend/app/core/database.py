@@ -25,7 +25,7 @@ def create_db_and_tables() -> None:
     import_models()
     Base.metadata.create_all(bind=engine)
     _ensure_sqlite_skill_columns()
-    _ensure_sqlite_case_owner_columns()
+    _ensure_sqlite_case_columns()
     _seed_local_demo_identity()
 
 
@@ -67,13 +67,19 @@ def _ensure_sqlite_skill_columns() -> None:
                 )
 
 
-def _ensure_sqlite_case_owner_columns() -> None:
+def _ensure_sqlite_case_columns() -> None:
     if not settings.database_url.startswith("sqlite"):
         return
 
     required_columns = {
         "workspace_id": "VARCHAR(64) DEFAULT 'workspace_local_001'",
-        "owner_user_id": "VARCHAR(64) DEFAULT 'user_local_001'"
+        "owner_user_id": "VARCHAR(64) DEFAULT 'user_local_001'",
+        "client_name": "TEXT",
+        "counterparty_name": "TEXT",
+        "contract_type": "TEXT",
+        "dispute_amount": "TEXT",
+        "jurisdiction": "TEXT",
+        "intake_notes": "TEXT"
     }
     with engine.begin() as connection:
         existing_columns = {

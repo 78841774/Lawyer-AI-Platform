@@ -12,9 +12,15 @@ class Case(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     case_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     title: Mapped[str] = mapped_column(String(255))
-    case_type: Mapped[str] = mapped_column(String(80), default="contract_dispute")
+    client_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    counterparty_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    case_type: Mapped[str | None] = mapped_column(String(80), nullable=True, default="contract_dispute")
+    contract_type: Mapped[str | None] = mapped_column(Text, nullable=True)
+    dispute_amount: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(40), default="draft")
     objective: Mapped[str | None] = mapped_column(Text, nullable=True)
+    jurisdiction: Mapped[str | None] = mapped_column(Text, nullable=True)
+    intake_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     workspace_id: Mapped[str] = mapped_column(
         String(64),
         default="workspace_local_001",

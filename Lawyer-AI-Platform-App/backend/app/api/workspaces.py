@@ -106,9 +106,15 @@ def create_workspace_case(
         case = case_service.create_case(
             case_id=case_payload.case_id,
             title=case_payload.title,
+            client_name=case_payload.client_name,
+            counterparty_name=case_payload.counterparty_name,
             case_type=case_payload.case_type,
+            contract_type=case_payload.contract_type,
+            dispute_amount=case_payload.dispute_amount,
             status=case_payload.status,
             objective=case_payload.objective,
+            jurisdiction=case_payload.jurisdiction,
+            intake_notes=case_payload.intake_notes,
             workspace_id=workspace.workspace_id,
             owner_user_id=context.user.user_id
         )

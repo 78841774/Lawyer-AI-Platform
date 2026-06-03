@@ -42,9 +42,15 @@ export type Workspace = {
 export type Case = {
   case_id: string;
   title: string;
-  case_type: string;
+  client_name?: string | null;
+  counterparty_name?: string | null;
+  case_type?: string | null;
+  contract_type?: string | null;
+  dispute_amount?: string | null;
   status: string;
-  objective: string | null;
+  objective?: string | null;
+  jurisdiction?: string | null;
+  intake_notes?: string | null;
   workspace_id: string;
   owner_user_id: string;
   created_at: string;

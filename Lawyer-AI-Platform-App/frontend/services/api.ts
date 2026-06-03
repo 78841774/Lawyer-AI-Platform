@@ -68,6 +68,18 @@ export type CaseDetail = {
   reports: Report[];
 };
 
+export type CaseCreatePayload = {
+  title: string;
+  client_name?: string | null;
+  counterparty_name?: string | null;
+  case_type?: string | null;
+  contract_type?: string | null;
+  dispute_amount?: string | null;
+  objective?: string | null;
+  jurisdiction?: string | null;
+  intake_notes?: string | null;
+};
+
 export type ExtractFactsResponse = {
   case_id: string;
   facts: Fact[];
@@ -242,7 +254,8 @@ export const caseApi = {
       throw error;
     }
   },
-  create: (title: string) => postJson<Case>("/cases", { title }),
+  create: (payload: string | CaseCreatePayload) =>
+    postJson<Case>("/cases", typeof payload === "string" ? { title: payload } : payload),
   get: (caseId: string) => request<Case>(`/cases/${caseId}`)
 };
 

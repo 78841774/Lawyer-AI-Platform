@@ -18,19 +18,31 @@ router = APIRouter(prefix="/cases", tags=["cases"])
 class CaseCreate(BaseModel):
     case_id: str | None = None
     title: str = "MVP Demo Case"
-    case_type: str = "contract_dispute"
+    client_name: str | None = None
+    counterparty_name: str | None = None
+    case_type: str | None = "contract_dispute"
+    contract_type: str | None = None
+    dispute_amount: str | None = None
     status: str = "draft"
     parties: list[dict[str, Any]] = Field(default_factory=list)
     objective: str | None = None
+    jurisdiction: str | None = None
+    intake_notes: str | None = None
 
 
 def serialize_case(case: Case) -> dict[str, Any]:
     return {
         "case_id": case.case_id,
         "title": case.title,
+        "client_name": case.client_name,
+        "counterparty_name": case.counterparty_name,
         "case_type": case.case_type,
+        "contract_type": case.contract_type,
+        "dispute_amount": case.dispute_amount,
         "status": case.status,
         "objective": case.objective,
+        "jurisdiction": case.jurisdiction,
+        "intake_notes": case.intake_notes,
         "workspace_id": case.workspace_id,
         "owner_user_id": case.owner_user_id,
         "created_at": case.created_at,
@@ -72,9 +84,15 @@ def create_case(
         case = service.create_case(
             case_id=case_payload.case_id,
             title=case_payload.title,
+            client_name=case_payload.client_name,
+            counterparty_name=case_payload.counterparty_name,
             case_type=case_payload.case_type,
+            contract_type=case_payload.contract_type,
+            dispute_amount=case_payload.dispute_amount,
             status=case_payload.status,
             objective=case_payload.objective,
+            jurisdiction=case_payload.jurisdiction,
+            intake_notes=case_payload.intake_notes,
             workspace_id=workspace.workspace_id,
             owner_user_id=context.user.user_id
         )

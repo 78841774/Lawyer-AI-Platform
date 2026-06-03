@@ -16,6 +16,8 @@ v3.3-C adds Runtime Trace UI surfaces for case detail, report detail, and runtim
 
 v3.3-D improves Report / Skill visibility across reports, skills, experience packages, and the skill registry without changing the Skill Training main chain.
 
+v3.4-A adds a Real Case Intake foundation for richer case creation fields while keeping the existing `POST /cases` API compatible with title-only creation.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -132,7 +134,18 @@ v3.0 also adds case ownership fields:
 * `cases.workspace_id`
 * `cases.owner_user_id`
 
-For SQLite local development, backend startup checks for missing case ownership columns and adds them with `ALTER TABLE` when needed. Existing local cases are backfilled to `workspace_local_001` and `user_local_001`.
+v3.4-A adds nullable case intake fields:
+
+* `cases.client_name`
+* `cases.counterparty_name`
+* `cases.contract_type`
+* `cases.dispute_amount`
+* `cases.jurisdiction`
+* `cases.intake_notes`
+
+Existing fields `cases.case_type` and `cases.objective` are reused for the intake form.
+
+For SQLite local development, backend startup checks for missing case ownership and intake columns and adds them with `ALTER TABLE` when needed. Existing local cases are backfilled to `workspace_local_001` and `user_local_001`.
 
 Production environments should use Alembic migrations instead of startup schema patching.
 
@@ -230,6 +243,19 @@ v3.3-D makes existing report and skill metadata visible in the frontend:
 * Skill Registry page displays `GET /skill-registry` results and provides publish/deprecate actions backed by existing endpoints.
 
 This phase does not modify Skill Training, add `/skill-candidates/*`, or change backend persistence.
+
+## Real Case Intake Foundation
+
+v3.4-A makes case creation closer to a real legal intake workflow while staying intentionally small:
+
+* Create Case page collects `title`, `client_name`, `counterparty_name`, `case_type`, `contract_type`, `dispute_amount`, `jurisdiction`, `objective`, and `intake_notes`.
+* `title` remains the only required frontend field.
+* `POST /cases` remains the creation endpoint and still supports title-only requests.
+* `GET /cases` and `GET /cases/{case_id}` return the new nullable intake fields.
+* Cases list displays client, counterparty, case type, contract type, and dispute amount.
+* Case Detail displays a dedicated `Intake 信息` card.
+
+This phase does not add OCR, PDF parsing enhancements, formal legal review, team approval, Skill Training changes, production deployment, or `/skill-candidates/*` APIs.
 
 Navigation groups are reserved for:
 
