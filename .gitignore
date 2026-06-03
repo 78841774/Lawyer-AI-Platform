@@ -160,3 +160,12 @@ __pycache__/
 # Python virtualenv
 .venv/
 venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtualenv
+.venv/
+venv/
