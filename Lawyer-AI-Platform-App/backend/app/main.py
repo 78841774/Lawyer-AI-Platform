@@ -8,6 +8,7 @@ from app.api.experience_packages import router as experience_packages_router
 from app.api.facts import router as facts_router
 from app.api.health import router as health_router
 from app.api.legal_analysis import router as legal_analysis_router
+from app.api.llm import router as llm_router
 from app.api.materials import router as materials_router
 from app.api.reports import router as reports_router
 from app.api.skill_registry import router as skill_registry_router
@@ -52,3 +53,4 @@ app.include_router(skills_router)
 app.include_router(experience_packages_router)
 app.include_router(skill_registry_router)
 app.include_router(workspace_skills_router)
+app.include_router(llm_router)

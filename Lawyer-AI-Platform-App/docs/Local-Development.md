@@ -31,6 +31,44 @@ Expected response:
 {"status":"ok"}
 ```
 
+## LLM Adapter
+
+v2.7-A adds a unified LLM Adapter for future AI-backed Fact, Legal Analysis, Report, and Skill Training runtimes.
+
+Local development uses the mock provider by default:
+
+```bash
+LLM_PROVIDER=mock
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_API_KEY=
+```
+
+Check the active adapter:
+
+```bash
+curl http://127.0.0.1:8001/llm/status
+```
+
+Expected mock response:
+
+```json
+{
+  "provider": "mock",
+  "model": "mock-legal-runtime",
+  "configured": true
+}
+```
+
+Test text generation:
+
+```bash
+curl -X POST http://127.0.0.1:8001/llm/test \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Summarize this legal fact: A borrower failed to repay a loan."}'
+```
+
+The mock adapter does not call any external API. If `LLM_PROVIDER=openai` is used without an API key, the adapter returns `OPENAI_API_KEY not configured` and the backend still starts normally.
+
 ## Case Service
 
 Create a case:
