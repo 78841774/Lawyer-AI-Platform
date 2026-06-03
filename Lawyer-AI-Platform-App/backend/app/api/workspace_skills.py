@@ -10,6 +10,7 @@ from app.models.skill import Skill
 from app.repositories.case_repository import CaseRepository
 from app.repositories.skill_repository import SkillRepository
 from app.repositories.workspace_skill_repository import WorkspaceSkillRepository
+from app.services.skill_runtime_service import SkillRuntimeService
 from app.services.workspace_skill_service import WorkspaceSkillService
 
 router = APIRouter(tags=["workspace-skills"])
@@ -20,6 +21,13 @@ def get_workspace_skill_service(db: Session) -> WorkspaceSkillService:
         workspace_skill_repository=WorkspaceSkillRepository(db),
         case_repository=CaseRepository(db),
         skill_repository=SkillRepository(db)
+    )
+
+
+def get_skill_runtime_service(db: Session) -> SkillRuntimeService:
+    return SkillRuntimeService(
+        skill_repository=SkillRepository(db),
+        workspace_skill_repository=WorkspaceSkillRepository(db)
     )
 
 
@@ -59,6 +67,24 @@ def list_workspace_skills(
             for skill, package in service.list_workspace_skills()
         ]
     }
+
+
+@router.get("/workspace/skills/{skill_id}/runtime")
+def get_workspace_skill_runtime(
+    skill_id: str,
+    db: Session = Depends(get_db)
+) -> dict[str, object]:
+    service = get_skill_runtime_service(db)
+    try:
+        return service.get_runtime_summary(skill_id)
+    except ValueError as error:
+        if str(error) == "skill not found":
+            raise HTTPException(status_code=404, detail=str(error)) from error
+        if str(error) == "skill not published":
+            raise HTTPException(status_code=400, detail=str(error)) from error
+        if str(error).startswith("package"):
+            raise HTTPException(status_code=500, detail=str(error)) from error
+        raise HTTPException(status_code=500, detail="skill runtime load failed") from error
 
 
 @router.get("/workspace/skills/{skill_id}")
@@ -112,4 +138,3 @@ def list_case_skills(
         "case_id": case_id,
         "skills": skills
     }
-
