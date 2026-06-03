@@ -2,7 +2,7 @@
 
 v2.9 adds the foundation needed to move from local MVP development toward a real deployment.
 
-v3.0 adds an Internal Alpha identity and workspace foundation for local demos. This is not production authentication.
+v3.0 adds an Internal Alpha identity and workspace foundation for local demos. v3.1 adds Dev Token / API Key current-user resolution. This is not production authentication.
 
 ## Local Mode
 
@@ -25,6 +25,8 @@ APP_ENV=local DATABASE_URL=sqlite:///./local.db LLM_PROVIDER=mock python -m uvic
 When `APP_ENV=local`, the backend runs SQLAlchemy `create_all` on startup so the SQLite database remains easy to use for demos and development.
 
 Local mode also seeds `Local Demo User` and `Local Demo Workspace` for the internal alpha.
+
+Local mode also seeds `Local Dev Token`. Plaintext token values are not stored in the database; only SHA-256 hashes are stored.
 
 ## Docker PostgreSQL Mode
 
@@ -64,6 +66,8 @@ SQLite is intended for local development. PostgreSQL is intended for production-
 
 The v3.0 SQLite compatibility path can add `cases.workspace_id` and `cases.owner_user_id` during local startup only. Production deployments should use Alembic migrations for the new `users`, `workspaces`, `workspace_members`, and case ownership fields.
 
+v3.1 adds `auth_tokens`. Production deployments should create this table with Alembic migrations, not local startup seeding.
+
 ## Alembic Plan
 
 v2.9 adds Alembic configuration and an empty versions directory. Alembic reads `DATABASE_URL` from the backend settings.
@@ -86,9 +90,12 @@ Do not commit `.env` or real API keys. Use environment variables or a deployment
 DEEPSEEK_API_KEY
 OPENAI_API_KEY
 POSTGRES_PASSWORD
+LOCAL_DEV_TOKEN
 ```
 
 `.env.example` contains placeholders only.
+
+`LOCAL_DEV_TOKEN` is for local development. In non-local environments, protected endpoints require a token; if the database does not contain a matching active token hash, requests return `401`.
 
 ## LLM Provider Configuration
 
@@ -120,11 +127,14 @@ If `LLM_PROVIDER=deepseek` is set without `DEEPSEEK_API_KEY`, the backend still 
 * Mock and DeepSeek LLM provider configuration.
 * Internal alpha Local Demo Identity.
 * Minimum workspace ownership fields for cases.
+* Dev Token / API Key auth foundation.
+* Current-user dependency for users, workspaces, and core case APIs.
 
 ## Not Ready Yet
 
 * Real user login and authorization.
 * JWT/session authentication.
+* OAuth.
 * Complex RBAC and workspace isolation enforcement.
 * Production secret manager integration.
 * Generated initial Alembic migration.

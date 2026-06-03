@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.models.auth_token import AuthToken
 from app.models.user import User
 from app.models.workspace import Workspace, WorkspaceMember
 
@@ -13,6 +14,36 @@ class IdentityRepository:
         return self.db.execute(
             select(User).where(User.user_id == user_id)
         ).scalar_one_or_none()
+
+    def get_auth_token_by_id(self, token_id: str) -> AuthToken | None:
+        return self.db.execute(
+            select(AuthToken).where(AuthToken.token_id == token_id)
+        ).scalar_one_or_none()
+
+    def get_auth_token_by_hash(self, token_hash: str) -> AuthToken | None:
+        return self.db.execute(
+            select(AuthToken).where(AuthToken.token_hash == token_hash)
+        ).scalar_one_or_none()
+
+    def create_auth_token(
+        self,
+        *,
+        token_id: str,
+        user_id: str,
+        token_hash: str,
+        token_name: str,
+        status: str
+    ) -> AuthToken:
+        auth_token = AuthToken(
+            token_id=token_id,
+            user_id=user_id,
+            token_hash=token_hash,
+            token_name=token_name,
+            status=status
+        )
+        self.db.add(auth_token)
+        self.db.flush()
+        return auth_token
 
     def create_user(
         self,
@@ -99,3 +130,9 @@ class IdentityRepository:
                 .order_by(Workspace.created_at.asc(), Workspace.id.asc())
             ).scalars()
         )
+
+    def list_active_workspace_ids_for_user(self, user_id: str) -> list[str]:
+        return [
+            workspace.workspace_id
+            for workspace in self.list_active_workspaces_for_user(user_id)
+        ]

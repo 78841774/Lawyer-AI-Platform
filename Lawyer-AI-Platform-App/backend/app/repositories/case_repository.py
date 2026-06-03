@@ -60,5 +60,16 @@ class CaseRepository:
             ).scalars()
         )
 
+    def list_by_workspace_ids(self, workspace_ids: list[str]) -> list[Case]:
+        if not workspace_ids:
+            return []
+        return list(
+            self.db.execute(
+                select(Case)
+                .where(Case.workspace_id.in_(workspace_ids))
+                .order_by(Case.created_at.asc(), Case.id.asc())
+            ).scalars()
+        )
+
     def count_all(self) -> int:
         return self.db.query(Case).count()

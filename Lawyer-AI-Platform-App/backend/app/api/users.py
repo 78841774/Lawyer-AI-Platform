@@ -1,12 +1,9 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends
 
-from app.core.database import get_db
+from app.core.auth import AuthContext, get_auth_context
 from app.models.user import User
-from app.repositories.identity_repository import IdentityRepository
-from app.services.identity_service import IdentityService
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -24,11 +21,5 @@ def serialize_user(user: User) -> dict[str, Any]:
 
 
 @router.get("/me")
-def get_me(db: Session = Depends(get_db)) -> dict[str, Any]:
-    service = IdentityService(IdentityRepository(db))
-    try:
-        return serialize_user(service.get_current_user())
-    except ValueError as error:
-        raise HTTPException(status_code=404, detail=str(error)) from error
-    except PermissionError as error:
-        raise HTTPException(status_code=403, detail=str(error)) from error
+def get_me(context: AuthContext = Depends(get_auth_context)) -> dict[str, Any]:
+    return serialize_user(context.user)

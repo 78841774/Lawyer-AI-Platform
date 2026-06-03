@@ -39,3 +39,6 @@ class CaseService:
 
     def list_cases_for_workspace(self, workspace_id: str) -> list[Case]:
         return self.repository.list_by_workspace_id(workspace_id)
+
+    def list_cases_for_workspaces(self, workspace_ids: list[str]) -> list[Case]:
+        return self.repository.list_by_workspace_ids(workspace_ids)

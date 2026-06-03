@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.api.cases import CaseCreate, serialize_case
+from app.core.auth import AuthContext, get_auth_context
 from app.core.database import get_db
 from app.models.workspace import Workspace
 from app.repositories.case_repository import CaseRepository
@@ -40,12 +41,15 @@ def raise_identity_error(error: Exception) -> None:
 
 
 @router.get("")
-def list_workspaces(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+def list_workspaces(
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db)
+) -> list[dict[str, Any]]:
     service = get_identity_service(db)
     try:
         return [
             serialize_workspace(workspace)
-            for workspace in service.list_current_user_workspaces()
+            for workspace in service.list_user_workspaces(context.user)
         ]
     except (ValueError, PermissionError) as error:
         raise_identity_error(error)
@@ -54,11 +58,12 @@ def list_workspaces(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
 @router.get("/{workspace_id}")
 def get_workspace(
     workspace_id: str,
+    context: AuthContext = Depends(get_auth_context),
     db: Session = Depends(get_db)
 ) -> dict[str, Any]:
     service = get_identity_service(db)
     try:
-        return serialize_workspace(service.get_current_user_workspace(workspace_id))
+        return serialize_workspace(service.get_user_workspace(context.user, workspace_id))
     except (LookupError, PermissionError, ValueError) as error:
         raise_identity_error(error)
 
@@ -66,11 +71,12 @@ def get_workspace(
 @router.get("/{workspace_id}/cases")
 def list_workspace_cases(
     workspace_id: str,
+    context: AuthContext = Depends(get_auth_context),
     db: Session = Depends(get_db)
 ) -> list[dict[str, Any]]:
     identity_service = get_identity_service(db)
     try:
-        identity_service.get_current_user_workspace(workspace_id)
+        identity_service.get_user_workspace(context.user, workspace_id)
     except (LookupError, PermissionError, ValueError) as error:
         raise_identity_error(error)
 
@@ -85,12 +91,12 @@ def list_workspace_cases(
 def create_workspace_case(
     workspace_id: str,
     payload: CaseCreate | None = None,
+    context: AuthContext = Depends(get_auth_context),
     db: Session = Depends(get_db)
 ) -> dict[str, Any]:
     identity_service = get_identity_service(db)
     try:
-        user = identity_service.get_current_user()
-        workspace = identity_service.get_current_user_workspace(workspace_id)
+        workspace = identity_service.get_user_workspace(context.user, workspace_id)
     except (LookupError, PermissionError, ValueError) as error:
         raise_identity_error(error)
 
@@ -104,7 +110,7 @@ def create_workspace_case(
             status=case_payload.status,
             objective=case_payload.objective,
             workspace_id=workspace.workspace_id,
-            owner_user_id=user.user_id
+            owner_user_id=context.user.user_id
         )
     except ValueError as error:
         raise HTTPException(status_code=409, detail=str(error)) from error

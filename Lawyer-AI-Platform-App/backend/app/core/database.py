@@ -31,6 +31,7 @@ def create_db_and_tables() -> None:
 
 def import_models() -> None:
     from app.models import (  # noqa: F401
+        auth_token,
         case,
         case_skill_binding,
         experience_package,

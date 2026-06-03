@@ -31,7 +31,7 @@ When `APP_ENV=local`, SQLAlchemy creates missing local tables on startup. In pro
 
 ## Local Demo Identity
 
-v3.0 uses Local Demo Identity for internal alpha development. There is no real login, no password flow, and no JWT.
+v3.0 uses Local Demo Identity for internal alpha development. v3.1 adds Dev Token / API Key identity on top of that local user. There is no real login, no password flow, no OAuth, and no JWT.
 
 When `APP_ENV=local`, backend startup ensures:
 
@@ -39,9 +39,20 @@ When `APP_ENV=local`, backend startup ensures:
 user_local_001 / local@example.com / Local Demo User / admin / active
 workspace_local_001 / Local Demo Workspace / owner user_local_001 / active
 workspace_local_001 + user_local_001 / admin / active
+token_local_001 / user_local_001 / Local Dev Token / active
 ```
 
 Local SQLite startup also checks `cases` for missing `workspace_id` and `owner_user_id` columns. If they are missing, the backend adds them and backfills existing cases to the local demo workspace and user. Production environments should use Alembic migrations for these schema changes.
+
+The local dev token plaintext is configured with:
+
+```bash
+LOCAL_DEV_TOKEN=dev-local-token
+```
+
+If unset, local mode uses `dev-local-token`. The database stores only the SHA-256 token hash.
+
+Local mode allows no-token fallback to `user_local_001`. If a token is provided, it must be valid; wrong tokens return `401`.
 
 ## Health Check
 
@@ -58,10 +69,25 @@ Expected response:
 Internal alpha identity checks:
 
 ```bash
+curl http://127.0.0.1:8001/auth/status
+curl http://127.0.0.1:8001/auth/dev-token
 curl http://127.0.0.1:8001/users/me
 curl http://127.0.0.1:8001/workspaces
 curl http://127.0.0.1:8001/workspaces/workspace_local_001
 curl http://127.0.0.1:8001/workspaces/workspace_local_001/cases
+```
+
+Token-authenticated checks:
+
+```bash
+curl http://127.0.0.1:8001/auth/status \
+  -H "Authorization: Bearer dev-local-token"
+
+curl http://127.0.0.1:8001/users/me \
+  -H "Authorization: Bearer dev-local-token"
+
+curl http://127.0.0.1:8001/workspaces \
+  -H "X-Dev-Token: dev-local-token"
 ```
 
 ## Database And Alembic
@@ -172,7 +198,7 @@ curl -X POST http://127.0.0.1:8001/cases \
   -d '{"title":"材料测试案件"}'
 ```
 
-In v3.0, the response includes:
+In v3.1, `POST /cases` uses the current user's first active workspace. The response includes:
 
 ```json
 {

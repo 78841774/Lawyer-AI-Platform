@@ -1,6 +1,8 @@
-# Internal Alpha v3.0
+# Internal Alpha
 
-v3.0 establishes the minimum identity and workspace foundation required for an internal alpha.
+v3.0 established the minimum identity and workspace foundation required for an internal alpha.
+
+v3.1 adds a Dev Token / API Key authentication foundation. It is still not a formal login system.
 
 ## Scope
 
@@ -11,7 +13,10 @@ This stage adds local identity and workspace ownership only. It does not add:
 * Payment.
 * Complex RBAC.
 
-The current identity mode is **Local Demo Identity**.
+The current identity modes are:
+
+* `local_fallback`
+* `dev_token`
 
 ## Local Demo User
 
@@ -42,6 +47,23 @@ When `APP_ENV=local`, backend startup ensures this workspace exists:
 
 The local user is also inserted into `workspace_members` as an active admin member.
 
+## Local Dev Token
+
+When `APP_ENV=local`, backend startup ensures this dev token record exists:
+
+```json
+{
+  "token_id": "token_local_001",
+  "user_id": "user_local_001",
+  "token_name": "Local Dev Token",
+  "status": "active"
+}
+```
+
+The plaintext token is read from `LOCAL_DEV_TOKEN`; if unset, local mode uses `dev-local-token`.
+
+The database stores only the SHA-256 token hash. It does not store the plaintext token.
+
 ## Tables
 
 v3.0 adds:
@@ -49,6 +71,10 @@ v3.0 adds:
 * `users`
 * `workspaces`
 * `workspace_members`
+
+v3.1 adds:
+
+* `auth_tokens`
 
 v3.0 also adds case ownership fields:
 
@@ -70,9 +96,11 @@ POST /workspaces/{workspace_id}/cases
 GET /cases
 GET /cases/{case_id}
 POST /cases
+GET /auth/status
+GET /auth/dev-token
 ```
 
-`POST /cases` keeps the old simple create flow and automatically writes:
+In v3.1, `POST /cases` keeps the simple create flow and uses the current user's first active workspace.
 
 ```json
 {
@@ -90,7 +118,9 @@ The internal alpha only checks:
 * Current user must be active.
 * Workspace must exist and be active.
 * Case creation must target an active workspace.
+* Users can access only workspaces where they are active members.
+* Non-local environments require a token for protected endpoints.
 
 ## Next Step
 
-v3.1 should replace Local Demo Identity with a real authentication system and formal authorization boundaries.
+v3.2 can connect JWT or OAuth and keep the current-user dependency boundary introduced in v3.1.

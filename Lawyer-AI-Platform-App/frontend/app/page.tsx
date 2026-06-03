@@ -1,11 +1,11 @@
 import { AppShell } from "@/components/AppShell";
 import { StatCard } from "@/components/StatCard";
-import { getCurrentUser, getDashboardStats, getWorkspaces } from "@/services/api";
+import { getAuthStatus, getCurrentUser, getDashboardStats, getWorkspaces } from "@/services/api";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const { stats, user, workspace, error } = await loadDashboard();
+  const { stats, user, workspace, authStatus, error } = await loadDashboard();
 
   return (
     <AppShell>
@@ -19,11 +19,16 @@ export default async function DashboardPage() {
 
         {error ? <StatusMessage message={error} /> : null}
 
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="grid gap-4 md:grid-cols-3">
+          <IdentityCard
+            label="Auth Status"
+            title={authStatus?.authenticated ? "Authenticated" : "-"}
+            meta={authStatus ? `${authStatus.user_id} · ${authStatus.auth_mode}` : "-"}
+          />
           <IdentityCard
             label="Current User"
             title={user?.display_name ?? "-"}
-            meta={user ? `${user.email} · ${user.role} · ${user.status}` : "-"}
+            meta={user && authStatus ? `${user.email} · ${authStatus.auth_mode}` : "-"}
           />
           <IdentityCard
             label="Current Workspace"
@@ -62,12 +67,14 @@ async function loadDashboard() {
       getCurrentUser(),
       getWorkspaces()
     ]);
-    return { stats, user, workspace: workspaces[0] ?? null, error: null };
+    const authStatus = await getAuthStatus();
+    return { stats, user, workspace: workspaces[0] ?? null, authStatus, error: null };
   } catch {
     return {
       stats: null,
       user: null,
       workspace: null,
+      authStatus: null,
       error: "Backend API is unavailable. Start the backend on port 8001."
     };
   }

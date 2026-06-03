@@ -39,6 +39,12 @@ export type WorkspaceRecord = {
   updated_at: string;
 };
 
+export type AuthStatus = {
+  authenticated: boolean;
+  user_id: string;
+  auth_mode: "dev_token" | "local_fallback";
+};
+
 export type MaterialRecord = {
   material_id: string;
   case_id: string;
@@ -222,6 +228,10 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
 export async function getCurrentUser(): Promise<UserRecord> {
   return request<UserRecord>("/users/me");
+}
+
+export async function getAuthStatus(): Promise<AuthStatus> {
+  return request<AuthStatus>("/auth/status");
 }
 
 export async function getWorkspaces(): Promise<WorkspaceRecord[]> {

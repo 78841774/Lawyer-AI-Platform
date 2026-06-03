@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.auth import router as auth_router
 from app.api.cases import router as cases_router
 from app.api.experience_packages import router as experience_packages_router
 from app.api.facts import router as facts_router
@@ -45,6 +46,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 app.include_router(health_router)
+app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(workspaces_router)
 app.include_router(workspace_router)
