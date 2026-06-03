@@ -200,3 +200,48 @@ To confirm Legal Analysis Runtime persistence, restart the backend and run:
 ```bash
 curl http://127.0.0.1:8001/cases/case_001/analysis
 ```
+
+## Report Runtime
+
+Report Runtime v1.1 reads saved facts and the latest legal analysis, generates a preliminary Markdown report, saves a report row in SQLite, and writes the Markdown file under `storage/reports/`.
+
+Generate a report for a case:
+
+```bash
+curl -X POST http://127.0.0.1:8001/cases/case_001/reports/generate
+```
+
+Expected response shape:
+
+```json
+{
+  "report_id": "report_001",
+  "case_id": "case_001",
+  "report_type": "preliminary_legal_report",
+  "title": "Preliminary Legal Report - 数据库测试案件",
+  "status": "generated",
+  "version": 1,
+  "storage_path": "../storage/reports/case_001/report_001.md",
+  "source_refs": {
+    "fact_ids": ["fact_001"],
+    "analysis_id": "analysis_001"
+  },
+  "created_at": "2026-06-03T08:00:00"
+}
+```
+
+The generated Markdown includes:
+
+```text
+Executive Summary
+Facts Summary
+Legal Issues
+Legal Analysis
+Preliminary Conclusion
+```
+
+If a case has no legal analysis yet, run Legal Analysis Runtime first:
+
+```bash
+curl -X POST http://127.0.0.1:8001/cases/case_001/analysis/run
+```
