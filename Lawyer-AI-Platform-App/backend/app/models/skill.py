@@ -25,6 +25,8 @@ class Skill(Base):
     prompts: Mapped[str] = mapped_column(Text, default="{}")
     templates: Mapped[str] = mapped_column(Text, default="{}")
     evaluation_score: Mapped[float] = mapped_column(Float, default=0.0)
+    evaluation_details: Mapped[str] = mapped_column(Text, default="{}")
+    validation_status: Mapped[str] = mapped_column(String(40), default="candidate")
     package_path: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-
+    validated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

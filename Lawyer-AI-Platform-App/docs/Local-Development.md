@@ -432,3 +432,61 @@ curl http://127.0.0.1:8001/cases/case_001/facts
 curl http://127.0.0.1:8001/cases/case_001/analysis
 curl http://127.0.0.1:8001/cases/case_001/reports
 ```
+
+## Skill Evaluation Runtime
+
+Skill Evaluation Runtime v2.2 evaluates a Skill Candidate and decides whether it can enter `validated` status.
+
+Evaluate `skill_001`:
+
+```bash
+curl -X POST http://127.0.0.1:8001/skills/skill_001/evaluate
+```
+
+Expected response shape:
+
+```json
+{
+  "skill_id": "skill_001",
+  "evaluation_score": 0.82,
+  "validation_status": "validated",
+  "metrics": {
+    "fact_pattern_quality": 0.8,
+    "reasoning_quality": 0.85,
+    "prompt_quality": 0.8,
+    "template_quality": 0.75,
+    "legal_relevance": 0.85,
+    "report_reusability": 0.9
+  }
+}
+```
+
+Read evaluation details:
+
+```bash
+curl http://127.0.0.1:8001/skills/skill_001/evaluation
+```
+
+Read the evaluated skill:
+
+```bash
+curl http://127.0.0.1:8001/skills/skill_001
+```
+
+Confirm the local Skill Package was updated:
+
+```bash
+cat Lawyer-AI-Platform-App/skills/skill_001/skill.json
+```
+
+The updated `skill.json` includes:
+
+```text
+evaluation_score
+validation_status
+evaluation_details
+```
+
+SQLite compatibility note:
+
+v2.2 adds `evaluation_details`, `validation_status`, and `validated_at` to the `skills` table. Local SQLite development uses a startup compatibility check to add missing columns. Production should use Alembic migrations for this schema change.

@@ -92,6 +92,14 @@ Validated 是已验证状态。
 - evaluation_report.json 已生成
 - evaluation_summary.md 已生成
 
+v2.2 Runtime 初版中，Candidate 满足以下条件即可进入运行时 `validated` 状态：
+
+- `POST /skills/{skill_id}/evaluate` 执行完成
+- evaluation_score >= 0.75
+- validation_status = validated
+- evaluation_details 已写入 skills 表
+- 本地 skill.json 已同步写入 evaluation_details
+
 允许操作：
 
 - 构建 Experience Package
@@ -203,3 +211,25 @@ Deprecated 是废弃状态。
 - 升级必须重新评估
 - 状态变化必须可追溯
 
+## 九、v2.2 Runtime 状态
+
+v2.2 在 `status` 之外增加 `validation_status`。
+
+两者分工：
+
+- status：描述 Skill Candidate 的构建阶段，例如 candidate。
+- validation_status：描述评估结果，例如 validated 或 needs_improvement。
+
+示例：
+
+```json
+{
+  "status": "candidate",
+  "validation_status": "validated",
+  "evaluation_score": 0.82
+}
+```
+
+这表示该技能仍是候选技能包，但已经通过 v2.2 运行时评估。
+
+正式发布仍需后续 Published 流程。

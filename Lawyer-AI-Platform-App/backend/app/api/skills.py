@@ -39,8 +39,11 @@ def serialize_skill(skill: Skill) -> dict[str, Any]:
         "prompts": json.loads(skill.prompts),
         "templates": json.loads(skill.templates),
         "evaluation_score": skill.evaluation_score,
+        "evaluation_details": json.loads(skill.evaluation_details or "{}"),
+        "validation_status": skill.validation_status,
         "package_path": skill.package_path,
-        "created_at": skill.created_at
+        "created_at": skill.created_at,
+        "validated_at": skill.validated_at
     }
 
 
@@ -53,7 +56,18 @@ def serialize_skill_summary(skill: Skill) -> dict[str, Any]:
         "version": skill.version,
         "status": skill.status,
         "evaluation_score": skill.evaluation_score,
+        "validation_status": skill.validation_status,
         "package_path": skill.package_path
+    }
+
+
+def serialize_evaluation(skill: Skill) -> dict[str, Any]:
+    details = json.loads(skill.evaluation_details or "{}")
+    return {
+        "skill_id": skill.skill_id,
+        "evaluation_score": skill.evaluation_score,
+        "validation_status": skill.validation_status,
+        "metrics": details.get("metrics", {})
     }
 
 
@@ -88,6 +102,39 @@ def list_skills(db: Session = Depends(get_db)) -> dict[str, Any]:
     }
 
 
+@router.post("/skills/{skill_id}/evaluate")
+def evaluate_skill(
+    skill_id: str,
+    db: Session = Depends(get_db)
+) -> dict[str, Any]:
+    service = get_skill_service(db)
+    try:
+        skill = service.evaluate_skill(skill_id)
+    except ValueError as error:
+        if str(error) == "skill not found":
+            raise HTTPException(status_code=404, detail=str(error)) from error
+        if str(error) == "skill content insufficient":
+            raise HTTPException(status_code=400, detail=str(error)) from error
+        raise HTTPException(status_code=500, detail="skill evaluation failed") from error
+    except Exception as error:
+        raise HTTPException(status_code=500, detail="skill evaluation failed") from error
+    return serialize_evaluation(skill)
+
+
+@router.get("/skills/{skill_id}/evaluation")
+def get_skill_evaluation(
+    skill_id: str,
+    db: Session = Depends(get_db)
+) -> dict[str, Any]:
+    service = get_skill_service(db)
+    try:
+        return service.get_evaluation_details(skill_id)
+    except ValueError as error:
+        if str(error) == "skill not found":
+            raise HTTPException(status_code=404, detail=str(error)) from error
+        raise HTTPException(status_code=500, detail="skill evaluation query failed") from error
+
+
 @router.get("/skills/{skill_id}")
 def get_skill(
     skill_id: str,
@@ -98,4 +145,3 @@ def get_skill(
     if skill is None:
         raise HTTPException(status_code=404, detail="skill not found")
     return serialize_skill(skill)
-

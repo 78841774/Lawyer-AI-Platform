@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -28,7 +30,9 @@ class SkillRepository:
         prompts: str,
         templates: str,
         evaluation_score: float,
-        package_path: str
+        package_path: str,
+        evaluation_details: str = "{}",
+        validation_status: str = "candidate"
     ) -> Skill:
         skill = Skill(
             skill_id=skill_id,
@@ -42,6 +46,8 @@ class SkillRepository:
             prompts=prompts,
             templates=templates,
             evaluation_score=evaluation_score,
+            evaluation_details=evaluation_details,
+            validation_status=validation_status,
             package_path=package_path
         )
         self.db.add(skill)
@@ -61,6 +67,25 @@ class SkillRepository:
             ).scalars()
         )
 
+    def update_evaluation(
+        self,
+        *,
+        skill: Skill,
+        evaluation_score: float,
+        evaluation_details: str,
+        validation_status: str
+    ) -> Skill:
+        skill.evaluation_score = evaluation_score
+        skill.evaluation_details = evaluation_details
+        skill.validation_status = validation_status
+        if validation_status == "validated":
+            skill.validated_at = datetime.utcnow()
+        else:
+            skill.validated_at = None
+        self.db.add(skill)
+        self.db.commit()
+        self.db.refresh(skill)
+        return skill
+
     def count_all(self) -> int:
         return self.db.query(Skill).count()
-

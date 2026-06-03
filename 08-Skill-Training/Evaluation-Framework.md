@@ -237,3 +237,79 @@ Pass / Return for Optimization
 - 报告是否符合交付标准
 - 是否存在职业责任风险
 
+## 九、v2.2 Skill Evaluation Runtime
+
+v2.2 引入轻量级 Skill Evaluation Runtime。
+
+该 runtime 用于评估 Skill Candidate 草稿是否可以从 `candidate` 进入 `validated` 状态。
+
+当前评估维度：
+
+- fact_pattern_quality
+- reasoning_quality
+- prompt_quality
+- template_quality
+- legal_relevance
+- report_reusability
+
+每项评分范围：
+
+```text
+0.00 - 1.00
+```
+
+总分计算：
+
+```text
+average_score =
+  (
+    fact_pattern_quality +
+    reasoning_quality +
+    prompt_quality +
+    template_quality +
+    legal_relevance +
+    report_reusability
+  ) / 6
+```
+
+状态规则：
+
+```text
+average_score >= 0.75 -> validation_status = validated
+average_score < 0.75  -> validation_status = needs_improvement
+```
+
+运行时接口：
+
+```text
+POST /skills/{skill_id}/evaluate
+GET /skills/{skill_id}/evaluation
+```
+
+评估完成后写入：
+
+- evaluation_score
+- validation_status
+- evaluation_details
+
+并同步更新本地 Skill Package：
+
+```text
+Lawyer-AI-Platform-App/skills/{skill_id}/skill.json
+```
+
+v2.2 评估是规则评估，不替代律师复核。
+
+正式发布前仍必须进入完整 Evaluation Framework 和人工审查。
+
+## 十、数据库迁移说明
+
+v2.2 为 `skills` 表增加：
+
+- evaluation_details
+- validation_status
+- validated_at
+
+本地 SQLite 开发环境使用启动时兼容补列方案。
+
+后续生产环境应引入 Alembic migration 管理表结构升级。
