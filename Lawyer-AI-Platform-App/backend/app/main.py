@@ -13,8 +13,10 @@ from app.api.materials import router as materials_router
 from app.api.reports import router as reports_router
 from app.api.skill_registry import router as skill_registry_router
 from app.api.skills import router as skills_router
+from app.api.users import router as users_router
 from app.api.workspace import router as workspace_router
 from app.api.workspace_skills import router as workspace_skills_router
+from app.api.workspaces import router as workspaces_router
 from app.core.config import settings
 from app.core.database import create_db_and_tables
 
@@ -43,6 +45,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 app.include_router(health_router)
+app.include_router(users_router)
+app.include_router(workspaces_router)
 app.include_router(workspace_router)
 app.include_router(cases_router)
 app.include_router(materials_router)

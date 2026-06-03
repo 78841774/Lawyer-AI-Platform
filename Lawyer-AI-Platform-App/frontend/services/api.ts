@@ -14,6 +14,27 @@ export type CaseRecord = {
   case_type: string;
   status: string;
   objective: string | null;
+  workspace_id: string;
+  owner_user_id: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type UserRecord = {
+  user_id: string;
+  email: string;
+  display_name: string;
+  role: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WorkspaceRecord = {
+  workspace_id: string;
+  name: string;
+  owner_user_id: string;
+  status: string;
   created_at: string;
   updated_at: string;
 };
@@ -197,6 +218,22 @@ export async function getHealth(): Promise<{ status: string }> {
 
 export async function getDashboardStats(): Promise<DashboardStats> {
   return request<DashboardStats>("/dashboard/stats");
+}
+
+export async function getCurrentUser(): Promise<UserRecord> {
+  return request<UserRecord>("/users/me");
+}
+
+export async function getWorkspaces(): Promise<WorkspaceRecord[]> {
+  return request<WorkspaceRecord[]>("/workspaces");
+}
+
+export async function getWorkspace(workspaceId: string): Promise<WorkspaceRecord> {
+  return request<WorkspaceRecord>(`/workspaces/${workspaceId}`);
+}
+
+export async function getWorkspaceCases(workspaceId: string): Promise<CaseRecord[]> {
+  return request<CaseRecord[]>(`/workspaces/${workspaceId}/cases`);
 }
 
 export async function getCases(): Promise<CaseRecord[]> {

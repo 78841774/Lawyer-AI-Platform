@@ -132,9 +132,11 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
 
       {detail ? (
         <>
-          <section className="grid gap-4 md:grid-cols-4">
+          <section className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
             <MetaCard label="Case Type" value={detail.case.case_type} />
             <MetaCard label="Status" value={detail.case.status} />
+            <MetaCard label="Workspace" value={detail.case.workspace_id} />
+            <MetaCard label="Owner" value={detail.case.owner_user_id} />
             <MetaCard label="Created" value={formatDate(detail.case.created_at)} />
             <MetaCard label="Updated" value={formatDate(detail.case.updated_at)} />
           </section>
@@ -316,7 +318,7 @@ function MetaCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md border border-line bg-white p-4">
       <div className="text-xs text-slate-500">{label}</div>
-      <div className="mt-2 text-sm font-semibold text-ink">{value}</div>
+      <div className="mt-2 break-words text-sm font-semibold text-ink">{value}</div>
     </div>
   );
 }

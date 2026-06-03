@@ -2,6 +2,8 @@
 
 v2.9 adds the foundation needed to move from local MVP development toward a real deployment.
 
+v3.0 adds an Internal Alpha identity and workspace foundation for local demos. This is not production authentication.
+
 ## Local Mode
 
 Local mode remains the default:
@@ -21,6 +23,8 @@ APP_ENV=local DATABASE_URL=sqlite:///./local.db LLM_PROVIDER=mock python -m uvic
 ```
 
 When `APP_ENV=local`, the backend runs SQLAlchemy `create_all` on startup so the SQLite database remains easy to use for demos and development.
+
+Local mode also seeds `Local Demo User` and `Local Demo Workspace` for the internal alpha.
 
 ## Docker PostgreSQL Mode
 
@@ -57,6 +61,8 @@ SQLite is intended for local development. PostgreSQL is intended for production-
 `APP_ENV=local` enables local startup conveniences, including automatic table creation.
 
 `APP_ENV=production` disables automatic `create_all`. Production environments should create and evolve schema with Alembic migrations.
+
+The v3.0 SQLite compatibility path can add `cases.workspace_id` and `cases.owner_user_id` during local startup only. Production deployments should use Alembic migrations for the new `users`, `workspaces`, `workspace_members`, and case ownership fields.
 
 ## Alembic Plan
 
@@ -112,10 +118,14 @@ If `LLM_PROVIDER=deepseek` is set without `DEEPSEEK_API_KEY`, the backend still 
 * Docker Compose PostgreSQL service.
 * Alembic foundation.
 * Mock and DeepSeek LLM provider configuration.
+* Internal alpha Local Demo Identity.
+* Minimum workspace ownership fields for cases.
 
 ## Not Ready Yet
 
-* User login and authorization.
+* Real user login and authorization.
+* JWT/session authentication.
+* Complex RBAC and workspace isolation enforcement.
 * Production secret manager integration.
 * Generated initial Alembic migration.
 * Managed cloud deployment.

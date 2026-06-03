@@ -29,6 +29,20 @@ LLM_PROVIDER=mock
 
 When `APP_ENV=local`, SQLAlchemy creates missing local tables on startup. In production-style environments, set `APP_ENV=production` and use Alembic migrations instead of automatic table creation.
 
+## Local Demo Identity
+
+v3.0 uses Local Demo Identity for internal alpha development. There is no real login, no password flow, and no JWT.
+
+When `APP_ENV=local`, backend startup ensures:
+
+```text
+user_local_001 / local@example.com / Local Demo User / admin / active
+workspace_local_001 / Local Demo Workspace / owner user_local_001 / active
+workspace_local_001 + user_local_001 / admin / active
+```
+
+Local SQLite startup also checks `cases` for missing `workspace_id` and `owner_user_id` columns. If they are missing, the backend adds them and backfills existing cases to the local demo workspace and user. Production environments should use Alembic migrations for these schema changes.
+
 ## Health Check
 
 ```bash
@@ -39,6 +53,15 @@ Expected response:
 
 ```json
 {"status":"ok"}
+```
+
+Internal alpha identity checks:
+
+```bash
+curl http://127.0.0.1:8001/users/me
+curl http://127.0.0.1:8001/workspaces
+curl http://127.0.0.1:8001/workspaces/workspace_local_001
+curl http://127.0.0.1:8001/workspaces/workspace_local_001/cases
 ```
 
 ## Database And Alembic
@@ -147,6 +170,15 @@ Create a case:
 curl -X POST http://127.0.0.1:8001/cases \
   -H "Content-Type: application/json" \
   -d '{"title":"材料测试案件"}'
+```
+
+In v3.0, the response includes:
+
+```json
+{
+  "workspace_id": "workspace_local_001",
+  "owner_user_id": "user_local_001"
+}
 ```
 
 Create a database persistence test case:

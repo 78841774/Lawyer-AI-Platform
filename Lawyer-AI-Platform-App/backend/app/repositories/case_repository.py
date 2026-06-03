@@ -21,14 +21,18 @@ class CaseRepository:
         title: str,
         case_type: str,
         status: str,
-        objective: str | None
+        objective: str | None,
+        workspace_id: str,
+        owner_user_id: str
     ) -> Case:
         case = Case(
             case_id=case_id,
             title=title,
             case_type=case_type,
             status=status,
-            objective=objective
+            objective=objective,
+            workspace_id=workspace_id,
+            owner_user_id=owner_user_id
         )
         self.db.add(case)
         self.db.commit()
@@ -44,6 +48,15 @@ class CaseRepository:
         return list(
             self.db.execute(
                 select(Case).order_by(Case.created_at.asc(), Case.id.asc())
+            ).scalars()
+        )
+
+    def list_by_workspace_id(self, workspace_id: str) -> list[Case]:
+        return list(
+            self.db.execute(
+                select(Case)
+                .where(Case.workspace_id == workspace_id)
+                .order_by(Case.created_at.asc(), Case.id.asc())
             ).scalars()
         )
 

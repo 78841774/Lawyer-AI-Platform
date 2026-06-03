@@ -31,11 +31,13 @@ export default async function CaseListPage() {
               <Link
                 key={item.case_id}
                 href={`/cases/${item.case_id}`}
-                className="grid gap-3 border-b border-line px-4 py-3 text-sm last:border-b-0 md:grid-cols-4"
+                className="grid gap-3 border-b border-line px-4 py-3 text-sm last:border-b-0 md:grid-cols-6"
               >
                 <span className="font-medium text-ink">{item.title}</span>
                 <span className="text-slate-600">{item.case_type}</span>
                 <span className="text-slate-600">{item.status}</span>
+                <span className="break-words text-slate-500">{item.workspace_id}</span>
+                <span className="break-words text-slate-500">{item.owner_user_id}</span>
                 <span className="text-slate-500">{formatDate(item.updated_at)}</span>
               </Link>
             ))

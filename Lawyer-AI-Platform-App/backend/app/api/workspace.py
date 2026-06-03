@@ -34,6 +34,8 @@ def serialize_case(case: Case) -> dict[str, Any]:
         "case_type": case.case_type,
         "status": case.status,
         "objective": case.objective,
+        "workspace_id": case.workspace_id,
+        "owner_user_id": case.owner_user_id,
         "created_at": case.created_at,
         "updated_at": case.updated_at
     }

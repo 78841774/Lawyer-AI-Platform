@@ -13,7 +13,9 @@ class CaseService:
         title: str,
         case_type: str,
         status: str,
-        objective: str | None
+        objective: str | None,
+        workspace_id: str,
+        owner_user_id: str
     ) -> Case:
         resolved_case_id = case_id or self.repository.next_case_id()
         if self.repository.get_by_case_id(resolved_case_id) is not None:
@@ -24,8 +26,16 @@ class CaseService:
             title=title,
             case_type=case_type,
             status=status,
-            objective=objective
+            objective=objective,
+            workspace_id=workspace_id,
+            owner_user_id=owner_user_id
         )
 
     def get_case(self, case_id: str) -> Case | None:
         return self.repository.get_by_case_id(case_id)
+
+    def list_cases(self) -> list[Case]:
+        return self.repository.list_all()
+
+    def list_cases_for_workspace(self, workspace_id: str) -> list[Case]:
+        return self.repository.list_by_workspace_id(workspace_id)
