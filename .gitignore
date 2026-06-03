@@ -151,3 +151,12 @@ Lawyer-AI-Platform-App/skills/*
 !Lawyer-AI-Platform-App/skills/.gitkeep
 Lawyer-AI-Platform-App/experience-packages/*
 !Lawyer-AI-Platform-App/experience-packages/.gitkeep
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtualenv
+.venv/
+venv/
