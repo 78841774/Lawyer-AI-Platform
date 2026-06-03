@@ -21,6 +21,15 @@ class MockLLMClient:
         }
 
     def _build_output(self, *, prompt: str, context: dict | None) -> str:
+        if context and context.get("runtime_metadata", {}).get("task") == "fact_extraction":
+            material_content = str(context.get("material_content") or "").strip()
+            first_line = next(
+                (line.strip() for line in material_content.splitlines() if line.strip()),
+                material_content
+            )
+            if first_line:
+                return f"Extracted fact: {first_line[:240]}"
+
         clean_prompt = " ".join(prompt.strip().split())
         if not clean_prompt:
             return "Mock LLM response: no prompt provided."

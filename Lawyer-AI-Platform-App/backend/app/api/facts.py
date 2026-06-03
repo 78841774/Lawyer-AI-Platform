@@ -69,15 +69,17 @@ def extract_facts(
             raise HTTPException(status_code=404, detail=str(error)) from error
         if is_runtime_error(error):
             raise HTTPException(status_code=400, detail=str(error)) from error
+        if str(error) == "llm generation failed":
+            raise HTTPException(status_code=500, detail=str(error)) from error
         raise HTTPException(status_code=500, detail="fact extraction failed") from error
     response = {
         "case_id": case_id,
-        "facts": [serialize_fact(fact) for fact in result.facts]
+        "facts": [serialize_fact(fact) for fact in result.facts],
+        "llm_provider": result.llm_provider,
+        "llm_status": result.llm_status,
+        "skill_used": result.skill_used,
+        "package_used": result.package_used
     }
-    if result.skill_used is not None:
-        response["skill_used"] = result.skill_used
-    if result.package_used is not None:
-        response["package_used"] = result.package_used
     return response
 
 

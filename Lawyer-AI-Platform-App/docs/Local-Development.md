@@ -138,7 +138,9 @@ curl http://127.0.0.1:8001/cases/case_001/materials
 
 ## Fact Runtime
 
-Fact Runtime v0.9 reads uploaded material files, extracts rule-based facts, and stores them in SQLite.
+Fact Runtime v2.7-B reads uploaded material files, builds a fact extraction prompt, calls the configured LLM Adapter, parses the LLM output, and stores extracted facts in SQLite.
+
+Local development uses `LLM_PROVIDER=mock`, so no external API is called.
 
 Extract facts for a case:
 
@@ -157,6 +159,10 @@ Expected response shape:
 ```json
 {
   "case_id": "case_001",
+  "llm_provider": "mock",
+  "llm_status": "success",
+  "skill_used": "skill_002",
+  "package_used": "ep_002",
   "facts": [
     {
       "fact_id": "fact_001",
@@ -172,6 +178,12 @@ Expected response shape:
   ]
 }
 ```
+
+If the case has an applied published skill, Fact Runtime uses the Experience Package `fact` prompt and writes a skill-domain fact type such as `contract_dispute_fact`.
+
+If the case has no applied skill, Fact Runtime uses the default fact extraction prompt and writes `material_statement`.
+
+If the LLM adapter returns an error status, Fact Runtime returns `llm generation failed`.
 
 To confirm Fact Runtime persistence, restart the backend and run:
 
