@@ -33,14 +33,22 @@ Expected response:
 
 ## LLM Adapter
 
-v2.7-A adds a unified LLM Adapter for future AI-backed Fact, Legal Analysis, Report, and Skill Training runtimes.
+v2.8 keeps the unified LLM Adapter and adds DeepSeek Live Mode for real model calls.
 
-Local development uses the mock provider by default:
+Local development uses the mock provider by default. Mock mode does not require a DeepSeek API key and does not call an external API:
 
 ```bash
 LLM_PROVIDER=mock
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_API_KEY=
+DEEPSEEK_API_KEY=
+DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_TIMEOUT_SECONDS=30
+```
+
+Start mock mode:
+
+```bash
+LLM_PROVIDER=mock uvicorn app.main:app --host 127.0.0.1 --port 8001
 ```
 
 Check the active adapter:
@@ -55,7 +63,8 @@ Expected mock response:
 {
   "provider": "mock",
   "model": "mock-legal-runtime",
-  "configured": true
+  "configured": true,
+  "base_url_configured": false
 }
 ```
 
@@ -67,7 +76,39 @@ curl -X POST http://127.0.0.1:8001/llm/test \
   -d '{"prompt":"Summarize this legal fact: A borrower failed to repay a loan."}'
 ```
 
-The mock adapter does not call any external API. If `LLM_PROVIDER=openai` is used without an API key, the adapter returns `OPENAI_API_KEY not configured` and the backend still starts normally.
+The test endpoint also accepts optional context:
+
+```bash
+curl -X POST http://127.0.0.1:8001/llm/test \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Summarize this legal fact: A borrower failed to repay a loan.","context":{"case_id":"case_001"}}'
+```
+
+To use DeepSeek Live Mode, set environment variables in your shell or local `.env` file:
+
+```bash
+LLM_PROVIDER=deepseek
+DEEPSEEK_API_KEY=your_key
+DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_TIMEOUT_SECONDS=30
+```
+
+Do not commit `.env` or any real API key.
+
+Start DeepSeek mode:
+
+```bash
+DEEPSEEK_API_KEY=your_key LLM_PROVIDER=deepseek uvicorn app.main:app --host 127.0.0.1 --port 8001
+```
+
+Check DeepSeek status:
+
+```bash
+curl http://127.0.0.1:8001/llm/status
+```
+
+If `LLM_PROVIDER=deepseek` is used without an API key, the backend still starts normally. `/llm/status` returns `configured: false`, and `/llm/test` returns a structured error with `DEEPSEEK_API_KEY not configured`.
 
 ## Case Service
 

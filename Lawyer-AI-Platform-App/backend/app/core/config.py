@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     llm_provider: str = "mock"
     openai_model: str = "gpt-4o-mini"
     openai_api_key: str = ""
+    deepseek_api_key: str = ""
+    deepseek_model: str = "deepseek-chat"
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_timeout_seconds: int = 30
 
 
 settings = Settings()
