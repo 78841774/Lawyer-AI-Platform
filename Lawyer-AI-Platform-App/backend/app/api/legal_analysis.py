@@ -44,6 +44,20 @@ def serialize_analysis(analysis: LegalAnalysis) -> dict[str, Any]:
     }
 
 
+def is_runtime_error(error: ValueError) -> bool:
+    message = str(error)
+    return (
+        message
+        in {
+            "skill not found",
+            "skill not published",
+            "package not found",
+            "package not published"
+        }
+        or message.startswith("package file")
+    )
+
+
 @router.post("/run")
 def run_analysis(
     case_id: str,
@@ -60,6 +74,8 @@ def run_analysis(
                 status_code=400,
                 detail="facts required: run Fact Runtime before Legal Analysis Runtime"
             ) from error
+        if is_runtime_error(error):
+            raise HTTPException(status_code=400, detail=str(error)) from error
         raise HTTPException(status_code=500, detail="analysis generation failed") from error
     except Exception as error:
         raise HTTPException(status_code=500, detail="analysis generation failed") from error

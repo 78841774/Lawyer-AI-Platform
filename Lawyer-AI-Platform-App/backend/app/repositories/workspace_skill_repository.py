@@ -54,6 +54,13 @@ class WorkspaceSkillRepository:
             return None
         return packages[-1]
 
+    def get_package_by_package_id(self, package_id: str) -> ExperiencePackage | None:
+        return self.db.execute(
+            select(ExperiencePackage).where(
+                ExperiencePackage.package_id == package_id
+            )
+        ).scalar_one_or_none()
+
     def next_binding_id(self) -> str:
         index = self.db.query(CaseSkillBinding).count() + 1
         while self.get_binding_by_id(f"binding_{index:03d}") is not None:
@@ -96,4 +103,3 @@ class WorkspaceSkillRepository:
                 .order_by(CaseSkillBinding.created_at.asc(), CaseSkillBinding.id.asc())
             ).scalars()
         )
-

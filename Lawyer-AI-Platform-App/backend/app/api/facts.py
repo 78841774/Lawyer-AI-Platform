@@ -42,6 +42,20 @@ def serialize_fact(fact: Fact) -> dict[str, Any]:
     }
 
 
+def is_runtime_error(error: ValueError) -> bool:
+    message = str(error)
+    return (
+        message
+        in {
+            "skill not found",
+            "skill not published",
+            "package not found",
+            "package not published"
+        }
+        or message.startswith("package file")
+    )
+
+
 @router.post("/extract")
 def extract_facts(
     case_id: str,
@@ -53,6 +67,8 @@ def extract_facts(
     except ValueError as error:
         if str(error) == "case not found":
             raise HTTPException(status_code=404, detail=str(error)) from error
+        if is_runtime_error(error):
+            raise HTTPException(status_code=400, detail=str(error)) from error
         raise HTTPException(status_code=500, detail="fact extraction failed") from error
     response = {
         "case_id": case_id,

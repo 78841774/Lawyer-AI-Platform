@@ -178,6 +178,11 @@ class ReportService:
     def _format_skill_used(self, runtime_context: dict[str, object] | None) -> list[str]:
         if runtime_context is None:
             return []
+        skill_name = self._runtime_value(runtime_context, "skill_name")
         skill_id = self._runtime_value(runtime_context, "skill_id")
         package_id = self._runtime_value(runtime_context, "package_id")
-        return [f"Skill Used: {skill_id} (Package: {package_id})"]
+        return [
+            f"Skill Used: {skill_name}",
+            f"Skill ID: {skill_id}",
+            f"Package ID: {package_id}"
+        ]

@@ -42,7 +42,10 @@ class LegalAnalysisService:
         if not facts:
             raise ValueError("facts required")
 
-        payload = self._build_rule_based_analysis(facts)
+        payload = self._build_rule_based_analysis(
+            facts=facts,
+            runtime_context=runtime_context
+        )
         analysis = self.legal_analysis_repository.create(
             analysis_id=self.legal_analysis_repository.next_analysis_id(),
             case_id=case_id,
@@ -65,7 +68,12 @@ class LegalAnalysisService:
             raise ValueError("case not found")
         return self.legal_analysis_repository.list_by_case_id(case_id)
 
-    def _build_rule_based_analysis(self, facts: list[Fact]) -> dict[str, object]:
+    def _build_rule_based_analysis(
+        self,
+        *,
+        facts: list[Fact],
+        runtime_context: dict[str, object] | None = None
+    ) -> dict[str, object]:
         extracted_facts = [fact for fact in facts if fact.status == "extracted"]
         skipped_facts = [fact for fact in facts if fact.status != "extracted"]
 
@@ -81,6 +89,14 @@ class LegalAnalysisService:
                 "rule": "基于已抽取事实进行初步法律问题识别"
             }
         ]
+        if runtime_context is not None:
+            rules.append(
+                {
+                    "source": "Experience Package",
+                    "skill_id": self._runtime_value(runtime_context, "skill_id"),
+                    "package_id": self._runtime_value(runtime_context, "package_id")
+                }
+            )
         reasoning = [
             f"系统已发现 {len(facts)} 条案件事实",
             f"其中 {len(extracted_facts)} 条事实可用于进一步法律分析"

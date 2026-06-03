@@ -38,17 +38,26 @@ class SkillRuntimeService:
         if not bindings:
             return None
 
-        for binding in reversed(bindings):
-            published = self.workspace_skill_repository.get_published_skill(binding.skill_id)
-            if published is None:
-                continue
+        binding = bindings[-1]
+        skill = self.skill_repository.get_by_skill_id(binding.skill_id)
+        if skill is None:
+            raise ValueError("skill not found")
+        if skill.status != "published":
+            raise ValueError("skill not published")
 
-            runtime_package = self.package_loader.load(binding.package_id)
-            return {
-                "skill_id": str(runtime_package.get("skill_id") or binding.skill_id),
-                "package_id": str(runtime_package.get("package_id") or binding.package_id),
-                "domain": runtime_package.get("domain"),
-                "version": runtime_package.get("version")
-            }
+        package = self.workspace_skill_repository.get_package_by_package_id(binding.package_id)
+        if package is None:
+            raise ValueError("package not found")
+        if package.status != "published":
+            raise ValueError("package not published")
 
-        return None
+        runtime_package = self.package_loader.load(binding.package_id)
+        return {
+            "skill_id": str(runtime_package.get("skill_id") or binding.skill_id),
+            "skill_name": skill.skill_name,
+            "package_id": str(runtime_package.get("package_id") or binding.package_id),
+            "domain": runtime_package.get("domain"),
+            "version": runtime_package.get("version"),
+            "prompts": runtime_package.get("prompts", {}),
+            "templates": runtime_package.get("templates", {})
+        }

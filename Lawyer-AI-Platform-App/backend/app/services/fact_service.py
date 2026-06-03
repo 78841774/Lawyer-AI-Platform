@@ -42,7 +42,12 @@ class FactService:
         facts: list[Fact] = []
 
         for material in materials:
-            facts.extend(self._extract_material_facts(material))
+            facts.extend(
+                self._extract_material_facts(
+                    material=material,
+                    runtime_context=runtime_context
+                )
+            )
 
         return FactExtractionResult(
             facts=facts,
@@ -55,7 +60,12 @@ class FactService:
             raise ValueError("case not found")
         return self.fact_repository.list_by_case_id(case_id)
 
-    def _extract_material_facts(self, material: Material) -> list[Fact]:
+    def _extract_material_facts(
+        self,
+        *,
+        material: Material,
+        runtime_context: dict[str, object] | None = None
+    ) -> list[Fact]:
         material_path = Path(material.storage_path)
         if not material_path.exists():
             return [
@@ -87,13 +97,14 @@ class FactService:
             ]
 
         statements = self._split_text_into_statements(text)
+        fact_type = self._build_fact_type(runtime_context)
         return [
             self.fact_repository.create(
                 fact_id=self.fact_repository.next_fact_id(),
                 case_id=material.case_id,
                 material_id=material.material_id,
                 content=statement,
-                fact_type="material_statement",
+                fact_type=fact_type,
                 confidence=0.8,
                 source_text=statement,
                 status="extracted"
@@ -123,3 +134,9 @@ class FactService:
         if value is None:
             return None
         return str(value)
+
+    def _build_fact_type(self, runtime_context: dict[str, object] | None) -> str:
+        domain = self._runtime_value(runtime_context, "domain")
+        if domain:
+            return f"{domain}_fact"
+        return "material_statement"
