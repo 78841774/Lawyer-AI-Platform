@@ -14,15 +14,15 @@ export default async function CaseListPage() {
     <AppShell>
       <div className="space-y-6">
         <SectionHeader
-          eyebrow="AIHome.law Cases"
-          title="Case Workspace"
-          description="Matter records with workspace ownership and legal AI workflow status."
+          eyebrow="AIHome.law 案件"
+          title="案件工作台"
+          description="展示案件记录、工作空间归属与法律 AI 工作流状态。"
           action={
             <Link
               href="/cases/new"
               className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm"
             >
-              New Case
+              创建案件
             </Link>
           }
         />
@@ -31,13 +31,13 @@ export default async function CaseListPage() {
 
         <Card>
           <div className="grid gap-3 border-b border-line bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted md:grid-cols-8">
-            <span>Case ID</span>
-            <span className="md:col-span-2">Title</span>
-            <span>Status</span>
-            <span>Workspace</span>
-            <span>Owner</span>
-            <span>Created</span>
-            <span>Future</span>
+            <span>案件 ID</span>
+            <span className="md:col-span-2">标题</span>
+            <span>状态</span>
+            <span>工作空间 ID</span>
+            <span>所属用户 ID</span>
+            <span>创建时间</span>
+            <span>查看详情</span>
           </div>
           {cases.length > 0 ? (
             cases.map((item) => (
@@ -52,14 +52,15 @@ export default async function CaseListPage() {
                 <span className="break-words text-muted">{item.workspace_id}</span>
                 <span className="break-words text-muted">{item.owner_user_id}</span>
                 <span className="text-muted">{formatDate(item.created_at)}</span>
-                <span className="flex flex-wrap gap-1">
+                <span className="flex flex-wrap items-center gap-1">
+                  <span className="font-medium text-accent">查看详情</span>
                   <Badge tone="muted">priority</Badge>
                   <Badge tone="muted">stage</Badge>
                 </span>
               </Link>
             ))
           ) : (
-            <div className="p-5 text-sm text-muted">No cases found.</div>
+            <div className="p-5 text-sm text-muted">暂无案件。</div>
           )}
         </Card>
       </div>
@@ -71,7 +72,7 @@ async function loadCases() {
   try {
     return { cases: await getCases(), error: null };
   } catch {
-    return { cases: [], error: "Backend API is unavailable. Start the backend on port 8001." };
+    return { cases: [], error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 

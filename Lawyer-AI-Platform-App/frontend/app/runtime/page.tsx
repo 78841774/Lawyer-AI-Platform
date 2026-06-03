@@ -14,9 +14,9 @@ export default async function RuntimePage() {
     <AppShell>
       <div className="space-y-6">
         <SectionHeader
-          eyebrow="AIHome.law Runtime"
-          title="Runtime"
-          description="LLM provider health, model configuration, and future operating metrics."
+          eyebrow="AIHome.law 运行状态"
+          title="运行状态"
+          description="查看模型提供方、模型配置与后续运行指标预留位。"
         />
 
         {error ? <StatusMessage message={error} /> : null}
@@ -25,22 +25,22 @@ export default async function RuntimePage() {
           <CardBody>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <div className="text-xs uppercase tracking-wide text-muted">LLM Status</div>
+                <div className="text-xs uppercase tracking-wide text-muted">模型状态</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{runtime?.provider ?? "-"}</div>
               </div>
               <Badge tone={runtime?.configured ? "gold" : "muted"}>
-                {runtime?.configured ? "configured" : "not configured"}
+                {runtime?.configured ? "已配置" : "未配置"}
               </Badge>
             </div>
             <div className="mt-5 space-y-3">
-              <InfoRow label="provider" value={runtime?.provider ?? "-"} />
-              <InfoRow label="model" value={runtime?.model ?? "-"} />
-              <InfoRow label="configured" value={formatBoolean(runtime?.configured)} />
-              <InfoRow label="base_url_configured" value={formatBoolean(runtime?.base_url_configured)} />
-              <InfoRow label="future token usage" value="Not available" />
-              <InfoRow label="future latency" value="Not available" />
-              <InfoRow label="future cost" value="Not available" />
-              <InfoRow label="future error logs" value="Coming soon" />
+              <InfoRow label="提供方" value={runtime?.provider ?? "-"} />
+              <InfoRow label="模型" value={runtime?.model ?? "-"} />
+              <InfoRow label="已配置" value={formatBoolean(runtime?.configured)} />
+              <InfoRow label="Base URL 已配置" value={formatBoolean(runtime?.base_url_configured)} />
+              <InfoRow label="未来 token 用量" value="暂不可用" />
+              <InfoRow label="未来延迟" value="暂不可用" />
+              <InfoRow label="未来成本" value="暂不可用" />
+              <InfoRow label="未来错误日志" value="即将推出" />
             </div>
           </CardBody>
         </Card>
@@ -53,7 +53,7 @@ async function loadRuntime() {
   try {
     return { runtime: await getLLMStatus(), error: null };
   } catch {
-    return { runtime: null, error: "Backend API is unavailable. Start the backend on port 8001." };
+    return { runtime: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 
@@ -61,7 +61,7 @@ function formatBoolean(value: boolean | undefined) {
   if (typeof value !== "boolean") {
     return "-";
   }
-  return value ? "true" : "false";
+  return value ? "是" : "否";
 }
 
 function StatusMessage({ message }: { message: string }) {

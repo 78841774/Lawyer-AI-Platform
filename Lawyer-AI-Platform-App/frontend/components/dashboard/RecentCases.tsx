@@ -7,9 +7,9 @@ export function RecentCases({ cases }: { cases: Case[] }) {
     <Card>
       <CardBody>
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-sm font-semibold text-ink">Recent Cases</h2>
+          <h2 className="text-sm font-semibold text-ink">最近案件</h2>
           <Link href="/cases" className="text-sm font-medium text-accent">
-            View all
+            查看全部
           </Link>
         </div>
         <div className="mt-4 space-y-3">
@@ -21,7 +21,7 @@ export function RecentCases({ cases }: { cases: Case[] }) {
               </div>
             </Link>
           ))}
-          {cases.length === 0 ? <div className="text-sm text-muted">No cases found.</div> : null}
+          {cases.length === 0 ? <div className="text-sm text-muted">暂无案件。</div> : null}
         </div>
       </CardBody>
     </Card>

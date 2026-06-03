@@ -21,10 +21,10 @@ export default async function ReportDetailPage({
       <div className="space-y-6">
         <header>
           <Link href="/reports" className="text-sm text-accent">
-            Back to reports
+            返回报告
           </Link>
           <h1 className="mt-3 text-2xl font-semibold text-ink">
-            {report?.title ?? "Report Detail"}
+            {report?.title ?? "报告详情"}
           </h1>
           <p className="mt-2 text-sm text-slate-600">
             {report ? `${report.report_id} · ${report.case_id}` : params.report_id}
@@ -36,14 +36,14 @@ export default async function ReportDetailPage({
         {report ? (
           <>
             <section className="grid gap-4 md:grid-cols-4">
-              <MetaCard label="Status" value={report.status} />
-              <MetaCard label="Version" value={String(report.version)} />
-              <MetaCard label="Type" value={report.report_type} />
-              <MetaCard label="Created" value={formatDate(report.created_at)} />
+              <MetaCard label="状态" value={report.status} />
+              <MetaCard label="版本" value={String(report.version)} />
+              <MetaCard label="报告类型" value={report.report_type} />
+              <MetaCard label="创建时间" value={formatDate(report.created_at)} />
             </section>
 
             <section className="rounded-md border border-line bg-white p-5">
-              <div className="text-sm font-semibold text-ink">Source References</div>
+              <div className="text-sm font-semibold text-ink">source_refs</div>
               <div className="mt-2 text-sm text-slate-600">
                 Analysis: {report.source_refs.analysis_id ?? "n/a"}
               </div>
@@ -55,12 +55,12 @@ export default async function ReportDetailPage({
 
             {report.source_refs.skill_id || report.source_refs.package_id ? (
               <section className="rounded-md border border-line bg-white p-5">
-                <div className="text-sm font-semibold text-ink">Skill Used</div>
+                <div className="text-sm font-semibold text-ink">使用技能</div>
                 <div className="mt-2 text-sm text-slate-600">
-                  Skill ID: {report.source_refs.skill_id ?? "n/a"}
+                  skill_id: {report.source_refs.skill_id ?? "n/a"}
                 </div>
                 <div className="mt-1 text-sm text-slate-600">
-                  Package ID: {report.source_refs.package_id ?? "n/a"}
+                  package_id: {report.source_refs.package_id ?? "n/a"}
                 </div>
               </section>
             ) : null}
@@ -82,7 +82,7 @@ async function loadReport(reportId: string) {
     if (error instanceof ApiError && error.status === 404) {
       return { report: null, error: null };
     }
-    return { report: null, error: "Backend API is unavailable. Start the backend on port 8001." };
+    return { report: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 

@@ -13,21 +13,21 @@ export default async function WorkspacesPage() {
     <AppShell>
       <div className="space-y-6">
         <SectionHeader
-          eyebrow="AIHome.law Workspace"
-          title="Workspaces"
-          description="Workspace identity, ownership, and future membership controls."
+          eyebrow="AIHome.law 工作空间"
+          title="工作空间"
+          description="展示工作空间身份、所有权与后续成员管理预留位。"
         />
 
         {error ? <StatusMessage message={error} /> : null}
 
         <Card>
           <div className="grid gap-3 border-b border-line bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted md:grid-cols-6">
-            <span>Workspace</span>
-            <span>Name</span>
-            <span>Owner</span>
-            <span>Status</span>
-            <span>Created</span>
-            <span>Members</span>
+            <span>工作空间 ID</span>
+            <span>名称</span>
+            <span>所有人 ID</span>
+            <span>状态</span>
+            <span>创建时间</span>
+            <span>成员</span>
           </div>
           {workspaces.length > 0 ? (
             workspaces.map((workspace) => (
@@ -41,12 +41,12 @@ export default async function WorkspacesPage() {
                 <span className="text-muted">{formatDate(workspace.created_at)}</span>
                 <span className="flex flex-wrap gap-1">
                   <Badge tone="muted">role</Badge>
-                  <Badge tone="muted">invite soon</Badge>
+                  <Badge tone="muted">邀请成员</Badge>
                 </span>
               </article>
             ))
           ) : (
-            <div className="p-5 text-sm text-muted">No workspaces found.</div>
+            <div className="p-5 text-sm text-muted">暂无工作空间。</div>
           )}
         </Card>
       </div>
@@ -58,7 +58,7 @@ async function loadWorkspaces() {
   try {
     return { workspaces: await getWorkspaces(), error: null };
   } catch {
-    return { workspaces: [], error: "Backend API is unavailable. Start the backend on port 8001." };
+    return { workspaces: [], error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 

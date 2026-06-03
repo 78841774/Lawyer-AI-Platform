@@ -4,32 +4,32 @@ import { Badge } from "@/components/ui/Badge";
 
 const navGroups = [
   {
-    label: "Primary",
+    label: "主导航",
     items: [
-      { href: "/", label: "Dashboard" },
-      { href: "/cases", label: "Cases" },
-      { href: "/reports", label: "Reports" }
+      { href: "/", label: "工作台" },
+      { href: "/cases", label: "案件" },
+      { href: "/reports", label: "报告" }
     ]
   },
   {
-    label: "Intelligence",
+    label: "智能能力",
     items: [
-      { href: "/skills", label: "Skills" },
-      { href: "#experience-packages", label: "Experience Packages", disabled: true },
-      { href: "/runtime", label: "Runtime" }
+      { href: "/skills", label: "技能" },
+      { href: "#experience-packages", label: "经验包", disabled: true },
+      { href: "/runtime", label: "运行状态" }
     ]
   },
   {
-    label: "Workspace",
+    label: "工作空间",
     items: [
-      { href: "/workspaces", label: "Workspaces" },
-      { href: "#users", label: "Users", disabled: true },
-      { href: "#audit-logs", label: "Audit Logs", disabled: true }
+      { href: "/workspaces", label: "工作空间" },
+      { href: "#users", label: "用户", disabled: true },
+      { href: "#audit-logs", label: "审计日志", disabled: true }
     ]
   },
   {
-    label: "System",
-    items: [{ href: "#settings", label: "Settings", disabled: true }]
+    label: "系统",
+    items: [{ href: "#settings", label: "设置", disabled: true }]
   }
 ];
 
@@ -44,7 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
             <div>
               <div className="text-lg font-semibold tracking-wide">AIHome.law</div>
-              <div className="mt-1 text-xs text-slate-400">AI Workspace for Legal Work</div>
+              <div className="mt-1 text-xs text-slate-400">法律 AI 工作空间</div>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       className="flex items-center justify-between rounded-md px-3 py-2 text-sm text-slate-500"
                     >
                       <span>{item.label}</span>
-                      <span className="text-[10px] uppercase tracking-wide">Soon</span>
+                      <span className="text-[10px] uppercase tracking-wide">即将推出</span>
                     </div>
                   ) : (
                     <Link
@@ -77,9 +77,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
         <div className="absolute bottom-6 left-5 right-5 rounded-md border border-slate-800 bg-surface p-4">
-          <div className="text-xs uppercase tracking-wide text-gold">Internal Alpha</div>
+          <div className="text-xs uppercase tracking-wide text-gold">内测版本</div>
           <div className="mt-2 text-xs leading-5 text-slate-400">
-            Secure legal AI workspace foundation for cases, reports, and reusable skills.
+            面向案件、报告与可复用技能的法律 AI 工作空间基础。
           </div>
         </div>
       </aside>
@@ -87,7 +87,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <AppTopbar />
         <div className="border-b border-line bg-white px-5 py-4 md:hidden">
           <div className="text-base font-semibold text-ink">AIHome.law</div>
-          <div className="mt-1 text-xs text-muted">AI Workspace for Legal Work</div>
+          <div className="mt-1 text-xs text-muted">法律 AI 工作空间</div>
           <nav className="mt-4 flex gap-2 overflow-x-auto text-sm text-muted">
             {navGroups.flatMap((group) =>
               group.items
@@ -100,7 +100,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           </nav>
           <div className="mt-3">
-            <Badge tone="gold">AIHome.law Internal Alpha</Badge>
+            <Badge tone="gold">AIHome.law 内测版本</Badge>
           </div>
         </div>
         <div className="mx-auto max-w-7xl px-5 py-8">{children}</div>

@@ -35,7 +35,7 @@ export default async function DashboardPage() {
 
         <Card>
           <CardBody>
-            <div className="text-xs uppercase tracking-wide text-muted">Current User</div>
+            <div className="text-xs uppercase tracking-wide text-muted">当前用户</div>
             <div className="mt-2 text-sm font-semibold text-ink">{user?.display_name ?? "-"}</div>
             <div className="mt-1 text-xs text-muted">
               {user ? `${user.email} · ${user.role} · ${user.status}` : "-"}
@@ -69,7 +69,7 @@ async function loadDashboard() {
       llmStatus: null,
       activeCases: 0,
       cases: [],
-      error: "Backend API is unavailable. Start the backend on port 8001."
+      error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。"
     };
   }
 }

@@ -19,19 +19,19 @@ export default function NewCasePage() {
     const resolvedTitle = title.trim();
     if (!resolvedTitle) {
       setStatus("error");
-      setMessage("Please enter a case title.");
+      setMessage("请输入新案件标题。");
       return;
     }
 
     setStatus("loading");
-    setMessage("Creating case...");
+    setMessage("正在创建案件...");
     try {
       const newCase = await createCase(resolvedTitle);
-      setMessage("Case created.");
+      setMessage("案件已创建。");
       router.push(`/cases/${newCase.case_id}`);
     } catch (error) {
       setStatus("error");
-      setMessage(error instanceof ApiError ? error.message : "Failed to create case.");
+      setMessage(error instanceof ApiError ? error.message : "创建案件失败。");
     }
   }
 
@@ -39,16 +39,16 @@ export default function NewCasePage() {
     <AppShell>
       <div className="space-y-6">
         <SectionHeader
-          eyebrow="AIHome.law Cases"
-          title="Create Case"
-          description="Start a new legal AI workspace record."
+          eyebrow="AIHome.law 案件"
+          title="创建案件"
+          description="创建新的法律 AI 工作空间记录。"
         />
 
         <Card>
           <CardBody>
             <form onSubmit={handleSubmit}>
               <label htmlFor="title" className="text-sm font-medium text-ink">
-                Case title
+                新案件标题
               </label>
               <input
                 id="title"
@@ -58,7 +58,7 @@ export default function NewCasePage() {
                 placeholder="例如：演示合同纠纷案件"
               />
               <Button type="submit" disabled={status === "loading"} className="mt-4">
-                {status === "loading" ? "Creating..." : "Create Case"}
+                {status === "loading" ? "正在创建..." : "创建案件"}
               </Button>
               {message ? (
                 <div className="mt-4 rounded-md border border-line bg-paper px-3 py-2 text-sm text-muted">

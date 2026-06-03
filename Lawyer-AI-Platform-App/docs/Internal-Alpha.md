@@ -8,6 +8,8 @@ v3.2 adds JWT Auth Foundation. Local demo login exchanges `user_id + dev_token` 
 
 v3.2-B adds the AIHome.law branded frontend dashboard and product shell for internal alpha operations.
 
+v3.2-C localizes the main frontend product copy for Chinese legal professionals while keeping the AIHome.law brand in English.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -159,8 +161,11 @@ v3.3 can replace local demo login with formal password, OAuth, or SSO authentica
 The internal alpha frontend now uses the AIHome.law brand:
 
 * Brand name: `AIHome.law`
-* Tagline: `AI Workspace for Legal Work`
+* Chinese tagline: `法律 AI 工作空间`
+* Hero copy: `把案件材料转化为事实、法律分析、报告与可复用经验。`
 * Product style: legal-tech console with dark navy, graphite, white, professional blue, and gold accents.
+* Main UI copy is Chinese-first for internal alpha users.
+* API fields and technical identifiers such as `case_id`, `workspace_id`, `owner_user_id`, `skill_id`, `package_id`, `llm_provider`, and `source_refs` remain in English for compatibility.
 
 The frontend shell is designed for long-term expansion:
 
@@ -171,7 +176,7 @@ The frontend shell is designed for long-term expansion:
 
 Navigation groups are reserved for:
 
-* Primary: Dashboard, Cases, Reports.
-* Intelligence: Skills, Experience Packages, Runtime.
-* Workspace: Workspaces, Users, Audit Logs.
-* System: Settings.
+* 主导航: 工作台, 案件, 报告.
+* 智能能力: 技能, 经验包, 运行状态.
+* 工作空间: 工作空间, 用户, 审计日志.
+* 系统: 设置.

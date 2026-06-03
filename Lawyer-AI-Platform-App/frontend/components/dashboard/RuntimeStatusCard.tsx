@@ -6,13 +6,13 @@ export function RuntimeStatusCard({ runtime }: { runtime: RuntimeStatus | null }
   return (
     <Card>
       <CardBody>
-        <div className="text-xs uppercase tracking-wide text-muted">Runtime Status</div>
+        <div className="text-xs uppercase tracking-wide text-muted">运行状态</div>
         <div className="mt-2 text-lg font-semibold text-ink">{runtime?.provider ?? "-"}</div>
         <div className="mt-4 space-y-3">
-          <InfoRow label="Model" value={runtime?.model ?? "-"} />
-          <InfoRow label="Configured" value={formatBoolean(runtime?.configured)} />
-          <InfoRow label="Base URL configured" value={formatBoolean(runtime?.base_url_configured)} />
-          <InfoRow label="Future latency" value="Not available" />
+          <InfoRow label="模型" value={runtime?.model ?? "-"} />
+          <InfoRow label="已配置" value={formatBoolean(runtime?.configured)} />
+          <InfoRow label="Base URL 已配置" value={formatBoolean(runtime?.base_url_configured)} />
+          <InfoRow label="未来延迟指标" value="暂不可用" />
         </div>
       </CardBody>
     </Card>
@@ -23,5 +23,5 @@ function formatBoolean(value: boolean | undefined) {
   if (typeof value !== "boolean") {
     return "-";
   }
-  return value ? "true" : "false";
+  return value ? "是" : "否";
 }

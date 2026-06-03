@@ -4,7 +4,7 @@ const facts = [
   {
     factId: "fact_demo_001",
     factType: "contract",
-    description: "The parties signed a software development service contract.",
+    description: "双方签署了软件开发服务合同。",
     confidence: 0.92,
     status: "draft"
   }
@@ -15,8 +15,8 @@ export default function FactViewPage({ params }: { params: { caseId: string } })
     <AppShell>
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-semibold text-ink">Fact View</h1>
-          <p className="mt-2 text-sm text-slate-600">Review extracted facts for {params.caseId}.</p>
+          <h1 className="text-2xl font-semibold text-ink">事实</h1>
+          <p className="mt-2 text-sm text-slate-600">查看 {params.caseId} 已抽取事实。</p>
         </header>
         <section className="rounded-md border border-line bg-white">
           {facts.map((fact) => (
@@ -24,7 +24,7 @@ export default function FactViewPage({ params }: { params: { caseId: string } })
               <div className="text-sm font-semibold text-ink">{fact.factType}</div>
               <p className="mt-2 text-sm text-slate-700">{fact.description}</p>
               <div className="mt-3 text-xs text-slate-500">
-                {fact.factId} · confidence {fact.confidence} · {fact.status}
+                {fact.factId} · 置信度 {fact.confidence} · {fact.status}
               </div>
             </article>
           ))}

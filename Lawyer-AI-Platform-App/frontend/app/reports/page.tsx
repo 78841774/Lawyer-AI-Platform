@@ -14,9 +14,9 @@ export default async function ReportsPage() {
     <AppShell>
       <div className="space-y-6">
         <SectionHeader
-          eyebrow="AIHome.law Reports"
-          title="Reports"
-          description="Generated legal reports with source references and runtime metadata."
+          eyebrow="AIHome.law 报告"
+          title="报告"
+          description="展示已生成法律报告、source_refs 与运行元数据。"
         />
 
         {error ? <StatusMessage message={error} /> : null}
@@ -38,22 +38,25 @@ export default async function ReportsPage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Badge tone="blue">{report.status}</Badge>
-                    <Badge tone="muted">Export</Badge>
+                    <Badge tone="muted">导出</Badge>
+                    <Badge tone="muted">查看报告</Badge>
                   </div>
                 </div>
                 <p className="mt-3 line-clamp-2 text-sm text-muted">
                   {report.content.replaceAll("\n", " ").slice(0, 180)}
                 </p>
                 <div className="mt-3 grid gap-2 text-xs text-muted md:grid-cols-4">
-                  <span>skill: {report.source_refs.skill_id ?? "-"}</span>
-                  <span>package: {report.source_refs.package_id ?? "-"}</span>
-                  <span>llm: {report.source_refs.llm_provider ?? "-"}</span>
-                  <span>llm_status: {report.source_refs.llm_status ?? "-"}</span>
+                  <span>报告 ID: {report.report_id}</span>
+                  <span>报告类型: {report.report_type}</span>
+                  <span>使用技能: {report.source_refs.skill_id ?? "-"}</span>
+                  <span>模型提供方: {report.source_refs.llm_provider ?? "-"}</span>
+                  <span>package_id: {report.source_refs.package_id ?? "-"}</span>
+                  <span>模型状态: {report.source_refs.llm_status ?? "-"}</span>
                 </div>
               </Link>
             ))
           ) : (
-            <div className="p-5 text-sm text-muted">No reports found.</div>
+            <div className="p-5 text-sm text-muted">暂无报告。</div>
           )}
         </Card>
       </div>
@@ -65,7 +68,7 @@ async function loadReports() {
   try {
     return { reports: await getReports(), error: null };
   } catch {
-    return { reports: [], error: "Backend API is unavailable. Start the backend on port 8001." };
+    return { reports: [], error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 

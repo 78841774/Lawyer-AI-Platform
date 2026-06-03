@@ -39,7 +39,7 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
   const [pageStatus, setPageStatus] = useState<ActionStatus>({
     ...initialActionStatus,
     loading: true,
-    message: "Loading case..."
+    message: "正在加载案件..."
   });
   const [actionStatus, setActionStatus] = useState<ActionStatus>(initialActionStatus);
   const [availableSkills, setAvailableSkills] = useState<WorkspaceSkillRecord[]>([]);
@@ -50,7 +50,7 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
   }, [caseId]);
 
   async function loadDetail() {
-    setPageStatus({ loading: true, message: "Loading case...", kind: "idle" });
+    setPageStatus({ loading: true, message: "正在加载案件...", kind: "idle" });
     try {
       const [nextDetail, nextAvailableSkills, nextAppliedSkills] = await Promise.all([
         getCaseDetail(caseId),
@@ -64,7 +64,7 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
     } catch (error) {
       setPageStatus({
         loading: false,
-        message: error instanceof ApiError ? error.message : "Failed to load case.",
+        message: error instanceof ApiError ? error.message : "加载案件失败。",
         kind: "error"
       });
     }
@@ -95,19 +95,19 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
 
   async function handleUpload() {
     if (!selectedFile) {
-      setActionStatus({ loading: false, message: "Please select a material file.", kind: "error" });
+      setActionStatus({ loading: false, message: "请选择案件材料文件。", kind: "error" });
       return;
     }
-    await runAction("Upload Material", async () => {
+    await runAction("上传材料", async () => {
       await uploadMaterial(caseId, selectedFile);
       setSelectedFile(null);
     });
   }
 
   async function handleApplySkill(skillId: string) {
-    await runAction("Apply Skill", async () => {
+    await runAction("应用技能", async () => {
       const binding = await applySkillToCase(caseId, skillId);
-      return `Applied Skill: ${binding.skill_id} / Package: ${binding.package_id}`;
+      return `已应用技能: ${binding.skill_id} / Package: ${binding.package_id}`;
     });
   }
 
@@ -116,19 +116,19 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Link href="/cases" className="text-sm font-medium text-accent">
-            Back to cases
+            返回案件
           </Link>
-          <div className="mt-3 text-xs uppercase tracking-wide text-gold">Case Workflow</div>
+          <div className="mt-3 text-xs uppercase tracking-wide text-gold">案件工作流</div>
           <h1 className="mt-2 text-2xl font-semibold text-ink">
-            {detail?.case.title ?? "Case Detail"}
+            {detail?.case.title ?? "案件详情"}
           </h1>
-          <p className="mt-2 text-sm text-muted">Case ID: {caseId}</p>
+          <p className="mt-2 text-sm text-muted">案件 ID: {caseId}</p>
         </div>
         <Link
           href="/reports"
           className="rounded-md border border-line bg-white px-4 py-2 text-sm font-medium text-ink shadow-sm hover:border-accent"
         >
-          View Reports
+          查看报告
         </Link>
       </header>
 
@@ -137,22 +137,22 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
 
       {detail ? (
         <>
-          <WorkflowSection title="Overview">
+          <WorkflowSection title="案件概览">
             <div className="grid gap-4 md:grid-cols-3">
-              <InfoRow label="Case Type" value={detail.case.case_type} />
-              <InfoRow label="Status" value={detail.case.status} />
-              <InfoRow label="Workspace" value={detail.case.workspace_id} />
-              <InfoRow label="Owner" value={detail.case.owner_user_id} />
-              <InfoRow label="Created" value={formatDate(detail.case.created_at)} />
-              <InfoRow label="Updated" value={formatDate(detail.case.updated_at)} />
+              <InfoRow label="案件类型" value={detail.case.case_type} />
+              <InfoRow label="状态" value={detail.case.status} />
+              <InfoRow label="工作空间 ID" value={detail.case.workspace_id} />
+              <InfoRow label="所属用户 ID" value={detail.case.owner_user_id} />
+              <InfoRow label="创建时间" value={formatDate(detail.case.created_at)} />
+              <InfoRow label="更新时间" value={formatDate(detail.case.updated_at)} />
             </div>
           </WorkflowSection>
 
-          <WorkflowSection title="Materials">
+          <WorkflowSection title="材料">
             <div className="flex flex-wrap items-end gap-3">
               <div className="min-w-64 flex-1">
                 <label htmlFor="material" className="text-sm font-medium text-ink">
-                  Upload Material
+                  上传材料
                 </label>
                 <input
                   id="material"
@@ -163,24 +163,24 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                 />
               </div>
               <Button onClick={handleUpload} disabled={actionStatus.loading}>
-                Upload Material
+                上传材料
               </Button>
               <Button
                 variant="secondary"
                 disabled={actionStatus.loading}
                 onClick={() =>
-                  runAction("Extract Facts", async () => {
+                  runAction("抽取事实", async () => {
                     const result = await extractFacts(caseId);
                     if (result.skill_used && result.package_used) {
-                      return `Fact Runtime used Skill: ${result.skill_used} / Package: ${result.package_used}`;
+                      return `事实抽取使用技能: ${result.skill_used} / Package: ${result.package_used}`;
                     }
                   })
                 }
               >
-                Extract Facts
+                抽取事实
               </Button>
             </div>
-            <ListArea empty="No materials uploaded.">
+            <ListArea empty="暂无已上传材料。">
               {detail.materials.map((material) => (
                 <ListItem
                   key={material.material_id}
@@ -191,62 +191,62 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
             </ListArea>
           </WorkflowSection>
 
-          <WorkflowSection title="Facts">
-            <ListArea empty="No facts extracted.">
+          <WorkflowSection title="事实">
+            <ListArea empty="暂无已提炼事实。">
               {detail.facts.map((fact) => (
                 <ListItem
                   key={fact.fact_id}
                   title={fact.content}
-                  meta={`${fact.fact_id} · ${fact.fact_type} · confidence ${fact.confidence}`}
+                  meta={`${fact.fact_id} · ${fact.fact_type} · 置信度 ${fact.confidence}`}
                 />
               ))}
             </ListArea>
           </WorkflowSection>
 
-          <WorkflowSection title="Legal Analysis">
+          <WorkflowSection title="法律分析">
             <Button
               variant="secondary"
               disabled={actionStatus.loading}
               onClick={() =>
-                runAction("Run Legal Analysis", async () => {
+                runAction("运行法律分析", async () => {
                   const result = await runLegalAnalysis(caseId);
                   if (result.skill_used && result.package_used) {
-                    return `Legal Analysis used Skill: ${result.skill_used} / Package: ${result.package_used}`;
+                    return `法律分析使用技能: ${result.skill_used} / Package: ${result.package_used}`;
                   }
                 })
               }
             >
-              Run Legal Analysis
+              运行法律分析
             </Button>
-            <ListArea empty="No legal analysis runs.">
+            <ListArea empty="暂无法律分析记录。">
               {detail.analyses.map((analysis) => (
                 <ListItem
                   key={analysis.analysis_id}
                   title={analysis.conclusion}
-                  meta={`${analysis.analysis_id} · risk ${analysis.risk_level} · confidence ${analysis.confidence}`}
+                  meta={`${analysis.analysis_id} · 风险 ${analysis.risk_level} · 置信度 ${analysis.confidence}`}
                 />
               ))}
             </ListArea>
           </WorkflowSection>
 
-          <WorkflowSection title="Reports">
+          <WorkflowSection title="报告">
             <Button
               variant="secondary"
               disabled={actionStatus.loading}
               onClick={() =>
-                runAction("Generate Report", async () => {
+                runAction("生成报告", async () => {
                   const result = await generateReport(caseId);
                   const skillId = result.source_refs.skill_id;
                   const packageId = result.source_refs.package_id;
                   if (skillId && packageId) {
-                    return `Report generated with Skill: ${skillId} / Package: ${packageId}`;
+                    return `报告已生成，使用技能: ${skillId} / Package: ${packageId}`;
                   }
                 })
               }
             >
-              Generate Report
+              生成报告
             </Button>
-            <ListArea empty="No reports generated.">
+            <ListArea empty="暂无已生成报告。">
               {detail.reports.map((report) => (
                 <Link
                   key={report.report_id}
@@ -255,18 +255,18 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                 >
                   <div className="text-sm font-medium text-ink">{report.title}</div>
                   <div className="mt-1 text-xs text-muted">
-                    {report.report_id} · version {report.version} · {report.status}
+                    {report.report_id} · 版本 {report.version} · {report.status}
                   </div>
                 </Link>
               ))}
             </ListArea>
           </WorkflowSection>
 
-          <WorkflowSection title="Skills">
+          <WorkflowSection title="技能">
             <div className="grid gap-4 lg:grid-cols-2">
               <div>
-                <h3 className="text-sm font-semibold text-ink">Available Skills</h3>
-                <ListArea empty="No published skills available.">
+                <h3 className="text-sm font-semibold text-ink">可用技能</h3>
+                <ListArea empty="暂无已发布技能。">
                   {availableSkills.map((skill) => (
                     <article key={skill.skill_id} className="border-b border-line py-3 last:border-b-0">
                       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -282,7 +282,7 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                           onClick={() => handleApplySkill(skill.skill_id)}
                           className="text-xs"
                         >
-                          Apply Skill
+                          应用技能
                         </Button>
                       </div>
                     </article>
@@ -290,13 +290,13 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                 </ListArea>
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-ink">Applied Skills</h3>
-                <ListArea empty="No skills applied to this case.">
+                <h3 className="text-sm font-semibold text-ink">已应用技能</h3>
+                <ListArea empty="本案件暂未应用技能。">
                   {appliedSkills.map((binding) => (
                     <ListItem
                       key={binding.binding_id ?? `${binding.skill_id}-${binding.package_id}`}
                       title={binding.skill_id}
-                      meta={`Package: ${binding.package_id} · Status: ${binding.status} · Applied: ${
+                      meta={`Package: ${binding.package_id} · 状态: ${binding.status} · 应用时间: ${
                         binding.created_at ? formatDate(binding.created_at) : "n/a"
                       }`}
                     />
@@ -307,8 +307,8 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
           </WorkflowSection>
 
           <section className="grid gap-4 lg:grid-cols-2">
-            <PlaceholderSection title="Runtime Trace" />
-            <PlaceholderSection title="Audit Trail" />
+            <PlaceholderSection title="运行轨迹" />
+            <PlaceholderSection title="审计轨迹" />
           </section>
         </>
       ) : null}
@@ -322,7 +322,7 @@ function WorkflowSection({ title, children }: { title: string; children: React.R
       <CardBody>
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="text-sm font-semibold text-ink">{title}</h2>
-          <Badge tone="muted">Workflow</Badge>
+          <Badge tone="muted">工作流</Badge>
         </div>
         <div className="space-y-4">{children}</div>
       </CardBody>
@@ -336,9 +336,9 @@ function PlaceholderSection({ title }: { title: string }) {
       <CardBody>
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-sm font-semibold text-ink">{title}</h2>
-          <Badge tone="muted">Coming soon</Badge>
+          <Badge tone="muted">即将推出</Badge>
         </div>
-        <p className="mt-3 text-sm text-muted">Not available in this internal alpha surface yet.</p>
+        <p className="mt-3 text-sm text-muted">当前内测界面暂不可用。</p>
       </CardBody>
     </Card>
   );

@@ -5,16 +5,16 @@ export default function ReportViewPage({ params }: { params: { caseId: string } 
     <AppShell>
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-semibold text-ink">Report View</h1>
-          <p className="mt-2 text-sm text-slate-600">Generate and review reports for {params.caseId}.</p>
+          <h1 className="text-2xl font-semibold text-ink">报告</h1>
+          <p className="mt-2 text-sm text-slate-600">为 {params.caseId} 生成并查看报告。</p>
         </header>
         <section className="rounded-md border border-line bg-white p-5">
-          <div className="text-sm font-semibold text-ink">Legal Analysis Report</div>
+          <div className="text-sm font-semibold text-ink">法律分析报告</div>
           <p className="mt-2 text-sm text-slate-600">
-            Report generation will use case facts, legal analyses, and report runtime output.
+            报告生成将使用案件事实、法律分析与报告运行结果。
           </p>
           <button className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white">
-            Generate Report
+            生成报告
           </button>
         </section>
       </div>

@@ -6,6 +6,8 @@ v3.2 adds JWT Auth Foundation for local demo login, JWT verification, and reques
 
 v3.2-B surfaces auth state in the AIHome.law Dashboard and provides local login/logout controls.
 
+v3.2-C localizes the frontend auth dashboard copy for Chinese legal users while keeping API responses and auth modes unchanged.
+
 ## Scope
 
 This stage does not add:
@@ -175,10 +177,12 @@ v3.3 can replace the internal alpha login with formal password, OAuth, or SSO au
 The AIHome.law Dashboard displays:
 
 * `auth_mode`
-* current user
-* current workspace
-* local login and logout controls
+* 当前用户
+* 当前工作空间
+* 本地登录、刷新、退出登录 controls
 
 Local Login calls `POST /auth/login`, stores the returned JWT in `localStorage`, and frontend API requests attach `Authorization: Bearer <token>`.
 
 When the local JWT is cleared, local development can still show `local_fallback` through backend fallback behavior.
+
+Frontend labels are Chinese-first in v3.2-C, but technical values such as `jwt`, `dev_token`, `local_fallback`, `user_id`, and `source_refs` stay unchanged for compatibility.
