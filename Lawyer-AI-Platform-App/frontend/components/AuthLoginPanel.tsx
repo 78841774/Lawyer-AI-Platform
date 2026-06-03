@@ -5,13 +5,19 @@ import {
   ApiError,
   AuthStatus,
   getAuthStatus,
+  getCurrentUser,
+  getWorkspace,
+  getWorkspaces,
   loginLocal,
   logoutLocal,
   storeAccessToken
 } from "@/services/api";
+import type { User, Workspace } from "@/types";
 
 type PanelState = {
   status: AuthStatus | null;
+  user: User | null;
+  workspace: Workspace | null;
   message: string;
   loading: boolean;
 };
@@ -19,6 +25,8 @@ type PanelState = {
 export function AuthLoginPanel() {
   const [state, setState] = useState<PanelState>({
     status: null,
+    user: null,
+    workspace: null,
     message: "",
     loading: false
   });
@@ -29,11 +37,19 @@ export function AuthLoginPanel() {
 
   async function refreshStatus(message: string) {
     try {
-      const status = await getAuthStatus();
-      setState({ status, message, loading: false });
+      const [status, user, workspaces] = await Promise.all([
+        getAuthStatus(),
+        getCurrentUser(),
+        getWorkspaces()
+      ]);
+      const workspaceSummary = workspaces[0] ?? null;
+      const workspace = workspaceSummary ? await getWorkspace(workspaceSummary.workspace_id) : null;
+      setState({ status, user, workspace, message, loading: false });
     } catch (error) {
       setState({
         status: null,
+        user: null,
+        workspace: null,
         message: error instanceof ApiError ? error.message : "认证状态暂不可用。",
         loading: false
       });
@@ -45,15 +61,12 @@ export function AuthLoginPanel() {
     try {
       const login = await loginLocal();
       storeAccessToken(login.access_token);
-      const status = await getAuthStatus();
-      setState({
-        status,
-        message: `JWT 过期时间：${formatDate(login.expires_at)}`,
-        loading: false
-      });
+      await refreshStatus(`JWT 过期时间：${formatDate(login.expires_at)}`);
     } catch (error) {
       setState({
         status: null,
+        user: null,
+        workspace: null,
         message: error instanceof ApiError ? error.message : "登录失败。",
         loading: false
       });
@@ -72,10 +85,13 @@ export function AuthLoginPanel() {
         <div>
           <div className="text-xs uppercase tracking-wide text-muted">认证状态</div>
           <div className="mt-2 text-lg font-semibold text-ink">
-            {state.status ? state.status.auth_mode : "检查中"}
+            {state.status ? formatAuthMode(state.status.auth_mode) : "检查中"}
           </div>
           <div className="mt-1 text-sm text-muted">
-            {state.status ? state.status.user_id : "user_local_001"}
+            当前用户：{state.user?.display_name ?? state.status?.user_id ?? "user_local_001"}
+          </div>
+          <div className="mt-1 text-xs text-muted">
+            当前工作空间：{state.workspace?.name ?? state.workspace?.workspace_id ?? "workspace_local_001"}
           </div>
           <div className="mt-1 text-xs text-muted">
             {state.status?.expires_at ? `过期时间 ${formatDate(state.status.expires_at)}` : "本地模式仍可使用 local_fallback。"}
@@ -119,4 +135,14 @@ export function AuthLoginPanel() {
 
 function formatDate(value: string) {
   return new Date(value).toLocaleString();
+}
+
+function formatAuthMode(mode: AuthStatus["auth_mode"]) {
+  if (mode === "jwt") {
+    return "JWT";
+  }
+  if (mode === "local_fallback") {
+    return "local";
+  }
+  return mode;
 }

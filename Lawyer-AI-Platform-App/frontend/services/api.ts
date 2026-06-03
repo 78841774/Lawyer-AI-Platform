@@ -15,6 +15,7 @@ import type {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8001";
 const TOKEN_STORAGE_KEY = "lawyer_ai_access_token";
+const DEFAULT_LOCAL_DEV_TOKEN = "dev-local-token";
 
 export type {
   AuthStatus,
@@ -77,6 +78,20 @@ export class ApiError extends Error {
   }
 }
 
+const LOCAL_MOCK_CASES: Case[] = [
+  {
+    case_id: "case_local_mock_001",
+    title: "本地演示案件",
+    case_type: "contract_dispute",
+    status: "draft",
+    objective: "local fallback",
+    workspace_id: "workspace_local_001",
+    owner_user_id: "user_local_001",
+    created_at: "2026-06-03T00:00:00Z",
+    updated_at: "2026-06-03T00:00:00Z"
+  }
+];
+
 async function request<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: buildAuthHeaders(),
@@ -137,7 +152,12 @@ async function buildErrorMessage(response: Response, path: string) {
 
 function buildAuthHeaders(): Record<string, string> {
   const token = getStoredAccessToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  if (token) {
+    return { Authorization: `Bearer ${token}` };
+  }
+
+  const devToken = getLocalDevToken();
+  return devToken ? { "X-Dev-Token": devToken } : {};
 }
 
 function getStoredAccessToken(): string | null {
@@ -145,6 +165,31 @@ function getStoredAccessToken(): string | null {
     return null;
   }
   return window.localStorage.getItem(TOKEN_STORAGE_KEY);
+}
+
+function getLocalDevToken(): string | null {
+  const configuredToken =
+    process.env.NEXT_PUBLIC_LOCAL_DEV_TOKEN ||
+    (typeof window === "undefined" ? process.env.LOCAL_DEV_TOKEN : undefined);
+
+  if (configuredToken) {
+    return configuredToken;
+  }
+
+  return isLocalApiBase() ? DEFAULT_LOCAL_DEV_TOKEN : null;
+}
+
+function isLocalApiBase() {
+  try {
+    const parsed = new URL(API_BASE);
+    return ["127.0.0.1", "localhost", "::1"].includes(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
+function shouldUseLocalMockFallback(error: unknown) {
+  return isLocalApiBase() && error instanceof ApiError;
 }
 
 export function storeAccessToken(token: string) {
@@ -181,6 +226,16 @@ export const workspaceApi = {
 
 export const caseApi = {
   list: () => request<Case[]>("/cases"),
+  listWithLocalFallback: async () => {
+    try {
+      return await request<Case[]>("/cases");
+    } catch (error) {
+      if (shouldUseLocalMockFallback(error)) {
+        return LOCAL_MOCK_CASES;
+      }
+      throw error;
+    }
+  },
   create: (title: string) => postJson<Case>("/cases", { title }),
   get: (caseId: string) => request<Case>(`/cases/${caseId}`)
 };
@@ -254,7 +309,7 @@ export const loginWithDevToken = authApi.loginLocal;
 export const getWorkspaces = workspaceApi.list;
 export const getWorkspace = workspaceApi.get;
 export const getWorkspaceCases = workspaceApi.cases;
-export const getCases = caseApi.list;
+export const getCases = caseApi.listWithLocalFallback;
 export const createCase = caseApi.create;
 export const getCase = caseApi.get;
 export const getCaseMaterials = materialApi.listByCase;

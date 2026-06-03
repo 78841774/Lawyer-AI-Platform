@@ -7,7 +7,7 @@ import { RuntimeStatusCard } from "@/components/dashboard/RuntimeStatusCard";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { WorkspaceSummaryCard } from "@/components/dashboard/WorkspaceSummaryCard";
 import { Card, CardBody } from "@/components/ui/Card";
-import { getCases, getCurrentUser, getDashboardStats, getLLMStatus, getWorkspaces } from "@/services/api";
+import { getCases, getCurrentUser, getDashboardStats, getLLMStatus, getWorkspace, getWorkspaces } from "@/services/api";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +56,8 @@ async function loadDashboard() {
       getLLMStatus(),
       getCases()
     ]);
-    const workspace = workspaces[0] ?? null;
+    const workspaceSummary = workspaces[0] ?? null;
+    const workspace = workspaceSummary ? await getWorkspace(workspaceSummary.workspace_id) : null;
     const activeCases = workspace
       ? cases.filter((item) => item.workspace_id === workspace.workspace_id).length
       : cases.length;

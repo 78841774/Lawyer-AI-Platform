@@ -10,6 +10,8 @@ v3.2-B adds the AIHome.law branded frontend dashboard and product shell for inte
 
 v3.2-C localizes the main frontend product copy for Chinese legal professionals while keeping the AIHome.law brand in English.
 
+v3.3-A adds the frontend auth shell: the dashboard resolves the current user, current workspace, and current auth mode through authenticated API calls.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -25,6 +27,8 @@ The current identity modes are:
 * `local_fallback`
 * `dev_token`
 * `jwt`
+
+The frontend displays these as `local`, `dev_token`, or `JWT` for the internal alpha shell.
 
 ## Local Demo User
 
@@ -92,6 +96,20 @@ Request:
 Response includes a bearer JWT. The JWT contains `sub`, `exp`, and `jti`.
 
 Production deployments must replace `JWT_SECRET_KEY`; `.env.example` contains local example values only.
+
+The v3.3-A frontend auth shell stores the JWT in browser `localStorage` and attaches it to API requests as:
+
+```bash
+Authorization: Bearer <jwt>
+```
+
+When no JWT is present and the API base is local, the frontend can use the local dev token fallback with:
+
+```bash
+X-Dev-Token: dev-local-token
+```
+
+This fallback is only for local development and does not replace production authentication.
 
 ## Tables
 
@@ -173,6 +191,12 @@ The frontend shell is designed for long-term expansion:
 * Topbar with current workspace, auth mode, runtime provider, and user status.
 * Main content area for workflow pages.
 * Future space for inspector or activity panels.
+
+The Dashboard auth card resolves:
+
+* 当前用户 through `GET /users/me`.
+* 当前工作空间 through `GET /workspaces` followed by `GET /workspaces/{workspace_id}`.
+* 当前认证模式 through `GET /auth/status`.
 
 Navigation groups are reserved for:
 

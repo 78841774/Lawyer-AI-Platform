@@ -8,6 +8,8 @@ v3.2-B surfaces auth state in the AIHome.law Dashboard and provides local login/
 
 v3.2-C localizes the frontend auth dashboard copy for Chinese legal users while keeping API responses and auth modes unchanged.
 
+v3.3-A adds the frontend auth shell for authenticated dashboard, workspace, and cases requests.
+
 ## Scope
 
 This stage does not add:
@@ -90,6 +92,13 @@ Authentication priority:
 * Bearer dev token
 * `X-Dev-Token`
 * local fallback when `APP_ENV=local`
+
+Frontend request behavior in v3.3-A:
+
+* Stored JWT is attached as `Authorization: Bearer <jwt>`.
+* If no JWT is stored and the API base is local, the frontend can attach `X-Dev-Token`.
+* Local cases list can show local mock data when the local API is unavailable.
+* Production deployments should use JWT or a future formal auth provider rather than dev token fallback.
 
 If a token is provided, it must be valid. A wrong token returns `401`, even in local mode.
 
@@ -186,3 +195,5 @@ Local Login calls `POST /auth/login`, stores the returned JWT in `localStorage`,
 When the local JWT is cleared, local development can still show `local_fallback` through backend fallback behavior.
 
 Frontend labels are Chinese-first in v3.2-C, but technical values such as `jwt`, `dev_token`, `local_fallback`, `user_id`, and `source_refs` stay unchanged for compatibility.
+
+In v3.3-A, the auth dashboard card also calls `GET /users/me`, `GET /workspaces`, and `GET /workspaces/{workspace_id}` so the frontend shell reflects the resolved request identity instead of static demo labels.
