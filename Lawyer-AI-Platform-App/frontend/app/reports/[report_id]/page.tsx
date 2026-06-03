@@ -43,14 +43,16 @@ export default async function ReportDetailPage({
             </section>
 
             <section className="rounded-md border border-line bg-white p-5">
-              <div className="text-sm font-semibold text-ink">source_refs</div>
-              <div className="mt-2 text-sm text-slate-600">
-                Analysis: {report.source_refs.analysis_id ?? "n/a"}
+              <div className="text-sm font-semibold text-ink">引用来源 source_refs</div>
+              <div className="mt-3 grid gap-3 md:grid-cols-2">
+                <RuntimeRow label="fact_ids" value={(report.source_refs.fact_ids ?? []).join(", ") || "暂无"} />
+                <RuntimeRow label="analysis_id" value={report.source_refs.analysis_id ?? "暂无"} />
+                <RuntimeRow label="llm_provider" value={report.source_refs.llm_provider ?? "暂无"} />
+                <RuntimeRow label="llm_status" value={report.source_refs.llm_status ?? "暂无"} />
+                <RuntimeRow label="skill_id" value={report.source_refs.skill_id ?? "暂无"} />
+                <RuntimeRow label="package_id" value={report.source_refs.package_id ?? "暂无"} />
               </div>
-              <div className="mt-1 text-sm text-slate-600">
-                Facts: {(report.source_refs.fact_ids ?? []).join(", ") || "n/a"}
-              </div>
-              <div className="mt-1 text-sm text-slate-600">File: {report.storage_path}</div>
+              <div className="mt-3 text-sm text-slate-600">storage_path: {report.storage_path || "暂无"}</div>
             </section>
 
             {report.source_refs.skill_id || report.source_refs.package_id ? (

@@ -15,7 +15,8 @@ const navGroups = [
     label: "智能能力",
     items: [
       { href: "/skills", label: "技能" },
-      { href: "#experience-packages", label: "经验包", disabled: true },
+      { href: "/experience-packages", label: "经验包" },
+      { href: "/skill-registry", label: "技能注册表" },
       { href: "/runtime", label: "运行状态" }
     ]
   },

@@ -14,6 +14,8 @@ v3.3-A adds the frontend auth shell: the dashboard resolves the current user, cu
 
 v3.3-C adds Runtime Trace UI surfaces for case detail, report detail, and runtime status pages. It only displays fields already returned by the backend APIs.
 
+v3.3-D improves Report / Skill visibility across reports, skills, experience packages, and the skill registry without changing the Skill Training main chain.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -216,6 +218,18 @@ Current persisted runtime data is limited:
 * Legal analysis list records persist `analysis_id`, `case_id`, `status`, `risk_level`, `confidence`, and `created_at`, but not independent LLM metadata.
 
 No `/skill-candidates/*` API, Skill Candidate table, Real Business Intake flow, or production deployment is added in this phase.
+
+## Report / Skill Visibility
+
+v3.3-D makes existing report and skill metadata visible in the frontend:
+
+* Reports page displays `report_id`, `case_id`, `report_type`, LLM metadata, Skill metadata, Package metadata, and `created_at`.
+* Report Detail keeps the report runtime information area and structures `source_refs` fields such as `fact_ids`, `analysis_id`, `llm_provider`, `llm_status`, `skill_id`, and `package_id`.
+* Skills page displays Skill records from `GET /skills`, including `case_id`, `evaluation_score`, `validation_status`, and `package_path`.
+* Experience Packages page displays `GET /experience-packages` results and provides a manifest detail page.
+* Skill Registry page displays `GET /skill-registry` results and provides publish/deprecate actions backed by existing endpoints.
+
+This phase does not modify Skill Training, add `/skill-candidates/*`, or change backend persistence.
 
 Navigation groups are reserved for:
 

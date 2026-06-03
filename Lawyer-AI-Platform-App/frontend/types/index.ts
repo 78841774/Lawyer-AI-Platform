@@ -124,21 +124,58 @@ export type Report = {
 
 export type Skill = {
   skill_id: string;
+  case_id?: string | null;
   skill_name: string;
   domain: string;
   version: string;
-  package_id: string;
-  package_path: string;
+  package_id?: string | null;
+  package_path?: string | null;
   status: string;
+  evaluation_score?: number | null;
+  validation_status?: string | null;
+  created_at?: string | null;
+  validated_at?: string | null;
 };
 
 export type ExperiencePackage = {
   package_id: string;
+  skill_id: string;
   name: string;
   domain: string;
   version: string;
   status: string;
   package_path: string;
+  created_at: string;
+};
+
+export type ExperiencePackageDetail = ExperiencePackage & {
+  manifest: Record<string, unknown>;
+};
+
+export type SkillRegistryEntry = {
+  skill_id: string;
+  skill_name: string;
+  domain: string;
+  version: string;
+  status: string;
+  validation_status: string;
+  evaluation_score: number;
+  package_id: string | null;
+  package_status: string | null;
+};
+
+export type SkillRegistryDetail = {
+  skill: Pick<
+    Skill,
+    "skill_id" | "skill_name" | "domain" | "version" | "status" | "validation_status" | "evaluation_score"
+  >;
+  evaluation: Record<string, unknown>;
+  package: ExperiencePackage | null;
+  lifecycle_status: {
+    skill_status: string;
+    validation_status: string;
+    package_status: string | null;
+  };
 };
 
 export type CaseSkillBinding = {

@@ -9,6 +9,10 @@ import type {
   Report,
   RuntimeStatus,
   Skill,
+  ExperiencePackage,
+  ExperiencePackageDetail,
+  SkillRegistryDetail,
+  SkillRegistryEntry,
   User,
   Workspace
 } from "@/types";
@@ -27,6 +31,8 @@ export type {
   Material as MaterialRecord,
   Report as ReportRecord,
   RuntimeStatus as LLMStatus,
+  ExperiencePackage as ExperiencePackageRecord,
+  SkillRegistryEntry as SkillRegistryRecord,
   Skill as WorkspaceSkillRecord,
   User as UserRecord,
   Workspace as WorkspaceRecord
@@ -277,6 +283,12 @@ export const reportApi = {
 };
 
 export const skillApi = {
+  list: async () => {
+    const response = await request<{ skills: Skill[] }>("/skills");
+    return response.skills;
+  },
+  get: (skillId: string) => request<Skill>(`/skills/${skillId}`),
+  evaluate: (skillId: string) => postJson<Record<string, unknown>>(`/skills/${skillId}/evaluate`),
   listPublished: async () => {
     const response = await request<{ skills: Skill[] }>("/workspace/skills");
     return response.skills;
@@ -288,6 +300,26 @@ export const skillApi = {
     const response = await request<{ skills: CaseSkillBinding[] }>(`/cases/${caseId}/skills`);
     return response.skills;
   }
+};
+
+export const experiencePackageApi = {
+  list: async () => {
+    const response = await request<{ experience_packages: ExperiencePackage[] }>("/experience-packages");
+    return response.experience_packages;
+  },
+  get: (packageId: string) => request<ExperiencePackageDetail>(`/experience-packages/${packageId}`),
+  getManifest: (packageId: string) => request<Record<string, unknown>>(`/experience-packages/${packageId}/manifest`),
+  buildForSkill: (skillId: string) => postJson<ExperiencePackage>(`/skills/${skillId}/packages/build`)
+};
+
+export const skillRegistryApi = {
+  list: async () => {
+    const response = await request<{ skills: SkillRegistryEntry[] }>("/skill-registry");
+    return response.skills;
+  },
+  get: (skillId: string) => request<SkillRegistryDetail>(`/skill-registry/${skillId}`),
+  publish: (skillId: string) => postJson<Record<string, unknown>>(`/skill-registry/${skillId}/publish`),
+  deprecate: (skillId: string) => postJson<Record<string, unknown>>(`/skill-registry/${skillId}/deprecate`)
 };
 
 export const runtimeApi = {
@@ -323,11 +355,22 @@ export const getCaseReports = reportApi.listByCase;
 export const getReports = reportApi.list;
 export const getReport = reportApi.get;
 export const generateReport = reportApi.generate;
+export const getSkills = skillApi.list;
+export const getSkill = skillApi.get;
+export const evaluateSkill = skillApi.evaluate;
 export const getWorkspaceSkills = skillApi.listPublished;
 export const getWorkspaceSkill = skillApi.getPublished;
 export const applySkillToCase = skillApi.applyToCase;
 export const getCaseSkills = skillApi.listForCase;
 export const getLlmStatus = runtimeApi.llmStatus;
+export const getExperiencePackages = experiencePackageApi.list;
+export const getExperiencePackage = experiencePackageApi.get;
+export const getExperiencePackageManifest = experiencePackageApi.getManifest;
+export const buildExperiencePackage = experiencePackageApi.buildForSkill;
+export const getSkillRegistry = skillRegistryApi.list;
+export const getSkillRegistryDetail = skillRegistryApi.get;
+export const publishSkillToRegistry = skillRegistryApi.publish;
+export const deprecateSkillInRegistry = skillRegistryApi.deprecate;
 
 export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
   const [caseRecord, materials, facts, analyses, reports] = await Promise.all([

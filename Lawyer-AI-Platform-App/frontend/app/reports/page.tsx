@@ -38,7 +38,6 @@ export default async function ReportsPage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Badge tone="blue">{report.status}</Badge>
-                    <Badge tone="muted">导出</Badge>
                     <Badge tone="muted">查看报告</Badge>
                   </div>
                 </div>
@@ -46,12 +45,14 @@ export default async function ReportsPage() {
                   {report.content.replaceAll("\n", " ").slice(0, 180)}
                 </p>
                 <div className="mt-3 grid gap-2 text-xs text-muted md:grid-cols-4">
-                  <span>报告 ID: {report.report_id}</span>
-                  <span>报告类型: {report.report_type}</span>
-                  <span>使用技能: {report.source_refs.skill_id ?? "-"}</span>
-                  <span>模型提供方: {report.source_refs.llm_provider ?? "-"}</span>
-                  <span>package_id: {report.source_refs.package_id ?? "-"}</span>
-                  <span>模型状态: {report.source_refs.llm_status ?? "-"}</span>
+                  <Meta label="report_id" value={report.report_id} />
+                  <Meta label="case_id" value={report.case_id} />
+                  <Meta label="report_type" value={report.report_type} />
+                  <Meta label="llm_provider" value={report.llm_provider ?? report.source_refs.llm_provider} />
+                  <Meta label="llm_status" value={report.llm_status ?? report.source_refs.llm_status} />
+                  <Meta label="skill_used / skill_id" value={report.skill_used ?? report.source_refs.skill_id} />
+                  <Meta label="package_used / package_id" value={report.package_used ?? report.source_refs.package_id} />
+                  <Meta label="created_at" value={formatDate(report.created_at)} />
                 </div>
               </Link>
             ))
@@ -78,4 +79,17 @@ function StatusMessage({ message }: { message: string }) {
       {message}
     </div>
   );
+}
+
+function Meta({ label, value }: { label: string; value?: string | null }) {
+  return (
+    <span>
+      <span className="font-medium text-ink">{label}: </span>
+      {value || "暂无"}
+    </span>
+  );
+}
+
+function formatDate(value: string) {
+  return new Date(value).toLocaleString();
 }
