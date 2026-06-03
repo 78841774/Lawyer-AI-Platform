@@ -11,7 +11,10 @@ from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.legal_analysis_repository import LegalAnalysisRepository
 from app.repositories.report_repository import ReportRepository
+from app.repositories.skill_repository import SkillRepository
+from app.repositories.workspace_skill_repository import WorkspaceSkillRepository
 from app.services.report_service import ReportService
+from app.services.skill_runtime_service import SkillRuntimeService
 
 router = APIRouter(prefix="/cases/{case_id}/reports", tags=["reports"])
 
@@ -22,7 +25,11 @@ def get_report_service(db: Session) -> ReportService:
         fact_repository=FactRepository(db),
         legal_analysis_repository=LegalAnalysisRepository(db),
         case_repository=CaseRepository(db),
-        storage_root=settings.storage_root
+        storage_root=settings.storage_root,
+        skill_runtime_service=SkillRuntimeService(
+            skill_repository=SkillRepository(db),
+            workspace_skill_repository=WorkspaceSkillRepository(db)
+        )
     )
 
 

@@ -8,6 +8,7 @@ from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.legal_analysis_repository import LegalAnalysisRepository
 from app.repositories.report_repository import ReportRepository
+from app.services.skill_runtime_service import SkillRuntimeService
 
 
 class ReportService:
@@ -18,13 +19,15 @@ class ReportService:
         fact_repository: FactRepository,
         legal_analysis_repository: LegalAnalysisRepository,
         case_repository: CaseRepository,
-        storage_root: str
+        storage_root: str,
+        skill_runtime_service: SkillRuntimeService | None = None
     ) -> None:
         self.report_repository = report_repository
         self.fact_repository = fact_repository
         self.legal_analysis_repository = legal_analysis_repository
         self.case_repository = case_repository
         self.storage_root = Path(storage_root)
+        self.skill_runtime_service = skill_runtime_service
 
     def generate_report(self, case_id: str) -> Report:
         case = self.case_repository.get_by_case_id(case_id)
@@ -39,6 +42,7 @@ class ReportService:
         if not analyses:
             raise ValueError("analysis required")
 
+        runtime_context = self._get_runtime_context(case_id)
         latest_analysis = analyses[-1]
         report_id = self.report_repository.next_report_id()
         version = self.report_repository.next_version(case_id)
@@ -47,7 +51,8 @@ class ReportService:
             case_id=case_id,
             title=title,
             facts=facts,
-            analysis=latest_analysis
+            analysis=latest_analysis,
+            runtime_context=runtime_context
         )
         storage_path = self._write_report_file(
             case_id=case_id,
@@ -58,6 +63,9 @@ class ReportService:
             "fact_ids": [fact.fact_id for fact in facts],
             "analysis_id": latest_analysis.analysis_id
         }
+        if runtime_context is not None:
+            source_refs["skill_id"] = self._runtime_value(runtime_context, "skill_id")
+            source_refs["package_id"] = self._runtime_value(runtime_context, "package_id")
 
         return self.report_repository.create(
             report_id=report_id,
@@ -89,7 +97,8 @@ class ReportService:
         case_id: str,
         title: str,
         facts: list[Fact],
-        analysis: LegalAnalysis
+        analysis: LegalAnalysis,
+        runtime_context: dict[str, object] | None = None
     ) -> str:
         issues = json.loads(analysis.issues)
         rules = json.loads(analysis.rules)
@@ -102,6 +111,7 @@ class ReportService:
                 "",
                 f"Case ID: {case_id}",
                 f"Analysis ID: {analysis.analysis_id}",
+                *self._format_skill_used(runtime_context),
                 "",
                 "## Executive Summary",
                 f"The system generated a preliminary legal report from {len(extracted_facts)} extracted facts and the latest legal analysis.",
@@ -147,3 +157,27 @@ class ReportService:
         ] or ["- No rules were generated."]
         reasoning_lines = [f"- Reasoning: {item}" for item in reasoning] or ["- No reasoning was generated."]
         return "\n".join(rule_lines + reasoning_lines)
+
+    def _get_runtime_context(self, case_id: str) -> dict[str, object] | None:
+        if self.skill_runtime_service is None:
+            return None
+        return self.skill_runtime_service.get_case_runtime_context(case_id)
+
+    def _runtime_value(
+        self,
+        runtime_context: dict[str, object] | None,
+        key: str
+    ) -> str | None:
+        if runtime_context is None:
+            return None
+        value = runtime_context.get(key)
+        if value is None:
+            return None
+        return str(value)
+
+    def _format_skill_used(self, runtime_context: dict[str, object] | None) -> list[str]:
+        if runtime_context is None:
+            return []
+        skill_id = self._runtime_value(runtime_context, "skill_id")
+        package_id = self._runtime_value(runtime_context, "package_id")
+        return [f"Skill Used: {skill_id} (Package: {package_id})"]

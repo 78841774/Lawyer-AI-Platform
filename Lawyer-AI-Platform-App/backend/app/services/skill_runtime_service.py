@@ -30,3 +30,26 @@ class SkillRuntimeService:
         summary["status"] = "loaded"
         return summary
 
+    def get_case_runtime_context(self, case_id: str) -> dict[str, object] | None:
+        bindings = [
+            binding
+            for binding in self.workspace_skill_repository.list_bindings_by_case_id(case_id)
+            if binding.status == "applied"
+        ]
+        if not bindings:
+            return None
+
+        for binding in reversed(bindings):
+            published = self.workspace_skill_repository.get_published_skill(binding.skill_id)
+            if published is None:
+                continue
+
+            runtime_package = self.package_loader.load(binding.package_id)
+            return {
+                "skill_id": str(runtime_package.get("skill_id") or binding.skill_id),
+                "package_id": str(runtime_package.get("package_id") or binding.package_id),
+                "domain": runtime_package.get("domain"),
+                "version": runtime_package.get("version")
+            }
+
+        return None

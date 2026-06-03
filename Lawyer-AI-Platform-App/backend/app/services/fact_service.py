@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from pathlib import Path
 
 from app.models.fact import Fact
@@ -5,6 +6,14 @@ from app.models.material import Material
 from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.material_repository import MaterialRepository
+from app.services.skill_runtime_service import SkillRuntimeService
+
+
+@dataclass(frozen=True)
+class FactExtractionResult:
+    facts: list[Fact]
+    skill_used: str | None = None
+    package_used: str | None = None
 
 
 class FactService:
@@ -13,23 +22,33 @@ class FactService:
         *,
         fact_repository: FactRepository,
         material_repository: MaterialRepository,
-        case_repository: CaseRepository
+        case_repository: CaseRepository,
+        skill_runtime_service: SkillRuntimeService | None = None
     ) -> None:
         self.fact_repository = fact_repository
         self.material_repository = material_repository
         self.case_repository = case_repository
+        self.skill_runtime_service = skill_runtime_service
 
     def extract_facts(self, case_id: str) -> list[Fact]:
+        return self.extract_facts_with_runtime(case_id).facts
+
+    def extract_facts_with_runtime(self, case_id: str) -> FactExtractionResult:
         if self.case_repository.get_by_case_id(case_id) is None:
             raise ValueError("case not found")
 
+        runtime_context = self._get_runtime_context(case_id)
         materials = self.material_repository.list_by_case_id(case_id)
         facts: list[Fact] = []
 
         for material in materials:
             facts.extend(self._extract_material_facts(material))
 
-        return facts
+        return FactExtractionResult(
+            facts=facts,
+            skill_used=self._runtime_value(runtime_context, "skill_id"),
+            package_used=self._runtime_value(runtime_context, "package_id")
+        )
 
     def list_facts(self, case_id: str) -> list[Fact]:
         if self.case_repository.get_by_case_id(case_id) is None:
@@ -87,3 +106,20 @@ class FactService:
         if len(lines) > 1:
             return lines
         return [text]
+
+    def _get_runtime_context(self, case_id: str) -> dict[str, object] | None:
+        if self.skill_runtime_service is None:
+            return None
+        return self.skill_runtime_service.get_case_runtime_context(case_id)
+
+    def _runtime_value(
+        self,
+        runtime_context: dict[str, object] | None,
+        key: str
+    ) -> str | None:
+        if runtime_context is None:
+            return None
+        value = runtime_context.get(key)
+        if value is None:
+            return None
+        return str(value)

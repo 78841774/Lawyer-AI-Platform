@@ -8,7 +8,10 @@ from app.models.fact import Fact
 from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.material_repository import MaterialRepository
+from app.repositories.skill_repository import SkillRepository
+from app.repositories.workspace_skill_repository import WorkspaceSkillRepository
 from app.services.fact_service import FactService
+from app.services.skill_runtime_service import SkillRuntimeService
 
 router = APIRouter(prefix="/cases/{case_id}/facts", tags=["facts"])
 
@@ -17,7 +20,11 @@ def get_fact_service(db: Session) -> FactService:
     return FactService(
         fact_repository=FactRepository(db),
         material_repository=MaterialRepository(db),
-        case_repository=CaseRepository(db)
+        case_repository=CaseRepository(db),
+        skill_runtime_service=SkillRuntimeService(
+            skill_repository=SkillRepository(db),
+            workspace_skill_repository=WorkspaceSkillRepository(db)
+        )
     )
 
 
@@ -42,13 +49,20 @@ def extract_facts(
 ) -> dict[str, Any]:
     service = get_fact_service(db)
     try:
-        facts = service.extract_facts(case_id)
+        result = service.extract_facts_with_runtime(case_id)
     except ValueError as error:
-        raise HTTPException(status_code=404, detail=str(error)) from error
-    return {
+        if str(error) == "case not found":
+            raise HTTPException(status_code=404, detail=str(error)) from error
+        raise HTTPException(status_code=500, detail="fact extraction failed") from error
+    response = {
         "case_id": case_id,
-        "facts": [serialize_fact(fact) for fact in facts]
+        "facts": [serialize_fact(fact) for fact in result.facts]
     }
+    if result.skill_used is not None:
+        response["skill_used"] = result.skill_used
+    if result.package_used is not None:
+        response["package_used"] = result.package_used
+    return response
 
 
 @router.get("")

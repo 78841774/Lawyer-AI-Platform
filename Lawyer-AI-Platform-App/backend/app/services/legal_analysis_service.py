@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import json
 
 from app.models.fact import Fact
@@ -5,6 +6,14 @@ from app.models.legal_analysis import LegalAnalysis
 from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.legal_analysis_repository import LegalAnalysisRepository
+from app.services.skill_runtime_service import SkillRuntimeService
+
+
+@dataclass(frozen=True)
+class LegalAnalysisRunResult:
+    analysis: LegalAnalysis
+    skill_used: str | None = None
+    package_used: str | None = None
 
 
 class LegalAnalysisService:
@@ -13,22 +22,28 @@ class LegalAnalysisService:
         *,
         legal_analysis_repository: LegalAnalysisRepository,
         fact_repository: FactRepository,
-        case_repository: CaseRepository
+        case_repository: CaseRepository,
+        skill_runtime_service: SkillRuntimeService | None = None
     ) -> None:
         self.legal_analysis_repository = legal_analysis_repository
         self.fact_repository = fact_repository
         self.case_repository = case_repository
+        self.skill_runtime_service = skill_runtime_service
 
     def run_analysis(self, case_id: str) -> LegalAnalysis:
+        return self.run_analysis_with_runtime(case_id).analysis
+
+    def run_analysis_with_runtime(self, case_id: str) -> LegalAnalysisRunResult:
         if self.case_repository.get_by_case_id(case_id) is None:
             raise ValueError("case not found")
 
+        runtime_context = self._get_runtime_context(case_id)
         facts = self.fact_repository.list_by_case_id(case_id)
         if not facts:
             raise ValueError("facts required")
 
         payload = self._build_rule_based_analysis(facts)
-        return self.legal_analysis_repository.create(
+        analysis = self.legal_analysis_repository.create(
             analysis_id=self.legal_analysis_repository.next_analysis_id(),
             case_id=case_id,
             issues=json.dumps(payload["issues"], ensure_ascii=False),
@@ -38,6 +53,11 @@ class LegalAnalysisService:
             risk_level=payload["risk_level"],
             confidence=payload["confidence"],
             status="completed"
+        )
+        return LegalAnalysisRunResult(
+            analysis=analysis,
+            skill_used=self._runtime_value(runtime_context, "skill_id"),
+            package_used=self._runtime_value(runtime_context, "package_id")
         )
 
     def list_analyses(self, case_id: str) -> list[LegalAnalysis]:
@@ -92,3 +112,20 @@ class LegalAnalysisService:
         if skipped_facts:
             return "medium"
         return "medium"
+
+    def _get_runtime_context(self, case_id: str) -> dict[str, object] | None:
+        if self.skill_runtime_service is None:
+            return None
+        return self.skill_runtime_service.get_case_runtime_context(case_id)
+
+    def _runtime_value(
+        self,
+        runtime_context: dict[str, object] | None,
+        key: str
+    ) -> str | None:
+        if runtime_context is None:
+            return None
+        value = runtime_context.get(key)
+        if value is None:
+            return None
+        return str(value)

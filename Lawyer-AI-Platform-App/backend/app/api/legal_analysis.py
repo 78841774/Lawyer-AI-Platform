@@ -9,7 +9,10 @@ from app.models.legal_analysis import LegalAnalysis
 from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.legal_analysis_repository import LegalAnalysisRepository
+from app.repositories.skill_repository import SkillRepository
+from app.repositories.workspace_skill_repository import WorkspaceSkillRepository
 from app.services.legal_analysis_service import LegalAnalysisService
+from app.services.skill_runtime_service import SkillRuntimeService
 
 router = APIRouter(prefix="/cases/{case_id}/analysis", tags=["legal-analysis"])
 
@@ -18,7 +21,11 @@ def get_legal_analysis_service(db: Session) -> LegalAnalysisService:
     return LegalAnalysisService(
         legal_analysis_repository=LegalAnalysisRepository(db),
         fact_repository=FactRepository(db),
-        case_repository=CaseRepository(db)
+        case_repository=CaseRepository(db),
+        skill_runtime_service=SkillRuntimeService(
+            skill_repository=SkillRepository(db),
+            workspace_skill_repository=WorkspaceSkillRepository(db)
+        )
     )
 
 
@@ -44,7 +51,7 @@ def run_analysis(
 ) -> dict[str, Any]:
     service = get_legal_analysis_service(db)
     try:
-        analysis = service.run_analysis(case_id)
+        result = service.run_analysis_with_runtime(case_id)
     except ValueError as error:
         if str(error) == "case not found":
             raise HTTPException(status_code=404, detail=str(error)) from error
@@ -56,7 +63,12 @@ def run_analysis(
         raise HTTPException(status_code=500, detail="analysis generation failed") from error
     except Exception as error:
         raise HTTPException(status_code=500, detail="analysis generation failed") from error
-    return serialize_analysis(analysis)
+    response = serialize_analysis(result.analysis)
+    if result.skill_used is not None:
+        response["skill_used"] = result.skill_used
+    if result.package_used is not None:
+        response["package_used"] = result.package_used
+    return response
 
 
 @router.get("")
