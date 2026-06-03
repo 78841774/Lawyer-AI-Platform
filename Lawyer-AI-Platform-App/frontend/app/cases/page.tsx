@@ -1,14 +1,20 @@
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/Badge";
-import { Card } from "@/components/ui/Card";
+import { Card, CardBody } from "@/components/ui/Card";
+import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getCases } from "@/services/api";
+import { getCases, getCurrentUser, getWorkspace, getWorkspaces } from "@/services/api";
 
 export const dynamic = "force-dynamic";
 
-export default async function CaseListPage() {
-  const { cases, error } = await loadCases();
+export default async function CaseListPage({
+  searchParams
+}: {
+  searchParams?: { workspace_id?: string };
+}) {
+  const selectedWorkspaceId = searchParams?.workspace_id;
+  const { cases, user, workspace, error } = await loadCases(selectedWorkspaceId);
 
   return (
     <AppShell>
@@ -28,6 +34,16 @@ export default async function CaseListPage() {
         />
 
         {error ? <StatusMessage message={error} /> : null}
+
+        <Card>
+          <CardBody>
+            <div className="grid gap-4 md:grid-cols-3">
+              <InfoRow label="当前用户" value={user ? `${user.display_name} / ${user.user_id}` : "-"} />
+              <InfoRow label="当前工作空间" value={workspace ? `${workspace.name} / ${workspace.workspace_id}` : "-"} />
+              <InfoRow label="当前列表案件数" value={String(cases.length)} />
+            </div>
+          </CardBody>
+        </Card>
 
         <Card>
           <div className="grid gap-3 border-b border-line bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted md:grid-cols-8">
@@ -68,11 +84,21 @@ export default async function CaseListPage() {
   );
 }
 
-async function loadCases() {
+async function loadCases(selectedWorkspaceId?: string) {
   try {
-    return { cases: await getCases(), error: null };
+    const [allCases, user, workspaces] = await Promise.all([
+      getCases(),
+      getCurrentUser(),
+      getWorkspaces()
+    ]);
+    const workspaceId = selectedWorkspaceId ?? workspaces[0]?.workspace_id;
+    const workspace = workspaceId ? await getWorkspace(workspaceId) : null;
+    const cases = workspaceId
+      ? allCases.filter((item) => item.workspace_id === workspaceId)
+      : allCases;
+    return { cases, user, workspace, error: null };
   } catch {
-    return { cases: [], error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
+    return { cases: [], user: null, workspace: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 

@@ -137,6 +137,14 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
 
       {detail ? (
         <>
+          <WorkflowSection title="案件归属">
+            <div className="grid gap-4 md:grid-cols-3">
+              <InfoRow label="workspace_id" value={detail.case.workspace_id} />
+              <InfoRow label="owner_user_id" value={detail.case.owner_user_id} />
+              <InfoRow label="created_at" value={formatDate(detail.case.created_at)} />
+            </div>
+          </WorkflowSection>
+
           <WorkflowSection title="案件概览">
             <div className="grid gap-4 md:grid-cols-3">
               <InfoRow label="案件类型" value={detail.case.case_type} />

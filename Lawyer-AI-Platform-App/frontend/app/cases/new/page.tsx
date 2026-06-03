@@ -1,18 +1,37 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
+import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { ApiError, createCase } from "@/services/api";
+import { ApiError, createCase, getCurrentUser, getWorkspace, getWorkspaces } from "@/services/api";
+import type { User, Workspace } from "@/types";
 
 export default function NewCasePage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+  const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    async function loadContext() {
+      try {
+        const [nextUser, workspaces] = await Promise.all([getCurrentUser(), getWorkspaces()]);
+        const workspaceSummary = workspaces[0] ?? null;
+        const nextWorkspace = workspaceSummary ? await getWorkspace(workspaceSummary.workspace_id) : null;
+        setUser(nextUser);
+        setWorkspace(nextWorkspace);
+      } catch {
+        setMessage("当前用户或工作空间暂不可用，请确认后端服务已启动。");
+      }
+    }
+    void loadContext();
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,8 +60,17 @@ export default function NewCasePage() {
         <SectionHeader
           eyebrow="AIHome.law 案件"
           title="创建案件"
-          description="创建新的法律 AI 工作空间记录。"
+          description="创建后的案件将自动归属当前工作空间与当前用户。"
         />
+
+        <Card>
+          <CardBody>
+            <div className="grid gap-4 md:grid-cols-2">
+              <InfoRow label="当前用户" value={user ? `${user.display_name} / ${user.user_id}` : "-"} />
+              <InfoRow label="当前工作空间" value={workspace ? `${workspace.name} / ${workspace.workspace_id}` : "-"} />
+            </div>
+          </CardBody>
+        </Card>
 
         <Card>
           <CardBody>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
@@ -27,7 +28,7 @@ export default async function WorkspacesPage() {
             <span>所有人 ID</span>
             <span>状态</span>
             <span>创建时间</span>
-            <span>成员</span>
+            <span>查看案件</span>
           </div>
           {workspaces.length > 0 ? (
             workspaces.map((workspace) => (
@@ -39,10 +40,12 @@ export default async function WorkspacesPage() {
                   <Badge tone="gold">{workspace.status}</Badge>
                 </span>
                 <span className="text-muted">{formatDate(workspace.created_at)}</span>
-                <span className="flex flex-wrap gap-1">
-                  <Badge tone="muted">role</Badge>
-                  <Badge tone="muted">邀请成员</Badge>
-                </span>
+                <Link
+                  href={`/cases?workspace_id=${workspace.workspace_id}`}
+                  className="font-medium text-accent hover:text-blue"
+                >
+                  查看案件
+                </Link>
               </article>
             ))
           ) : (
