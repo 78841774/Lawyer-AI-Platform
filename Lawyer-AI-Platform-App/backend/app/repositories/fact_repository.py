@@ -54,3 +54,6 @@ class FactRepository:
                 .order_by(Fact.created_at.asc(), Fact.id.asc())
             ).scalars()
         )
+
+    def count_all(self) -> int:
+        return self.db.query(Fact).count()

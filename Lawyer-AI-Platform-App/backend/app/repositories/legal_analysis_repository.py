@@ -56,3 +56,6 @@ class LegalAnalysisRepository:
                 .order_by(LegalAnalysis.created_at.asc(), LegalAnalysis.id.asc())
             ).scalars()
         )
+
+    def count_all(self) -> int:
+        return self.db.query(LegalAnalysis).count()

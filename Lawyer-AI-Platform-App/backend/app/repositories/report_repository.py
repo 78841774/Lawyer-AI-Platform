@@ -59,3 +59,13 @@ class ReportRepository:
                 .order_by(Report.created_at.asc(), Report.id.asc())
             ).scalars()
         )
+
+    def list_all(self) -> list[Report]:
+        return list(
+            self.db.execute(
+                select(Report).order_by(Report.created_at.asc(), Report.id.asc())
+            ).scalars()
+        )
+
+    def count_all(self) -> int:
+        return self.db.query(Report).count()

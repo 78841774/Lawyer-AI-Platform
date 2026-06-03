@@ -39,3 +39,13 @@ class CaseRepository:
         return self.db.execute(
             select(Case).where(Case.case_id == case_id)
         ).scalar_one_or_none()
+
+    def list_all(self) -> list[Case]:
+        return list(
+            self.db.execute(
+                select(Case).order_by(Case.created_at.asc(), Case.id.asc())
+            ).scalars()
+        )
+
+    def count_all(self) -> int:
+        return self.db.query(Case).count()

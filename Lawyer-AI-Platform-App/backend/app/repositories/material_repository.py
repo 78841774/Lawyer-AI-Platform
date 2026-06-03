@@ -50,3 +50,6 @@ class MaterialRepository:
                 .order_by(Material.created_at.asc())
             ).scalars()
         )
+
+    def count_all(self) -> int:
+        return self.db.query(Material).count()

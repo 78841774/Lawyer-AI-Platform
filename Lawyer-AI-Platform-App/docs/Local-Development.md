@@ -245,3 +245,43 @@ If a case has no legal analysis yet, run Legal Analysis Runtime first:
 ```bash
 curl -X POST http://127.0.0.1:8001/cases/case_001/analysis/run
 ```
+
+## Workspace API
+
+Workspace API v1.2 provides read endpoints for the frontend workspace dashboard.
+
+List all cases:
+
+```bash
+curl http://127.0.0.1:8001/cases
+```
+
+List all reports:
+
+```bash
+curl http://127.0.0.1:8001/reports
+```
+
+Get one report:
+
+```bash
+curl http://127.0.0.1:8001/reports/report_001
+```
+
+Get dashboard stats:
+
+```bash
+curl http://127.0.0.1:8001/dashboard/stats
+```
+
+Expected stats response:
+
+```json
+{
+  "cases": 1,
+  "materials": 1,
+  "facts": 2,
+  "analyses": 1,
+  "reports": 2
+}
+```
