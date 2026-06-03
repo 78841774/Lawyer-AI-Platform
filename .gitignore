@@ -141,3 +141,9 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Local runtime files
+Lawyer-AI-Platform-App/backend/local.db
+Lawyer-AI-Platform-App/storage/original-files/
+Lawyer-AI-Platform-App/storage/ocr-files/
+Lawyer-AI-Platform-App/storage/reports/
