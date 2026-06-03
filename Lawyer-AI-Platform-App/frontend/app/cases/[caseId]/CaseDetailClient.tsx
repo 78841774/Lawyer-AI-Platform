@@ -15,13 +15,14 @@ import {
   getWorkspaceSkills,
   runLegalAnalysis,
   uploadMaterial,
+  uploadFolderMaterials,
   WorkspaceSkillRecord
 } from "@/services/api";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
-import type { RuntimeStatus } from "@/types";
+import type { Material, RuntimeStatus } from "@/types";
 
 type ActionStatus = {
   loading: boolean;
@@ -35,9 +36,16 @@ const initialActionStatus: ActionStatus = {
   kind: "idle"
 };
 
+const folderInputProps = {
+  webkitdirectory: "",
+  directory: ""
+} as Record<string, string>;
+
 export function CaseDetailClient({ caseId }: { caseId: string }) {
   const [detail, setDetail] = useState<CaseDetail | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFolderFiles, setSelectedFolderFiles] = useState<File[]>([]);
+  const [folderUploadSupported, setFolderUploadSupported] = useState(true);
   const [pageStatus, setPageStatus] = useState<ActionStatus>({
     ...initialActionStatus,
     loading: true,
@@ -50,6 +58,9 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
 
   useEffect(() => {
     void loadDetail();
+    setFolderUploadSupported(
+      typeof document !== "undefined" && "webkitdirectory" in document.createElement("input")
+    );
   }, [caseId]);
 
   async function loadDetail() {
@@ -98,6 +109,10 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
     setSelectedFile(event.target.files?.[0] ?? null);
   }
 
+  function handleFolderChange(event: ChangeEvent<HTMLInputElement>) {
+    setSelectedFolderFiles(Array.from(event.target.files ?? []));
+  }
+
   async function handleUpload() {
     if (!selectedFile) {
       setActionStatus({ loading: false, message: "请选择案件材料文件。", kind: "error" });
@@ -106,6 +121,27 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
     await runAction("上传材料", async () => {
       await uploadMaterial(caseId, selectedFile);
       setSelectedFile(null);
+    });
+  }
+
+  async function handleFolderUpload() {
+    if (!folderUploadSupported) {
+      setActionStatus({
+        loading: false,
+        message: "当前浏览器不支持文件夹上传，请改为多文件上传或压缩包上传。",
+        kind: "error"
+      });
+      return;
+    }
+    if (selectedFolderFiles.length === 0) {
+      setActionStatus({ loading: false, message: "请选择案件材料文件夹。", kind: "error" });
+      return;
+    }
+    await runAction("上传文件夹", async () => {
+      const batchId = `folder_${Date.now()}`;
+      const uploaded = await uploadFolderMaterials(caseId, selectedFolderFiles, batchId);
+      setSelectedFolderFiles([]);
+      return `已上传 ${uploaded.length} 份文件夹材料。`;
     });
   }
 
@@ -175,10 +211,10 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
           </WorkflowSection>
 
           <WorkflowSection title="材料">
-            <div className="flex flex-wrap items-end gap-3">
+            <div className="grid gap-4 lg:grid-cols-2">
               <div className="min-w-64 flex-1">
                 <label htmlFor="material" className="text-sm font-medium text-ink">
-                  上传材料
+                  上传文件
                 </label>
                 <input
                   id="material"
@@ -187,10 +223,41 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                   onChange={handleFileChange}
                   className="mt-2 block w-full rounded-md border border-line px-3 py-2 text-sm"
                 />
+                <Button onClick={handleUpload} disabled={actionStatus.loading} className="mt-3">
+                  上传文件
+                </Button>
               </div>
-              <Button onClick={handleUpload} disabled={actionStatus.loading}>
-                上传材料
-              </Button>
+              <div className="min-w-64 flex-1">
+                <label htmlFor="material-folder" className="text-sm font-medium text-ink">
+                  上传文件夹
+                </label>
+                <input
+                  id="material-folder"
+                  type="file"
+                  multiple
+                  onChange={handleFolderChange}
+                  className="mt-2 block w-full rounded-md border border-line px-3 py-2 text-sm"
+                  {...folderInputProps}
+                />
+                {!folderUploadSupported ? (
+                  <p className="mt-2 text-xs text-muted">
+                    当前浏览器不支持文件夹上传，请改为多文件上传或压缩包上传。
+                  </p>
+                ) : (
+                  <p className="mt-2 text-xs text-muted">
+                    已选择 {selectedFolderFiles.length} 个文件，系统会保留文件夹相对路径。
+                  </p>
+                )}
+                <Button
+                  onClick={handleFolderUpload}
+                  disabled={actionStatus.loading || !folderUploadSupported}
+                  className="mt-3"
+                >
+                  上传文件夹
+                </Button>
+              </div>
+            </div>
+            <div>
               <Button
                 variant="secondary"
                 disabled={actionStatus.loading}
@@ -206,15 +273,7 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                 抽取事实
               </Button>
             </div>
-            <ListArea empty="暂无已上传材料。">
-              {detail.materials.map((material) => (
-                <ListItem
-                  key={material.material_id}
-                  title={material.filename}
-                  meta={`${material.material_id} · ${material.material_type} · ${material.status}`}
-                />
-              ))}
-            </ListArea>
+            <MaterialTree materials={detail.materials} />
           </WorkflowSection>
 
           <WorkflowSection title="事实">
@@ -340,6 +399,80 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
       ) : null}
     </div>
   );
+}
+
+function MaterialTree({ materials }: { materials: Material[] }) {
+  if (materials.length === 0) {
+    return <div className="text-sm text-muted">暂无已上传材料。</div>;
+  }
+
+  const groups = groupMaterialsByFolder(materials);
+  return (
+    <div className="space-y-4">
+      {groups.map((group) => (
+        <section key={group.folderPath} className="rounded-md border border-line bg-slate-50 p-3">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <h3 className="text-sm font-semibold text-ink">{group.label}</h3>
+            <Badge tone="muted">{group.materials.length} 文件</Badge>
+          </div>
+          <div className="space-y-2">
+            {group.materials.map((material) => (
+              <article key={material.material_id} className="rounded-md border border-line bg-white p-3">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <div className="text-sm font-medium text-ink">
+                      {displayValue(material.original_filename || material.filename)}
+                    </div>
+                    <div className="mt-1 text-xs text-muted">
+                      relative_path: {displayValue(material.relative_path || material.filename)}
+                    </div>
+                  </div>
+                  <Badge tone="muted">{displayValue(material.file_ext || material.material_type)}</Badge>
+                </div>
+                <div className="mt-2 grid gap-2 text-xs text-muted md:grid-cols-3">
+                  <span>material_id: {material.material_id}</span>
+                  <span>类型: {material.material_type}</span>
+                  <span>上传批次: {displayValue(material.upload_batch_id)}</span>
+                  <span>状态: {material.status}</span>
+                  <span>排序: {String(material.display_order ?? 0)}</span>
+                  <span>创建: {formatDate(material.created_at)}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function groupMaterialsByFolder(materials: Material[]) {
+  const grouped = new Map<string, Material[]>();
+  for (const material of materials) {
+    const folderPath = material.folder_path || getFolderFromRelativePath(material.relative_path) || "";
+    const key = folderPath || "普通文件";
+    grouped.set(key, [...(grouped.get(key) ?? []), material]);
+  }
+
+  return Array.from(grouped.entries()).map(([folderPath, groupMaterials]) => ({
+    folderPath,
+    label: folderPath || "普通文件",
+    materials: groupMaterials.sort((left, right) => {
+      const leftOrder = left.display_order ?? 0;
+      const rightOrder = right.display_order ?? 0;
+      if (leftOrder !== rightOrder) {
+        return leftOrder - rightOrder;
+      }
+      return (left.relative_path || left.filename).localeCompare(right.relative_path || right.filename);
+    })
+  }));
+}
+
+function getFolderFromRelativePath(value?: string | null) {
+  if (!value || !value.includes("/")) {
+    return "";
+  }
+  return value.split("/").slice(0, -1).join("/");
 }
 
 function WorkflowSection({ title, children }: { title: string; children: React.ReactNode }) {

@@ -61,7 +61,13 @@ export type Material = {
   material_id: string;
   case_id: string;
   filename: string;
+  original_filename?: string | null;
+  relative_path?: string | null;
+  folder_path?: string | null;
+  file_ext?: string | null;
   material_type: string;
+  upload_batch_id?: string | null;
+  display_order?: number | null;
   storage_path: string;
   status: string;
   created_at: string;
@@ -75,6 +81,11 @@ export type Fact = {
   fact_type: string;
   confidence: number;
   source_text: string | null;
+  source_refs?: {
+    material_id?: string | null;
+    filename?: string | null;
+    relative_path?: string | null;
+  };
   status: string;
   created_at: string;
 };

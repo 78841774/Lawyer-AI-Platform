@@ -261,11 +261,26 @@ export const caseApi = {
 
 export const materialApi = {
   listByCase: (caseId: string) => request<Material[]>(`/cases/${caseId}/materials`),
-  upload: (caseId: string, file: File) => {
+  upload: (caseId: string, file: File, relativePath?: string) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("material_type", "document");
+    if (relativePath) {
+      formData.append("relative_path", relativePath);
+    }
     return postForm<Material>(`/cases/${caseId}/materials`, formData);
+  },
+  uploadBatch: (caseId: string, files: File[], uploadBatchId?: string) => {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("files", file);
+      formData.append("relative_paths", getFileRelativePath(file));
+      formData.append("material_types", "document");
+    });
+    if (uploadBatchId) {
+      formData.append("upload_batch_id", uploadBatchId);
+    }
+    return postForm<Material[]>(`/cases/${caseId}/materials/batch`, formData);
   }
 };
 
@@ -359,6 +374,8 @@ export const createCase = caseApi.create;
 export const getCase = caseApi.get;
 export const getCaseMaterials = materialApi.listByCase;
 export const uploadMaterial = materialApi.upload;
+export const uploadMaterialsBatch = materialApi.uploadBatch;
+export const uploadFolderMaterials = materialApi.uploadBatch;
 export const getCaseFacts = factApi.listByCase;
 export const extractFacts = factApi.extract;
 export const getCaseAnalyses = analysisApi.listByCase;
@@ -401,4 +418,9 @@ export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
     analyses,
     reports
   };
+}
+
+function getFileRelativePath(file: File) {
+  const fileWithFolderPath = file as File & { webkitRelativePath?: string };
+  return fileWithFolderPath.webkitRelativePath || file.name;
 }

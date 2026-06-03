@@ -26,6 +26,7 @@ def create_db_and_tables() -> None:
     Base.metadata.create_all(bind=engine)
     _ensure_sqlite_skill_columns()
     _ensure_sqlite_case_columns()
+    _ensure_sqlite_material_columns()
     _seed_local_demo_identity()
 
 
@@ -104,6 +105,59 @@ def _ensure_sqlite_case_columns() -> None:
                 "UPDATE cases "
                 "SET owner_user_id = 'user_local_001' "
                 "WHERE owner_user_id IS NULL OR owner_user_id = ''"
+            )
+        )
+
+
+def _ensure_sqlite_material_columns() -> None:
+    if not settings.database_url.startswith("sqlite"):
+        return
+
+    required_columns = {
+        "original_filename": "VARCHAR(255)",
+        "relative_path": "TEXT",
+        "folder_path": "TEXT DEFAULT ''",
+        "file_ext": "VARCHAR(40)",
+        "upload_batch_id": "VARCHAR(80)",
+        "display_order": "INTEGER DEFAULT 0"
+    }
+    with engine.begin() as connection:
+        existing_columns = {
+            row[1]
+            for row in connection.execute(text("PRAGMA table_info(materials)"))
+        }
+        for column_name, column_type in required_columns.items():
+            if column_name not in existing_columns:
+                connection.execute(
+                    text(f"ALTER TABLE materials ADD COLUMN {column_name} {column_type}")
+                )
+
+        connection.execute(
+            text(
+                "UPDATE materials "
+                "SET original_filename = filename "
+                "WHERE original_filename IS NULL OR original_filename = ''"
+            )
+        )
+        connection.execute(
+            text(
+                "UPDATE materials "
+                "SET relative_path = filename "
+                "WHERE relative_path IS NULL OR relative_path = ''"
+            )
+        )
+        connection.execute(
+            text(
+                "UPDATE materials "
+                "SET folder_path = '' "
+                "WHERE folder_path IS NULL"
+            )
+        )
+        connection.execute(
+            text(
+                "UPDATE materials "
+                "SET display_order = 0 "
+                "WHERE display_order IS NULL"
             )
         )
 

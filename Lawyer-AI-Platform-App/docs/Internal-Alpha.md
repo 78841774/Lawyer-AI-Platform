@@ -18,6 +18,8 @@ v3.3-D improves Report / Skill visibility across reports, skills, experience pac
 
 v3.4-A adds a Real Case Intake foundation for richer case creation fields while keeping the existing `POST /cases` API compatible with title-only creation.
 
+v3.4-B adds folder-aware material intake so local users can upload a case material folder while preserving relative paths and directory context.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -256,6 +258,22 @@ v3.4-A makes case creation closer to a real legal intake workflow while staying 
 * Case Detail displays a dedicated `Intake 信息` card.
 
 This phase does not add OCR, PDF parsing enhancements, formal legal review, team approval, Skill Training changes, production deployment, or `/skill-candidates/*` APIs.
+
+## Folder-Aware Material Intake
+
+v3.4-B extends material intake without changing the Skill Training main chain:
+
+* Case Detail supports single-file upload and browser folder upload.
+* Folder upload reads `webkitRelativePath` and sends it as `relative_path`.
+* Material records preserve `original_filename`, `relative_path`, `folder_path`, `file_ext`, `upload_batch_id`, and `display_order`.
+* Old material rows are compatible through fallbacks to `filename`, empty `folder_path`, and `display_order = 0`.
+* Materials are stored under `storage_root/original-files/{case_id}/{upload_batch_id}/`.
+* Relative paths are cleaned to prevent path traversal.
+* Material Center groups uploaded files by folder path.
+* Fact extraction prompt/context includes filename and folder path metadata.
+* Fact extraction responses include material `source_refs` where available.
+
+This phase does not add complex OCR, zip automatic extraction, PDF parsing enhancement, formal legal review, or team approval. Local testing should use sanitized materials only.
 
 Navigation groups are reserved for:
 

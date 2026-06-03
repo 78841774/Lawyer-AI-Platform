@@ -20,6 +20,12 @@ class MaterialRepository:
         material_id: str,
         case_id: str,
         filename: str,
+        original_filename: str,
+        relative_path: str,
+        folder_path: str,
+        file_ext: str,
+        upload_batch_id: str | None,
+        display_order: int,
         material_type: str,
         storage_path: str,
         status: str
@@ -28,6 +34,12 @@ class MaterialRepository:
             material_id=material_id,
             case_id=case_id,
             filename=filename,
+            original_filename=original_filename,
+            relative_path=relative_path,
+            folder_path=folder_path,
+            file_ext=file_ext,
+            upload_batch_id=upload_batch_id,
+            display_order=display_order,
             material_type=material_type,
             storage_path=storage_path,
             status=status
@@ -47,7 +59,12 @@ class MaterialRepository:
             self.db.execute(
                 select(Material)
                 .where(Material.case_id == case_id)
-                .order_by(Material.created_at.asc())
+                .order_by(
+                    Material.upload_batch_id.asc(),
+                    Material.display_order.asc(),
+                    Material.created_at.asc(),
+                    Material.id.asc()
+                )
             ).scalars()
         )
 

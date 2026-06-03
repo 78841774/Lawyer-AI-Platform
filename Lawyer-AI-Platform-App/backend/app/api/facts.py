@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.fact import Fact
+from app.models.material import Material
 from app.repositories.case_repository import CaseRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.material_repository import MaterialRepository
@@ -28,7 +29,11 @@ def get_fact_service(db: Session) -> FactService:
     )
 
 
-def serialize_fact(fact: Fact) -> dict[str, Any]:
+def serialize_fact(
+    fact: Fact,
+    material_lookup: dict[str, Material] | None = None
+) -> dict[str, Any]:
+    material = (material_lookup or {}).get(fact.material_id)
     return {
         "fact_id": fact.fact_id,
         "case_id": fact.case_id,
@@ -37,6 +42,11 @@ def serialize_fact(fact: Fact) -> dict[str, Any]:
         "fact_type": fact.fact_type,
         "confidence": fact.confidence,
         "source_text": fact.source_text,
+        "source_refs": {
+            "material_id": fact.material_id,
+            "filename": material.filename if material else None,
+            "relative_path": (material.relative_path or material.filename) if material else None
+        },
         "status": fact.status,
         "created_at": fact.created_at
     }
@@ -72,9 +82,10 @@ def extract_facts(
         if str(error) == "llm generation failed":
             raise HTTPException(status_code=500, detail=str(error)) from error
         raise HTTPException(status_code=500, detail="fact extraction failed") from error
+    material_lookup = build_material_lookup(db, case_id)
     response = {
         "case_id": case_id,
-        "facts": [serialize_fact(fact) for fact in result.facts],
+        "facts": [serialize_fact(fact, material_lookup) for fact in result.facts],
         "llm_provider": result.llm_provider,
         "llm_status": result.llm_status,
         "skill_used": result.skill_used,
@@ -93,7 +104,15 @@ def list_facts(
         facts = service.list_facts(case_id)
     except ValueError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+    material_lookup = build_material_lookup(db, case_id)
     return {
         "case_id": case_id,
-        "facts": [serialize_fact(fact) for fact in facts]
+        "facts": [serialize_fact(fact, material_lookup) for fact in facts]
+    }
+
+
+def build_material_lookup(db: Session, case_id: str) -> dict[str, Material]:
+    return {
+        material.material_id: material
+        for material in MaterialRepository(db).list_by_case_id(case_id)
     }

@@ -175,6 +175,10 @@ class FactService:
                 "Material metadata:",
                 f"- material_id: {material.material_id}",
                 f"- filename: {material.filename}",
+                f"- original_filename: {material.original_filename or material.filename}",
+                f"- relative_path: {material.relative_path or material.filename}",
+                f"- folder_path: {material.folder_path or ''}",
+                f"- material_type: {material.material_type}",
                 "",
                 "Material content:",
                 material_content
@@ -201,6 +205,14 @@ class FactService:
             }
         )
         context["material_content"] = material_content
+        context["material_path_context"] = {
+            "material_id": material.material_id,
+            "filename": material.filename,
+            "original_filename": material.original_filename or material.filename,
+            "relative_path": material.relative_path or material.filename,
+            "folder_path": material.folder_path or "",
+            "material_type": material.material_type
+        }
         return context
 
     def _parse_llm_facts(self, output: str) -> list[str]:
