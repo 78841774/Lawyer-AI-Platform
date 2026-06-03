@@ -48,6 +48,21 @@ class ExperiencePackageRepository:
             )
         ).scalar_one_or_none()
 
+    def list_by_skill_id(self, skill_id: str) -> list[ExperiencePackage]:
+        return list(
+            self.db.execute(
+                select(ExperiencePackage)
+                .where(ExperiencePackage.skill_id == skill_id)
+                .order_by(ExperiencePackage.created_at.asc(), ExperiencePackage.id.asc())
+            ).scalars()
+        )
+
+    def get_latest_by_skill_id(self, skill_id: str) -> ExperiencePackage | None:
+        packages = self.list_by_skill_id(skill_id)
+        if not packages:
+            return None
+        return packages[-1]
+
     def list_all(self) -> list[ExperiencePackage]:
         return list(
             self.db.execute(
@@ -56,6 +71,17 @@ class ExperiencePackageRepository:
             ).scalars()
         )
 
+    def update_status(
+        self,
+        *,
+        package: ExperiencePackage,
+        status: str
+    ) -> ExperiencePackage:
+        package.status = status
+        self.db.add(package)
+        self.db.commit()
+        self.db.refresh(package)
+        return package
+
     def count_all(self) -> int:
         return self.db.query(ExperiencePackage).count()
-

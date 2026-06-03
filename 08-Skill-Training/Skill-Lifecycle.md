@@ -233,3 +233,41 @@ v2.2 在 `status` 之外增加 `validation_status`。
 这表示该技能仍是候选技能包，但已经通过 v2.2 运行时评估。
 
 正式发布仍需后续 Published 流程。
+
+## 十、v2.4 Skill Registry 状态
+
+v2.4 引入 Skill Registry 作为统一能力登记入口。
+
+Registry 不新增独立状态表。
+
+状态来源：
+
+- skills 表保存 skill 的 status、validation_status 和 evaluation_score。
+- experience_packages 表保存 package 的 status、package_id 和 package_path。
+
+Registry 聚合二者，形成未来 Workspace 加载能力包所需的统一视图。
+
+发布规则：
+
+```text
+validation_status = validated
+package_status = built
+```
+
+满足以上条件时：
+
+```text
+skill.status -> published
+package.status -> published
+```
+
+废弃规则：
+
+```text
+skill.status -> deprecated
+package.status -> deprecated
+```
+
+已废弃的 skill 不允许再次 publish。
+
+如需重新启用，应创建新版本并重新完成 Evaluation 和 Package Build。

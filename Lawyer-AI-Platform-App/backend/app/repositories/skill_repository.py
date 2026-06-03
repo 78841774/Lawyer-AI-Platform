@@ -87,5 +87,12 @@ class SkillRepository:
         self.db.refresh(skill)
         return skill
 
+    def update_status(self, *, skill: Skill, status: str) -> Skill:
+        skill.status = status
+        self.db.add(skill)
+        self.db.commit()
+        self.db.refresh(skill)
+        return skill
+
     def count_all(self) -> int:
         return self.db.query(Skill).count()

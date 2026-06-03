@@ -552,3 +552,61 @@ tests/test_case.json
 ```
 
 Generated packages are ignored by git, except `Lawyer-AI-Platform-App/experience-packages/.gitkeep`.
+
+## Skill Registry
+
+Skill Registry v2.4 provides a unified view of Skills and Experience Packages.
+
+It does not create a separate registry table. It reads from `skills` and `experience_packages` as the source of truth.
+
+List registry entries:
+
+```bash
+curl http://127.0.0.1:8001/skill-registry
+```
+
+Get one registry detail:
+
+```bash
+curl http://127.0.0.1:8001/skill-registry/skill_001
+```
+
+List domain summaries:
+
+```bash
+curl http://127.0.0.1:8001/skill-registry/domains
+```
+
+Publish a validated skill with a built package:
+
+```bash
+curl -X POST http://127.0.0.1:8001/skill-registry/skill_001/publish
+```
+
+Deprecate a published skill and its package:
+
+```bash
+curl -X POST http://127.0.0.1:8001/skill-registry/skill_001/deprecate
+```
+
+Publish rules:
+
+```text
+skill.validation_status must be validated
+package.status must be built
+deprecated skills cannot be published again
+```
+
+After publish:
+
+```text
+skill.status = published
+package.status = published
+```
+
+After deprecate:
+
+```text
+skill.status = deprecated
+package.status = deprecated
+```

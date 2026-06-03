@@ -205,3 +205,34 @@ contract-dispute-cn-v1.1
 contract-dispute-cn-v2
 ```
 
+## 九、v2.4 Registry 与版本策略
+
+v2.4 Skill Registry 以 `domain + version + lifecycle status` 管理可用能力。
+
+Registry 聚合：
+
+- skill_id
+- domain
+- version
+- status
+- validation_status
+- package_id
+- package_status
+
+同一 domain 可以存在多个版本。
+
+推荐策略：
+
+- 新版本完成 validated 和 built 后再进入 publish。
+- 新版本 publish 前，旧版本可以继续保持 published。
+- 新版本确认可替代旧版本后，将旧版本 deprecate。
+- deprecated 版本保留用于审计、复现和迁移验证。
+
+v2.4 不强制实现版本冲突检测。
+
+后续 Package Registry 阶段应增加：
+
+- 同 domain 默认版本选择
+- published 版本唯一性策略
+- 版本兼容矩阵
+- Workspace 加载版本策略
