@@ -30,6 +30,12 @@ class MockLLMClient:
             if first_line:
                 return f"Extracted fact: {first_line[:240]}"
 
+        if context and context.get("runtime_metadata", {}).get("task") == "legal_analysis":
+            return (
+                "Legal issue: 是否存在可分析的法律事实. "
+                "Conclusion: 案件具备初步法律分析条件."
+            )
+
         clean_prompt = " ".join(prompt.strip().split())
         if not clean_prompt:
             return "Mock LLM response: no prompt provided."

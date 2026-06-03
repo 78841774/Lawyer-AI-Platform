@@ -193,7 +193,9 @@ curl http://127.0.0.1:8001/cases/case_001/facts
 
 ## Legal Analysis Runtime
 
-Legal Analysis Runtime v1.0 reads saved facts, generates a rule-based legal analysis, and stores it in SQLite.
+Legal Analysis Runtime v2.7-C reads saved facts, builds a legal analysis prompt, calls the configured LLM Adapter, parses the LLM output, and stores the analysis in SQLite.
+
+Local development uses `LLM_PROVIDER=mock`, so no external API is called.
 
 Run legal analysis for a case:
 
@@ -215,6 +217,10 @@ Expected run response shape:
 {
   "analysis_id": "analysis_001",
   "case_id": "case_001",
+  "llm_provider": "mock",
+  "llm_status": "success",
+  "skill_used": "skill_002",
+  "package_used": "ep_002",
   "issues": [
     {
       "issue": "是否存在可分析的法律事实",
@@ -223,13 +229,19 @@ Expected run response shape:
   ],
   "rules": [
     {
-      "source": "MVP Rule Engine",
-      "rule": "基于已抽取事实进行初步法律问题识别"
+      "source": "LLM Adapter",
+      "rule": "Legal analysis generated through configured LLM provider"
+    },
+    {
+      "source": "Experience Package",
+      "skill_id": "skill_002",
+      "package_id": "ep_002",
+      "rule": "Skill package analysis context loaded from Experience Package"
     }
   ],
   "reasoning": [
-    "系统已发现 1 条案件事实",
-    "其中 1 条事实可用于进一步法律分析"
+    "LLM Adapter processed 1 case facts.",
+    "1 extracted facts were available for legal analysis."
   ],
   "conclusion": "案件具备初步法律分析条件",
   "risk_level": "medium",
@@ -238,6 +250,10 @@ Expected run response shape:
   "created_at": "2026-06-03T08:00:00"
 }
 ```
+
+When a case has an applied published skill, Legal Analysis uses the Experience Package `analysis` prompt and adds a non-empty `Experience Package` rule entry.
+
+If the LLM adapter returns an error status, Legal Analysis returns `llm generation failed`.
 
 If a case has no facts yet, run Fact Runtime first:
 

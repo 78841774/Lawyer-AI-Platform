@@ -76,14 +76,16 @@ def run_analysis(
             ) from error
         if is_runtime_error(error):
             raise HTTPException(status_code=400, detail=str(error)) from error
+        if str(error) == "llm generation failed":
+            raise HTTPException(status_code=500, detail=str(error)) from error
         raise HTTPException(status_code=500, detail="analysis generation failed") from error
     except Exception as error:
         raise HTTPException(status_code=500, detail="analysis generation failed") from error
     response = serialize_analysis(result.analysis)
-    if result.skill_used is not None:
-        response["skill_used"] = result.skill_used
-    if result.package_used is not None:
-        response["package_used"] = result.package_used
+    response["llm_provider"] = result.llm_provider
+    response["llm_status"] = result.llm_status
+    response["skill_used"] = result.skill_used
+    response["package_used"] = result.package_used
     return response
 
 
