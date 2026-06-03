@@ -27,3 +27,19 @@
 
 * POST /cases：创建案件，MVP 阶段暂用内存 dict 存储。
 * GET /cases/{case_id}：查询指定案件。
+
+## v2.0 Skill Training Specification
+
+新增 08-Skill-Training 目录，作为 Lawyer AI Platform v2.0 Skill Factory 架构规范。
+
+该目录负责定义如何从真实案件中沉淀律师经验，并生成可复用、可评估、可发布的 Experience Package。
+
+核心内容：
+
+* Skill Schema：定义 skill_id、skill_name、domain、jurisdiction、version、prompts、templates、evaluation_metrics 和 metadata。
+* Training Pipeline：定义从 Case 到 Experience Package 的技能训练流水线。
+* Evaluation Framework：定义 accuracy、consistency、completeness、legal_relevance 和 report_quality 评分机制。
+* Package Build System：定义 skill.json、Prompt 文件、templates 和 tests 的输出格式。
+* Skill Versioning：定义 v1、v1.1、v2 的兼容性与升级策略。
+* Skill Lifecycle：定义 Draft、Candidate、Validated、Published、Deprecated 生命周期。
+* Example Contract Dispute Skill：以合同纠纷技能说明 Skill Factory 的落地方式。
