@@ -4,6 +4,8 @@ v3.1 adds the minimum authentication foundation for the internal alpha. It is a 
 
 v3.2 adds JWT Auth Foundation for local demo login, JWT verification, and request identity parsing. It is still not a complete production login system.
 
+v3.2-B surfaces auth state in the AIHome.law Dashboard and provides local login/logout controls.
+
 ## Scope
 
 This stage does not add:
@@ -167,3 +169,16 @@ Runtime endpoints can be moved to the same dependency in later hardening work.
 ## Next Step
 
 v3.3 can replace the internal alpha login with formal password, OAuth, or SSO authentication.
+
+## Frontend Auth Dashboard
+
+The AIHome.law Dashboard displays:
+
+* `auth_mode`
+* current user
+* current workspace
+* local login and logout controls
+
+Local Login calls `POST /auth/login`, stores the returned JWT in `localStorage`, and frontend API requests attach `Authorization: Bearer <token>`.
+
+When the local JWT is cleared, local development can still show `local_fallback` through backend fallback behavior.

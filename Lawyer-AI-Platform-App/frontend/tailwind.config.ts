@@ -8,10 +8,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#18212f",
-        paper: "#f7f8fb",
-        line: "#d8dee9",
-        accent: "#2563eb"
+        ink: "#0F172A",
+        muted: "#64748B",
+        paper: "#F8FAFC",
+        line: "#E2E8F0",
+        accent: "#1D4ED8",
+        gold: "#C9A227",
+        navy: "#0B1220",
+        surface: "#111827"
       }
     }
   },

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Lawyer AI Platform",
-  description: "MVP Workspace for AI-assisted legal case analysis"
+  title: "AIHome.law",
+  description: "AI Workspace for Legal Work"
 };
 
 export default function RootLayout({

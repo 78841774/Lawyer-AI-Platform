@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
+import { Badge } from "@/components/ui/Badge";
+import { Card } from "@/components/ui/Card";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getReports } from "@/services/api";
 
 export const dynamic = "force-dynamic";
@@ -10,14 +13,15 @@ export default async function ReportsPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        <header>
-          <h1 className="text-2xl font-semibold text-ink">Reports</h1>
-          <p className="mt-2 text-sm text-slate-600">Generated reports from the Workspace API.</p>
-        </header>
+        <SectionHeader
+          eyebrow="AIHome.law Reports"
+          title="Reports"
+          description="Generated legal reports with source references and runtime metadata."
+        />
 
         {error ? <StatusMessage message={error} /> : null}
 
-        <section className="rounded-md border border-line bg-white">
+        <Card>
           {reports.length > 0 ? (
             reports.map((report) => (
               <Link
@@ -28,23 +32,30 @@ export default async function ReportsPage() {
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="text-sm font-semibold text-ink">{report.title}</div>
-                    <div className="mt-1 text-xs text-slate-500">
+                    <div className="mt-1 text-xs text-muted">
                       {report.report_id} · {report.case_id} · version {report.version}
                     </div>
                   </div>
-                  <span className="rounded-md border border-line px-2 py-1 text-xs text-slate-600">
-                    {report.status}
-                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge tone="blue">{report.status}</Badge>
+                    <Badge tone="muted">Export</Badge>
+                  </div>
                 </div>
-                <p className="mt-3 line-clamp-2 text-sm text-slate-600">
+                <p className="mt-3 line-clamp-2 text-sm text-muted">
                   {report.content.replaceAll("\n", " ").slice(0, 180)}
                 </p>
+                <div className="mt-3 grid gap-2 text-xs text-muted md:grid-cols-4">
+                  <span>skill: {report.source_refs.skill_id ?? "-"}</span>
+                  <span>package: {report.source_refs.package_id ?? "-"}</span>
+                  <span>llm: {report.source_refs.llm_provider ?? "-"}</span>
+                  <span>llm_status: {report.source_refs.llm_status ?? "-"}</span>
+                </div>
               </Link>
             ))
           ) : (
-            <div className="p-5 text-sm text-slate-600">No reports found.</div>
+            <div className="p-5 text-sm text-muted">No reports found.</div>
           )}
-        </section>
+        </Card>
       </div>
     </AppShell>
   );
@@ -60,7 +71,7 @@ async function loadReports() {
 
 function StatusMessage({ message }: { message: string }) {
   return (
-    <div className="rounded-md border border-line bg-white p-4 text-sm text-slate-600">
+    <div className="rounded-md border border-line bg-white p-4 text-sm text-muted shadow-sm">
       {message}
     </div>
   );

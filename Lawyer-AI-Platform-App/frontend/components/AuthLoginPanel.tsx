@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ApiError,
   AuthStatus,
-  clearAccessToken,
   getAuthStatus,
-  loginWithDevToken,
+  loginLocal,
+  logoutLocal,
   storeAccessToken
 } from "@/services/api";
 
@@ -23,10 +23,27 @@ export function AuthLoginPanel() {
     loading: false
   });
 
+  useEffect(() => {
+    void refreshStatus("");
+  }, []);
+
+  async function refreshStatus(message: string) {
+    try {
+      const status = await getAuthStatus();
+      setState({ status, message, loading: false });
+    } catch (error) {
+      setState({
+        status: null,
+        message: error instanceof ApiError ? error.message : "Auth status unavailable.",
+        loading: false
+      });
+    }
+  }
+
   async function handleLogin() {
     setState((current) => ({ ...current, loading: true, message: "Logging in..." }));
     try {
-      const login = await loginWithDevToken();
+      const login = await loginLocal();
       storeAccessToken(login.access_token);
       const status = await getAuthStatus();
       setState({
@@ -44,20 +61,24 @@ export function AuthLoginPanel() {
   }
 
   async function handleClear() {
-    clearAccessToken();
-    setState({ status: null, message: "Local JWT cleared.", loading: false });
+    logoutLocal();
+    setState((current) => ({ ...current, loading: true, message: "Logging out..." }));
+    await refreshStatus("Local JWT cleared.");
   }
 
   return (
-    <section className="rounded-md border border-line bg-white p-4">
+    <section className="rounded-md border border-line bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="text-xs text-slate-500">Local Login</div>
-          <div className="mt-2 text-sm font-semibold text-ink">
-            {state.status ? state.status.auth_mode : "Dev Token Login"}
+          <div className="text-xs uppercase tracking-wide text-muted">Auth Status</div>
+          <div className="mt-2 text-lg font-semibold text-ink">
+            {state.status ? state.status.auth_mode : "Checking"}
           </div>
-          <div className="mt-1 text-xs text-slate-500">
+          <div className="mt-1 text-sm text-muted">
             {state.status ? state.status.user_id : "user_local_001"}
+          </div>
+          <div className="mt-1 text-xs text-muted">
+            {state.status?.expires_at ? `Expires ${formatDate(state.status.expires_at)}` : "Local fallback remains available in local mode."}
           </div>
         </div>
         <div className="flex gap-2">
@@ -75,12 +96,12 @@ export function AuthLoginPanel() {
             disabled={state.loading}
             className="rounded-md border border-line bg-white px-3 py-2 text-xs font-medium text-ink disabled:opacity-60"
           >
-            Clear
+            Logout
           </button>
         </div>
       </div>
       {state.message ? (
-        <div className="mt-3 rounded-md border border-line bg-paper px-3 py-2 text-xs text-slate-600">
+        <div className="mt-3 rounded-md border border-line bg-paper px-3 py-2 text-xs text-muted">
           {state.message}
         </div>
       ) : null}

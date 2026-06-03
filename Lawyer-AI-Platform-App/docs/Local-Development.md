@@ -110,6 +110,31 @@ curl http://127.0.0.1:8001/auth/status \
   -H "Authorization: Bearer <JWT>"
 ```
 
+## AIHome.law Frontend
+
+Run the branded internal alpha console:
+
+```bash
+cd Lawyer-AI-Platform-App/frontend
+npm install
+npm run dev -- -p 3001
+```
+
+Open:
+
+```text
+http://localhost:3001
+```
+
+Expected local checks:
+
+* Dashboard shows `AIHome.law`.
+* Dashboard shows Auth Status.
+* No-token local mode can show `local_fallback`.
+* Local Login changes auth mode to `jwt`.
+* Cases show `workspace_id` and `owner_user_id`.
+* Workspaces and Runtime pages open from the sidebar.
+
 ## Database And Alembic
 
 Install backend dependencies and check Python files:

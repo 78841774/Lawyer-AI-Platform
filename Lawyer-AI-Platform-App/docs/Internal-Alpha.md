@@ -6,6 +6,8 @@ v3.1 adds a Dev Token / API Key authentication foundation. It is still not a for
 
 v3.2 adds JWT Auth Foundation. Local demo login exchanges `user_id + dev_token` for a JWT, but this is still not a production login system.
 
+v3.2-B adds the AIHome.law branded frontend dashboard and product shell for internal alpha operations.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -151,3 +153,25 @@ The internal alpha only checks:
 ## Next Step
 
 v3.3 can replace local demo login with formal password, OAuth, or SSO authentication.
+
+## AIHome.law Frontend
+
+The internal alpha frontend now uses the AIHome.law brand:
+
+* Brand name: `AIHome.law`
+* Tagline: `AI Workspace for Legal Work`
+* Product style: legal-tech console with dark navy, graphite, white, professional blue, and gold accents.
+
+The frontend shell is designed for long-term expansion:
+
+* Left sidebar with grouped navigation.
+* Topbar with current workspace, auth mode, runtime provider, and user status.
+* Main content area for workflow pages.
+* Future space for inspector or activity panels.
+
+Navigation groups are reserved for:
+
+* Primary: Dashboard, Cases, Reports.
+* Intelligence: Skills, Experience Packages, Runtime.
+* Workspace: Workspaces, Users, Audit Logs.
+* System: Settings.
