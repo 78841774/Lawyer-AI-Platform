@@ -147,3 +147,5 @@ Lawyer-AI-Platform-App/backend/local.db
 Lawyer-AI-Platform-App/storage/original-files/
 Lawyer-AI-Platform-App/storage/ocr-files/
 Lawyer-AI-Platform-App/storage/reports/
+Lawyer-AI-Platform-App/skills/*
+!Lawyer-AI-Platform-App/skills/.gitkeep

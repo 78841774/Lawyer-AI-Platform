@@ -9,6 +9,7 @@ from app.api.health import router as health_router
 from app.api.legal_analysis import router as legal_analysis_router
 from app.api.materials import router as materials_router
 from app.api.reports import router as reports_router
+from app.api.skills import router as skills_router
 from app.api.workspace import router as workspace_router
 from app.core.config import settings
 from app.core.database import create_db_and_tables
@@ -44,3 +45,4 @@ app.include_router(materials_router)
 app.include_router(facts_router)
 app.include_router(legal_analysis_router)
 app.include_router(reports_router)
+app.include_router(skills_router)

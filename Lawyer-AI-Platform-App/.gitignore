@@ -5,6 +5,8 @@ backend/__pycache__/
 backend/.pytest_cache/
 __pycache__/
 *.pyc
+skills/*
+!skills/.gitkeep
 .env
 .env.local
 .DS_Store

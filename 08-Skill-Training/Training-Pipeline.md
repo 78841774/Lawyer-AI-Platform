@@ -296,3 +296,69 @@ Workspace 运行产生的反馈可以进入下一轮训练。
 
 必须进入新版本训练。
 
+## 十一、v2.1 Runtime 映射
+
+v2.1 将架构流水线落到主后端的规则式 Skill Training Runtime。
+
+运行时输入来自已完成的案件链路：
+
+```text
+Case
+  |
+  v
+Material
+  |
+  v
+Fact
+  |
+  v
+Legal Analysis
+  |
+  v
+Report
+```
+
+Skill Training Runtime 在此基础上生成：
+
+```text
+Fact Pattern Extraction
+  -> app/skill_training/fact_pattern_extractor.py
+
+Reasoning Extraction
+  -> app/skill_training/reasoning_extractor.py
+
+Prompt Generation
+  -> app/skill_training/prompt_generator.py
+
+Template Generation
+  -> app/skill_training/template_generator.py
+
+Skill Candidate
+  -> app/skill_training/skill_builder.py
+
+Evaluation
+  -> app/skill_training/evaluator.py
+
+Experience Package Export
+  -> app/skill_training/package_exporter.py
+```
+
+v2.1 输出：
+
+```text
+Lawyer-AI-Platform-App/skills/{skill_id}/
+├── skill.json
+├── fact_prompt.txt
+├── analysis_prompt.txt
+├── report_prompt.txt
+└── templates/
+    └── report_template.md
+```
+
+v2.1 限制：
+
+- 仅生成 Skill Candidate 草稿
+- 仅使用规则方法
+- 不接真实 AI
+- 不执行完整律师评估
+- 不发布正式 Experience Package

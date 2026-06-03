@@ -369,3 +369,66 @@ Browser demo flow:
 ```
 
 The case detail page refreshes its materials, facts, legal analyses, and reports after each action.
+
+## Skill Training Runtime
+
+Skill Training Runtime v2.1 reads an existing case, facts, legal analyses, and reports, then generates a rule-based Skill Candidate draft.
+
+Build a skill candidate from `case_001`:
+
+```bash
+curl -X POST http://127.0.0.1:8001/cases/case_001/skills/build
+```
+
+Expected response shape:
+
+```json
+{
+  "skill_id": "skill_001",
+  "case_id": "case_001",
+  "skill_name": "Contract Dispute Skill Candidate",
+  "domain": "contract_dispute",
+  "version": "0.1.0",
+  "status": "candidate",
+  "evaluation_score": 0.75,
+  "package_path": "../skills/skill_001"
+}
+```
+
+List all skill candidates:
+
+```bash
+curl http://127.0.0.1:8001/skills
+```
+
+Get one skill candidate:
+
+```bash
+curl http://127.0.0.1:8001/skills/skill_001
+```
+
+Generated local packages are written under:
+
+```text
+Lawyer-AI-Platform-App/skills/{skill_id}/
+```
+
+Package files:
+
+```text
+skill.json
+fact_prompt.txt
+analysis_prompt.txt
+report_prompt.txt
+templates/report_template.md
+```
+
+Generated packages are ignored by git, except `Lawyer-AI-Platform-App/skills/.gitkeep`.
+
+If the build endpoint returns a missing input error, run the earlier case chain first:
+
+```bash
+curl http://127.0.0.1:8001/cases/case_001/facts
+curl http://127.0.0.1:8001/cases/case_001/analysis
+curl http://127.0.0.1:8001/cases/case_001/reports
+```

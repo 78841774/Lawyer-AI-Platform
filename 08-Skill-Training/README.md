@@ -1,6 +1,6 @@
 # Skill Training
 
-Skill Training 是 Lawyer AI Platform v2.0 的技能工厂模块。
+Skill Training 是 Lawyer AI Platform v2.0+ 的技能工厂模块。
 
 本模块负责将真实案件中的律师经验沉淀为可复用、可评估、可发布的 Experience Package。
 
@@ -130,3 +130,46 @@ Experience Package 是 Workspace System 可以加载的能力交付单元。
 
 每个 Experience Package 必须记录来源案件类型、训练样本范围、评估结果、版本和发布状态。
 
+## 六、v2.1 Runtime 初版
+
+v2.1 引入 Skill Training Runtime 初版。
+
+该 runtime 位于主后端：
+
+```text
+Lawyer-AI-Platform-App/backend/app/skill_training/
+```
+
+目标：
+
+- 从已有案件链路读取 case、facts、legal analysis 和 reports
+- 使用规则方法抽取 fact_patterns 和 reasoning_patterns
+- 生成 fact_prompt、analysis_prompt 和 report_prompt 草稿
+- 生成 report_template 草稿
+- 计算初始 evaluation_score
+- 保存 Skill Candidate 到 skills 表
+- 导出本地 Experience Package 草稿
+
+当前接口：
+
+```text
+POST /cases/{case_id}/skills/build
+GET /skills
+GET /skills/{skill_id}
+```
+
+导出目录：
+
+```text
+Lawyer-AI-Platform-App/skills/{skill_id}/
+├── skill.json
+├── fact_prompt.txt
+├── analysis_prompt.txt
+├── report_prompt.txt
+└── templates/
+    └── report_template.md
+```
+
+v2.1 不接真实 AI。
+
+v2.1 的目标是验证从案件产物沉淀 Skill Candidate 的工程闭环。
