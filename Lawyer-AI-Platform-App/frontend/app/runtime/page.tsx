@@ -6,6 +6,7 @@ import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
   getControlledLegalSearchStatus,
+  getControlledLawyerReviewStatus,
   getControlledMaterialStatus,
   getControlledOCRStatus,
   getControlledReportDraftStatus,
@@ -21,7 +22,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, error } =
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, error } =
     await loadRuntime();
 
   return (
@@ -231,6 +232,28 @@ export default async function RuntimePage() {
             ]}
             actionHref="/controlled-report-draft"
           />
+          <StatusCard
+            title="Controlled Review"
+            provider={controlledReview?.mode ?? "local_only_controlled_lawyer_review"}
+            connected={controlledReview?.enabled ?? false}
+            rows={[
+              ["mode", controlledReview?.mode ?? "local_only_controlled_lawyer_review"],
+              ["production_enabled", formatBoolean(controlledReview?.production_enabled)],
+              ["mock_review_enabled", formatBoolean(controlledReview?.mock_review_enabled)],
+              ["requires_explicit_review_confirmation", formatBoolean(controlledReview?.requires_explicit_review_confirmation)],
+              ["requires_explicit_assembly_confirmation", formatBoolean(controlledReview?.requires_explicit_assembly_confirmation)],
+              ["requires_manual_review", formatBoolean(controlledReview?.requires_manual_review)],
+              ["llm_live_enabled", formatBoolean(controlledReview?.llm_live_enabled)],
+              ["deepseek_live_enabled", formatBoolean(controlledReview?.deepseek_live_enabled)],
+              ["ocr_live_enabled", formatBoolean(controlledReview?.ocr_live_enabled)],
+              ["legal_search_live_enabled", formatBoolean(controlledReview?.legal_search_live_enabled)],
+              ["skill_publish_enabled", formatBoolean(controlledReview?.skill_publish_enabled)],
+              ["workspace_runtime_auto_enable", formatBoolean(controlledReview?.workspace_runtime_auto_enable)],
+              ["runtime_storage_path", controlledReview?.runtime_storage_path ?? "storage/runtime/controlled_lawyer_reviews"],
+              ["final_legal_opinion_enabled", formatBoolean(controlledReview?.final_legal_opinion_enabled)]
+            ]}
+            actionHref="/controlled-review"
+          />
         </div>
 
         <Card>
@@ -252,7 +275,7 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
@@ -263,9 +286,10 @@ async function loadRuntime() {
       getControlledMaterialStatus(),
       getControlledOCRStatus(),
       getControlledLegalSearchStatus(),
-      getControlledReportDraftStatus()
+      getControlledReportDraftStatus(),
+      getControlledLawyerReviewStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, error: null };
   } catch {
     return {
       runtime: null,
@@ -279,6 +303,7 @@ async function loadRuntime() {
       controlledOCR: null,
       controlledLegalSearch: null,
       controlledReportDraft: null,
+      controlledReview: null,
       error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。"
     };
   }

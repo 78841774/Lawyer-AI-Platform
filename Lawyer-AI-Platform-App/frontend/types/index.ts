@@ -1097,6 +1097,115 @@ export type ControlledReportDraftAuditLog = {
   created_at: string;
 };
 
+export type ControlledLawyerReviewStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_review_enabled: boolean;
+  requires_explicit_review_confirmation: boolean;
+  requires_explicit_assembly_confirmation: boolean;
+  requires_manual_review: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  skill_publish_enabled: boolean;
+  workspace_runtime_auto_enable: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  source_trace_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  store_raw_material_text_in_git: boolean;
+  store_raw_ocr_text_in_git: boolean;
+  store_raw_legal_search_results_in_git: boolean;
+  store_review_record_in_git: boolean;
+  warnings: string[];
+};
+
+export type ControlledLawyerReviewSubmitRequest = {
+  draft_id: string;
+  case_id: string;
+  workspace_id: string;
+  submitted_by: string;
+  explicit_review_confirmation: boolean;
+  explicit_assembly_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  review_mode: string;
+  draft_status: string;
+  llm_mode: string;
+  provider_mode: string;
+  preview_only: boolean;
+};
+
+export type ControlledLawyerReviewActionRequest = {
+  reviewer_id: string;
+  review_notes: string;
+  explicit_review_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  llm_mode: string;
+  provider_mode: string;
+};
+
+export type ControlledLawyerReviewResult = {
+  review_id: string;
+  draft_id: string;
+  case_id: string;
+  workspace_id: string;
+  status: string;
+  action: string;
+  submitted: boolean;
+  approved: boolean;
+  rejected: boolean;
+  revision_requested: boolean;
+  final_legal_opinion_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  skill_published: boolean;
+  workspace_runtime_enabled: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  review_record_storage_path: string;
+  review_record: Record<string, unknown>;
+  history: Record<string, unknown>[];
+  guard_results: Record<string, unknown>[];
+  audit_log_id: string;
+  allowed_to_continue: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledLawyerReviewRecord = {
+  review_id: string;
+  draft_id: string;
+  case_id: string;
+  workspace_id: string;
+  status: string;
+  submitted_by: string;
+  reviewer_id: string;
+  review_notes: string;
+  final_legal_opinion_generated: boolean;
+  history: Record<string, unknown>[];
+  warnings: string[];
+  created_at: string;
+  updated_at: string;
+};
+
+export type ControlledLawyerReviewAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  review_id: string;
+  draft_id: string;
+  case_id: string;
+  workspace_id: string;
+  action: string;
+  result: string;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

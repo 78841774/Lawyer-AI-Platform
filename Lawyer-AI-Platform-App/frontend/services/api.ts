@@ -4,6 +4,12 @@ import type {
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
   CitationResolutionResult,
+  ControlledLawyerReviewActionRequest,
+  ControlledLawyerReviewAuditLog,
+  ControlledLawyerReviewRecord,
+  ControlledLawyerReviewResult,
+  ControlledLawyerReviewStatus,
+  ControlledLawyerReviewSubmitRequest,
   ControlledLegalCitationResolutionRequest,
   ControlledLegalCitationResolutionResult,
   ControlledLegalSearchAuditLog,
@@ -90,6 +96,12 @@ export type {
   Case as CaseRecord,
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
+  ControlledLawyerReviewActionRequest,
+  ControlledLawyerReviewAuditLog,
+  ControlledLawyerReviewRecord,
+  ControlledLawyerReviewResult,
+  ControlledLawyerReviewStatus,
+  ControlledLawyerReviewSubmitRequest,
   ControlledLegalCitationResolutionRequest,
   ControlledLegalCitationResolutionResult,
   ControlledLegalSearchAuditLog,
@@ -689,6 +701,24 @@ export const controlledReportDraftApi = {
   }
 };
 
+export const controlledLawyerReviewApi = {
+  status: () => request<ControlledLawyerReviewStatus>("/controlled-review/status"),
+  submit: (payload: ControlledLawyerReviewSubmitRequest) =>
+    postJson<ControlledLawyerReviewResult>("/controlled-review/submit", payload),
+  readReview: (reviewId: string) =>
+    request<ControlledLawyerReviewRecord>(`/controlled-review/${encodeURIComponent(reviewId)}`),
+  approve: (reviewId: string, payload: ControlledLawyerReviewActionRequest) =>
+    postJson<ControlledLawyerReviewResult>(`/controlled-review/${encodeURIComponent(reviewId)}/approve`, payload),
+  reject: (reviewId: string, payload: ControlledLawyerReviewActionRequest) =>
+    postJson<ControlledLawyerReviewResult>(`/controlled-review/${encodeURIComponent(reviewId)}/reject`, payload),
+  requestRevision: (reviewId: string, payload: ControlledLawyerReviewActionRequest) =>
+    postJson<ControlledLawyerReviewResult>(`/controlled-review/${encodeURIComponent(reviewId)}/request-revision`, payload),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: ControlledLawyerReviewAuditLog[] }>("/controlled-review/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -735,6 +765,13 @@ export const getControlledReportDraftStatus = controlledReportDraftApi.status;
 export const assembleControlledReportDraft = controlledReportDraftApi.assemble;
 export const getControlledReportDraft = controlledReportDraftApi.readDraft;
 export const getControlledReportDraftAuditLogs = controlledReportDraftApi.auditLogs;
+export const getControlledLawyerReviewStatus = controlledLawyerReviewApi.status;
+export const submitControlledLawyerReview = controlledLawyerReviewApi.submit;
+export const getControlledLawyerReview = controlledLawyerReviewApi.readReview;
+export const approveControlledLawyerReview = controlledLawyerReviewApi.approve;
+export const rejectControlledLawyerReview = controlledLawyerReviewApi.reject;
+export const requestRevisionControlledLawyerReview = controlledLawyerReviewApi.requestRevision;
+export const getControlledLawyerReviewAuditLogs = controlledLawyerReviewApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

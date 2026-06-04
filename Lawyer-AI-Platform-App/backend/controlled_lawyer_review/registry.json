@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "controlled_lawyer_review": {
+    "enabled": true,
+    "mode": "local_only_controlled_lawyer_review",
+    "production_enabled": false,
+    "mock_review_enabled": true,
+    "requires_explicit_review_confirmation": true,
+    "requires_explicit_assembly_confirmation": true,
+    "requires_manual_review": true,
+    "llm_live_enabled": false,
+    "deepseek_live_enabled": false,
+    "ocr_live_enabled": false,
+    "legal_search_live_enabled": false,
+    "skill_publish_enabled": false,
+    "workspace_runtime_auto_enable": false,
+    "runtime_storage_enabled": true,
+    "runtime_storage_path": "storage/runtime/controlled_lawyer_reviews",
+    "source_trace_enabled": true,
+    "final_legal_opinion_enabled": false,
+    "store_raw_material_text_in_git": false,
+    "store_raw_ocr_text_in_git": false,
+    "store_raw_legal_search_results_in_git": false,
+    "store_review_record_in_git": false
+  },
+  "audit_logs": []
+}
