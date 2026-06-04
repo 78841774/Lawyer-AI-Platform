@@ -66,6 +66,12 @@ import type {
   PersonalAlphaDashboardSummary,
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
+  PersonalAlphaFinalGateDecisionList,
+  PersonalAlphaFinalGateDecisionRequest,
+  PersonalAlphaFinalGateDecisionResult,
+  PersonalAlphaFinalGateRunDetail,
+  PersonalAlphaFinalGateStatus,
+  PersonalAlphaFinalGateSummaryResponse,
   PersonalAlphaFinalReadinessRunDetail,
   PersonalAlphaFinalReadinessStatus,
   PersonalAlphaFinalReadinessSummaryResponse,
@@ -190,6 +196,12 @@ export type {
   PersonalAlphaDashboardSummary,
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
+  PersonalAlphaFinalGateDecisionList,
+  PersonalAlphaFinalGateDecisionRequest,
+  PersonalAlphaFinalGateDecisionResult,
+  PersonalAlphaFinalGateRunDetail,
+  PersonalAlphaFinalGateStatus,
+  PersonalAlphaFinalGateSummaryResponse,
   PersonalAlphaFinalReadinessRunDetail,
   PersonalAlphaFinalReadinessStatus,
   PersonalAlphaFinalReadinessSummaryResponse,
@@ -856,6 +868,18 @@ export const personalAlphaFinalReadinessApi = {
     request<PersonalAlphaFinalReadinessSummaryResponse>(`/personal-alpha-final-readiness/run/${encodeURIComponent(workspaceRunId)}/summary`)
 };
 
+export const personalAlphaFinalGateApi = {
+  getStatus: () => request<PersonalAlphaFinalGateStatus>("/personal-alpha-final-gate/status"),
+  getRunDetail: (workspaceRunId: string) =>
+    request<PersonalAlphaFinalGateRunDetail>(`/personal-alpha-final-gate/run/${encodeURIComponent(workspaceRunId)}`),
+  getSummary: (workspaceRunId: string) =>
+    request<PersonalAlphaFinalGateSummaryResponse>(`/personal-alpha-final-gate/run/${encodeURIComponent(workspaceRunId)}/summary`),
+  listDecisions: (workspaceRunId: string) =>
+    request<PersonalAlphaFinalGateDecisionList>(`/personal-alpha-final-gate/run/${encodeURIComponent(workspaceRunId)}/decisions`),
+  submitDecision: (workspaceRunId: string, payload: PersonalAlphaFinalGateDecisionRequest) =>
+    postJson<PersonalAlphaFinalGateDecisionResult>(`/personal-alpha-final-gate/run/${encodeURIComponent(workspaceRunId)}/decisions`, payload)
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -903,6 +927,11 @@ export const getPersonalAlphaSourceReviewDecisionSummary = personalAlphaSourceRe
 export const getPersonalAlphaFinalReadinessStatus = personalAlphaFinalReadinessApi.getStatus;
 export const getPersonalAlphaFinalReadinessRunDetail = personalAlphaFinalReadinessApi.getRunDetail;
 export const getPersonalAlphaFinalReadinessRunSummary = personalAlphaFinalReadinessApi.getRunSummary;
+export const getPersonalAlphaFinalGateStatus = personalAlphaFinalGateApi.getStatus;
+export const getPersonalAlphaFinalGateRunDetail = personalAlphaFinalGateApi.getRunDetail;
+export const getPersonalAlphaFinalGateSummary = personalAlphaFinalGateApi.getSummary;
+export const getPersonalAlphaFinalGateDecisions = personalAlphaFinalGateApi.listDecisions;
+export const submitPersonalAlphaFinalGateDecision = personalAlphaFinalGateApi.submitDecision;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/Button";
@@ -80,6 +81,11 @@ export default function PersonalAlphaFinalReadinessPage() {
           title="Personal Alpha Final Review Readiness"
           description="个人 Alpha 最终复核准备度：聚合本地 controlled mock workflow 的阶段状态、source review decisions 和安全 gate，仅展示 metadata。"
         />
+        {workspaceRunId.trim() ? (
+          <Link href={`/personal-alpha-final-gate?workspace_run_id=${encodeURIComponent(workspaceRunId.trim())}`} className="inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+            View Controlled Final Gate
+          </Link>
+        ) : null}
         {error ? <StatusMessage message={error} /> : null}
 
         <Card>

@@ -129,9 +129,14 @@ export default function PersonalAlphaSourceReviewPage() {
           description="个人 Alpha 证据链 / source refs 复核页面；仅展示 metadata，不显示原文，显示 blocked / ready / pending / mock 状态。"
         />
         {workspaceRunId.trim() ? (
-          <Link href={`/personal-alpha-final-readiness?workspace_run_id=${encodeURIComponent(workspaceRunId.trim())}`} className="inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
-            View Final Readiness
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link href={`/personal-alpha-final-readiness?workspace_run_id=${encodeURIComponent(workspaceRunId.trim())}`} className="inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+              View Final Readiness
+            </Link>
+            <Link href={`/personal-alpha-final-gate?workspace_run_id=${encodeURIComponent(workspaceRunId.trim())}`} className="inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+              View Final Gate
+            </Link>
+          </div>
         ) : null}
         {error ? <StatusMessage message={error} /> : null}
 

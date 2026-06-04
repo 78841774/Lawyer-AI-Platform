@@ -30,6 +30,7 @@ const navGroups = [
       { href: "/personal-alpha-dashboard", label: "Personal Alpha Dashboard" },
       { href: "/personal-alpha-source-review", label: "Personal Alpha Source Review" },
       { href: "/personal-alpha-final-readiness", label: "Personal Alpha Final Review Readiness" },
+      { href: "/personal-alpha-final-gate", label: "Personal Alpha Final Gate" },
       { href: "/controlled-material", label: "Controlled Material" },
       { href: "/controlled-ocr", label: "Controlled OCR" },
       { href: "/controlled-legal-search", label: "Controlled Legal Search" },
