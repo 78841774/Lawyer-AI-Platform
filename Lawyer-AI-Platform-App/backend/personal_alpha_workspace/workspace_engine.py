@@ -48,9 +48,9 @@ def run_personal_alpha_workspace(request: PersonalAlphaWorkspaceRequest) -> dict
         append_personal_alpha_workspace_audit_log(_audit_event(audit_log_id, request, workspace_run_id, "blocked_by_personal_alpha_workspace_guard", warnings, created_at))
         return PersonalAlphaWorkspaceRunResult(
             workspace_run_id=workspace_run_id,
-            case_id=request.case_id,
-            workspace_id=request.workspace_id,
-            workflow_mode=request.workflow_mode,
+            case_id=_safe_identifier(request.case_id),
+            workspace_id=_safe_identifier(request.workspace_id),
+            workflow_mode=_safe_identifier(request.workflow_mode),
             status="blocked",
             end_to_end_mock_run_created=False,
             final_legal_opinion_generated=False,
@@ -259,6 +259,14 @@ def _collect_warnings(guard_results: list[dict[str, Any]]) -> list[str]:
     for result in guard_results:
         warnings.extend(str(item) for item in result.get("warnings", []))
     return list(dict.fromkeys(warnings))
+
+
+def _safe_identifier(value: str) -> str:
+    lowered = str(value).lower()
+    unsafe_markers = ("/", "\\", ".env", "local.db", "api_key", "apikey", "secret", "token", "users/")
+    if any(marker in lowered for marker in unsafe_markers):
+        return "[redacted]"
+    return str(value)
 
 
 def _audit_event(audit_log_id: str, request: PersonalAlphaWorkspaceRequest, workspace_run_id: str, result: str, warnings: list[str], created_at: str) -> dict[str, Any]:
