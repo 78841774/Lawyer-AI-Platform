@@ -1401,6 +1401,101 @@ export type ControlledFinalReviewLockAuditLog = {
   created_at: string;
 };
 
+export type PersonalAlphaWorkspaceStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  end_to_end_workflow_enabled: boolean;
+  mock_first_enabled: boolean;
+  requires_manual_review: boolean;
+  requires_explicit_workspace_confirmation: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  unified_audit_timeline_enabled: boolean;
+  source_trace_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  store_raw_material_text_in_git: boolean;
+  store_raw_ocr_text_in_git: boolean;
+  store_raw_legal_search_results_in_git: boolean;
+  store_workspace_snapshot_in_git: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaWorkspaceRequest = {
+  case_id: string;
+  workspace_id: string;
+  workflow_mode: string;
+  material_preview_id: string;
+  ocr_preview_id: string;
+  legal_search_preview_id: string;
+  draft_id: string;
+  review_id: string;
+  revision_id: string;
+  final_lock_id: string;
+  explicit_workspace_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  provider_mode: string;
+  llm_mode: string;
+  preview_only: boolean;
+};
+
+export type PersonalAlphaWorkspaceRunResult = {
+  workspace_run_id: string;
+  case_id: string;
+  workspace_id: string;
+  workflow_mode: string;
+  status: string;
+  end_to_end_mock_run_created: boolean;
+  final_legal_opinion_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  stage_statuses: Record<string, unknown>[];
+  workspace_snapshot: Record<string, unknown>;
+  unified_audit_timeline: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  guard_results: Record<string, unknown>[];
+  audit_log_id: string;
+  allowed_to_continue: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaWorkspaceRunRecord = {
+  workspace_run_id: string;
+  case_id: string;
+  workspace_id: string;
+  workflow_mode: string;
+  stage_statuses: Record<string, unknown>[];
+  workspace_snapshot: Record<string, unknown>;
+  unified_audit_timeline: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaWorkspaceAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  workspace_run_id: string;
+  workflow_mode: string;
+  result: string;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

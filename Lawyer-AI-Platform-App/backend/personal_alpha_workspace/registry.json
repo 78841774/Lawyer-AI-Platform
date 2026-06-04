@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "personal_alpha_workspace": {
+    "enabled": true,
+    "mode": "local_only_personal_alpha_workspace",
+    "production_enabled": false,
+    "end_to_end_workflow_enabled": true,
+    "mock_first_enabled": true,
+    "requires_manual_review": true,
+    "requires_explicit_workspace_confirmation": true,
+    "llm_live_enabled": false,
+    "deepseek_live_enabled": false,
+    "ocr_live_enabled": false,
+    "legal_search_live_enabled": false,
+    "runtime_storage_enabled": true,
+    "runtime_storage_path": "storage/runtime/personal_alpha_workspace",
+    "unified_audit_timeline_enabled": true,
+    "source_trace_enabled": true,
+    "final_legal_opinion_enabled": false,
+    "auto_skill_publish_enabled": false,
+    "auto_workspace_runtime_enabled": false,
+    "store_raw_material_text_in_git": false,
+    "store_raw_ocr_text_in_git": false,
+    "store_raw_legal_search_results_in_git": false,
+    "store_workspace_snapshot_in_git": false
+  },
+  "audit_logs": []
+}

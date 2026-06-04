@@ -62,6 +62,11 @@ import type {
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
   PersonalAlphaStatus,
+  PersonalAlphaWorkspaceAuditLog,
+  PersonalAlphaWorkspaceRequest,
+  PersonalAlphaWorkspaceRunRecord,
+  PersonalAlphaWorkspaceRunResult,
+  PersonalAlphaWorkspaceStatus,
   PersonalCaseManifestPreview,
   PersonalCaseManifestPreviewRequest,
   LocalSandboxAuditLog,
@@ -164,6 +169,11 @@ export type {
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
   PersonalAlphaStatus,
+  PersonalAlphaWorkspaceAuditLog,
+  PersonalAlphaWorkspaceRequest,
+  PersonalAlphaWorkspaceRunRecord,
+  PersonalAlphaWorkspaceRunResult,
+  PersonalAlphaWorkspaceStatus,
   PersonalCaseManifestPreview,
   PersonalCaseManifestPreviewRequest,
   LocalSandboxAuditLog,
@@ -763,6 +773,18 @@ export const controlledFinalReviewApi = {
   }
 };
 
+export const personalAlphaWorkspaceApi = {
+  status: () => request<PersonalAlphaWorkspaceStatus>("/personal-alpha-workspace/status"),
+  run: (payload: PersonalAlphaWorkspaceRequest) =>
+    postJson<PersonalAlphaWorkspaceRunResult>("/personal-alpha-workspace/run", payload),
+  readRun: (workspaceRunId: string) =>
+    request<PersonalAlphaWorkspaceRunRecord>(`/personal-alpha-workspace/${encodeURIComponent(workspaceRunId)}`),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: PersonalAlphaWorkspaceAuditLog[] }>("/personal-alpha-workspace/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -790,6 +812,10 @@ export const previewPersonalAlphaManifest = personalAlphaApi.previewManifest;
 export const previewPersonalAlphaMaterialInventory = personalAlphaApi.previewMaterialInventory;
 export const runPersonalAlphaDryRun = personalAlphaApi.dryRun;
 export const getPersonalAlphaAuditLogs = personalAlphaApi.auditLogs;
+export const getPersonalAlphaWorkspaceStatus = personalAlphaWorkspaceApi.status;
+export const runPersonalAlphaWorkspace = personalAlphaWorkspaceApi.run;
+export const getPersonalAlphaWorkspaceRun = personalAlphaWorkspaceApi.readRun;
+export const getPersonalAlphaWorkspaceAuditLogs = personalAlphaWorkspaceApi.auditLogs;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

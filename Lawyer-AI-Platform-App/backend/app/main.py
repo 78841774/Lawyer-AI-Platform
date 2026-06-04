@@ -35,6 +35,7 @@ from legal_search_adapter.router import router as legal_search_router
 from local_sandbox.router import router as local_sandbox_router
 from ocr_adapter.router import router as ocr_router
 from personal_alpha.router import router as personal_alpha_router
+from personal_alpha_workspace.router import router as personal_alpha_workspace_router
 from source_refs.router import router as source_refs_router
 from versioned_skill_training_runs.router import router as versioned_skill_training_runs_router
 
@@ -85,6 +86,7 @@ app.include_router(source_refs_router)
 app.include_router(local_sandbox_router)
 app.include_router(internal_alpha_router)
 app.include_router(personal_alpha_router)
+app.include_router(personal_alpha_workspace_router)
 app.include_router(controlled_material_router)
 app.include_router(controlled_ocr_router)
 app.include_router(controlled_legal_search_router)

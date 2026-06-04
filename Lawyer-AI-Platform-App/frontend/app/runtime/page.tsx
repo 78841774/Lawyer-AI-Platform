@@ -18,13 +18,14 @@ import {
   getLocalSandboxStatus,
   getOCRStatus,
   getPersonalAlphaStatus,
+  getPersonalAlphaWorkspaceStatus,
   getSourceRefsStatus
 } from "@/services/api";
 
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview, error } =
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, personalAlphaWorkspace, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview, error } =
     await loadRuntime();
 
   return (
@@ -141,6 +142,30 @@ export default async function RuntimePage() {
               ["requires_manual_review", formatBoolean(personalAlpha?.requires_manual_review)]
             ]}
             actionHref="/personal-alpha"
+          />
+          <StatusCard
+            title="Personal Alpha Workspace"
+            provider={personalAlphaWorkspace?.mode ?? "local_only_personal_alpha_workspace"}
+            connected={personalAlphaWorkspace?.enabled ?? false}
+            rows={[
+              ["mode", personalAlphaWorkspace?.mode ?? "local_only_personal_alpha_workspace"],
+              ["production_enabled", formatBoolean(personalAlphaWorkspace?.production_enabled)],
+              ["end_to_end_workflow_enabled", formatBoolean(personalAlphaWorkspace?.end_to_end_workflow_enabled)],
+              ["mock_first_enabled", formatBoolean(personalAlphaWorkspace?.mock_first_enabled)],
+              ["requires_explicit_workspace_confirmation", formatBoolean(personalAlphaWorkspace?.requires_explicit_workspace_confirmation)],
+              ["requires_manual_review", formatBoolean(personalAlphaWorkspace?.requires_manual_review)],
+              ["llm_live_enabled", formatBoolean(personalAlphaWorkspace?.llm_live_enabled)],
+              ["deepseek_live_enabled", formatBoolean(personalAlphaWorkspace?.deepseek_live_enabled)],
+              ["ocr_live_enabled", formatBoolean(personalAlphaWorkspace?.ocr_live_enabled)],
+              ["legal_search_live_enabled", formatBoolean(personalAlphaWorkspace?.legal_search_live_enabled)],
+              ["runtime_storage_path", personalAlphaWorkspace?.runtime_storage_path ?? "storage/runtime/personal_alpha_workspace"],
+              ["unified_audit_timeline_enabled", formatBoolean(personalAlphaWorkspace?.unified_audit_timeline_enabled)],
+              ["source_trace_enabled", formatBoolean(personalAlphaWorkspace?.source_trace_enabled)],
+              ["final_legal_opinion_enabled", formatBoolean(personalAlphaWorkspace?.final_legal_opinion_enabled)],
+              ["auto_skill_publish_enabled", formatBoolean(personalAlphaWorkspace?.auto_skill_publish_enabled)],
+              ["auto_workspace_runtime_enabled", formatBoolean(personalAlphaWorkspace?.auto_workspace_runtime_enabled)]
+            ]}
+            actionHref="/personal-alpha-workspace"
           />
           <StatusCard
             title="Controlled Material"
@@ -321,7 +346,7 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, personalAlphaWorkspace, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
@@ -329,6 +354,7 @@ async function loadRuntime() {
       getLocalSandboxStatus(),
       getInternalAlphaStatus(),
       getPersonalAlphaStatus(),
+      getPersonalAlphaWorkspaceStatus(),
       getControlledMaterialStatus(),
       getControlledOCRStatus(),
       getControlledLegalSearchStatus(),
@@ -337,7 +363,7 @@ async function loadRuntime() {
       getControlledRevisionStatus(),
       getControlledFinalReviewStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, personalAlphaWorkspace, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview, error: null };
   } catch {
     return {
       runtime: null,
@@ -347,6 +373,7 @@ async function loadRuntime() {
       localSandbox: null,
       internalAlpha: null,
       personalAlpha: null,
+      personalAlphaWorkspace: null,
       controlledMaterial: null,
       controlledOCR: null,
       controlledLegalSearch: null,
