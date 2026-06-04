@@ -59,6 +59,13 @@ import type {
   InternalAlphaReadinessChecklist,
   InternalAlphaStatus,
   PersonalAlphaAuditLog,
+  PersonalAlphaCaseOSAuditTimeline,
+  PersonalAlphaCaseOSCaseDetail,
+  PersonalAlphaCaseOSCaseListItem,
+  PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSSafetyChecklist,
+  PersonalAlphaCaseOSStageState,
+  PersonalAlphaCaseOSStatus,
   PersonalAlphaDashboardAuditTimeline,
   PersonalAlphaDashboardSourceTraceSummary,
   PersonalAlphaDashboardStageHealth,
@@ -208,6 +215,13 @@ export type {
   InternalAlphaReadinessChecklist,
   InternalAlphaStatus,
   PersonalAlphaAuditLog,
+  PersonalAlphaCaseOSAuditTimeline,
+  PersonalAlphaCaseOSCaseDetail,
+  PersonalAlphaCaseOSCaseListItem,
+  PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSSafetyChecklist,
+  PersonalAlphaCaseOSStageState,
+  PersonalAlphaCaseOSStatus,
   PersonalAlphaDashboardAuditTimeline,
   PersonalAlphaDashboardSourceTraceSummary,
   PersonalAlphaDashboardStageHealth,
@@ -967,6 +981,25 @@ export const personalAlphaFinalLockApi = {
     request<PersonalAlphaFinalLockList>(`/personal-alpha-final-lock/packets/${encodeURIComponent(packetId)}/locks`)
 };
 
+export const personalAlphaCaseOSApi = {
+  getStatus: () => request<PersonalAlphaCaseOSStatus>("/case-os/status"),
+  listCases: () => request<PersonalAlphaCaseOSCaseListItem[]>("/case-os"),
+  getCaseDetail: (caseId: string) =>
+    request<PersonalAlphaCaseOSCaseDetail>(`/case-os/${encodeURIComponent(caseId)}`),
+  getAuditTimeline: (caseId: string) =>
+    request<PersonalAlphaCaseOSAuditTimeline>(`/case-os/${encodeURIComponent(caseId)}/audit-timeline`),
+  getNextAction: (caseId: string) =>
+    request<PersonalAlphaCaseOSNextAction>(`/case-os/${encodeURIComponent(caseId)}/next-action`),
+  getSafetyChecklist: (caseId: string) =>
+    request<{
+      case_id: string;
+      safety_checklist: PersonalAlphaCaseOSSafetyChecklist;
+      mock_or_redacted_only: boolean;
+      raw_content_included: boolean;
+      warnings: string[];
+    }>(`/case-os/${encodeURIComponent(caseId)}/safety-checklist`)
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -1037,6 +1070,12 @@ export const createPersonalAlphaFinalLock = personalAlphaFinalLockApi.createLock
 export const listPersonalAlphaFinalLocks = personalAlphaFinalLockApi.listLocks;
 export const getPersonalAlphaFinalLock = personalAlphaFinalLockApi.getLock;
 export const listPersonalAlphaFinalLocksByPacket = personalAlphaFinalLockApi.listPacketLocks;
+export const getPersonalAlphaCaseOSStatus = personalAlphaCaseOSApi.getStatus;
+export const listPersonalAlphaCaseOSCases = personalAlphaCaseOSApi.listCases;
+export const getPersonalAlphaCaseOSCaseDetail = personalAlphaCaseOSApi.getCaseDetail;
+export const getPersonalAlphaCaseOSAuditTimeline = personalAlphaCaseOSApi.getAuditTimeline;
+export const getPersonalAlphaCaseOSNextAction = personalAlphaCaseOSApi.getNextAction;
+export const getPersonalAlphaCaseOSSafetyChecklist = personalAlphaCaseOSApi.getSafetyChecklist;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

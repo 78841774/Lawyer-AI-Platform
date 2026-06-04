@@ -2400,6 +2400,166 @@ export type PersonalAlphaFinalLockList = {
   warnings: string[];
 };
 
+export type PersonalAlphaCaseOSStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  manual_review_required: boolean;
+  lawyer_review_required: boolean;
+  aggregates_personal_alpha_workflow: boolean;
+  aggregated_versions: string[];
+  case_os_enabled: boolean;
+  final_report_generation_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSSafetyChecklist = {
+  local_only: boolean;
+  mock_first: boolean;
+  controlled_first: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  manual_review_required: boolean;
+  lawyer_review_required: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  raw_quote_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+};
+
+export type PersonalAlphaCaseOSProfile = {
+  case_id: string;
+  title: string;
+  case_type: string;
+  jurisdiction: string;
+  client_name: string;
+  opposing_party: string;
+  mock_or_redacted_only: boolean;
+};
+
+export type PersonalAlphaCaseOSStageState = {
+  stage_id: string;
+  label: string;
+  status: string;
+  next_action: string | null;
+  target_route: string | null;
+  target_id: string | null;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+};
+
+export type PersonalAlphaCaseOSStageSummary = {
+  workspace?: PersonalAlphaCaseOSStageState;
+  source_review?: PersonalAlphaCaseOSStageState;
+  source_review_decision?: PersonalAlphaCaseOSStageState;
+  final_readiness?: PersonalAlphaCaseOSStageState;
+  final_gate?: PersonalAlphaCaseOSStageState;
+  final_packet?: PersonalAlphaCaseOSStageState;
+  lawyer_final_review?: PersonalAlphaCaseOSStageState;
+  final_lock?: PersonalAlphaCaseOSStageState;
+};
+
+export type PersonalAlphaCaseOSNextAction = {
+  case_id: string;
+  current_stage: string;
+  next_action: string;
+  next_action_label: string;
+  target_route: string;
+  target_id: string | null;
+  blocked: boolean;
+  blocked_reasons: string[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSCaseListItem = {
+  case_id: string;
+  title: string;
+  workspace_id: string;
+  current_stage: string;
+  blocked: boolean;
+  blocked_reasons: string[];
+  next_action: string;
+  latest_workspace_run_id: string | null;
+  latest_packet_id: string | null;
+  latest_lock_id: string | null;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  updated_at: string;
+};
+
+export type PersonalAlphaCaseOSAuditEvent = {
+  timeline_event_id: string;
+  case_id: string;
+  workspace_run_id: string;
+  stage_id: string;
+  event_type: string;
+  result: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  created_at: string;
+};
+
+export type PersonalAlphaCaseOSAuditTimeline = {
+  case_id: string;
+  timeline: PersonalAlphaCaseOSAuditEvent[];
+  event_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSCaseDetail = {
+  case_id: string;
+  title: string;
+  workspace_id: string;
+  current_stage: string;
+  blocked: boolean;
+  blocked_reasons: string[];
+  next_action: string;
+  profile: PersonalAlphaCaseOSProfile;
+  workspace_runs: Record<string, unknown>[];
+  stage_summary: PersonalAlphaCaseOSStageSummary;
+  source_review: Record<string, unknown>;
+  source_review_decision: Record<string, unknown>;
+  final_readiness: Record<string, unknown>;
+  final_gate: Record<string, unknown>;
+  final_packet: Record<string, unknown>;
+  lawyer_final_review: Record<string, unknown>;
+  final_lock: Record<string, unknown>;
+  audit_timeline: PersonalAlphaCaseOSAuditEvent[];
+  safety_checklist: PersonalAlphaCaseOSSafetyChecklist;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
