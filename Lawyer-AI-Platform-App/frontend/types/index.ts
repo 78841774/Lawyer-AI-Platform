@@ -2264,6 +2264,142 @@ export type PersonalAlphaLawyerFinalReviewPacketDetail = {
   created_at: string;
 };
 
+export type PersonalAlphaFinalLockStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  requires_lawyer_final_review_approval: boolean;
+  requires_manual_review: boolean;
+  requires_lawyer_review: boolean;
+  final_report_generation_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  warnings: string[];
+};
+
+export type PersonalAlphaFinalLockReadinessRequirements = {
+  requires_packet_exists: boolean;
+  requires_latest_lawyer_action_approve_packet: boolean;
+  requires_metadata_only: boolean;
+  requires_no_raw_content: boolean;
+  requires_no_final_legal_opinion: boolean;
+  requires_no_final_report: boolean;
+};
+
+export type PersonalAlphaFinalLockSafetyChecklist = {
+  local_only: boolean;
+  mock_first: boolean;
+  controlled_first: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  manual_review_required: boolean;
+  lawyer_review_required: boolean;
+  requires_lawyer_final_review_approval: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  raw_quote_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  runtime_storage_ignored: boolean;
+};
+
+export type PersonalAlphaFinalLockReadiness = {
+  packet_id: string;
+  workspace_run_id: string;
+  status: string;
+  can_create_final_lock: boolean;
+  requires_lawyer_final_review_approval: boolean;
+  latest_lawyer_review_action: string | null;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  readiness_requirements: PersonalAlphaFinalLockReadinessRequirements;
+  safety_checklist: PersonalAlphaFinalLockSafetyChecklist;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaFinalLockCreateRequest = {
+  reviewer_id: string;
+  manual_review_confirmed: boolean;
+  lawyer_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+};
+
+export type PersonalAlphaFinalLockRecord = {
+  lock_id: string;
+  packet_id: string;
+  workspace_run_id: string;
+  status: string;
+  reviewer_id: string;
+  lock_record: Record<string, unknown>;
+  safety_checklist: PersonalAlphaFinalLockSafetyChecklist;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  manual_review_confirmed: boolean;
+  lawyer_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaFinalLockCreateResult = {
+  lock_id: string;
+  packet_id: string;
+  workspace_run_id: string;
+  status: string;
+  reviewer_id: string;
+  lock_record: Record<string, unknown>;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  manual_review_confirmed: boolean;
+  lawyer_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaFinalLockList = {
+  locks: PersonalAlphaFinalLockRecord[];
+  lock_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

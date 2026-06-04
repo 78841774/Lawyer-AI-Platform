@@ -33,6 +33,7 @@ const navGroups = [
       { href: "/personal-alpha-final-gate", label: "Personal Alpha Final Gate" },
       { href: "/personal-alpha-final-packet", label: "Personal Alpha Final Packet" },
       { href: "/personal-alpha-lawyer-final-review", label: "Personal Alpha Lawyer Final Review" },
+      { href: "/personal-alpha-final-lock", label: "Personal Alpha Final Lock" },
       { href: "/controlled-material", label: "Controlled Material" },
       { href: "/controlled-ocr", label: "Controlled OCR" },
       { href: "/controlled-legal-search", label: "Controlled Legal Search" },

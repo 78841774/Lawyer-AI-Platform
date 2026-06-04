@@ -160,6 +160,9 @@ export default function PersonalAlphaFinalPacketPage() {
           title="Personal Alpha Controlled Final Review Packet"
           description="个人 Alpha 终审材料包：在 Final Gate 通过后生成 metadata-only 的 controlled final review packet。该页面不生成正式法律意见，不生成最终报告正文，不调用真实服务。"
         />
+        <div className="rounded-md border border-line bg-white p-4 text-sm text-muted shadow-sm">
+          Final Lock requires Lawyer Final Review approval first. Use the Lawyer Final Review page before creating any controlled final lock.
+        </div>
         {error ? <StatusMessage message={error} /> : null}
 
         <Card>

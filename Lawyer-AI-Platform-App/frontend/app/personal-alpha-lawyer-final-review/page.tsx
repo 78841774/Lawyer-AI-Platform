@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/Button";
@@ -165,6 +166,15 @@ export default function PersonalAlphaLawyerFinalReviewPage() {
           title="Personal Alpha Controlled Lawyer Final Review"
           description="个人 Alpha 律师终审复核：基于 metadata-only final review packet 进行人工复核动作。该页面不生成正式法律意见，不生成最终报告正文，不调用真实服务。"
         />
+        {packetId.trim() && currentSummary?.ready_for_controlled_final_lock ? (
+          <Link href={`/personal-alpha-final-lock?packet_id=${encodeURIComponent(packetId.trim())}`} className="inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+            View Controlled Final Lock
+          </Link>
+        ) : packetId.trim() ? (
+          <div className="rounded-md border border-line bg-white p-4 text-sm text-muted shadow-sm">
+            Controlled Final Lock requires the latest lawyer final review action to be approve_packet.
+          </div>
+        ) : null}
         {error ? <StatusMessage message={error} /> : null}
 
         <Card>

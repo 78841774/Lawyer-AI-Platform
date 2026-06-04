@@ -72,6 +72,12 @@ import type {
   PersonalAlphaFinalGateRunDetail,
   PersonalAlphaFinalGateStatus,
   PersonalAlphaFinalGateSummaryResponse,
+  PersonalAlphaFinalLockCreateRequest,
+  PersonalAlphaFinalLockCreateResult,
+  PersonalAlphaFinalLockList,
+  PersonalAlphaFinalLockReadiness,
+  PersonalAlphaFinalLockRecord,
+  PersonalAlphaFinalLockStatus,
   PersonalAlphaFinalPacketCreateRequest,
   PersonalAlphaFinalPacketCreateResult,
   PersonalAlphaFinalPacketList,
@@ -215,6 +221,12 @@ export type {
   PersonalAlphaFinalGateRunDetail,
   PersonalAlphaFinalGateStatus,
   PersonalAlphaFinalGateSummaryResponse,
+  PersonalAlphaFinalLockCreateRequest,
+  PersonalAlphaFinalLockCreateResult,
+  PersonalAlphaFinalLockList,
+  PersonalAlphaFinalLockReadiness,
+  PersonalAlphaFinalLockRecord,
+  PersonalAlphaFinalLockStatus,
   PersonalAlphaFinalPacketCreateRequest,
   PersonalAlphaFinalPacketCreateResult,
   PersonalAlphaFinalPacketList,
@@ -942,6 +954,19 @@ export const personalAlphaLawyerFinalReviewApi = {
     request<PersonalAlphaLawyerFinalReviewActionRecord>(`/personal-alpha-lawyer-final-review/actions/${encodeURIComponent(actionId)}`)
 };
 
+export const personalAlphaFinalLockApi = {
+  getStatus: () => request<PersonalAlphaFinalLockStatus>("/personal-alpha-final-lock/status"),
+  getReadiness: (packetId: string) =>
+    request<PersonalAlphaFinalLockReadiness>(`/personal-alpha-final-lock/packets/${encodeURIComponent(packetId)}/readiness`),
+  createLock: (packetId: string, payload: PersonalAlphaFinalLockCreateRequest) =>
+    postJson<PersonalAlphaFinalLockCreateResult>(`/personal-alpha-final-lock/packets/${encodeURIComponent(packetId)}/create`, payload),
+  listLocks: () => request<PersonalAlphaFinalLockList>("/personal-alpha-final-lock/locks"),
+  getLock: (lockId: string) =>
+    request<PersonalAlphaFinalLockRecord>(`/personal-alpha-final-lock/locks/${encodeURIComponent(lockId)}`),
+  listPacketLocks: (packetId: string) =>
+    request<PersonalAlphaFinalLockList>(`/personal-alpha-final-lock/packets/${encodeURIComponent(packetId)}/locks`)
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -1006,6 +1031,12 @@ export const getPersonalAlphaLawyerFinalReviewSummary = personalAlphaLawyerFinal
 export const getPersonalAlphaLawyerFinalReviewActions = personalAlphaLawyerFinalReviewApi.listActions;
 export const submitPersonalAlphaLawyerFinalReviewAction = personalAlphaLawyerFinalReviewApi.submitAction;
 export const getPersonalAlphaLawyerFinalReviewAction = personalAlphaLawyerFinalReviewApi.getAction;
+export const getPersonalAlphaFinalLockStatus = personalAlphaFinalLockApi.getStatus;
+export const getPersonalAlphaFinalLockReadiness = personalAlphaFinalLockApi.getReadiness;
+export const createPersonalAlphaFinalLock = personalAlphaFinalLockApi.createLock;
+export const listPersonalAlphaFinalLocks = personalAlphaFinalLockApi.listLocks;
+export const getPersonalAlphaFinalLock = personalAlphaFinalLockApi.getLock;
+export const listPersonalAlphaFinalLocksByPacket = personalAlphaFinalLockApi.listPacketLocks;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;
