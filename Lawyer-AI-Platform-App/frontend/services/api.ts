@@ -10,9 +10,15 @@ import type {
   Material,
   Report,
   LatestRuntimeRunsResponse,
+  LegalSearchProviderStatus,
+  LegalSearchRequest,
+  LegalSearchResult,
   RuntimeRun,
   RuntimeRunsResponse,
   RuntimeStatus,
+  OCRProviderStatus,
+  OCRRequest,
+  OCRResult,
   Skill,
   ExperiencePackage,
   ExperiencePackageDetail,
@@ -44,7 +50,13 @@ export type {
   RuntimeRun,
   RuntimeRunsResponse,
   LatestRuntimeRunsResponse,
+  LegalSearchProviderStatus,
+  LegalSearchRequest,
+  LegalSearchResult,
   RuntimeStatus as LLMStatus,
+  OCRProviderStatus,
+  OCRRequest,
+  OCRResult,
   ExperiencePackage as ExperiencePackageRecord,
   SkillRegistryEntry as SkillRegistryRecord,
   SkillRegistryDetail,
@@ -460,11 +472,35 @@ export const runtimeApi = {
   dashboardStats: () => request<DashboardStats>("/dashboard/stats")
 };
 
+export const ocrApi = {
+  status: () => request<OCRProviderStatus>("/ocr/status"),
+  mockExtract: (payload: OCRRequest) => postJson<OCRResult>("/ocr/mock-extract", {
+    provider: "mock_ocr",
+    mode: "mock",
+    mock_only: true,
+    ...payload
+  })
+};
+
+export const legalSearchApi = {
+  status: () => request<LegalSearchProviderStatus>("/legal-search/status"),
+  mockSearch: (payload: LegalSearchRequest) => postJson<LegalSearchResult>("/legal-search/mock-search", {
+    provider: "mock_legal_search",
+    mode: "mock",
+    mock_only: true,
+    ...payload
+  })
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
 export const getDashboardStats = runtimeApi.dashboardStats;
 export const getLLMStatus = runtimeApi.llmStatus;
+export const getOCRStatus = ocrApi.status;
+export const mockOCRExtract = ocrApi.mockExtract;
+export const getLegalSearchStatus = legalSearchApi.status;
+export const mockLegalSearch = legalSearchApi.mockSearch;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

@@ -13,6 +13,108 @@ export type RuntimeStatus = {
   base_url_configured: boolean;
 };
 
+export type OCRProviderStatus = {
+  provider: string;
+  connected: boolean;
+  mock_only: boolean;
+  supports_pdf: boolean;
+  supports_images: boolean;
+  notes: string;
+};
+
+export type OCRRequest = {
+  material_id: string;
+  filename: string;
+  relative_path?: string | null;
+  provider?: string;
+  mode?: string;
+  mock_only?: boolean;
+};
+
+export type OCRSourceRef = {
+  material_id: string;
+  filename: string;
+  relative_path?: string | null;
+  page_number: number;
+  char_start: number;
+  char_end: number;
+  bbox?: Record<string, unknown> | null;
+  quote: string;
+};
+
+export type OCRPageResult = {
+  page_number: number;
+  text: string;
+  confidence: number;
+  source_ref: OCRSourceRef;
+};
+
+export type OCRResult = {
+  ocr_run_id: string;
+  material_id: string;
+  filename: string;
+  relative_path?: string | null;
+  provider: string;
+  provider_mode: string;
+  status: string;
+  text_available: boolean;
+  pages: OCRPageResult[];
+  source_refs: OCRSourceRef[];
+  warnings: string[];
+  created_at: string;
+};
+
+export type LegalSearchProviderStatus = {
+  provider: string;
+  connected: boolean;
+  mock_only: boolean;
+  supports_case_law: boolean;
+  supports_statutes: boolean;
+  notes: string;
+};
+
+export type LegalSearchRequest = {
+  query: string;
+  case_cause_code?: string | null;
+  jurisdiction?: string | null;
+  provider?: string;
+  mode?: string;
+  mock_only?: boolean;
+};
+
+export type LegalSearchSourceRef = {
+  provider: string;
+  source_id: string;
+  citation: string;
+  url?: string | null;
+  quote: string;
+  retrieved_at: string;
+};
+
+export type LegalSearchHit = {
+  hit_id: string;
+  title: string;
+  source_type: string;
+  court: string;
+  date: string;
+  summary: string;
+  relevance_score: number;
+  source_ref: LegalSearchSourceRef;
+};
+
+export type LegalSearchResult = {
+  search_run_id: string;
+  query: string;
+  case_cause_code?: string | null;
+  jurisdiction?: string | null;
+  provider: string;
+  provider_mode: string;
+  status: string;
+  hits: LegalSearchHit[];
+  warnings: string[];
+  created_at: string;
+};
+
 export type AuthStatus = {
   authenticated: boolean;
   user_id: string;
@@ -191,6 +293,9 @@ export type ReportSourceRefs = {
     filename?: string | null;
     relative_path?: string | null;
   }>;
+  source_refs?: unknown[];
+  citations?: unknown[];
+  trace?: Record<string, unknown>;
 } & Record<string, unknown>;
 
 export type Report = {

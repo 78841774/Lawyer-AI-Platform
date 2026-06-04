@@ -19,7 +19,9 @@ const navGroups = [
       { href: "/versioned-training-packages", label: "版本化训练包" },
       { href: "/versioned-training-runs", label: "训练运行" },
       { href: "/skill-registry", label: "技能注册表" },
-      { href: "/runtime", label: "运行状态" }
+      { href: "/runtime", label: "运行状态" },
+      { href: "/ocr", label: "OCR" },
+      { href: "/legal-search", label: "Legal Search" }
     ]
   },
   {

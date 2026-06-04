@@ -1,14 +1,15 @@
+import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getLLMStatus } from "@/services/api";
+import { getLegalSearchStatus, getLLMStatus, getOCRStatus } from "@/services/api";
 
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, error } = await loadRuntime();
+  const { runtime, ocr, legalSearch, error } = await loadRuntime();
 
   return (
     <AppShell>
@@ -16,36 +17,59 @@ export default async function RuntimePage() {
         <SectionHeader
           eyebrow="AIHome.law 运行状态"
           title="运行状态"
-          description="运行状态用于确认当前案件处理、法律分析、报告生成所使用的模型提供方和配置状态。"
+          description="运行状态用于确认模型、OCR、法律检索和 source refs foundation 的 mock / connected 边界。"
         />
 
         {error ? <StatusMessage message={error} /> : null}
 
+        <div className="grid gap-6 lg:grid-cols-3">
+          <StatusCard
+            title="模型状态"
+            provider={runtime?.provider ?? "-"}
+            connected={runtime?.configured ?? false}
+            rows={[
+              ["模型", runtime?.model ?? "-"],
+              ["已配置", formatBoolean(runtime?.configured)],
+              ["Base URL 已配置", formatBoolean(runtime?.base_url_configured)],
+              ["llm_status", runtime?.configured ? "configured" : "not_configured"]
+            ]}
+          />
+          <StatusCard
+            title="OCR Adapter"
+            provider={ocr?.provider ?? "mock_ocr"}
+            connected={ocr?.connected ?? false}
+            rows={[
+              ["connected", formatBoolean(ocr?.connected)],
+              ["mock_only", formatBoolean(ocr?.mock_only)],
+              ["supports_pdf", formatBoolean(ocr?.supports_pdf)],
+              ["supports_images", formatBoolean(ocr?.supports_images)],
+              ["notes", ocr?.notes ?? "Real OCR provider not connected."]
+            ]}
+            actionHref="/ocr"
+          />
+          <StatusCard
+            title="Legal Search Adapter"
+            provider={legalSearch?.provider ?? "mock_legal_search"}
+            connected={legalSearch?.connected ?? false}
+            rows={[
+              ["connected", formatBoolean(legalSearch?.connected)],
+              ["mock_only", formatBoolean(legalSearch?.mock_only)],
+              ["supports_case_law", formatBoolean(legalSearch?.supports_case_law)],
+              ["supports_statutes", formatBoolean(legalSearch?.supports_statutes)],
+              ["notes", legalSearch?.notes ?? "Real legal database not connected."]
+            ]}
+            actionHref="/legal-search"
+          />
+        </div>
+
         <Card>
           <CardBody>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <div className="text-xs uppercase tracking-wide text-muted">模型状态</div>
-                <div className="mt-2 text-lg font-semibold text-ink">{runtime?.provider ?? "-"}</div>
-              </div>
-              <Badge tone={runtime?.configured ? "gold" : "muted"}>
-                {runtime?.configured ? "已配置" : "未配置"}
-              </Badge>
-            </div>
-            <div className="mt-5 space-y-3">
-              <InfoRow label="提供方" value={runtime?.provider ?? "-"} />
-              <InfoRow label="模型" value={runtime?.model ?? "-"} />
-              <InfoRow label="已配置" value={formatBoolean(runtime?.configured)} />
-              <InfoRow label="Base URL 已配置" value={formatBoolean(runtime?.base_url_configured)} />
-              <InfoRow label="llm_provider" value={runtime?.provider ?? "-"} />
-              <InfoRow label="llm_status" value={runtime?.configured ? "configured" : "not_configured"} />
-              <InfoRow label="未来 token 用量" value="暂不可用" />
-              <InfoRow label="未来延迟" value="暂不可用" />
-              <InfoRow label="未来成本" value="暂不可用" />
-              <InfoRow label="未来错误日志" value="即将推出" />
-              <InfoRow label="Runtime Trace" value="现在包含 facts / analysis / reports 的运行历史。" />
-              <InfoRow label="Run History" value="可在案件详情页查看。" />
-              <InfoRow label="v3.5" value="支持 latest run 标记和事实去重统计。" />
+            <h2 className="text-base font-semibold text-ink">Source Refs Foundation</h2>
+            <div className="mt-4 space-y-3">
+              <InfoRow label="source_ref_types" value="material / ocr / legal_search / skill_runtime" />
+              <InfoRow label="report.citations" value="prepared as optional array" />
+              <InfoRow label="report.trace" value="prepared as optional object" />
+              <InfoRow label="citation_persistence" value="not_enabled" />
             </div>
           </CardBody>
         </Card>
@@ -56,17 +80,60 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    return { runtime: await getLLMStatus(), error: null };
+    const [runtime, ocr, legalSearch] = await Promise.all([
+      getLLMStatus(),
+      getOCRStatus(),
+      getLegalSearchStatus()
+    ]);
+    return { runtime, ocr, legalSearch, error: null };
   } catch {
-    return { runtime: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
+    return { runtime: null, ocr: null, legalSearch: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
+}
+
+function StatusCard({
+  title,
+  provider,
+  connected,
+  rows,
+  actionHref
+}: {
+  title: string;
+  provider: string;
+  connected: boolean;
+  rows: Array<[string, string]>;
+  actionHref?: string;
+}) {
+  return (
+    <Card>
+      <CardBody>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="text-xs uppercase tracking-wide text-muted">{title}</div>
+            <div className="mt-2 text-lg font-semibold text-ink">{provider}</div>
+          </div>
+          <Badge tone={connected ? "gold" : "muted"}>{connected ? "connected" : "not connected"}</Badge>
+        </div>
+        <div className="mt-5 space-y-3">
+          {rows.map(([label, value]) => (
+            <InfoRow key={label} label={label} value={value} />
+          ))}
+        </div>
+        {actionHref ? (
+          <Link href={actionHref} className="mt-5 inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+            打开测试页
+          </Link>
+        ) : null}
+      </CardBody>
+    </Card>
+  );
 }
 
 function formatBoolean(value: boolean | undefined) {
   if (typeof value !== "boolean") {
     return "-";
   }
-  return value ? "是" : "否";
+  return value ? "true" : "false";
 }
 
 function StatusMessage({ message }: { message: string }) {
