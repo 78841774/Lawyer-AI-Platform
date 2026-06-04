@@ -1,0 +1,37 @@
+{
+  "schema_version": "v1",
+  "status": "prepared_for_training",
+  "registry_status": "readonly",
+  "packages": [
+    {
+      "training_package_id": "case-fact-extractor-v3@v1.0.0",
+      "legacy_skill_id": "case-fact-extractor-v3",
+      "domain": "case_fact_extraction",
+      "display_name": "案件事实全面提炼工具 v3 训练包",
+      "version": "v1.0.0",
+      "status": "prepared_for_training",
+      "registry_status": "readonly",
+      "path": "case-fact-extractor-v3/v1.0.0/metadata.json"
+    },
+    {
+      "training_package_id": "case-analysis-pro-v3@v1.0.0",
+      "legacy_skill_id": "case-analysis-pro-v3",
+      "domain": "case_legal_analysis",
+      "display_name": "案件法律分析 Pro v3 训练包",
+      "version": "v1.0.0",
+      "status": "prepared_for_training",
+      "registry_status": "readonly",
+      "path": "case-analysis-pro-v3/v1.0.0/metadata.json"
+    },
+    {
+      "training_package_id": "contract_dispute_combined@v1.0.0",
+      "legacy_skill_id": "contract_dispute_combined",
+      "domain": "contract_dispute",
+      "display_name": "合同纠纷综合训练包 v1.0.0",
+      "version": "v1.0.0",
+      "status": "prepared_for_training",
+      "registry_status": "readonly",
+      "path": "contract_dispute_combined/v1.0.0/metadata.json"
+    }
+  ]
+}

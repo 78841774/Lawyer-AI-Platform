@@ -1,0 +1,45 @@
+{
+  "training_package_id": "case-analysis-pro-v3@v1.0.0",
+  "legacy_skill_id": "case-analysis-pro-v3",
+  "display_name": "案件法律分析 Pro v3 训练包",
+  "version": "v1.0.0",
+  "status": "prepared_for_training",
+  "registry_status": "readonly",
+  "source": "legacy_skill_assets",
+  "training_scope": [
+    "legal_analysis",
+    "claim_defense_analysis",
+    "litigation_strategy",
+    "report_generation",
+    "A10_focus_deep_analysis"
+  ],
+  "asset_types": [
+    "runtime_rules",
+    "prompt_templates",
+    "evaluation_rubrics",
+    "report_templates"
+  ],
+  "source_assets": [
+    "runtime_rules/legal_analysis_chain_rules.md",
+    "runtime_rules/claim_defense_rules.md",
+    "runtime_rules/litigation_strategy_rules.md",
+    "prompt_templates/legal_analysis_prompt_template.md",
+    "report_templates/legal_analysis_report_template.md",
+    "evaluation_rubrics/legal_analysis_rubric.md"
+  ],
+  "a10_validation": {
+    "required_title": "A10 争议焦点法律深化分析",
+    "required_modules": [
+      "模块一：焦点 → 法律问题提炼",
+      "模块二：实务观点 —— 裁判倾向规律",
+      "模块三：理论观点",
+      "模块四：实务与理论对比运用策略",
+      "模块五：综合策略结论（含法官审查清单）",
+      "评分卡",
+      "深度自评卡"
+    ]
+  },
+  "requires_human_review": true,
+  "auto_train_enabled": false,
+  "auto_publish_enabled": false
+}

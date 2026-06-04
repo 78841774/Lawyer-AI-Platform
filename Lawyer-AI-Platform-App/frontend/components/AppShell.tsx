@@ -16,6 +16,7 @@ const navGroups = [
     items: [
       { href: "/skills", label: "技能" },
       { href: "/experience-packages", label: "经验包" },
+      { href: "/versioned-training-packages", label: "版本化训练包" },
       { href: "/skill-registry", label: "技能注册表" },
       { href: "/runtime", label: "运行状态" }
     ]

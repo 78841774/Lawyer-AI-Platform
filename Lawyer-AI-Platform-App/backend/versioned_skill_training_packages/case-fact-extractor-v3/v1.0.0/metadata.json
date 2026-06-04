@@ -1,0 +1,33 @@
+{
+  "training_package_id": "case-fact-extractor-v3@v1.0.0",
+  "legacy_skill_id": "case-fact-extractor-v3",
+  "display_name": "案件事实全面提炼工具 v3 训练包",
+  "version": "v1.0.0",
+  "status": "prepared_for_training",
+  "registry_status": "readonly",
+  "source": "legacy_skill_assets",
+  "training_scope": [
+    "fact_extraction",
+    "evidence_matrix",
+    "amount_audit",
+    "contradiction_detection",
+    "legal_element_mapping"
+  ],
+  "asset_types": [
+    "runtime_rules",
+    "prompt_templates",
+    "evaluation_rubrics"
+  ],
+  "source_assets": [
+    "runtime_rules/material_context_rules.md",
+    "runtime_rules/evidence_matrix_rules.md",
+    "runtime_rules/amount_audit_rules.md",
+    "runtime_rules/contradiction_gap_rules.md",
+    "runtime_rules/legal_element_mapping_rules.md",
+    "prompt_templates/fact_extraction_prompt_template.md",
+    "evaluation_rubrics/fact_extraction_rubric.md"
+  ],
+  "requires_human_review": true,
+  "auto_train_enabled": false,
+  "auto_publish_enabled": false
+}

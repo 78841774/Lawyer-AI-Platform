@@ -279,3 +279,48 @@ export type CaseSkillBinding = {
   message?: string;
   created_at?: string;
 };
+
+export type VersionedSkillTrainingPackage = {
+  training_package_id: string;
+  legacy_skill_id?: string;
+  domain?: string;
+  display_name?: string;
+  version: string;
+  status: string;
+  registry_status?: string;
+  path: string;
+};
+
+export type VersionedSkillTrainingPackageMetadata = {
+  training_package_id: string;
+  legacy_skill_id?: string;
+  display_name: string;
+  version: string;
+  status: string;
+  registry_status?: string;
+  source?: string;
+  source_packages?: string[];
+  domain?: string;
+  training_scope: string[];
+  asset_types?: string[];
+  source_assets?: string[];
+  requires_human_review: boolean;
+  auto_train_enabled: boolean;
+  auto_publish_enabled: boolean;
+  next_stage?: string;
+  a10_validation?: {
+    required_title?: string;
+    required_modules?: string[];
+  };
+};
+
+export type VersionedSkillTrainingPackageDetail = {
+  package: VersionedSkillTrainingPackage;
+  metadata: VersionedSkillTrainingPackageMetadata;
+  readme: string;
+};
+
+export type VersionedSkillTrainingPackageFile = {
+  path: string;
+  size: number;
+};

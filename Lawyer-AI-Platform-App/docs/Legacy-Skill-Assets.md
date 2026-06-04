@@ -16,6 +16,27 @@ Current registered asset:
 | --- | --- | --- | --- |
 | `case-analysis-pro-v3.legal_analysis_chain_rules` | `case-analysis-pro-v3` | runtime rules | source-aligned |
 
+v3.6-D extends the registry with fact extraction, legal analysis, and combined contract dispute assets. These assets are readonly sources for versioned training packages.
+
+## v3.6-D Versioned Training Packages
+
+Legacy assets are now packaged into:
+
+* `case-fact-extractor-v3@v1.0.0`
+* `case-analysis-pro-v3@v1.0.0`
+* `contract_dispute_combined@v1.0.0`
+
+Each package has:
+
+* `metadata.json`
+* `README.md`
+* copied readonly source assets by type
+* status `prepared_for_training`
+* `auto_train_enabled=false`
+* `auto_publish_enabled=false`
+
+These packages do not overwrite `skill_001` or `skill_002`.
+
 ## case-analysis-pro-v3 Chain Correction
 
 The `case-analysis-pro-v3` asset must follow the old Skill source exactly:
@@ -93,3 +114,5 @@ v3.6-C does not:
 * Train a Skill.
 * Import the asset registry into the product database.
 * Publish an Experience Package.
+
+v3.6-D also does not train, publish, or execute legacy scripts. It only prepares versioned readonly package inputs for a later training run.

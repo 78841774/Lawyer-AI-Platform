@@ -101,7 +101,15 @@ For `case-analysis-pro-v3`, reshaped runtime rules must preserve the E1, 00, A1-
 
 v3.6-C should create a data reshaping script and package manifest.
 
-v3.6-D can then connect reviewed packages to Skill Training without changing the main chain blindly.
+v3.6-D prepares readonly versioned packages without changing the Skill Training main chain.
+
+Prepared packages:
+
+* `case-fact-extractor-v3@v1.0.0`
+* `case-analysis-pro-v3@v1.0.0`
+* `contract_dispute_combined@v1.0.0`
+
+v3.6-E can then start an explicit versioned training run after review.
 
 Recommended sequence:
 
@@ -112,6 +120,22 @@ Recommended sequence:
 5. Generate package-level rubrics and templates.
 6. Validate counts and schema.
 7. Only then decide whether to import package metadata into the app.
+
+## v3.6-D Package Boundary
+
+The package registry is:
+
+* `/Users/wazhen/Lawyer-AI-Platform/Lawyer-AI-Platform-App/backend/versioned_skill_training_packages/registry.json`
+
+The API is readonly:
+
+* `GET /versioned-skill-training-packages`
+* `GET /versioned-skill-training-packages/{package_id}`
+* `GET /versioned-skill-training-packages/{package_id}/files`
+
+No package in v3.6-D can auto-train or auto-publish.
+
+Existing `skill_001` and `skill_002` remain untouched.
 
 ## Non-Goals
 

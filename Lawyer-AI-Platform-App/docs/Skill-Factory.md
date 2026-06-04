@@ -21,6 +21,27 @@ No Experience Package was imported.
 
 No Skill Registry record was published.
 
+## v3.6-D Versioned Training Packages
+
+Skill Factory now exposes readonly versioned training packages:
+
+| package | status | purpose |
+| --- | --- | --- |
+| `case-fact-extractor-v3@v1.0.0` | `prepared_for_training` | fact extraction training input |
+| `case-analysis-pro-v3@v1.0.0` | `prepared_for_training` | legal analysis and A10 training input |
+| `contract_dispute_combined@v1.0.0` | `prepared_for_training` | contract dispute combined training input |
+
+The packages live in:
+
+* `backend/versioned_skill_training_packages`
+
+They are visible through:
+
+* `GET /versioned-skill-training-packages`
+* frontend `/versioned-training-packages`
+
+They do not overwrite `skill_001` or `skill_002`, and they do not start training.
+
 ## v3.6-C Asset Reshape
 
 v3.6-C adds a source-aligned runtime rule asset for `case-analysis-pro-v3`.
@@ -94,6 +115,8 @@ Before an input can be used for training or publication, it must pass:
 ## v3.6-C Boundary
 
 v3.6-C only adds source-aligned legacy asset reshaping and documentation.
+
+v3.6-D adds versioned readonly training package preparation and a read-only browser surface.
 
 It intentionally avoids:
 

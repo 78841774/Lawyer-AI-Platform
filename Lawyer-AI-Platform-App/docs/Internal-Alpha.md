@@ -28,6 +28,8 @@ v3.6-B adds read-only Legacy Skill Analysis for existing casework Skills, SkillO
 
 v3.6-C adds legacy Skill error-expression cleanup for `case-analysis-pro-v3`. A10 is fixed as `争议焦点法律深化分析`, and future reshaping must prefer old `SKILL.md` plus `references` templates over generic summaries.
 
+v3.6-D adds readonly Versioned Skill Training Packages for later training runs. It prepares `case-fact-extractor-v3@v1.0.0`, `case-analysis-pro-v3@v1.0.0`, and `contract_dispute_combined@v1.0.0` without training, publishing, or overwriting existing Skills.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -187,6 +189,8 @@ This stage is analysis only. It does not create Skills, publish Experience Packa
 
 The required next step is to reshape reviewed legacy data into Dataset Packages, Runtime Rules, Prompt Templates, Report Templates, and Evaluation Rubrics before any training stage.
 
+v3.6-D prepares these package inputs but keeps Skill Training execution deferred to v3.6-E.
+
 ### Legacy Skill 清洗规则
 
 1. 旧 Skill 原文优先。
@@ -210,6 +214,9 @@ POST /cases
 GET /auth/status
 POST /auth/login
 GET /auth/dev-token
+GET /versioned-skill-training-packages
+GET /versioned-skill-training-packages/{package_id}
+GET /versioned-skill-training-packages/{package_id}/files
 ```
 
 In v3.1, `POST /cases` keeps the simple create flow and uses the current user's first active workspace.

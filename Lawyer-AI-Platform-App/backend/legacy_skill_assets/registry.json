@@ -1,8 +1,11 @@
 {
-  "registry_version": "v3.6-C",
+  "registry_version": "v3.6-D",
   "generated_by": "manual_legacy_asset_cleanup",
   "status": "analysis_only",
   "source_priority": [
+    "/Users/wazhen/.codex/skills/case-fact-extractor-v3/SKILL.md",
+    "/Users/wazhen/.codex/skills/case-fact-extractor-v3/references/evidence-processing.md",
+    "/Users/wazhen/.codex/skills/case-fact-extractor-v3/references/scoring.md",
     "/Users/wazhen/.codex/skills/case-analysis-pro-v3/SKILL.md",
     "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/a10-structure-template.md",
     "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/lawyer-output-standards.md",
@@ -15,22 +18,92 @@
     "No LLM call.",
     "No automatic training.",
     "No Skill Registry import or publication.",
-    "Do not rewrite the A-series from generic legal workflow memory."
+    "Do not rewrite the A-series from generic legal workflow memory.",
+    "Versioned training package records are readonly and prepared_for_training."
   ],
   "assets": [
+    {
+      "asset_id": "case-fact-extractor-v3.material_context_rules",
+      "skill_family": "case-fact-extractor-v3",
+      "asset_type": "runtime_rules",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-fact-extractor-v3/material_context_rules.md",
+      "description": "Material folder context and material flow rules for lawyer-grade fact extraction.",
+      "migration_level": "Level 2: Runtime Rule Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-fact-extractor-v3.evidence_matrix_rules",
+      "skill_family": "case-fact-extractor-v3",
+      "asset_type": "runtime_rules",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-fact-extractor-v3/evidence_matrix_rules.md",
+      "description": "Evidence-fact matrix rules mapping every key fact to source evidence, original excerpt, proof purpose, probative force, and risk.",
+      "migration_level": "Level 2: Runtime Rule Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-fact-extractor-v3.amount_audit_rules",
+      "skill_family": "case-fact-extractor-v3",
+      "asset_type": "runtime_rules",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-fact-extractor-v3/amount_audit_rules.md",
+      "description": "Three-round amount audit and OCR amount gate rules.",
+      "migration_level": "Level 2: Runtime Rule Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-fact-extractor-v3.contradiction_gap_rules",
+      "skill_family": "case-fact-extractor-v3",
+      "asset_type": "runtime_rules",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-fact-extractor-v3/contradiction_gap_rules.md",
+      "description": "Contradiction detection and P1/P2/P3 gap classification rules.",
+      "migration_level": "Level 2: Runtime Rule Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-fact-extractor-v3.legal_element_mapping_rules",
+      "skill_family": "case-fact-extractor-v3",
+      "asset_type": "runtime_rules",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-fact-extractor-v3/legal_element_mapping_rules.md",
+      "description": "Rules for mapping extracted facts to claim and defense elements for later A4 and A10 use.",
+      "migration_level": "Level 2: Runtime Rule Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-fact-extractor-v3.fact_extraction_prompt_template",
+      "skill_family": "case-fact-extractor-v3",
+      "asset_type": "prompt_templates",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/prompt_templates/case-fact-extractor-v3/fact_extraction_prompt_template.md",
+      "description": "Prompt template candidate for folder-aware fact extraction and material flow analysis.",
+      "migration_level": "Level 3: Prompt Template Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-fact-extractor-v3.fact_extraction_rubric",
+      "skill_family": "case-fact-extractor-v3",
+      "asset_type": "evaluation_rubrics",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/evaluation_rubrics/case-fact-extractor-v3/fact_extraction_rubric.md",
+      "description": "Evaluation rubric candidate for fact extraction score gate and one-vote rejection items.",
+      "migration_level": "Level 4: Evaluation Rubric Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
     {
       "asset_id": "case-analysis-pro-v3.legal_analysis_chain_rules",
       "skill_family": "case-analysis-pro-v3",
       "asset_type": "runtime_rules",
       "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-analysis-pro-v3/legal_analysis_chain_rules.md",
-      "source_refs": [
-        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/SKILL.md",
-        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/a10-structure-template.md",
-        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/lawyer-output-standards.md",
-        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/depth-standards.md",
-        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/admission-gates.md",
-        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/scoring.md"
-      ],
       "description": "A10 争议焦点法律深化分析，包含焦点法律问题提炼、实务观点、理论观点、实务与理论对比运用策略、综合策略结论、评分卡和深度自评卡。",
       "a_series_structure": {
         "Step0": [
@@ -72,6 +145,98 @@
       "review_status": "source-aligned",
       "training_allowed": false,
       "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-analysis-pro-v3.claim_defense_rules",
+      "skill_family": "case-analysis-pro-v3",
+      "asset_type": "runtime_rules",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-analysis-pro-v3/claim_defense_rules.md",
+      "description": "Claim and defense analysis boundaries for A4 and handoff to A10.",
+      "migration_level": "Level 2: Runtime Rule Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-analysis-pro-v3.litigation_strategy_rules",
+      "skill_family": "case-analysis-pro-v3",
+      "asset_type": "runtime_rules",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-analysis-pro-v3/litigation_strategy_rules.md",
+      "description": "Litigation strategy route rules spanning A5, A10, A11, A12, and A13.",
+      "migration_level": "Level 2: Runtime Rule Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-analysis-pro-v3.legal_analysis_prompt_template",
+      "skill_family": "case-analysis-pro-v3",
+      "asset_type": "prompt_templates",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/prompt_templates/case-analysis-pro-v3/legal_analysis_prompt_template.md",
+      "description": "Prompt template candidate for source-aligned E1, 00, A1-A13, E legal analysis.",
+      "migration_level": "Level 3: Prompt Template Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-analysis-pro-v3.legal_analysis_report_template",
+      "skill_family": "case-analysis-pro-v3",
+      "asset_type": "report_templates",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/report_templates/case-analysis-pro-v3/legal_analysis_report_template.md",
+      "description": "Report template candidate preserving Step0, E1, 00, A1-A13, E delivery boundaries and A10 skeleton.",
+      "migration_level": "Level 3: Prompt Template Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "case-analysis-pro-v3.legal_analysis_rubric",
+      "skill_family": "case-analysis-pro-v3",
+      "asset_type": "evaluation_rubrics",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/evaluation_rubrics/case-analysis-pro-v3/legal_analysis_rubric.md",
+      "description": "Evaluation rubric candidate for A-series and A10 gates.",
+      "migration_level": "Level 4: Evaluation Rubric Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    },
+    {
+      "asset_id": "contract_dispute_combined.contract_dispute_v1",
+      "skill_family": "contract_dispute_combined",
+      "asset_type": "experience_package_templates",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/experience_package_templates/contract_dispute_combined/contract_dispute_v1.md",
+      "description": "Readonly combined contract dispute package template for fact extraction plus legal analysis.",
+      "migration_level": "Level 6: Experience Package Template Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    }
+  ],
+  "versioned_training_packages": [
+    {
+      "training_package_id": "case-fact-extractor-v3@v1.0.0",
+      "legacy_skill_id": "case-fact-extractor-v3",
+      "version": "v1.0.0",
+      "status": "prepared_for_training",
+      "registry_status": "readonly",
+      "path": "Lawyer-AI-Platform-App/backend/versioned_skill_training_packages/case-fact-extractor-v3/v1.0.0/metadata.json"
+    },
+    {
+      "training_package_id": "case-analysis-pro-v3@v1.0.0",
+      "legacy_skill_id": "case-analysis-pro-v3",
+      "version": "v1.0.0",
+      "status": "prepared_for_training",
+      "registry_status": "readonly",
+      "path": "Lawyer-AI-Platform-App/backend/versioned_skill_training_packages/case-analysis-pro-v3/v1.0.0/metadata.json"
+    },
+    {
+      "training_package_id": "contract_dispute_combined@v1.0.0",
+      "legacy_skill_id": "contract_dispute_combined",
+      "version": "v1.0.0",
+      "status": "prepared_for_training",
+      "registry_status": "readonly",
+      "path": "Lawyer-AI-Platform-App/backend/versioned_skill_training_packages/contract_dispute_combined/v1.0.0/metadata.json"
     }
   ]
 }

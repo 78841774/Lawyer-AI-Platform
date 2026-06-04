@@ -16,6 +16,7 @@ from app.api.runtime_runs import router as runtime_runs_router
 from app.api.skill_registry import router as skill_registry_router
 from app.api.skills import router as skills_router
 from app.api.users import router as users_router
+from app.api.versioned_skill_training_packages import router as versioned_skill_training_packages_router
 from app.api.workspace import router as workspace_router
 from app.api.workspace_skills import router as workspace_skills_router
 from app.api.workspaces import router as workspaces_router
@@ -62,3 +63,4 @@ app.include_router(experience_packages_router)
 app.include_router(skill_registry_router)
 app.include_router(workspace_skills_router)
 app.include_router(llm_router)
+app.include_router(versioned_skill_training_packages_router)

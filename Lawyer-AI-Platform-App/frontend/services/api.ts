@@ -18,6 +18,9 @@ import type {
   SkillRegistryDetail,
   SkillRegistryEntry,
   User,
+  VersionedSkillTrainingPackage,
+  VersionedSkillTrainingPackageDetail,
+  VersionedSkillTrainingPackageFile,
   Workspace
 } from "@/types";
 
@@ -42,6 +45,9 @@ export type {
   ExperiencePackage as ExperiencePackageRecord,
   SkillRegistryEntry as SkillRegistryRecord,
   Skill as WorkspaceSkillRecord,
+  VersionedSkillTrainingPackage,
+  VersionedSkillTrainingPackageDetail,
+  VersionedSkillTrainingPackageFile,
   User as UserRecord,
   Workspace as WorkspaceRecord
 };
@@ -380,6 +386,23 @@ export const skillRegistryApi = {
   deprecate: (skillId: string) => postJson<Record<string, unknown>>(`/skill-registry/${skillId}/deprecate`)
 };
 
+export const versionedTrainingPackageApi = {
+  list: async () => {
+    const response = await request<{ packages: VersionedSkillTrainingPackage[] }>("/versioned-skill-training-packages");
+    return response.packages;
+  },
+  get: (packageId: string) =>
+    request<VersionedSkillTrainingPackageDetail>(
+      `/versioned-skill-training-packages/${encodeURIComponent(packageId)}`
+    ),
+  files: async (packageId: string) => {
+    const response = await request<{ files: VersionedSkillTrainingPackageFile[] }>(
+      `/versioned-skill-training-packages/${encodeURIComponent(packageId)}/files`
+    );
+    return response.files;
+  }
+};
+
 export const runtimeApi = {
   health: () => request<{ status: string }>("/health"),
   llmStatus: () => request<RuntimeStatus>("/llm/status"),
@@ -434,6 +457,9 @@ export const getSkillRegistry = skillRegistryApi.list;
 export const getSkillRegistryDetail = skillRegistryApi.get;
 export const publishSkillToRegistry = skillRegistryApi.publish;
 export const deprecateSkillInRegistry = skillRegistryApi.deprecate;
+export const getVersionedTrainingPackages = versionedTrainingPackageApi.list;
+export const getVersionedTrainingPackage = versionedTrainingPackageApi.get;
+export const getVersionedTrainingPackageFiles = versionedTrainingPackageApi.files;
 
 export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
   const [caseRecord, intakeStatus, materials, facts, analyses, reports, runtimeRuns] = await Promise.all([

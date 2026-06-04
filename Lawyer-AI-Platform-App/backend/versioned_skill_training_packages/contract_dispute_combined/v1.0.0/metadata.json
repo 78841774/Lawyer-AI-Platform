@@ -1,0 +1,40 @@
+{
+  "training_package_id": "contract_dispute_combined@v1.0.0",
+  "legacy_skill_id": "contract_dispute_combined",
+  "display_name": "合同纠纷综合训练包 v1.0.0",
+  "version": "v1.0.0",
+  "status": "prepared_for_training",
+  "registry_status": "readonly",
+  "source_packages": [
+    "case-fact-extractor-v3@v1.0.0",
+    "case-analysis-pro-v3@v1.0.0"
+  ],
+  "domain": "contract_dispute",
+  "training_scope": [
+    "folder_aware_fact_extraction",
+    "evidence_matrix",
+    "amount_audit",
+    "legal_analysis",
+    "A10_focus_deep_analysis",
+    "report_generation",
+    "evaluation"
+  ],
+  "asset_types": [
+    "runtime_rules",
+    "prompt_templates",
+    "evaluation_rubrics",
+    "report_templates",
+    "experience_package_templates"
+  ],
+  "source_assets": [
+    "runtime_rules/",
+    "prompt_templates/",
+    "evaluation_rubrics/",
+    "report_templates/",
+    "experience_package_templates/contract_dispute_v1.md"
+  ],
+  "requires_human_review": true,
+  "auto_train_enabled": false,
+  "auto_publish_enabled": false,
+  "next_stage": "v3.6-E versioned skill training run"
+}
