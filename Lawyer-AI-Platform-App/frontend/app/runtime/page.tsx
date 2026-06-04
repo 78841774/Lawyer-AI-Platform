@@ -5,6 +5,7 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
+  getControlledMaterialStatus,
   getLegalSearchStatus,
   getInternalAlphaStatus,
   getLLMStatus,
@@ -17,7 +18,8 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, error } = await loadRuntime();
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, error } =
+    await loadRuntime();
 
   return (
     <AppShell>
@@ -134,6 +136,27 @@ export default async function RuntimePage() {
             ]}
             actionHref="/personal-alpha"
           />
+          <StatusCard
+            title="Controlled Material"
+            provider={controlledMaterial?.mode ?? "local_only_controlled"}
+            connected={controlledMaterial?.enabled ?? false}
+            rows={[
+              ["mode", controlledMaterial?.mode ?? "local_only_controlled"],
+              ["production_enabled", formatBoolean(controlledMaterial?.production_enabled)],
+              ["real_material_reading_enabled", formatBoolean(controlledMaterial?.real_material_reading_enabled)],
+              ["real_material_reading_default", formatBoolean(controlledMaterial?.real_material_reading_default)],
+              ["requires_explicit_read_confirmation", formatBoolean(controlledMaterial?.requires_explicit_read_confirmation)],
+              ["requires_manual_review", formatBoolean(controlledMaterial?.requires_manual_review)],
+              ["ocr_live_enabled", formatBoolean(controlledMaterial?.ocr_live_enabled)],
+              ["llm_live_enabled", formatBoolean(controlledMaterial?.llm_live_enabled)],
+              ["legal_search_live_enabled", formatBoolean(controlledMaterial?.legal_search_live_enabled)],
+              ["deepseek_live_enabled", formatBoolean(controlledMaterial?.deepseek_live_enabled)],
+              ["store_material_content_in_git", formatBoolean(controlledMaterial?.store_material_content_in_git)],
+              ["store_extracted_text_in_git", formatBoolean(controlledMaterial?.store_extracted_text_in_git)],
+              ["final_legal_opinion_enabled", formatBoolean(controlledMaterial?.final_legal_opinion_enabled)]
+            ]}
+            actionHref="/controlled-material"
+          />
         </div>
 
         <Card>
@@ -155,18 +178,29 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
       getSourceRefsStatus(),
       getLocalSandboxStatus(),
       getInternalAlphaStatus(),
-      getPersonalAlphaStatus()
+      getPersonalAlphaStatus(),
+      getControlledMaterialStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, error: null };
   } catch {
-    return { runtime: null, ocr: null, legalSearch: null, sourceRefs: null, localSandbox: null, internalAlpha: null, personalAlpha: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
+    return {
+      runtime: null,
+      ocr: null,
+      legalSearch: null,
+      sourceRefs: null,
+      localSandbox: null,
+      internalAlpha: null,
+      personalAlpha: null,
+      controlledMaterial: null,
+      error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。"
+    };
   }
 }
 

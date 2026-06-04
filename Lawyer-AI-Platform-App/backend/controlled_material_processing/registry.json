@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "controlled_material_processing": {
+    "enabled": true,
+    "mode": "local_only_controlled",
+    "production_enabled": false,
+    "real_material_reading_enabled": false,
+    "real_material_reading_default": false,
+    "requires_explicit_read_confirmation": true,
+    "requires_manual_review": true,
+    "ocr_live_enabled": false,
+    "llm_live_enabled": false,
+    "legal_search_live_enabled": false,
+    "deepseek_live_enabled": false,
+    "store_extracted_text_in_git": false,
+    "store_material_content_in_git": false,
+    "source_trace_enabled": true,
+    "report_draft_enabled": true,
+    "final_legal_opinion_enabled": false
+  },
+  "audit_logs": []
+}

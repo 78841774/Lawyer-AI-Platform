@@ -25,7 +25,8 @@ const navGroups = [
       { href: "/source-refs", label: "Source Refs" },
       { href: "/local-sandbox", label: "Local Sandbox" },
       { href: "/internal-alpha", label: "Internal Alpha" },
-      { href: "/personal-alpha", label: "Personal Alpha" }
+      { href: "/personal-alpha", label: "Personal Alpha" },
+      { href: "/controlled-material", label: "Controlled Material" }
     ]
   },
   {

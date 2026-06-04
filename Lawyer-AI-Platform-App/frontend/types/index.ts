@@ -666,6 +666,102 @@ export type PersonalAlphaAuditLog = {
   created_at: string;
 };
 
+export type ControlledMaterialStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  real_material_reading_enabled: boolean;
+  real_material_reading_default: boolean;
+  requires_explicit_read_confirmation: boolean;
+  requires_manual_review: boolean;
+  ocr_live_enabled: boolean;
+  llm_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  store_extracted_text_in_git: boolean;
+  store_material_content_in_git: boolean;
+  source_trace_enabled: boolean;
+  report_draft_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  warnings: string[];
+};
+
+export type ControlledMaterialReadRequest = {
+  case_id: string;
+  workspace_id: string;
+  local_case_root?: string | null;
+  material_id: string;
+  filename_redacted: string;
+  read_mode: string;
+  explicit_read_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  provider_mode: string;
+  ocr_mode: string;
+  llm_mode: string;
+  legal_search_mode: string;
+};
+
+export type ControlledMaterialReadResult = {
+  controlled_read_id: string;
+  case_id: string;
+  workspace_id: string;
+  material_id: string;
+  filename_redacted: string;
+  local_case_root_redacted: string;
+  content_read: boolean;
+  controlled_read_ready: boolean;
+  requires_next_stage_real_read: boolean;
+  extracted_text_stored: boolean;
+  git_storage_allowed: boolean;
+  allowed_to_continue: boolean;
+  guard_results: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  warnings: string[];
+  audit_log_id: string;
+  created_at: string;
+};
+
+export type ControlledReportDraftRequest = {
+  case_id: string;
+  workspace_id: string;
+  controlled_read_id: string;
+  report_mode: string;
+  manual_review_confirmed: boolean;
+  llm_mode: string;
+};
+
+export type ControlledReportDraftResult = {
+  report_draft_id: string;
+  case_id: string;
+  workspace_id: string;
+  controlled_read_id: string;
+  status: string;
+  legal_opinion_finalized: boolean;
+  requires_human_review: boolean;
+  final_legal_opinion_enabled: boolean;
+  llm_called: boolean;
+  content_read: boolean;
+  mock_only: boolean;
+  source_refs: Record<string, unknown>[];
+  warnings: string[];
+  audit_log_id: string;
+  created_at: string;
+};
+
+export type ControlledMaterialAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  controlled_read_id?: string | null;
+  material_id?: string | null;
+  filename_redacted?: string | null;
+  result: string;
+  warnings: string[];
+  local_case_root_redacted: string;
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

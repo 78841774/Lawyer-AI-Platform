@@ -4,6 +4,12 @@ import type {
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
   CitationResolutionResult,
+  ControlledMaterialAuditLog,
+  ControlledMaterialReadRequest,
+  ControlledMaterialReadResult,
+  ControlledMaterialStatus,
+  ControlledReportDraftRequest,
+  ControlledReportDraftResult,
   DashboardStats,
   Fact,
   IntakeStatus,
@@ -64,6 +70,12 @@ export type {
   Case as CaseRecord,
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
+  ControlledMaterialAuditLog,
+  ControlledMaterialReadRequest,
+  ControlledMaterialReadResult,
+  ControlledMaterialStatus,
+  ControlledReportDraftRequest,
+  ControlledReportDraftResult,
   DashboardStats,
   Fact as FactRecord,
   IntakeStatus as IntakeStatusRecord,
@@ -583,6 +595,18 @@ export const personalAlphaApi = {
   }
 };
 
+export const controlledMaterialApi = {
+  status: () => request<ControlledMaterialStatus>("/controlled-material/status"),
+  readConfirmed: (payload: ControlledMaterialReadRequest) =>
+    postJson<ControlledMaterialReadResult>("/controlled-material/read-confirmed", payload),
+  reportDraft: (payload: ControlledReportDraftRequest) =>
+    postJson<ControlledReportDraftResult>("/controlled-material/report-draft", payload),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: ControlledMaterialAuditLog[] }>("/controlled-material/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -610,6 +634,10 @@ export const previewPersonalAlphaManifest = personalAlphaApi.previewManifest;
 export const previewPersonalAlphaMaterialInventory = personalAlphaApi.previewMaterialInventory;
 export const runPersonalAlphaDryRun = personalAlphaApi.dryRun;
 export const getPersonalAlphaAuditLogs = personalAlphaApi.auditLogs;
+export const getControlledMaterialStatus = controlledMaterialApi.status;
+export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
+export const generateControlledReportDraft = controlledMaterialApi.reportDraft;
+export const getControlledMaterialAuditLogs = controlledMaterialApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;
