@@ -30,6 +30,8 @@ v3.6-C adds legacy Skill error-expression cleanup for `case-analysis-pro-v3`. A1
 
 v3.6-D adds readonly Versioned Skill Training Packages for later training runs. It prepares `case-fact-extractor-v3@v1.0.0`, `case-analysis-pro-v3@v1.0.0`, and `contract_dispute_combined@v1.0.0` without training, publishing, or overwriting existing Skills.
 
+v3.6-D also adds Case Cause Taxonomy for multi-level legal case causes. Versioned packages now support case cause paths, parent package inheritance, and rule loading from parent to child.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -217,6 +219,11 @@ GET /auth/dev-token
 GET /versioned-skill-training-packages
 GET /versioned-skill-training-packages/{package_id}
 GET /versioned-skill-training-packages/{package_id}/files
+GET /versioned-skill-training-packages/by-case-cause/{case_cause_code}
+GET /case-cause-taxonomy
+GET /case-cause-taxonomy/{case_cause_code}
+GET /case-cause-taxonomy/{case_cause_code}/ancestors
+GET /case-cause-taxonomy/{case_cause_code}/children
 ```
 
 In v3.1, `POST /cases` keeps the simple create flow and uses the current user's first active workspace.

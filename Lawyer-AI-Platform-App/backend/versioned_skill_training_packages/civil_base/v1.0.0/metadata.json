@@ -1,0 +1,35 @@
+{
+  "training_package_id": "civil_base@v1.0.0",
+  "legacy_skill_id": "civil_base",
+  "display_name": "民事案件基础训练包 v1.0.0",
+  "version": "v1.0.0",
+  "status": "prepared_for_training",
+  "registry_status": "readonly",
+  "source": "case_cause_taxonomy",
+  "domain": "civil",
+  "case_cause_level_1": "civil",
+  "case_cause_level_2": null,
+  "case_cause_level_3": null,
+  "case_cause_level_4": null,
+  "case_cause_code": "civil",
+  "case_cause_path": ["civil"],
+  "case_cause_display_path": "民事",
+  "parent_package_ids": [],
+  "inheritance_order": ["civil_base@v1.0.0"],
+  "rule_override_policy": {
+    "more_specific_overrides_general": true,
+    "safety_rules_cannot_be_disabled": true,
+    "human_review_required": true
+  },
+  "training_scope": [
+    "civil_case_safety",
+    "human_review",
+    "legal_review_safety"
+  ],
+  "asset_types": [
+    "runtime_rules"
+  ],
+  "requires_human_review": true,
+  "auto_train_enabled": false,
+  "auto_publish_enabled": false
+}

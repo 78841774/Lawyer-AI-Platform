@@ -38,6 +38,14 @@ def find_package_entry(package_id: str) -> dict[str, Any]:
     raise HTTPException(status_code=404, detail="versioned training package not found")
 
 
+def registry_packages() -> list[dict[str, Any]]:
+    registry = load_registry()
+    packages = registry.get("packages", [])
+    if not isinstance(packages, list):
+        raise HTTPException(status_code=500, detail="versioned training package registry invalid")
+    return [package for package in packages if isinstance(package, dict)]
+
+
 def safe_package_metadata_path(package: dict[str, Any]) -> Path:
     raw_path = package.get("path")
     if not isinstance(raw_path, str) or not raw_path:
@@ -88,6 +96,32 @@ def list_versioned_skill_training_packages() -> dict[str, Any]:
         "status": registry.get("status"),
         "registry_status": registry.get("registry_status"),
         "packages": registry.get("packages", [])
+    }
+
+
+@router.get("/versioned-skill-training-packages/by-case-cause/{case_cause_code}")
+def get_versioned_skill_training_packages_by_case_cause(case_cause_code: str) -> dict[str, Any]:
+    matching = [
+        package
+        for package in registry_packages()
+        if package.get("case_cause_code") == case_cause_code
+        or case_cause_code in package.get("case_cause_path", [])
+    ]
+    chain: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for package in matching:
+        for package_id in package.get("inheritance_order", []):
+            if not isinstance(package_id, str) or package_id in seen:
+                continue
+            try:
+                inherited = find_package_entry(package_id)
+            except HTTPException:
+                continue
+            chain.append(inherited)
+            seen.add(package_id)
+    return {
+        "case_cause_code": case_cause_code,
+        "packages": chain or matching
     }
 
 

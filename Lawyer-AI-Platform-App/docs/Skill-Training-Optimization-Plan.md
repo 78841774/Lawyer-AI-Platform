@@ -137,6 +137,27 @@ No package in v3.6-D can auto-train or auto-publish.
 
 Existing `skill_001` and `skill_002` remain untouched.
 
+## v3.6-D 案由继承
+
+Training packages now include:
+
+* `case_cause_code`
+* `case_cause_path`
+* `case_cause_display_path`
+* `parent_package_ids`
+* `inheritance_order`
+* `rule_override_policy`
+
+Current loading order for `payment_dispute`:
+
+1. `civil_base@v1.0.0`
+2. `contract_dispute_combined@v1.0.0`
+3. `sales_contract_dispute@v1.0.0`
+4. `sales_contract_payment_dispute@v1.0.0`
+5. case-specific runtime context
+
+Child packages may add or specialize rules, but cannot disable human review or legal safety gates.
+
 ## Non-Goals
 
 This plan does not include:

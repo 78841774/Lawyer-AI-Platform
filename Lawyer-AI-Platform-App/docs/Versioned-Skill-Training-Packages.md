@@ -8,9 +8,12 @@ This stage does not train, publish, or overwrite any existing Skill.
 
 | training_package_id | source | status | next stage |
 | --- | --- | --- | --- |
+| `civil_base@v1.0.0` | case cause taxonomy | `prepared_for_training` | v3.6-E training run |
 | `case-fact-extractor-v3@v1.0.0` | `case-fact-extractor-v3` legacy assets | `prepared_for_training` | v3.6-E training run |
 | `case-analysis-pro-v3@v1.0.0` | `case-analysis-pro-v3` legacy assets | `prepared_for_training` | v3.6-E training run |
 | `contract_dispute_combined@v1.0.0` | fact extractor + legal analysis packages | `prepared_for_training` | v3.6-E training run |
+| `sales_contract_dispute@v1.0.0` | case cause taxonomy | `prepared_for_training` | v3.6-E training run |
+| `sales_contract_payment_dispute@v1.0.0` | case cause taxonomy | `prepared_for_training` | v3.6-E training run |
 
 ## Location
 
@@ -67,6 +70,36 @@ The page displays:
 * no-auto-training and no-auto-publish status
 * README content
 * package file list
+* case cause path
+* parent packages
+* inheritance order
+* applicable case cause
+* safety rule override policy
+
+## Case Cause Taxonomy
+
+v3.6-D adds multi-level case cause metadata to every package:
+
+* `case_cause_level_1`
+* `case_cause_level_2`
+* `case_cause_level_3`
+* `case_cause_level_4`
+* `case_cause_code`
+* `case_cause_path`
+* `case_cause_display_path`
+* `parent_package_ids`
+* `inheritance_order`
+* `rule_override_policy`
+
+The current minimal taxonomy chain is:
+
+`civil` → `contract_dispute` → `sales_contract_dispute` → `payment_dispute`
+
+For `payment_dispute`, the complete package inheritance chain is:
+
+`civil_base@v1.0.0` → `contract_dispute_combined@v1.0.0` → `sales_contract_dispute@v1.0.0` → `sales_contract_payment_dispute@v1.0.0`
+
+Safety rules cannot be disabled by child packages.
 
 ## A10 Gate
 

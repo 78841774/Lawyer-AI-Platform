@@ -18,6 +18,8 @@ Current registered asset:
 
 v3.6-D extends the registry with fact extraction, legal analysis, and combined contract dispute assets. These assets are readonly sources for versioned training packages.
 
+v3.6-D also adds Case Cause Taxonomy metadata so experience package templates and training packages can be archived by legal case-cause tree rather than a flat domain.
+
 ## v3.6-D Versioned Training Packages
 
 Legacy assets are now packaged into:
@@ -36,6 +38,23 @@ Each package has:
 * `auto_publish_enabled=false`
 
 These packages do not overwrite `skill_001` or `skill_002`.
+
+## 案由树归档
+
+The contract dispute experience package template now carries:
+
+* `case_cause_code`
+* `case_cause_path`
+* `case_cause_display_path`
+* `parent_package_ids`
+* `inheritance_order`
+* `applicable_case_causes`
+
+Current applicable case causes:
+
+* `contract_dispute`
+* `sales_contract_dispute`
+* `payment_dispute`
 
 ## case-analysis-pro-v3 Chain Correction
 

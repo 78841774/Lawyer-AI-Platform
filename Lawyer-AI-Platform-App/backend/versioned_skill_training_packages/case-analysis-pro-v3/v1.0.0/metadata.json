@@ -6,6 +6,21 @@
   "status": "prepared_for_training",
   "registry_status": "readonly",
   "source": "legacy_skill_assets",
+  "domain": "case_legal_analysis",
+  "case_cause_level_1": "civil",
+  "case_cause_level_2": "contract_dispute",
+  "case_cause_level_3": null,
+  "case_cause_level_4": null,
+  "case_cause_code": "contract_dispute",
+  "case_cause_path": ["civil", "contract_dispute"],
+  "case_cause_display_path": "民事 > 合同纠纷",
+  "parent_package_ids": ["civil_base@v1.0.0"],
+  "inheritance_order": ["civil_base@v1.0.0", "case-analysis-pro-v3@v1.0.0"],
+  "rule_override_policy": {
+    "more_specific_overrides_general": true,
+    "safety_rules_cannot_be_disabled": true,
+    "human_review_required": true
+  },
   "training_scope": [
     "legal_analysis",
     "claim_defense_analysis",

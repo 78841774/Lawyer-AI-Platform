@@ -42,6 +42,24 @@ They are visible through:
 
 They do not overwrite `skill_001` or `skill_002`, and they do not start training.
 
+## v3.6-D Case Cause Taxonomy
+
+Versioned training packages now carry multi-level case cause metadata:
+
+* 一级领域
+* 二级案由
+* 三级案由
+* 四级细分场景
+* 案由路径
+* 父级训练包
+* 规则继承顺序
+
+Current chain:
+
+`civil` → `contract_dispute` → `sales_contract_dispute` → `payment_dispute`
+
+Runtime loaders should later load rules from parent to child. More specific rules can supplement or override general rules, but safety rules and human-review requirements cannot be disabled.
+
 ## v3.6-C Asset Reshape
 
 v3.6-C adds a source-aligned runtime rule asset for `case-analysis-pro-v3`.

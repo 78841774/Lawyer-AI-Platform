@@ -1,0 +1,47 @@
+{
+  "schema_version": "v1",
+  "jurisdiction": "CN",
+  "status": "draft",
+  "case_causes": [
+    {
+      "case_cause_code": "civil",
+      "display_name": "民事",
+      "level": 1,
+      "parent_case_cause_code": null,
+      "path": ["civil"],
+      "display_path": "民事",
+      "aliases": ["民事案件"],
+      "status": "active"
+    },
+    {
+      "case_cause_code": "contract_dispute",
+      "display_name": "合同纠纷",
+      "level": 2,
+      "parent_case_cause_code": "civil",
+      "path": ["civil", "contract_dispute"],
+      "display_path": "民事 > 合同纠纷",
+      "aliases": ["合同争议"],
+      "status": "active"
+    },
+    {
+      "case_cause_code": "sales_contract_dispute",
+      "display_name": "买卖合同纠纷",
+      "level": 3,
+      "parent_case_cause_code": "contract_dispute",
+      "path": ["civil", "contract_dispute", "sales_contract_dispute"],
+      "display_path": "民事 > 合同纠纷 > 买卖合同纠纷",
+      "aliases": ["买卖合同", "货物买卖合同纠纷"],
+      "status": "active"
+    },
+    {
+      "case_cause_code": "payment_dispute",
+      "display_name": "货款支付争议",
+      "level": 4,
+      "parent_case_cause_code": "sales_contract_dispute",
+      "path": ["civil", "contract_dispute", "sales_contract_dispute", "payment_dispute"],
+      "display_path": "民事 > 合同纠纷 > 买卖合同纠纷 > 货款支付争议",
+      "aliases": ["货款拖欠", "付款争议", "欠付货款"],
+      "status": "active"
+    }
+  ]
+}

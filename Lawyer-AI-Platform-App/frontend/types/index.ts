@@ -288,6 +288,11 @@ export type VersionedSkillTrainingPackage = {
   version: string;
   status: string;
   registry_status?: string;
+  case_cause_code?: string;
+  case_cause_path?: string[];
+  case_cause_display_path?: string;
+  parent_package_ids?: string[];
+  inheritance_order?: string[];
   path: string;
 };
 
@@ -301,6 +306,20 @@ export type VersionedSkillTrainingPackageMetadata = {
   source?: string;
   source_packages?: string[];
   domain?: string;
+  case_cause_level_1?: string | null;
+  case_cause_level_2?: string | null;
+  case_cause_level_3?: string | null;
+  case_cause_level_4?: string | null;
+  case_cause_code?: string;
+  case_cause_path?: string[];
+  case_cause_display_path?: string;
+  parent_package_ids?: string[];
+  inheritance_order?: string[];
+  rule_override_policy?: {
+    more_specific_overrides_general?: boolean;
+    safety_rules_cannot_be_disabled?: boolean;
+    human_review_required?: boolean;
+  };
   training_scope: string[];
   asset_types?: string[];
   source_assets?: string[];
@@ -323,4 +342,15 @@ export type VersionedSkillTrainingPackageDetail = {
 export type VersionedSkillTrainingPackageFile = {
   path: string;
   size: number;
+};
+
+export type CaseCauseTaxonomyEntry = {
+  case_cause_code: string;
+  display_name: string;
+  level: number;
+  parent_case_cause_code: string | null;
+  path: string[];
+  display_path: string;
+  aliases: string[];
+  status: string;
 };

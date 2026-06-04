@@ -71,6 +71,8 @@ function DetailContent({
           <Meta label="version" value={metadata.version} />
           <Meta label="status" value={metadata.status} badge />
           <Meta label="source" value={metadata.source ?? metadata.source_packages?.join(", ") ?? "暂无"} />
+          <Meta label="案由路径" value={metadata.case_cause_display_path ?? "暂无"} />
+          <Meta label="适用案由" value={metadata.case_cause_code ?? "暂无"} />
           <Meta label="需要人工复核" value={metadata.requires_human_review ? "是" : "否"} />
           <Meta label="不自动训练" value={metadata.auto_train_enabled ? "否" : "是"} />
           <Meta label="不自动发布" value={metadata.auto_publish_enabled ? "否" : "是"} />
@@ -97,6 +99,17 @@ function DetailContent({
                 </li>
               ))}
             </ul>
+            <h2 className="mt-6 text-base font-semibold text-ink">父级训练包</h2>
+            <ul className="mt-3 space-y-2 text-sm text-muted">
+              {(metadata.parent_package_ids ?? []).map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+              {(metadata.parent_package_ids ?? []).length === 0 ? <li>暂无</li> : null}
+            </ul>
+            <h2 className="mt-6 text-base font-semibold text-ink">继承顺序</h2>
+            <div className="mt-3 text-sm text-muted">
+              {(metadata.inheritance_order ?? []).join(" → ") || "暂无"}
+            </div>
           </CardBody>
         </Card>
 
@@ -107,7 +120,18 @@ function DetailContent({
               <p>当前训练包只读，仅作为后续训练输入。</p>
               <p>不会自动训练，不会自动发布，不覆盖现有 published skill。</p>
               <p>训练前仍需人工复核、脱敏检查与 schema 校验。</p>
+              <p>规则继承采用父级到子级加载，安全规则不可关闭。</p>
             </div>
+            {metadata.rule_override_policy ? (
+              <>
+                <h2 className="mt-6 text-base font-semibold text-ink">规则继承</h2>
+                <ul className="mt-3 space-y-2 text-sm text-muted">
+                  <li>更具体案由覆盖通用规则: {metadata.rule_override_policy.more_specific_overrides_general ? "是" : "否"}</li>
+                  <li>安全规则不可关闭: {metadata.rule_override_policy.safety_rules_cannot_be_disabled ? "是" : "否"}</li>
+                  <li>需要人工复核: {metadata.rule_override_policy.human_review_required ? "是" : "否"}</li>
+                </ul>
+              </>
+            ) : null}
             {metadata.a10_validation ? (
               <>
                 <h2 className="mt-6 text-base font-semibold text-ink">A10 校验</h2>

@@ -2,6 +2,7 @@ import type {
   AuthStatus,
   Case,
   CaseSkillBinding,
+  CaseCauseTaxonomyEntry,
   DashboardStats,
   Fact,
   IntakeStatus,
@@ -32,6 +33,7 @@ export type {
   AuthStatus,
   Case as CaseRecord,
   CaseSkillBinding,
+  CaseCauseTaxonomyEntry,
   DashboardStats,
   Fact as FactRecord,
   IntakeStatus as IntakeStatusRecord,
@@ -400,7 +402,27 @@ export const versionedTrainingPackageApi = {
       `/versioned-skill-training-packages/${encodeURIComponent(packageId)}/files`
     );
     return response.files;
+  },
+  byCaseCause: async (caseCauseCode: string) => {
+    const response = await request<{ packages: VersionedSkillTrainingPackage[] }>(
+      `/versioned-skill-training-packages/by-case-cause/${encodeURIComponent(caseCauseCode)}`
+    );
+    return response.packages;
   }
+};
+
+export const caseCauseTaxonomyApi = {
+  list: () => request<{ case_causes: CaseCauseTaxonomyEntry[] }>("/case-cause-taxonomy"),
+  get: (caseCauseCode: string) =>
+    request<CaseCauseTaxonomyEntry>(`/case-cause-taxonomy/${encodeURIComponent(caseCauseCode)}`),
+  ancestors: (caseCauseCode: string) =>
+    request<{ ancestors: CaseCauseTaxonomyEntry[] }>(
+      `/case-cause-taxonomy/${encodeURIComponent(caseCauseCode)}/ancestors`
+    ),
+  children: (caseCauseCode: string) =>
+    request<{ children: CaseCauseTaxonomyEntry[] }>(
+      `/case-cause-taxonomy/${encodeURIComponent(caseCauseCode)}/children`
+    )
 };
 
 export const runtimeApi = {
@@ -460,6 +482,11 @@ export const deprecateSkillInRegistry = skillRegistryApi.deprecate;
 export const getVersionedTrainingPackages = versionedTrainingPackageApi.list;
 export const getVersionedTrainingPackage = versionedTrainingPackageApi.get;
 export const getVersionedTrainingPackageFiles = versionedTrainingPackageApi.files;
+export const getVersionedTrainingPackagesByCaseCause = versionedTrainingPackageApi.byCaseCause;
+export const getCaseCauseTaxonomy = caseCauseTaxonomyApi.list;
+export const getCaseCause = caseCauseTaxonomyApi.get;
+export const getCaseCauseAncestors = caseCauseTaxonomyApi.ancestors;
+export const getCaseCauseChildren = caseCauseTaxonomyApi.children;
 
 export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
   const [caseRecord, intakeStatus, materials, facts, analyses, reports, runtimeRuns] = await Promise.all([
