@@ -44,6 +44,9 @@ export default function PersonalAlphaRunDetailPage({ params }: { params: { works
         <Link href={`/personal-alpha-source-review?workspace_run_id=${encodeURIComponent(workspaceRunId)}`} className="ml-3 inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
           View Source Trace Review
         </Link>
+        <Link href={`/personal-alpha-final-readiness?workspace_run_id=${encodeURIComponent(workspaceRunId)}`} className="ml-3 inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+          View Final Readiness
+        </Link>
         {error ? <StatusMessage message={error} /> : null}
 
         <Card>

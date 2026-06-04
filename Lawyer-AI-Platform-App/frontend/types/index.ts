@@ -1758,6 +1758,119 @@ export type PersonalAlphaSourceReviewDecisionSummaryResponse = {
   warnings: string[];
 };
 
+export type PersonalAlphaFinalReadinessStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  requires_manual_review: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  warnings: string[];
+};
+
+export type PersonalAlphaFinalReadinessSafetyChecklist = {
+  local_only: boolean;
+  mock_first: boolean;
+  controlled_first: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  manual_review_required: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  final_legal_opinion_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  runtime_storage_ignored: boolean;
+};
+
+export type PersonalAlphaFinalReadinessStage = {
+  stage_id: string;
+  label: string;
+  required: boolean;
+  source_ref_id: string;
+  workspace_stage_status: string;
+  latest_decision: string;
+  decision_count: number;
+  stage_ready: boolean;
+  blocked: boolean;
+  requires_additional_review: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  notes: string;
+};
+
+export type PersonalAlphaFinalReadinessSummary = {
+  workspace_run_id: string;
+  total_stages: number;
+  mandatory_stage_count: number;
+  ready_stage_count: number;
+  blocked_stage_count: number;
+  pending_stage_count: number;
+  decision_count: number;
+  approved_decision_count: number;
+  rejected_decision_count: number;
+  revision_requested_count: number;
+  unclear_decision_count: number;
+  stage_ready: boolean;
+  requires_additional_review: boolean;
+  final_review_ready: boolean;
+  final_legal_opinion_generated: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaFinalReadinessRunDetail = {
+  workspace_run_id: string;
+  case_id: string;
+  workspace_id: string;
+  workflow_mode: string;
+  status: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  advisory_only: boolean;
+  summary: PersonalAlphaFinalReadinessSummary;
+  stages: PersonalAlphaFinalReadinessStage[];
+  blocked_stages: PersonalAlphaFinalReadinessStage[];
+  safety_checklist: PersonalAlphaFinalReadinessSafetyChecklist;
+  decision_metadata: Record<string, unknown>;
+  run_metadata: Record<string, unknown>;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaFinalReadinessSummaryResponse = {
+  workspace_run_id: string;
+  summary: PersonalAlphaFinalReadinessSummary;
+  blocked_stages: PersonalAlphaFinalReadinessStage[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  advisory_only: boolean;
+  warnings: string[];
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

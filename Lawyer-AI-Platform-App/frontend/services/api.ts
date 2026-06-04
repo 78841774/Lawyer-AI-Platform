@@ -66,6 +66,9 @@ import type {
   PersonalAlphaDashboardSummary,
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
+  PersonalAlphaFinalReadinessRunDetail,
+  PersonalAlphaFinalReadinessStatus,
+  PersonalAlphaFinalReadinessSummaryResponse,
   PersonalAlphaRunDetail,
   PersonalAlphaEvidenceSummaryResponse,
   PersonalAlphaSourceReviewDecisionList,
@@ -187,6 +190,9 @@ export type {
   PersonalAlphaDashboardSummary,
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
+  PersonalAlphaFinalReadinessRunDetail,
+  PersonalAlphaFinalReadinessStatus,
+  PersonalAlphaFinalReadinessSummaryResponse,
   PersonalAlphaRunDetail,
   PersonalAlphaEvidenceSummaryResponse,
   PersonalAlphaSourceReviewDecisionList,
@@ -842,6 +848,14 @@ export const personalAlphaSourceReviewApi = {
     request<PersonalAlphaSourceReviewDecisionSummaryResponse>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/decision-summary`)
 };
 
+export const personalAlphaFinalReadinessApi = {
+  getStatus: () => request<PersonalAlphaFinalReadinessStatus>("/personal-alpha-final-readiness/status"),
+  getRunDetail: (workspaceRunId: string) =>
+    request<PersonalAlphaFinalReadinessRunDetail>(`/personal-alpha-final-readiness/run/${encodeURIComponent(workspaceRunId)}`),
+  getRunSummary: (workspaceRunId: string) =>
+    request<PersonalAlphaFinalReadinessSummaryResponse>(`/personal-alpha-final-readiness/run/${encodeURIComponent(workspaceRunId)}/summary`)
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -886,6 +900,9 @@ export const getPersonalAlphaSourceReviewEvidenceSummary = personalAlphaSourceRe
 export const getPersonalAlphaSourceReviewDecisions = personalAlphaSourceReviewApi.listDecisions;
 export const submitPersonalAlphaSourceReviewDecision = personalAlphaSourceReviewApi.submitDecision;
 export const getPersonalAlphaSourceReviewDecisionSummary = personalAlphaSourceReviewApi.getDecisionSummary;
+export const getPersonalAlphaFinalReadinessStatus = personalAlphaFinalReadinessApi.getStatus;
+export const getPersonalAlphaFinalReadinessRunDetail = personalAlphaFinalReadinessApi.getRunDetail;
+export const getPersonalAlphaFinalReadinessRunSummary = personalAlphaFinalReadinessApi.getRunSummary;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/Button";
@@ -127,6 +128,11 @@ export default function PersonalAlphaSourceReviewPage() {
           title="Personal Alpha Source Review"
           description="个人 Alpha 证据链 / source refs 复核页面；仅展示 metadata，不显示原文，显示 blocked / ready / pending / mock 状态。"
         />
+        {workspaceRunId.trim() ? (
+          <Link href={`/personal-alpha-final-readiness?workspace_run_id=${encodeURIComponent(workspaceRunId.trim())}`} className="inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+            View Final Readiness
+          </Link>
+        ) : null}
         {error ? <StatusMessage message={error} /> : null}
 
         <Card>

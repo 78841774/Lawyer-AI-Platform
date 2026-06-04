@@ -35,6 +35,7 @@ from legal_search_adapter.router import router as legal_search_router
 from local_sandbox.router import router as local_sandbox_router
 from ocr_adapter.router import router as ocr_router
 from personal_alpha_dashboard.router import router as personal_alpha_dashboard_router
+from personal_alpha_final_readiness.router import router as personal_alpha_final_readiness_router
 from personal_alpha.router import router as personal_alpha_router
 from personal_alpha_source_review.router import router as personal_alpha_source_review_router
 from personal_alpha_workspace.router import router as personal_alpha_workspace_router
@@ -91,6 +92,7 @@ app.include_router(personal_alpha_router)
 app.include_router(personal_alpha_workspace_router)
 app.include_router(personal_alpha_dashboard_router)
 app.include_router(personal_alpha_source_review_router)
+app.include_router(personal_alpha_final_readiness_router)
 app.include_router(controlled_material_router)
 app.include_router(controlled_ocr_router)
 app.include_router(controlled_legal_search_router)

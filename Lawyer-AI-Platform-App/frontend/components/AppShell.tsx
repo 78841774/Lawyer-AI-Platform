@@ -29,6 +29,7 @@ const navGroups = [
       { href: "/personal-alpha-workspace", label: "Personal Alpha Workspace" },
       { href: "/personal-alpha-dashboard", label: "Personal Alpha Dashboard" },
       { href: "/personal-alpha-source-review", label: "Personal Alpha Source Review" },
+      { href: "/personal-alpha-final-readiness", label: "Personal Alpha Final Review Readiness" },
       { href: "/controlled-material", label: "Controlled Material" },
       { href: "/controlled-ocr", label: "Controlled OCR" },
       { href: "/controlled-legal-search", label: "Controlled Legal Search" },
