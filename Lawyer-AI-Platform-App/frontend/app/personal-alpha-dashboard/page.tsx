@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
+import { Button } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -19,11 +22,13 @@ import {
 } from "@/services/api";
 
 export default function PersonalAlphaDashboardPage() {
+  const router = useRouter();
   const [status, setStatus] = useState<PersonalAlphaDashboardStatus | null>(null);
   const [summary, setSummary] = useState<PersonalAlphaDashboardSummary | null>(null);
   const [stageHealth, setStageHealth] = useState<PersonalAlphaDashboardStageHealth[]>([]);
   const [auditTimeline, setAuditTimeline] = useState<PersonalAlphaDashboardAuditTimeline | null>(null);
   const [sourceTraceSummary, setSourceTraceSummary] = useState<PersonalAlphaDashboardSourceTraceSummary | null>(null);
+  const [workspaceRunId, setWorkspaceRunId] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -48,6 +53,16 @@ export default function PersonalAlphaDashboardPage() {
 
     void loadDashboard();
   }, []);
+
+  function openRunDetail(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const id = workspaceRunId.trim();
+    if (id) {
+      router.push(`/personal-alpha-dashboard/runs/${encodeURIComponent(id)}`);
+    }
+  }
+
+  const latestWorkspaceRunId = findWorkspaceRunId(auditTimeline?.timeline ?? []);
 
   return (
     <AppShell>
@@ -91,6 +106,26 @@ export default function PersonalAlphaDashboardPage() {
           <SummaryTile label="source refs" value={summary?.source_trace_count ?? 0} />
         </div>
 
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Run Detail</h2>
+            <form onSubmit={openRunDetail} className="mt-4 grid gap-4 md:grid-cols-[1fr_auto]">
+              <label className="text-sm">
+                <span className="text-muted">workspace_run_id</span>
+                <input value={workspaceRunId} onChange={(event) => setWorkspaceRunId(event.target.value)} className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2 text-ink" />
+              </label>
+              <div className="flex items-end">
+                <Button type="submit">Load Run Detail</Button>
+              </div>
+            </form>
+            {latestWorkspaceRunId ? (
+              <Link href={`/personal-alpha-dashboard/runs/${encodeURIComponent(latestWorkspaceRunId)}`} className="mt-4 inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+                View Run Detail
+              </Link>
+            ) : null}
+          </CardBody>
+        </Card>
+
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {stageHealth.map((stage) => (
             <Card key={stage.stage_id}>
@@ -133,6 +168,16 @@ function SummaryTile({ label, value }: { label: string; value: number }) {
       </CardBody>
     </Card>
   );
+}
+
+function findWorkspaceRunId(timeline: Record<string, unknown>[]) {
+  for (const event of timeline) {
+    const value = event.workspace_run_id;
+    if (typeof value === "string" && value.trim()) {
+      return value;
+    }
+  }
+  return "";
 }
 
 function JsonPanel({ title, value }: { title: string; value: unknown }) {

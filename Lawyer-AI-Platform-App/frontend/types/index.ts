@@ -1550,6 +1550,59 @@ export type PersonalAlphaDashboardSourceTraceSummary = {
   warnings: string[];
 };
 
+export type PersonalAlphaRunStageDetail = {
+  stage_id: string;
+  label: string;
+  status: string;
+  required: boolean;
+  mock_only: boolean;
+  source_ref_id: string;
+  notes: string;
+};
+
+export type PersonalAlphaRunGuardSummary = {
+  guard_count: number;
+  blocked_count: number;
+  passed_count: number;
+  warnings: string[];
+};
+
+export type PersonalAlphaRunSafetyChecklist = {
+  local_only: boolean;
+  mock_first: boolean;
+  controlled_first: boolean;
+  metadata_only: boolean;
+  manual_review_required: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  final_legal_opinion_generated: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+};
+
+export type PersonalAlphaRunDetail = {
+  workspace_run_id: string;
+  case_id: string;
+  workspace_id: string;
+  workflow_mode: string;
+  status: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  stage_details: PersonalAlphaRunStageDetail[];
+  audit_timeline: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  guard_summary: PersonalAlphaRunGuardSummary;
+  safety_checklist: PersonalAlphaRunSafetyChecklist;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

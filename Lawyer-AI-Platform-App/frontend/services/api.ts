@@ -66,6 +66,7 @@ import type {
   PersonalAlphaDashboardSummary,
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
+  PersonalAlphaRunDetail,
   PersonalAlphaStatus,
   PersonalAlphaWorkspaceAuditLog,
   PersonalAlphaWorkspaceRequest,
@@ -178,6 +179,7 @@ export type {
   PersonalAlphaDashboardSummary,
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
+  PersonalAlphaRunDetail,
   PersonalAlphaStatus,
   PersonalAlphaWorkspaceAuditLog,
   PersonalAlphaWorkspaceRequest,
@@ -803,7 +805,9 @@ export const personalAlphaDashboardApi = {
     return response.stage_health;
   },
   auditTimeline: () => request<PersonalAlphaDashboardAuditTimeline>("/personal-alpha-dashboard/audit-timeline"),
-  sourceTraceSummary: () => request<PersonalAlphaDashboardSourceTraceSummary>("/personal-alpha-dashboard/source-trace-summary")
+  sourceTraceSummary: () => request<PersonalAlphaDashboardSourceTraceSummary>("/personal-alpha-dashboard/source-trace-summary"),
+  getRunDetail: (workspaceRunId: string) =>
+    request<PersonalAlphaRunDetail>(`/personal-alpha-dashboard/runs/${encodeURIComponent(workspaceRunId)}`)
 };
 
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
@@ -842,6 +846,7 @@ export const getPersonalAlphaDashboardSummary = personalAlphaDashboardApi.summar
 export const getPersonalAlphaDashboardStageHealth = personalAlphaDashboardApi.stageHealth;
 export const getPersonalAlphaDashboardAuditTimeline = personalAlphaDashboardApi.auditTimeline;
 export const getPersonalAlphaDashboardSourceTraceSummary = personalAlphaDashboardApi.sourceTraceSummary;
+export const getPersonalAlphaDashboardRunDetail = personalAlphaDashboardApi.getRunDetail;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

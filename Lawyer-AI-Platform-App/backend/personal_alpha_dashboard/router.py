@@ -9,6 +9,7 @@ from personal_alpha_dashboard.dashboard_engine import (
     get_personal_alpha_dashboard_status,
     get_personal_alpha_dashboard_summary,
 )
+from personal_alpha_dashboard.run_detail_engine import get_personal_alpha_run_detail
 
 router = APIRouter(prefix="/personal-alpha-dashboard", tags=["personal-alpha-dashboard"])
 
@@ -36,3 +37,8 @@ def personal_alpha_dashboard_audit_timeline() -> dict[str, Any]:
 @router.get("/source-trace-summary")
 def personal_alpha_dashboard_source_trace_summary() -> dict[str, Any]:
     return get_personal_alpha_dashboard_source_trace_summary()
+
+
+@router.get("/runs/{workspace_run_id}")
+def personal_alpha_dashboard_run_detail(workspace_run_id: str) -> dict[str, Any]:
+    return get_personal_alpha_run_detail(workspace_run_id)
