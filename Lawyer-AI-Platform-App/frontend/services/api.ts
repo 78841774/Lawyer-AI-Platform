@@ -67,6 +67,10 @@ import type {
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
   PersonalAlphaRunDetail,
+  PersonalAlphaEvidenceSummaryResponse,
+  PersonalAlphaSourceReviewRunDetail,
+  PersonalAlphaSourceReviewStatus,
+  PersonalAlphaSourceTraceResponse,
   PersonalAlphaStatus,
   PersonalAlphaWorkspaceAuditLog,
   PersonalAlphaWorkspaceRequest,
@@ -180,6 +184,10 @@ export type {
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
   PersonalAlphaRunDetail,
+  PersonalAlphaEvidenceSummaryResponse,
+  PersonalAlphaSourceReviewRunDetail,
+  PersonalAlphaSourceReviewStatus,
+  PersonalAlphaSourceTraceResponse,
   PersonalAlphaStatus,
   PersonalAlphaWorkspaceAuditLog,
   PersonalAlphaWorkspaceRequest,
@@ -810,6 +818,16 @@ export const personalAlphaDashboardApi = {
     request<PersonalAlphaRunDetail>(`/personal-alpha-dashboard/runs/${encodeURIComponent(workspaceRunId)}`)
 };
 
+export const personalAlphaSourceReviewApi = {
+  status: () => request<PersonalAlphaSourceReviewStatus>("/personal-alpha-source-review/status"),
+  getRunDetail: (workspaceRunId: string) =>
+    request<PersonalAlphaSourceReviewRunDetail>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}`),
+  getSourceTraces: (workspaceRunId: string) =>
+    request<PersonalAlphaSourceTraceResponse>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/source-traces`),
+  getEvidenceSummary: (workspaceRunId: string) =>
+    request<PersonalAlphaEvidenceSummaryResponse>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/evidence-summary`)
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -847,6 +865,10 @@ export const getPersonalAlphaDashboardStageHealth = personalAlphaDashboardApi.st
 export const getPersonalAlphaDashboardAuditTimeline = personalAlphaDashboardApi.auditTimeline;
 export const getPersonalAlphaDashboardSourceTraceSummary = personalAlphaDashboardApi.sourceTraceSummary;
 export const getPersonalAlphaDashboardRunDetail = personalAlphaDashboardApi.getRunDetail;
+export const getPersonalAlphaSourceReviewStatus = personalAlphaSourceReviewApi.status;
+export const getPersonalAlphaSourceReviewRunDetail = personalAlphaSourceReviewApi.getRunDetail;
+export const getPersonalAlphaSourceReviewSourceTraces = personalAlphaSourceReviewApi.getSourceTraces;
+export const getPersonalAlphaSourceReviewEvidenceSummary = personalAlphaSourceReviewApi.getEvidenceSummary;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

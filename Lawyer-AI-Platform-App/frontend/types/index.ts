@@ -1603,6 +1603,104 @@ export type PersonalAlphaRunDetail = {
   created_at: string;
 };
 
+export type PersonalAlphaSourceReviewStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  requires_manual_review: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaSourceTrace = {
+  source_ref_id: string;
+  source_type: string;
+  workspace_run_id: string;
+  case_id: string;
+  workspace_id: string;
+  stage_id: string;
+  evidence_item_id: string;
+  evidence_status: string;
+  provider: string;
+  provider_mode: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  notes: string;
+};
+
+export type PersonalAlphaEvidenceSummary = {
+  total_sources: number;
+  total_evidence_items: number;
+  blocked_sources: number;
+  ready_sources: number;
+  pending_sources: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaSourceReviewSafetyChecklist = {
+  local_only: boolean;
+  mock_first: boolean;
+  controlled_first: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  manual_review_required: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  final_legal_opinion_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+};
+
+export type PersonalAlphaSourceReviewRunDetail = {
+  workspace_run_id: string;
+  case_id: string;
+  workspace_id: string;
+  workflow_mode: string;
+  status: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  source_traces: PersonalAlphaSourceTrace[];
+  evidence_summary: PersonalAlphaEvidenceSummary;
+  audit_timeline: Record<string, unknown>[];
+  safety_checklist: PersonalAlphaSourceReviewSafetyChecklist;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaSourceTraceResponse = {
+  workspace_run_id: string;
+  source_traces: PersonalAlphaSourceTrace[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaEvidenceSummaryResponse = {
+  workspace_run_id: string;
+  evidence_summary: PersonalAlphaEvidenceSummary;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
