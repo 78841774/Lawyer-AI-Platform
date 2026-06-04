@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "controlled_ocr_pipeline": {
+    "enabled": true,
+    "mode": "local_only_controlled_ocr",
+    "production_enabled": false,
+    "ocr_live_enabled": false,
+    "ocr_live_default": false,
+    "mock_ocr_enabled": true,
+    "requires_explicit_ocr_confirmation": true,
+    "requires_manual_review": true,
+    "allowed_file_extensions": [
+      ".pdf",
+      ".png",
+      ".jpg",
+      ".jpeg",
+      ".txt"
+    ],
+    "max_file_size_bytes": 5000000,
+    "read_pdf_binary_enabled": false,
+    "read_image_binary_enabled": false,
+    "extract_real_ocr_text_enabled": false,
+    "store_raw_ocr_text_in_git": false,
+    "store_redacted_ocr_preview_in_git": false,
+    "runtime_storage_enabled": true,
+    "runtime_storage_path": "storage/runtime/controlled_ocr_previews",
+    "source_trace_enabled": true,
+    "final_legal_opinion_enabled": false
+  },
+  "audit_logs": []
+}

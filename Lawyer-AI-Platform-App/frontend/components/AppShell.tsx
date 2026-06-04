@@ -26,7 +26,8 @@ const navGroups = [
       { href: "/local-sandbox", label: "Local Sandbox" },
       { href: "/internal-alpha", label: "Internal Alpha" },
       { href: "/personal-alpha", label: "Personal Alpha" },
-      { href: "/controlled-material", label: "Controlled Material" }
+      { href: "/controlled-material", label: "Controlled Material" },
+      { href: "/controlled-ocr", label: "Controlled OCR" }
     ]
   },
   {

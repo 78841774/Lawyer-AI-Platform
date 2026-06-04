@@ -10,6 +10,11 @@ import type {
   ControlledMaterialReadRequest,
   ControlledMaterialReadResult,
   ControlledMaterialStatus,
+  ControlledOCRAuditLog,
+  ControlledOCRPreviewRecord,
+  ControlledOCRPreviewRequest,
+  ControlledOCRPreviewResult,
+  ControlledOCRStatus,
   ControlledReadPreviewRecord,
   ControlledReportDraftRequest,
   ControlledReportDraftResult,
@@ -79,6 +84,11 @@ export type {
   ControlledMaterialReadRequest,
   ControlledMaterialReadResult,
   ControlledMaterialStatus,
+  ControlledOCRAuditLog,
+  ControlledOCRPreviewRecord,
+  ControlledOCRPreviewRequest,
+  ControlledOCRPreviewResult,
+  ControlledOCRStatus,
   ControlledReadPreviewRecord,
   ControlledReportDraftRequest,
   ControlledReportDraftResult,
@@ -617,6 +627,18 @@ export const controlledMaterialApi = {
   }
 };
 
+export const controlledOCRApi = {
+  status: () => request<ControlledOCRStatus>("/controlled-ocr/status"),
+  preview: (payload: ControlledOCRPreviewRequest) =>
+    postJson<ControlledOCRPreviewResult>("/controlled-ocr/preview", payload),
+  readPreview: (ocrPreviewId: string) =>
+    request<ControlledOCRPreviewRecord>(`/controlled-ocr/preview/${encodeURIComponent(ocrPreviewId)}`),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: ControlledOCRAuditLog[] }>("/controlled-ocr/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -650,6 +672,10 @@ export const runControlledLocalReadPreview = controlledMaterialApi.localReadPrev
 export const getControlledReadPreview = controlledMaterialApi.readPreview;
 export const generateControlledReportDraft = controlledMaterialApi.reportDraft;
 export const getControlledMaterialAuditLogs = controlledMaterialApi.auditLogs;
+export const getControlledOCRStatus = controlledOCRApi.status;
+export const runControlledOCRPreview = controlledOCRApi.preview;
+export const getControlledOCRPreview = controlledOCRApi.readPreview;
+export const getControlledOCRAuditLogs = controlledOCRApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

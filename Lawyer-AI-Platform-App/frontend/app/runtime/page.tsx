@@ -6,6 +6,7 @@ import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
   getControlledMaterialStatus,
+  getControlledOCRStatus,
   getLegalSearchStatus,
   getInternalAlphaStatus,
   getLLMStatus,
@@ -18,7 +19,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, error } =
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, error } =
     await loadRuntime();
 
   return (
@@ -164,6 +165,29 @@ export default async function RuntimePage() {
             ]}
             actionHref="/controlled-material"
           />
+          <StatusCard
+            title="Controlled OCR"
+            provider={controlledOCR?.mode ?? "local_only_controlled_ocr"}
+            connected={controlledOCR?.enabled ?? false}
+            rows={[
+              ["mode", controlledOCR?.mode ?? "local_only_controlled_ocr"],
+              ["production_enabled", formatBoolean(controlledOCR?.production_enabled)],
+              ["ocr_live_enabled", formatBoolean(controlledOCR?.ocr_live_enabled)],
+              ["ocr_live_default", formatBoolean(controlledOCR?.ocr_live_default)],
+              ["mock_ocr_enabled", formatBoolean(controlledOCR?.mock_ocr_enabled)],
+              ["requires_explicit_ocr_confirmation", formatBoolean(controlledOCR?.requires_explicit_ocr_confirmation)],
+              ["requires_manual_review", formatBoolean(controlledOCR?.requires_manual_review)],
+              ["allowed_file_extensions", controlledOCR?.allowed_file_extensions?.join(" / ") ?? ".pdf / .png / .jpg / .jpeg / .txt"],
+              ["max_file_size_bytes", String(controlledOCR?.max_file_size_bytes ?? 5000000)],
+              ["read_pdf_binary_enabled", formatBoolean(controlledOCR?.read_pdf_binary_enabled)],
+              ["read_image_binary_enabled", formatBoolean(controlledOCR?.read_image_binary_enabled)],
+              ["extract_real_ocr_text_enabled", formatBoolean(controlledOCR?.extract_real_ocr_text_enabled)],
+              ["runtime_storage_enabled", formatBoolean(controlledOCR?.runtime_storage_enabled)],
+              ["runtime_storage_path", controlledOCR?.runtime_storage_path ?? "storage/runtime/controlled_ocr_previews"],
+              ["final_legal_opinion_enabled", formatBoolean(controlledOCR?.final_legal_opinion_enabled)]
+            ]}
+            actionHref="/controlled-ocr"
+          />
         </div>
 
         <Card>
@@ -185,7 +209,7 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
@@ -193,9 +217,10 @@ async function loadRuntime() {
       getLocalSandboxStatus(),
       getInternalAlphaStatus(),
       getPersonalAlphaStatus(),
-      getControlledMaterialStatus()
+      getControlledMaterialStatus(),
+      getControlledOCRStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, error: null };
   } catch {
     return {
       runtime: null,
@@ -206,6 +231,7 @@ async function loadRuntime() {
       internalAlpha: null,
       personalAlpha: null,
       controlledMaterial: null,
+      controlledOCR: null,
       error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。"
     };
   }

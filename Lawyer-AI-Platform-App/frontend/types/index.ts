@@ -822,6 +822,92 @@ export type ControlledMaterialAuditLog = {
   created_at: string;
 };
 
+export type ControlledOCRStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  ocr_live_enabled: boolean;
+  ocr_live_default: boolean;
+  mock_ocr_enabled: boolean;
+  requires_explicit_ocr_confirmation: boolean;
+  requires_manual_review: boolean;
+  allowed_file_extensions: string[];
+  max_file_size_bytes: number;
+  read_pdf_binary_enabled: boolean;
+  read_image_binary_enabled: boolean;
+  extract_real_ocr_text_enabled: boolean;
+  store_raw_ocr_text_in_git: boolean;
+  store_redacted_ocr_preview_in_git: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  source_trace_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  warnings: string[];
+};
+
+export type ControlledOCRPreviewRequest = {
+  case_id: string;
+  workspace_id: string;
+  local_file_path: string;
+  filename_redacted: string;
+  material_id: string;
+  explicit_ocr_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  ocr_mode: string;
+  provider_mode: string;
+  preview_only: boolean;
+};
+
+export type ControlledOCRPreviewResult = {
+  ocr_preview_id: string;
+  case_id: string;
+  workspace_id: string;
+  material_id: string;
+  filename_redacted: string;
+  local_file_path_redacted: string;
+  file_extension: string;
+  file_size_bytes: number;
+  ocr_called: boolean;
+  real_ocr_called: boolean;
+  mock_ocr_used: boolean;
+  raw_ocr_text_stored: boolean;
+  redacted_ocr_preview_created: boolean;
+  redacted_ocr_preview: string;
+  redacted_ocr_preview_storage_path: string;
+  source_refs: Record<string, unknown>[];
+  guard_results: Record<string, unknown>[];
+  audit_log_id: string;
+  allowed_to_continue: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledOCRPreviewRecord = {
+  ocr_preview_id: string;
+  case_id: string;
+  workspace_id: string;
+  material_id: string;
+  filename_redacted: string;
+  local_file_path_redacted: string;
+  redacted_ocr_preview: string;
+  source_refs: Record<string, unknown>[];
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledOCRAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  ocr_preview_id?: string | null;
+  material_id?: string | null;
+  filename_redacted?: string | null;
+  result: string;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
