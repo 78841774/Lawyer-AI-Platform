@@ -22,7 +22,8 @@ const navGroups = [
       { href: "/runtime", label: "运行状态" },
       { href: "/ocr", label: "OCR" },
       { href: "/legal-search", label: "Legal Search" },
-      { href: "/source-refs", label: "Source Refs" }
+      { href: "/source-refs", label: "Source Refs" },
+      { href: "/local-sandbox", label: "Local Sandbox" }
     ]
   },
   {

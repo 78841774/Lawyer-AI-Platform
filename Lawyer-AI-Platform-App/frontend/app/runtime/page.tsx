@@ -4,12 +4,18 @@ import { Badge } from "@/components/ui/Badge";
 import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getLegalSearchStatus, getLLMStatus, getOCRStatus, getSourceRefsStatus } from "@/services/api";
+import {
+  getLegalSearchStatus,
+  getLLMStatus,
+  getLocalSandboxStatus,
+  getOCRStatus,
+  getSourceRefsStatus
+} from "@/services/api";
 
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, error } = await loadRuntime();
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, error } = await loadRuntime();
 
   return (
     <AppShell>
@@ -22,7 +28,7 @@ export default async function RuntimePage() {
 
         {error ? <StatusMessage message={error} /> : null}
 
-        <div className="grid gap-6 lg:grid-cols-4">
+        <div className="grid gap-6 lg:grid-cols-5">
           <StatusCard
             title="模型状态"
             provider={runtime?.provider ?? "-"}
@@ -76,6 +82,22 @@ export default async function RuntimePage() {
             ]}
             actionHref="/source-refs"
           />
+          <StatusCard
+            title="Local Sandbox"
+            provider={localSandbox?.mode ?? "local_only"}
+            connected={localSandbox?.enabled ?? false}
+            rows={[
+              ["mode", localSandbox?.mode ?? "local_only"],
+              ["real_case_processing_enabled", formatBoolean(localSandbox?.real_case_processing_enabled)],
+              ["live_provider_enabled", formatBoolean(localSandbox?.live_provider_enabled)],
+              ["deepseek_live_enabled", formatBoolean(localSandbox?.deepseek_live_enabled)],
+              ["real_ocr_enabled", formatBoolean(localSandbox?.real_ocr_enabled)],
+              ["real_legal_search_enabled", formatBoolean(localSandbox?.real_legal_search_enabled)],
+              ["requires_manual_review", formatBoolean(localSandbox?.requires_manual_review)],
+              ["mock_only", formatBoolean(localSandbox?.mock_only)]
+            ]}
+            actionHref="/local-sandbox"
+          />
         </div>
 
         <Card>
@@ -97,15 +119,16 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
-      getSourceRefsStatus()
+      getSourceRefsStatus(),
+      getLocalSandboxStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, error: null };
   } catch {
-    return { runtime: null, ocr: null, legalSearch: null, sourceRefs: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
+    return { runtime: null, ocr: null, legalSearch: null, sourceRefs: null, localSandbox: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 

@@ -378,6 +378,65 @@ export type CitationResolutionResult = {
   mock_only: boolean;
 };
 
+export type LocalSandboxStatus = {
+  enabled: boolean;
+  mode: string;
+  real_case_processing_enabled: boolean;
+  live_provider_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  real_ocr_enabled: boolean;
+  real_legal_search_enabled: boolean;
+  workspace_runtime_auto_enable: boolean;
+  skill_aware_case_processing_auto_enable: boolean;
+  requires_manual_review: boolean;
+  mock_only: boolean;
+  warnings: string[];
+};
+
+export type LocalSandboxGuardStatus = {
+  provider_mode_guard: Record<string, unknown>;
+  material_safety_guard: Record<string, unknown>;
+  git_safety_guard: Record<string, unknown>;
+};
+
+export type LocalSandboxDryRunRequest = {
+  case_id: string;
+  workspace_id: string;
+  local_case_root?: string | null;
+  provider_mode: string;
+  ocr_mode: string;
+  legal_search_mode: string;
+  dry_run_only: boolean;
+};
+
+export type LocalSandboxDryRunResult = {
+  dry_run_id: string;
+  case_id: string;
+  workspace_id: string;
+  status: string;
+  allowed_to_continue: boolean;
+  guard_results: Record<string, unknown>;
+  audit_log_id: string;
+  warnings: string[];
+  dry_run_only: boolean;
+  created_at: string;
+};
+
+export type LocalSandboxAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  dry_run_id: string;
+  provider_mode: string;
+  ocr_mode: string;
+  legal_search_mode: string;
+  result: string;
+  warnings: string[];
+  local_case_root_redacted: string;
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

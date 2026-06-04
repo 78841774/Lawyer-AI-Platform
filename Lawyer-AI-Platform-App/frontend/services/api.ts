@@ -8,6 +8,11 @@ import type {
   Fact,
   IntakeStatus,
   LegalAnalysis,
+  LocalSandboxAuditLog,
+  LocalSandboxDryRunRequest,
+  LocalSandboxDryRunResult,
+  LocalSandboxGuardStatus,
+  LocalSandboxStatus,
   Material,
   Report,
   LatestRuntimeRunsResponse,
@@ -48,6 +53,11 @@ export type {
   Fact as FactRecord,
   IntakeStatus as IntakeStatusRecord,
   LegalAnalysis as LegalAnalysisRecord,
+  LocalSandboxAuditLog,
+  LocalSandboxDryRunRequest,
+  LocalSandboxDryRunResult,
+  LocalSandboxGuardStatus,
+  LocalSandboxStatus,
   Material as MaterialRecord,
   Report as ReportRecord,
   RuntimeRun,
@@ -506,6 +516,16 @@ export const sourceRefsApi = {
     request<CitationResolutionResult>(`/source-refs/resolve/${encodeURIComponent(citationId)}`)
 };
 
+export const localSandboxApi = {
+  status: () => request<LocalSandboxStatus>("/local-sandbox/status"),
+  guards: () => request<LocalSandboxGuardStatus>("/local-sandbox/guards"),
+  dryRun: (payload: LocalSandboxDryRunRequest) => postJson<LocalSandboxDryRunResult>("/local-sandbox/dry-run", payload),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: LocalSandboxAuditLog[] }>("/local-sandbox/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -518,6 +538,10 @@ export const mockLegalSearch = legalSearchApi.mockSearch;
 export const getSourceRefsStatus = sourceRefsApi.status;
 export const getMockSourceTrace = sourceRefsApi.mockTrace;
 export const resolveCitation = sourceRefsApi.resolve;
+export const getLocalSandboxStatus = localSandboxApi.status;
+export const getLocalSandboxGuards = localSandboxApi.guards;
+export const runLocalSandboxDryRun = localSandboxApi.dryRun;
+export const getLocalSandboxAuditLogs = localSandboxApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

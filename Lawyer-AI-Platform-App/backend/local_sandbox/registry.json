@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0.0",
+  "sandbox": {
+    "enabled": true,
+    "mode": "local_only",
+    "real_case_processing_enabled": false,
+    "live_provider_enabled": false,
+    "deepseek_live_enabled": false,
+    "real_ocr_enabled": false,
+    "real_legal_search_enabled": false,
+    "workspace_runtime_auto_enable": false,
+    "skill_aware_case_processing_auto_enable": false,
+    "requires_manual_review": true
+  },
+  "allowed_roots": [
+    "~/Lawyer-AI-Local-Cases",
+    "~/AIHome-Law-Local-Sandbox"
+  ],
+  "blocked_git_paths": [
+    "sandbox_cases",
+    "real_cases",
+    "case_workspaces",
+    "storage/runtime",
+    "local.db",
+    ".env"
+  ],
+  "audit_logs": [
+    {
+      "provider_mode": "mock",
+      "legal_search_mode": "mock",
+      "audit_log_id": "local_sandbox_audit_cf9ae33fa994",
+      "warnings": [
+        "No real case material was read.",
+        "No real OCR provider was called.",
+        "No real legal database was queried.",
+        "No real LLM or DeepSeek live provider was called.",
+        "No Workspace Runtime or Skill Registry publish was enabled.",
+        "Live provider is blocked in v3.9 local sandbox.",
+        "DeepSeek live provider is blocked in v3.9 local sandbox.",
+        "External provider is blocked in v3.9 local sandbox.",
+        "Material guard did not read file content.",
+        "Real case material is not allowed in Git.",
+        "Local case root must be outside repository and ignored by Git.",
+        "v3.9 only validates sandbox boundary.",
+        "Git safety guard only reports sensitive tracked or staged paths.",
+        "No user files are deleted or modified by this guard."
+      ],
+      "ocr_mode": "mock",
+      "case_id": "case_demo_001",
+      "created_at": "2026-06-04T05:22:48Z",
+      "event_type": "local_sandbox_dry_run",
+      "workspace_id": "workspace_demo_001",
+      "dry_run_id": "local_sandbox_dry_run_9e9caee570cf",
+      "result": "completed_dry_run",
+      "local_case_root_redacted": "<local_case_root_redacted>"
+    },
+    {
+      "provider_mode": "deepseek_live",
+      "legal_search_mode": "mock",
+      "audit_log_id": "local_sandbox_audit_1882642736bb",
+      "warnings": [
+        "No real case material was read.",
+        "No real OCR provider was called.",
+        "No real legal database was queried.",
+        "No real LLM or DeepSeek live provider was called.",
+        "No Workspace Runtime or Skill Registry publish was enabled.",
+        "Live provider is blocked in v3.9 local sandbox.",
+        "DeepSeek live provider is blocked in v3.9 local sandbox.",
+        "External provider is blocked in v3.9 local sandbox.",
+        "Material guard did not read file content.",
+        "Real case material is not allowed in Git.",
+        "Local case root must be outside repository and ignored by Git.",
+        "v3.9 only validates sandbox boundary.",
+        "Git safety guard only reports sensitive tracked or staged paths.",
+        "No user files are deleted or modified by this guard."
+      ],
+      "ocr_mode": "mock",
+      "case_id": "case_demo_002",
+      "created_at": "2026-06-04T05:22:48Z",
+      "event_type": "local_sandbox_dry_run",
+      "workspace_id": "workspace_demo_001",
+      "dry_run_id": "local_sandbox_dry_run_af8385fcf9be",
+      "result": "blocked_by_guard",
+      "local_case_root_redacted": "<local_case_root_redacted>"
+    }
+  ]
+}
