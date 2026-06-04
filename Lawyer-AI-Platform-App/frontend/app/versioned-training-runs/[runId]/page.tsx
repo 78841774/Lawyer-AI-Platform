@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Card, CardBody } from "@/components/ui/Card";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getVersionedTrainingRun, VersionedSkillTrainingRun } from "@/services/api";
+import { CreateExperiencePackageCandidateButton } from "./CreateExperiencePackageCandidateButton";
 
 export const dynamic = "force-dynamic";
 
@@ -93,6 +94,15 @@ function RunDetail({ run }: { run: VersionedSkillTrainingRun }) {
           </CardBody>
         </Card>
       </div>
+
+      <Card>
+        <CardBody>
+          <h2 className="text-base font-semibold text-ink">Experience Package Candidate</h2>
+          <div className="mt-4">
+            <CreateExperiencePackageCandidateButton runId={run.run_id} />
+          </div>
+        </CardBody>
+      </Card>
 
       <Card>
         <CardBody>

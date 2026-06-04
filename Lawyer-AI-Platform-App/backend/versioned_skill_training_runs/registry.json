@@ -9,6 +9,8 @@
       "runner": "mock_training_runner",
       "llm_provider": "mock",
       "llm_called": false,
+      "started_at": "2026-06-04T00:00:00Z",
+      "completed_at": "2026-06-04T00:00:00Z",
       "inheritance_chain": [
         "civil_base@v1.0.0",
         "contract_dispute_combined@v1.0.0",
@@ -37,7 +39,7 @@
         "completeness": 0.0,
         "legal_relevance": 0.0,
         "report_quality": 0.0,
-        "notes": "Mock training run only"
+        "notes": "Mock training run only. No LLM call. No real case material used."
       },
       "safety": {
         "requires_human_review": true,

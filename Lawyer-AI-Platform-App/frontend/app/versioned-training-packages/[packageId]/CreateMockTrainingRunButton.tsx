@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { createMockVersionedTrainingRun, VersionedSkillTrainingRun } from "@/services/api";
 
 export function CreateMockTrainingRunButton({ packageId }: { packageId: string }) {
+  const router = useRouter();
   const [run, setRun] = useState<VersionedSkillTrainingRun | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,9 @@ export function CreateMockTrainingRunButton({ packageId }: { packageId: string }
     setLoading(true);
     setError(null);
     try {
-      setRun(await createMockVersionedTrainingRun(packageId));
+      const nextRun = await createMockVersionedTrainingRun(packageId);
+      setRun(nextRun);
+      router.push(`/versioned-training-runs/${encodeURIComponent(nextRun.run_id)}`);
     } catch {
       setError("Mock training run 创建失败，请确认后端服务已启动。");
     } finally {

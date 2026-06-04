@@ -230,14 +230,38 @@ export type Skill = {
 };
 
 export type ExperiencePackage = {
-  package_id: string;
-  skill_id: string;
-  name: string;
-  domain: string;
-  version: string;
+  package_id?: string;
+  skill_id?: string;
+  name?: string;
+  domain?: string;
+  version?: string;
   status: string;
-  package_path: string;
+  package_path?: string;
   created_at: string;
+  experience_package_id?: string;
+  source_run_id?: string;
+  source_package_id?: string;
+  case_cause_code?: string;
+  build_mode?: string;
+  llm_called?: boolean;
+  real_case_material_used?: boolean;
+  skill_registry_published?: boolean;
+  published_skill_id?: string | null;
+  inheritance_chain?: string[];
+  taxonomy_path?: string[];
+  package_contents?: Record<string, boolean>;
+  review?: {
+    requires_human_review: boolean;
+    review_status: string;
+    reviewed_by: string | null;
+    reviewed_at: string | null;
+  };
+  safety?: {
+    auto_publish_enabled: boolean;
+    can_publish_to_skill_registry?: boolean;
+    child_package_cannot_disable_safety_rules?: boolean;
+  };
+  manifest?: Record<string, unknown>;
 };
 
 export type ExperiencePackageDetail = ExperiencePackage & {
@@ -246,14 +270,47 @@ export type ExperiencePackageDetail = ExperiencePackage & {
 
 export type SkillRegistryEntry = {
   skill_id: string;
-  skill_name: string;
-  domain: string;
+  skill_name?: string;
+  domain?: string;
   version: string;
   status: string;
-  validation_status: string;
-  evaluation_score: number;
-  package_id: string | null;
-  package_status: string | null;
+  validation_status?: string | null;
+  evaluation_score?: number | null;
+  package_id?: string | null;
+  package_status?: string | null;
+  source_experience_package_id?: string;
+  source_run_id?: string;
+  source_package_id?: string;
+  case_cause_code?: string;
+  publish_mode?: string;
+  workspace_scope?: string;
+  llm_called?: boolean;
+  real_case_material_used?: boolean;
+  published_at?: string;
+  review?: {
+    requires_human_review: boolean;
+    review_status: string;
+    reviewed_by: string | null;
+  };
+  inheritance_chain?: string[];
+  taxonomy_path?: string[];
+  safety?: {
+    auto_publish_enabled: boolean;
+    controlled_publish?: boolean;
+    rollback_supported?: boolean;
+    deprecate_supported?: boolean;
+    child_package_cannot_disable_safety_rules?: boolean;
+  };
+  runtime?: {
+    workspace_runtime_enabled: boolean;
+    skill_aware_case_processing_enabled: boolean;
+    requires_manual_enablement: boolean;
+  };
+  events?: Array<{
+    event: string;
+    reason: string;
+    created_at: string;
+  }>;
 };
 
 export type SkillRegistryDetail = {
@@ -268,7 +325,7 @@ export type SkillRegistryDetail = {
     validation_status: string;
     package_status: string | null;
   };
-};
+} & Partial<SkillRegistryEntry>;
 
 export type CaseSkillBinding = {
   binding_id?: string;
@@ -389,4 +446,6 @@ export type VersionedSkillTrainingRun = {
     auto_publish_enabled: boolean;
     child_package_cannot_disable_safety_rules: boolean;
   };
+  started_at?: string;
+  completed_at?: string;
 };

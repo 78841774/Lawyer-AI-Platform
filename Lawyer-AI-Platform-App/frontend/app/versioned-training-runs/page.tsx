@@ -34,9 +34,10 @@ export default async function VersionedTrainingRunsPage() {
             <span>Status</span>
             <span>LLM Called</span>
             <span>Real Case Material Used</span>
+            <span>Experience Package</span>
             <span>Skill Published</span>
             <span>Requires Human Review</span>
-            <span className="md:col-span-2">操作</span>
+            <span>操作</span>
           </div>
           {runs.length > 0 ? (
             runs.map((run) => <RunRow key={run.run_id} run={run} />)
@@ -73,9 +74,10 @@ function RunRow({ run }: { run: VersionedSkillTrainingRun }) {
       </span>
       <Bool value={run.llm_called} />
       <Bool value={run.inputs.real_case_material_used} />
+      <Bool value={run.outputs.experience_package_created} />
       <Bool value={run.outputs.skill_registry_published} />
       <Bool value={run.safety.requires_human_review} />
-      <span className="md:col-span-2">
+      <span>
         <Link
           href={`/versioned-training-runs/${encodeURIComponent(run.run_id)}`}
           className="rounded-md border border-line bg-white px-3 py-2 text-xs font-medium text-ink shadow-sm"

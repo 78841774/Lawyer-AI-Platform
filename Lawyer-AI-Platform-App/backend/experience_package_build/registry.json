@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "experience_packages": [
+    {
+      "experience_package_id": "experience_package_payment_dispute_candidate_001",
+      "source_run_id": "training_run_payment_dispute_mock_001",
+      "source_package_id": "sales_contract_payment_dispute@v1.0.0",
+      "case_cause_code": "payment_dispute",
+      "status": "candidate",
+      "build_mode": "mock_candidate_build",
+      "llm_called": false,
+      "real_case_material_used": false,
+      "skill_registry_published": false,
+      "published_skill_id": null,
+      "created_at": "2026-06-04T00:00:00Z",
+      "inheritance_chain": [
+        "civil_base@v1.0.0",
+        "contract_dispute_combined@v1.0.0",
+        "sales_contract_dispute@v1.0.0",
+        "sales_contract_payment_dispute@v1.0.0"
+      ],
+      "taxonomy_path": [
+        "civil",
+        "contract_dispute",
+        "sales_contract_dispute",
+        "payment_dispute"
+      ],
+      "package_contents": {
+        "runtime_rules_included": true,
+        "prompt_templates_included": true,
+        "report_templates_included": true,
+        "evaluation_rubrics_included": true,
+        "reference_assets_included": true,
+        "real_case_material_included": false
+      },
+      "review": {
+        "requires_human_review": true,
+        "review_status": "pending",
+        "reviewed_by": null,
+        "reviewed_at": null
+      },
+      "safety": {
+        "auto_publish_enabled": false,
+        "can_publish_to_skill_registry": false,
+        "child_package_cannot_disable_safety_rules": true
+      }
+    }
+  ]
+}

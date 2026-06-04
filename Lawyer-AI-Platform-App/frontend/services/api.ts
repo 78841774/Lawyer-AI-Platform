@@ -47,6 +47,7 @@ export type {
   RuntimeStatus as LLMStatus,
   ExperiencePackage as ExperiencePackageRecord,
   SkillRegistryEntry as SkillRegistryRecord,
+  SkillRegistryDetail,
   Skill as WorkspaceSkillRecord,
   VersionedSkillTrainingPackage,
   VersionedSkillTrainingPackageDetail,
@@ -377,7 +378,14 @@ export const experiencePackageApi = {
   },
   get: (packageId: string) => request<ExperiencePackageDetail>(`/experience-packages/${packageId}`),
   getManifest: (packageId: string) => request<Record<string, unknown>>(`/experience-packages/${packageId}/manifest`),
-  buildForSkill: (skillId: string) => postJson<ExperiencePackage>(`/skills/${skillId}/packages/build`)
+  buildForSkill: (skillId: string) => postJson<ExperiencePackage>(`/skills/${skillId}/packages/build`),
+  createCandidate: (runId: string) =>
+    postJson<ExperiencePackage>("/experience-packages/create", { run_id: runId }),
+  review: (experiencePackageId: string, reviewStatus: string, reviewedBy = "local_demo_user") =>
+    postJson<ExperiencePackage>(`/experience-packages/${encodeURIComponent(experiencePackageId)}/review`, {
+      review_status: reviewStatus,
+      reviewed_by: reviewedBy
+    })
 };
 
 export const skillRegistryApi = {
@@ -387,7 +395,15 @@ export const skillRegistryApi = {
   },
   get: (skillId: string) => request<SkillRegistryDetail>(`/skill-registry/${skillId}`),
   publish: (skillId: string) => postJson<Record<string, unknown>>(`/skill-registry/${skillId}/publish`),
-  deprecate: (skillId: string) => postJson<Record<string, unknown>>(`/skill-registry/${skillId}/deprecate`)
+  publishExperiencePackage: (experiencePackageId: string, workspaceScope = "local_demo_workspace") =>
+    postJson<SkillRegistryEntry>("/skill-registry/publish", {
+      experience_package_id: experiencePackageId,
+      workspace_scope: workspaceScope
+    }),
+  deprecate: (skillId: string, reason = "local UI action") =>
+    postJson<Record<string, unknown>>(`/skill-registry/${skillId}/deprecate`, { reason }),
+  rollback: (skillId: string, reason = "local UI action") =>
+    postJson<Record<string, unknown>>(`/skill-registry/${skillId}/rollback`, { reason })
 };
 
 export const versionedTrainingPackageApi = {
@@ -488,10 +504,14 @@ export const getExperiencePackages = experiencePackageApi.list;
 export const getExperiencePackage = experiencePackageApi.get;
 export const getExperiencePackageManifest = experiencePackageApi.getManifest;
 export const buildExperiencePackage = experiencePackageApi.buildForSkill;
+export const createExperiencePackageCandidate = experiencePackageApi.createCandidate;
+export const reviewExperiencePackage = experiencePackageApi.review;
 export const getSkillRegistry = skillRegistryApi.list;
 export const getSkillRegistryDetail = skillRegistryApi.get;
 export const publishSkillToRegistry = skillRegistryApi.publish;
+export const publishExperiencePackageToSkillRegistry = skillRegistryApi.publishExperiencePackage;
 export const deprecateSkillInRegistry = skillRegistryApi.deprecate;
+export const rollbackSkillInRegistry = skillRegistryApi.rollback;
 export const getVersionedTrainingPackages = versionedTrainingPackageApi.list;
 export const getVersionedTrainingPackage = versionedTrainingPackageApi.get;
 export const getVersionedTrainingPackageFiles = versionedTrainingPackageApi.files;

@@ -5,6 +5,8 @@ from typing import Any
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 PACKAGES_REGISTRY_PATH = BACKEND_ROOT / "versioned_skill_training_packages" / "registry.json"
 TAXONOMY_REGISTRY_PATH = BACKEND_ROOT / "case_cause_taxonomy" / "registry.json"
+RUNS_REGISTRY_PATH = BACKEND_ROOT / "versioned_skill_training_runs" / "registry.json"
+MOCK_TIMESTAMP = "2026-06-04T00:00:00Z"
 
 
 class MockTrainingRunError(ValueError):
@@ -37,6 +39,13 @@ def taxonomy_entries() -> list[dict[str, Any]]:
     return [entry for entry in entries if isinstance(entry, dict)]
 
 
+def registry_runs() -> list[dict[str, Any]]:
+    runs = load_json_file(RUNS_REGISTRY_PATH).get("runs", [])
+    if not isinstance(runs, list):
+        raise MockTrainingRunError("versioned skill training run registry runs must be a list")
+    return [run for run in runs if isinstance(run, dict)]
+
+
 def find_package(package_id: str) -> dict[str, Any]:
     for package in registry_packages():
         if package.get("training_package_id") == package_id:
@@ -59,8 +68,16 @@ def normalize_run_id(package_id: str) -> str:
     return "training_run_" + package_id.replace("@", "_").replace(".", "_").replace("-", "_") + "_mock_001"
 
 
+def find_seed_run_by_package(package_id: str) -> dict[str, Any] | None:
+    for run in registry_runs():
+        if run.get("package_id") == package_id:
+            return run
+    return None
+
+
 def create_mock_training_run(package_id: str) -> dict[str, Any]:
     package = find_package(package_id)
+    seed_run = find_seed_run_by_package(package_id)
     case_cause_code = package.get("case_cause_code")
     if not isinstance(case_cause_code, str) or not case_cause_code:
         raise MockTrainingRunError(f"package missing case_cause_code: {package_id}")
@@ -73,13 +90,15 @@ def create_mock_training_run(package_id: str) -> dict[str, Any]:
         inheritance_chain = [package_id]
 
     return {
-        "run_id": normalize_run_id(package_id),
+        "run_id": seed_run.get("run_id") if seed_run else normalize_run_id(package_id),
         "package_id": package_id,
         "case_cause_code": case_cause_code,
         "status": "completed_mock",
         "runner": "mock_training_runner",
         "llm_provider": "mock",
         "llm_called": False,
+        "started_at": seed_run.get("started_at", MOCK_TIMESTAMP) if seed_run else MOCK_TIMESTAMP,
+        "completed_at": seed_run.get("completed_at", MOCK_TIMESTAMP) if seed_run else MOCK_TIMESTAMP,
         "inheritance_chain": [item for item in inheritance_chain if isinstance(item, str)] or [package_id],
         "taxonomy_path": taxonomy_path,
         "inputs": {
@@ -98,7 +117,7 @@ def create_mock_training_run(package_id: str) -> dict[str, Any]:
             "completeness": 0.0,
             "legal_relevance": 0.0,
             "report_quality": 0.0,
-            "notes": "Mock training run only"
+            "notes": "Mock training run only. No LLM call. No real case material used."
         },
         "safety": {
             "requires_human_review": True,
