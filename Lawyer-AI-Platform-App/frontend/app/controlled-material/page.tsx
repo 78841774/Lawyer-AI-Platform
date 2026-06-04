@@ -7,6 +7,7 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
+  ControlledLocalReadPreviewResult,
   ControlledMaterialAuditLog,
   ControlledMaterialReadResult,
   ControlledMaterialStatus,
@@ -14,16 +15,32 @@ import {
   generateControlledReportDraft,
   getControlledMaterialAuditLogs,
   getControlledMaterialStatus,
+  runControlledLocalReadPreview,
   runControlledMaterialReadConfirmed
 } from "@/services/api";
 
 export default function ControlledMaterialPage() {
   const [status, setStatus] = useState<ControlledMaterialStatus | null>(null);
+  const [localPreviewResult, setLocalPreviewResult] = useState<ControlledLocalReadPreviewResult | null>(null);
   const [readResult, setReadResult] = useState<ControlledMaterialReadResult | null>(null);
   const [reportResult, setReportResult] = useState<ControlledReportDraftResult | null>(null);
   const [auditLogs, setAuditLogs] = useState<ControlledMaterialAuditLog[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState("");
+  const [localPreviewForm, setLocalPreviewForm] = useState({
+    case_id: "case_v43_demo_001",
+    workspace_id: "workspace_demo_001",
+    local_file_path: "~/Lawyer-AI-Local-Cases/demo_case/sample_redacted.txt",
+    filename_redacted: "<filename_redacted>.txt",
+    material_id: "material_demo_001",
+    explicit_read_confirmation: true,
+    manual_review_confirmed: true,
+    provider_mode: "controlled_local",
+    ocr_mode: "disabled",
+    llm_mode: "disabled",
+    legal_search_mode: "disabled",
+    preview_only: true
+  });
   const [readForm, setReadForm] = useState({
     case_id: "case_v42_demo_001",
     workspace_id: "workspace_demo_001",
@@ -80,6 +97,27 @@ export default function ControlledMaterialPage() {
     }
   }
 
+  async function submitLocalPreview(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading("local-preview");
+    setError("");
+    try {
+      const nextResult = await runControlledLocalReadPreview(localPreviewForm);
+      setLocalPreviewResult(nextResult);
+      setReportForm({
+        ...reportForm,
+        case_id: nextResult.case_id,
+        workspace_id: nextResult.workspace_id,
+        controlled_read_id: nextResult.preview_id
+      });
+      setAuditLogs(await getControlledMaterialAuditLogs());
+    } catch {
+      setError("Local read preview 失败，请确认后端服务已启动。");
+    } finally {
+      setLoading("");
+    }
+  }
+
   async function submitReport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading("report");
@@ -100,7 +138,7 @@ export default function ControlledMaterialPage() {
         <SectionHeader
           eyebrow="Runtime Tools"
           title="Controlled Material"
-          description="受控本地真实材料处理门禁；本阶段只建立 read gate 和 mock draft，不读取真实正文。"
+          description="受控本地材料读取预览；只允许小型 .txt / .md / .json，生成脱敏 preview，不保存 raw text。"
         />
 
         {error ? <StatusMessage message={error} /> : null}
@@ -112,17 +150,72 @@ export default function ControlledMaterialPage() {
               <InfoRow label="mode" value={status?.mode ?? "local_only_controlled"} />
               <InfoRow label="production_enabled" value={String(status?.production_enabled ?? false)} />
               <InfoRow label="real_material_reading_enabled" value={String(status?.real_material_reading_enabled ?? false)} />
+              <InfoRow label="real_material_reading_default" value={String(status?.real_material_reading_default ?? false)} />
               <InfoRow label="requires_explicit_read_confirmation" value={String(status?.requires_explicit_read_confirmation ?? true)} />
               <InfoRow label="requires_manual_review" value={String(status?.requires_manual_review ?? true)} />
+              <InfoRow label="allowed_file_extensions" value={(status?.allowed_file_extensions ?? [".txt", ".md", ".json"]).join(" / ")} />
+              <InfoRow label="max_file_size_bytes" value={String(status?.max_file_size_bytes ?? 200000)} />
+              <InfoRow label="read_pdf_enabled" value={String(status?.read_pdf_enabled ?? false)} />
+              <InfoRow label="read_docx_enabled" value={String(status?.read_docx_enabled ?? false)} />
+              <InfoRow label="read_image_enabled" value={String(status?.read_image_enabled ?? false)} />
               <InfoRow label="ocr_live_enabled" value={String(status?.ocr_live_enabled ?? false)} />
               <InfoRow label="llm_live_enabled" value={String(status?.llm_live_enabled ?? false)} />
               <InfoRow label="legal_search_live_enabled" value={String(status?.legal_search_live_enabled ?? false)} />
               <InfoRow label="deepseek_live_enabled" value={String(status?.deepseek_live_enabled ?? false)} />
+              <InfoRow label="store_raw_content_in_git" value={String(status?.store_raw_content_in_git ?? false)} />
+              <InfoRow label="store_redacted_preview_in_git" value={String(status?.store_redacted_preview_in_git ?? false)} />
               <InfoRow label="store_extracted_text_in_git" value={String(status?.store_extracted_text_in_git ?? false)} />
               <InfoRow label="store_material_content_in_git" value={String(status?.store_material_content_in_git ?? false)} />
+              <InfoRow label="runtime_storage_enabled" value={String(status?.runtime_storage_enabled ?? true)} />
+              <InfoRow label="runtime_storage_path" value={status?.runtime_storage_path ?? "storage/runtime/controlled_material_previews"} />
               <InfoRow label="final_legal_opinion_enabled" value={String(status?.final_legal_opinion_enabled ?? false)} />
             </div>
             <JsonPanel title="warnings" value={status?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Local Read Preview</h2>
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
+              <InfoRow label="allowed" value=".txt / .md / .json" />
+              <InfoRow label="blocked" value="PDF / Word / image / OCR / LLM / Legal Search" />
+              <InfoRow label="raw_text" value="not returned / not stored" />
+              <InfoRow label="preview_storage" value="ignored runtime storage only" />
+            </div>
+            <form onSubmit={submitLocalPreview} className="mt-4 grid gap-4 md:grid-cols-3">
+              <Field label="case_id" value={localPreviewForm.case_id} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, case_id: value })} />
+              <Field label="workspace_id" value={localPreviewForm.workspace_id} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, workspace_id: value })} />
+              <Field label="local_file_path" value={localPreviewForm.local_file_path} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, local_file_path: value })} />
+              <Field label="filename_redacted" value={localPreviewForm.filename_redacted} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, filename_redacted: value })} />
+              <Field label="material_id" value={localPreviewForm.material_id} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, material_id: value })} />
+              <Field label="provider_mode" value={localPreviewForm.provider_mode} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, provider_mode: value })} />
+              <Field label="ocr_mode" value={localPreviewForm.ocr_mode} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, ocr_mode: value })} />
+              <Field label="llm_mode" value={localPreviewForm.llm_mode} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, llm_mode: value })} />
+              <Field label="legal_search_mode" value={localPreviewForm.legal_search_mode} onChange={(value) => setLocalPreviewForm({ ...localPreviewForm, legal_search_mode: value })} />
+              <CheckField label="explicit_read_confirmation" checked={localPreviewForm.explicit_read_confirmation} onChange={(checked) => setLocalPreviewForm({ ...localPreviewForm, explicit_read_confirmation: checked })} />
+              <CheckField label="manual_review_confirmed" checked={localPreviewForm.manual_review_confirmed} onChange={(checked) => setLocalPreviewForm({ ...localPreviewForm, manual_review_confirmed: checked })} />
+              <CheckField label="preview_only" checked={localPreviewForm.preview_only} onChange={(checked) => setLocalPreviewForm({ ...localPreviewForm, preview_only: checked })} />
+              <div className="md:col-span-3">
+                <Button type="submit" disabled={loading === "local-preview"}>{loading === "local-preview" ? "读取中..." : "Run Local Read Preview"}</Button>
+              </div>
+            </form>
+            {localPreviewResult ? (
+              <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                <InfoRow label="preview_id" value={localPreviewResult.preview_id} />
+                <InfoRow label="allowed_to_continue" value={String(localPreviewResult.allowed_to_continue)} />
+                <InfoRow label="content_read" value={String(localPreviewResult.content_read)} />
+                <InfoRow label="raw_content_stored" value={String(localPreviewResult.raw_content_stored)} />
+                <InfoRow label="redacted_preview_created" value={String(localPreviewResult.redacted_preview_created)} />
+                <InfoRow label="redacted_preview_storage_path" value={localPreviewResult.redacted_preview_storage_path} />
+                <div className="lg:col-span-2">
+                  <JsonPanel title="guard_results" value={localPreviewResult.guard_results} />
+                  <JsonPanel title="redacted_preview" value={localPreviewResult.redacted_preview} />
+                  <JsonPanel title="source_refs" value={localPreviewResult.source_refs} />
+                  <JsonPanel title="local_preview_result" value={localPreviewResult} />
+                </div>
+              </div>
+            ) : null}
           </CardBody>
         </Card>
 

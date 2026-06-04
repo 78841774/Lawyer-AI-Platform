@@ -674,12 +674,21 @@ export type ControlledMaterialStatus = {
   real_material_reading_default: boolean;
   requires_explicit_read_confirmation: boolean;
   requires_manual_review: boolean;
+  allowed_file_extensions: string[];
+  max_file_size_bytes: number;
+  read_pdf_enabled: boolean;
+  read_docx_enabled: boolean;
+  read_image_enabled: boolean;
   ocr_live_enabled: boolean;
   llm_live_enabled: boolean;
   legal_search_live_enabled: boolean;
   deepseek_live_enabled: boolean;
+  store_raw_content_in_git: boolean;
+  store_redacted_preview_in_git: boolean;
   store_extracted_text_in_git: boolean;
   store_material_content_in_git: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
   source_trace_enabled: boolean;
   report_draft_enabled: boolean;
   final_legal_opinion_enabled: boolean;
@@ -721,6 +730,56 @@ export type ControlledMaterialReadResult = {
   created_at: string;
 };
 
+export type ControlledLocalReadPreviewRequest = {
+  case_id: string;
+  workspace_id: string;
+  local_file_path: string;
+  filename_redacted: string;
+  material_id: string;
+  explicit_read_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  provider_mode: string;
+  ocr_mode: string;
+  llm_mode: string;
+  legal_search_mode: string;
+  preview_only: boolean;
+};
+
+export type ControlledLocalReadPreviewResult = {
+  preview_id: string;
+  case_id: string;
+  workspace_id: string;
+  material_id: string;
+  filename_redacted: string;
+  local_file_path_redacted: string;
+  file_extension: string;
+  file_size_bytes: number;
+  content_read: boolean;
+  raw_content_stored: boolean;
+  redacted_preview_created: boolean;
+  redacted_preview: string;
+  redacted_preview_storage_path: string;
+  source_refs: Record<string, unknown>[];
+  guard_results: Record<string, unknown>[];
+  audit_log_id: string;
+  allowed_to_continue: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledReadPreviewRecord = {
+  preview_id: string;
+  case_id: string;
+  workspace_id: string;
+  material_id: string;
+  filename_redacted: string;
+  local_file_path_redacted: string;
+  redacted_preview: string;
+  source_refs: Record<string, unknown>[];
+  warnings: string[];
+  created_at: string;
+};
+
 export type ControlledReportDraftRequest = {
   case_id: string;
   workspace_id: string;
@@ -754,6 +813,7 @@ export type ControlledMaterialAuditLog = {
   case_id: string;
   workspace_id: string;
   controlled_read_id?: string | null;
+  preview_id?: string | null;
   material_id?: string | null;
   filename_redacted?: string | null;
   result: string;

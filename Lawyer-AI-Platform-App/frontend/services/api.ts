@@ -4,10 +4,13 @@ import type {
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
   CitationResolutionResult,
+  ControlledLocalReadPreviewRequest,
+  ControlledLocalReadPreviewResult,
   ControlledMaterialAuditLog,
   ControlledMaterialReadRequest,
   ControlledMaterialReadResult,
   ControlledMaterialStatus,
+  ControlledReadPreviewRecord,
   ControlledReportDraftRequest,
   ControlledReportDraftResult,
   DashboardStats,
@@ -70,10 +73,13 @@ export type {
   Case as CaseRecord,
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
+  ControlledLocalReadPreviewRequest,
+  ControlledLocalReadPreviewResult,
   ControlledMaterialAuditLog,
   ControlledMaterialReadRequest,
   ControlledMaterialReadResult,
   ControlledMaterialStatus,
+  ControlledReadPreviewRecord,
   ControlledReportDraftRequest,
   ControlledReportDraftResult,
   DashboardStats,
@@ -599,6 +605,10 @@ export const controlledMaterialApi = {
   status: () => request<ControlledMaterialStatus>("/controlled-material/status"),
   readConfirmed: (payload: ControlledMaterialReadRequest) =>
     postJson<ControlledMaterialReadResult>("/controlled-material/read-confirmed", payload),
+  localReadPreview: (payload: ControlledLocalReadPreviewRequest) =>
+    postJson<ControlledLocalReadPreviewResult>("/controlled-material/local-read-preview", payload),
+  readPreview: (previewId: string) =>
+    request<ControlledReadPreviewRecord>(`/controlled-material/read-preview/${encodeURIComponent(previewId)}`),
   reportDraft: (payload: ControlledReportDraftRequest) =>
     postJson<ControlledReportDraftResult>("/controlled-material/report-draft", payload),
   auditLogs: async () => {
@@ -636,6 +646,8 @@ export const runPersonalAlphaDryRun = personalAlphaApi.dryRun;
 export const getPersonalAlphaAuditLogs = personalAlphaApi.auditLogs;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
+export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;
+export const getControlledReadPreview = controlledMaterialApi.readPreview;
 export const generateControlledReportDraft = controlledMaterialApi.reportDraft;
 export const getControlledMaterialAuditLogs = controlledMaterialApi.auditLogs;
 export const getCurrentUser = userApi.me;

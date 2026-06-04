@@ -145,6 +145,11 @@ export default async function RuntimePage() {
               ["production_enabled", formatBoolean(controlledMaterial?.production_enabled)],
               ["real_material_reading_enabled", formatBoolean(controlledMaterial?.real_material_reading_enabled)],
               ["real_material_reading_default", formatBoolean(controlledMaterial?.real_material_reading_default)],
+              ["allowed_file_extensions", controlledMaterial?.allowed_file_extensions?.join(" / ") ?? ".txt / .md / .json"],
+              ["max_file_size_bytes", String(controlledMaterial?.max_file_size_bytes ?? 200000)],
+              ["read_pdf_enabled", formatBoolean(controlledMaterial?.read_pdf_enabled)],
+              ["read_docx_enabled", formatBoolean(controlledMaterial?.read_docx_enabled)],
+              ["read_image_enabled", formatBoolean(controlledMaterial?.read_image_enabled)],
               ["requires_explicit_read_confirmation", formatBoolean(controlledMaterial?.requires_explicit_read_confirmation)],
               ["requires_manual_review", formatBoolean(controlledMaterial?.requires_manual_review)],
               ["ocr_live_enabled", formatBoolean(controlledMaterial?.ocr_live_enabled)],
@@ -153,6 +158,8 @@ export default async function RuntimePage() {
               ["deepseek_live_enabled", formatBoolean(controlledMaterial?.deepseek_live_enabled)],
               ["store_material_content_in_git", formatBoolean(controlledMaterial?.store_material_content_in_git)],
               ["store_extracted_text_in_git", formatBoolean(controlledMaterial?.store_extracted_text_in_git)],
+              ["runtime_storage_enabled", formatBoolean(controlledMaterial?.runtime_storage_enabled)],
+              ["runtime_storage_path", controlledMaterial?.runtime_storage_path ?? "storage/runtime/controlled_material_previews"],
               ["final_legal_opinion_enabled", formatBoolean(controlledMaterial?.final_legal_opinion_enabled)]
             ]}
             actionHref="/controlled-material"

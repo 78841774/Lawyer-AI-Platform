@@ -3,7 +3,11 @@ from uuid import uuid4
 
 from controlled_material_processing.audit import append_controlled_material_audit_log
 from controlled_material_processing.guards import DANGEROUS_MODES, run_all_controlled_material_guards
+from controlled_material_processing.local_reader import read_local_text_file_preview
+from controlled_material_processing.runtime_storage import load_redacted_preview
 from controlled_material_processing.schemas import (
+    ControlledLocalReadPreviewRequest,
+    ControlledReadPreviewRecord,
     ControlledMaterialReadRequest,
     ControlledMaterialReadResult,
     ControlledMaterialStatus,
@@ -16,11 +20,55 @@ from controlled_material_processing.schemas import (
 def get_controlled_material_status() -> dict[str, Any]:
     return ControlledMaterialStatus(
         warnings=[
-            "v4.2 is local-only controlled processing.",
-            "Real material content is not read in this stage.",
+            "v4.3 is local-only controlled local material read preview.",
+            "Only .txt, .md, and .json small text files are supported.",
+            "PDF, Word, image, spreadsheet, archive, and email files are blocked.",
+            "Raw text is not returned and is not stored in Git.",
+            "Redacted preview is stored only in ignored runtime storage.",
             "No real OCR, LLM, legal database, or DeepSeek live provider is called.",
             "Manual lawyer review and explicit read confirmation are required.",
         ]
+    ).model_dump()
+
+
+def run_controlled_local_read_preview(request: ControlledLocalReadPreviewRequest) -> dict[str, Any]:
+    return read_local_text_file_preview(request)
+
+
+def get_controlled_read_preview(preview_id: str) -> dict[str, Any]:
+    created_at = utc_now()
+    loaded = load_redacted_preview(preview_id)
+    audit_log_id = f"controlled_material_audit_{uuid4().hex[:12]}"
+    warnings = list(loaded.get("warnings", []))
+    append_controlled_material_audit_log(
+        {
+            "audit_log_id": audit_log_id,
+            "event_type": "controlled_read_preview_loaded",
+            "case_id": "",
+            "workspace_id": "",
+            "preview_id": preview_id,
+            "material_id": None,
+            "filename_redacted": "<filename_redacted>",
+            "result": "redacted_preview_loaded" if loaded.get("redacted_preview") else "redacted_preview_not_found",
+            "warnings": warnings,
+            "created_at": created_at,
+        }
+    )
+    return ControlledReadPreviewRecord(
+        preview_id=preview_id,
+        redacted_preview=str(loaded.get("redacted_preview", "")),
+        source_refs=[
+            {
+                "source_ref_id": "source_ref_controlled_read_preview_loaded_001",
+                "source_type": "controlled_local_read_preview",
+                "preview_id": preview_id,
+                "relative_path": "<local_file_path_redacted>",
+                "quote": "Loaded redacted preview only. Raw text is not stored.",
+                "mock_or_redacted_only": True,
+            }
+        ],
+        warnings=warnings,
+        created_at=str(loaded.get("created_at", created_at)),
     ).model_dump()
 
 
@@ -84,8 +132,8 @@ def generate_controlled_report_draft(request: ControlledReportDraftRequest) -> d
         warnings.append("Manual lawyer review confirmation is required.")
         blocked = True
     if _normalize(request.llm_mode) in DANGEROUS_MODES:
-        warnings.append("Live provider is blocked in v4.2 controlled local processing.")
-        warnings.append("DeepSeek live provider is blocked in v4.2 controlled local processing.")
+        warnings.append("Live provider is blocked in controlled local processing.")
+        warnings.append("DeepSeek live provider is blocked in controlled local processing.")
         blocked = True
 
     status = "mock_draft" if not blocked else "blocked_by_controlled_material_guard"
