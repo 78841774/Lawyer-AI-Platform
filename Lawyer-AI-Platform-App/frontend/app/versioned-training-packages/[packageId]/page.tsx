@@ -9,6 +9,7 @@ import {
   VersionedSkillTrainingPackageDetail,
   VersionedSkillTrainingPackageFile
 } from "@/services/api";
+import { CreateMockTrainingRunButton } from "./CreateMockTrainingRunButton";
 
 export const dynamic = "force-dynamic";
 
@@ -77,6 +78,18 @@ function DetailContent({
           <Meta label="不自动训练" value={metadata.auto_train_enabled ? "否" : "是"} />
           <Meta label="不自动发布" value={metadata.auto_publish_enabled ? "否" : "是"} />
           <Meta label="下一阶段训练运行" value={metadata.next_stage ?? "v3.6-E versioned skill training run"} />
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardBody>
+          <h2 className="text-base font-semibold text-ink">Mock Training Run</h2>
+          <div className="mt-3 text-sm text-muted">
+            仅创建 mock run metadata，不调用真实 LLM，不使用真实案件材料，不发布 Skill Registry。
+          </div>
+          <div className="mt-4">
+            <CreateMockTrainingRunButton packageId={metadata.training_package_id} />
+          </div>
         </CardBody>
       </Card>
 

@@ -47,6 +47,16 @@ They do not:
 * Modify the existing Skill Registry.
 * Expose local absolute package paths.
 
+v3.6-E adds a separate mock run foundation:
+
+```bash
+GET /versioned-skill-training-runs
+GET /versioned-skill-training-runs/{run_id}
+POST /versioned-skill-training-runs/mock
+```
+
+The mock run layer reads package metadata and taxonomy metadata, but it does not call LLM providers, train, publish, or create formal Experience Packages.
+
 ## Frontend
 
 The frontend page is:
@@ -127,3 +137,5 @@ v3.6-D does not overwrite:
 * `skill_002`
 
 Future v3.6-E training output should create a new candidate Skill, such as `skill_003`, after human review and training-run approval.
+
+v3.6-E currently creates mock training run metadata only. It does not create candidate Skills.

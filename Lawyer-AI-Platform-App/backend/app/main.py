@@ -23,6 +23,7 @@ from app.api.workspace_skills import router as workspace_skills_router
 from app.api.workspaces import router as workspaces_router
 from app.core.config import settings
 from app.core.database import create_db_and_tables
+from versioned_skill_training_runs.router import router as versioned_skill_training_runs_router
 
 
 @asynccontextmanager
@@ -66,3 +67,4 @@ app.include_router(skill_registry_router)
 app.include_router(workspace_skills_router)
 app.include_router(llm_router)
 app.include_router(versioned_skill_training_packages_router)
+app.include_router(versioned_skill_training_runs_router)

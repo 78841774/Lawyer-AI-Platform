@@ -22,6 +22,7 @@ import type {
   VersionedSkillTrainingPackage,
   VersionedSkillTrainingPackageDetail,
   VersionedSkillTrainingPackageFile,
+  VersionedSkillTrainingRun,
   Workspace
 } from "@/types";
 
@@ -50,6 +51,7 @@ export type {
   VersionedSkillTrainingPackage,
   VersionedSkillTrainingPackageDetail,
   VersionedSkillTrainingPackageFile,
+  VersionedSkillTrainingRun,
   User as UserRecord,
   Workspace as WorkspaceRecord
 };
@@ -411,6 +413,17 @@ export const versionedTrainingPackageApi = {
   }
 };
 
+export const versionedTrainingRunApi = {
+  list: async () => {
+    const response = await request<{ runs: VersionedSkillTrainingRun[] }>("/versioned-skill-training-runs");
+    return response.runs;
+  },
+  get: (runId: string) =>
+    request<VersionedSkillTrainingRun>(`/versioned-skill-training-runs/${encodeURIComponent(runId)}`),
+  createMock: (packageId: string) =>
+    postJson<VersionedSkillTrainingRun>("/versioned-skill-training-runs/mock", { package_id: packageId })
+};
+
 export const caseCauseTaxonomyApi = {
   list: () => request<{ case_causes: CaseCauseTaxonomyEntry[] }>("/case-cause-taxonomy"),
   get: (caseCauseCode: string) =>
@@ -483,6 +496,9 @@ export const getVersionedTrainingPackages = versionedTrainingPackageApi.list;
 export const getVersionedTrainingPackage = versionedTrainingPackageApi.get;
 export const getVersionedTrainingPackageFiles = versionedTrainingPackageApi.files;
 export const getVersionedTrainingPackagesByCaseCause = versionedTrainingPackageApi.byCaseCause;
+export const getVersionedTrainingRuns = versionedTrainingRunApi.list;
+export const getVersionedTrainingRun = versionedTrainingRunApi.get;
+export const createMockVersionedTrainingRun = versionedTrainingRunApi.createMock;
 export const getCaseCauseTaxonomy = caseCauseTaxonomyApi.list;
 export const getCaseCause = caseCauseTaxonomyApi.get;
 export const getCaseCauseAncestors = caseCauseTaxonomyApi.ancestors;

@@ -109,7 +109,19 @@ Prepared packages:
 * `case-analysis-pro-v3@v1.0.0`
 * `contract_dispute_combined@v1.0.0`
 
-v3.6-E can then start an explicit versioned training run after review.
+v3.6-E starts the explicit versioned training run foundation as a mock-only layer.
+
+The v3.6-E layer:
+
+* reads versioned training package metadata
+* reads case cause taxonomy metadata
+* expands parent package inheritance
+* returns mock evaluation scores
+* keeps `llm_called=false`
+* keeps `real_case_material_used=false`
+* keeps `skill_registry_published=false`
+
+It does not perform real training.
 
 Recommended sequence:
 
@@ -157,6 +169,20 @@ Current loading order for `payment_dispute`:
 5. case-specific runtime context
 
 Child packages may add or specialize rules, but cannot disable human review or legal safety gates.
+
+## v3.6-E Mock Run Boundary
+
+The mock run registry is:
+
+* `/Users/wazhen/Lawyer-AI-Platform/Lawyer-AI-Platform-App/backend/versioned_skill_training_runs/registry.json`
+
+The API is:
+
+* `GET /versioned-skill-training-runs`
+* `GET /versioned-skill-training-runs/{run_id}`
+* `POST /versioned-skill-training-runs/mock`
+
+Mock runs do not call real LLM providers, use real case materials, publish Skills, create formal Experience Packages, or overwrite existing published Skills.
 
 ## Non-Goals
 

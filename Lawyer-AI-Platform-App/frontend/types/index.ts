@@ -354,3 +354,39 @@ export type CaseCauseTaxonomyEntry = {
   aliases: string[];
   status: string;
 };
+
+export type VersionedSkillTrainingRun = {
+  run_id: string;
+  package_id: string;
+  case_cause_code: string;
+  status: string;
+  runner: string;
+  llm_provider: string;
+  llm_called: boolean;
+  inheritance_chain: string[];
+  taxonomy_path: string[];
+  inputs: {
+    source: string;
+    real_case_material_used: boolean;
+    legacy_asset_modified: boolean;
+  };
+  outputs: {
+    skill_candidate_created: boolean;
+    experience_package_created: boolean;
+    skill_registry_published: boolean;
+  };
+  mock_evaluation: {
+    accuracy: number;
+    consistency: number;
+    completeness: number;
+    legal_relevance: number;
+    report_quality: number;
+    notes: string;
+  };
+  safety: {
+    requires_human_review: boolean;
+    auto_train_enabled: boolean;
+    auto_publish_enabled: boolean;
+    child_package_cannot_disable_safety_rules: boolean;
+  };
+};
