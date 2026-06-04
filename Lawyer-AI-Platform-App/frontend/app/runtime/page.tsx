@@ -8,6 +8,7 @@ import {
   getControlledLegalSearchStatus,
   getControlledMaterialStatus,
   getControlledOCRStatus,
+  getControlledReportDraftStatus,
   getLegalSearchStatus,
   getInternalAlphaStatus,
   getLLMStatus,
@@ -20,7 +21,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, error } =
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, error } =
     await loadRuntime();
 
   return (
@@ -209,6 +210,27 @@ export default async function RuntimePage() {
             ]}
             actionHref="/controlled-legal-search"
           />
+          <StatusCard
+            title="Controlled Report Draft"
+            provider={controlledReportDraft?.mode ?? "local_only_controlled_report_draft"}
+            connected={controlledReportDraft?.enabled ?? false}
+            rows={[
+              ["mode", controlledReportDraft?.mode ?? "local_only_controlled_report_draft"],
+              ["production_enabled", formatBoolean(controlledReportDraft?.production_enabled)],
+              ["mock_report_assembly_enabled", formatBoolean(controlledReportDraft?.mock_report_assembly_enabled)],
+              ["requires_explicit_assembly_confirmation", formatBoolean(controlledReportDraft?.requires_explicit_assembly_confirmation)],
+              ["requires_manual_review", formatBoolean(controlledReportDraft?.requires_manual_review)],
+              ["llm_live_enabled", formatBoolean(controlledReportDraft?.llm_live_enabled)],
+              ["deepseek_live_enabled", formatBoolean(controlledReportDraft?.deepseek_live_enabled)],
+              ["ocr_live_enabled", formatBoolean(controlledReportDraft?.ocr_live_enabled)],
+              ["legal_search_live_enabled", formatBoolean(controlledReportDraft?.legal_search_live_enabled)],
+              ["runtime_storage_enabled", formatBoolean(controlledReportDraft?.runtime_storage_enabled)],
+              ["runtime_storage_path", controlledReportDraft?.runtime_storage_path ?? "storage/runtime/controlled_report_drafts"],
+              ["source_trace_enabled", formatBoolean(controlledReportDraft?.source_trace_enabled)],
+              ["final_legal_opinion_enabled", formatBoolean(controlledReportDraft?.final_legal_opinion_enabled)]
+            ]}
+            actionHref="/controlled-report-draft"
+          />
         </div>
 
         <Card>
@@ -230,7 +252,7 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
@@ -240,9 +262,10 @@ async function loadRuntime() {
       getPersonalAlphaStatus(),
       getControlledMaterialStatus(),
       getControlledOCRStatus(),
-      getControlledLegalSearchStatus()
+      getControlledLegalSearchStatus(),
+      getControlledReportDraftStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, error: null };
   } catch {
     return {
       runtime: null,
@@ -255,6 +278,7 @@ async function loadRuntime() {
       controlledMaterial: null,
       controlledOCR: null,
       controlledLegalSearch: null,
+      controlledReportDraft: null,
       error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。"
     };
   }

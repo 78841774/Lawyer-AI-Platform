@@ -1013,6 +1013,90 @@ export type ControlledLegalSearchAuditLog = {
   created_at: string;
 };
 
+export type ControlledReportDraftStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_report_assembly_enabled: boolean;
+  requires_manual_review: boolean;
+  requires_explicit_assembly_confirmation: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  source_trace_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  store_raw_material_text_in_git: boolean;
+  store_raw_ocr_text_in_git: boolean;
+  store_raw_legal_search_results_in_git: boolean;
+  store_report_draft_in_git: boolean;
+  warnings: string[];
+};
+
+export type ControlledReportDraftAssembleRequest = {
+  case_id: string;
+  workspace_id: string;
+  material_preview_ids: string[];
+  ocr_preview_ids: string[];
+  legal_search_preview_ids: string[];
+  citation_ids: string[];
+  explicit_assembly_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  report_mode: string;
+  llm_mode: string;
+  provider_mode: string;
+  preview_only: boolean;
+};
+
+export type ControlledReportDraftAssembleResult = {
+  draft_id: string;
+  case_id: string;
+  workspace_id: string;
+  status: string;
+  mock_report_assembled: boolean;
+  final_legal_opinion_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  report_draft_storage_path: string;
+  mock_assembled_report: Record<string, unknown>;
+  source_refs: Record<string, unknown>[];
+  citations: Record<string, unknown>[];
+  guard_results: Record<string, unknown>[];
+  audit_log_id: string;
+  allowed_to_continue: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledReportDraftRecord = {
+  draft_id: string;
+  case_id: string;
+  workspace_id: string;
+  mock_assembled_report: Record<string, unknown>;
+  source_refs: Record<string, unknown>[];
+  citations: Record<string, unknown>[];
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledReportDraftAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  draft_id: string;
+  result: string;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

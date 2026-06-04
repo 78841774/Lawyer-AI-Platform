@@ -11,6 +11,11 @@ import type {
   ControlledLegalSearchPreviewRequest,
   ControlledLegalSearchPreviewResult,
   ControlledLegalSearchStatus,
+  ControlledReportDraftAssembleRequest,
+  ControlledReportDraftAssembleResult,
+  ControlledReportDraftAuditLog,
+  ControlledReportDraftRecord,
+  ControlledReportDraftStatus,
   ControlledLocalReadPreviewRequest,
   ControlledLocalReadPreviewResult,
   ControlledMaterialAuditLog,
@@ -92,6 +97,11 @@ export type {
   ControlledLegalSearchPreviewRequest,
   ControlledLegalSearchPreviewResult,
   ControlledLegalSearchStatus,
+  ControlledReportDraftAssembleRequest,
+  ControlledReportDraftAssembleResult,
+  ControlledReportDraftAuditLog,
+  ControlledReportDraftRecord,
+  ControlledReportDraftStatus,
   ControlledLocalReadPreviewRequest,
   ControlledLocalReadPreviewResult,
   ControlledMaterialAuditLog,
@@ -667,6 +677,18 @@ export const controlledLegalSearchApi = {
   }
 };
 
+export const controlledReportDraftApi = {
+  status: () => request<ControlledReportDraftStatus>("/controlled-report-draft/status"),
+  assemble: (payload: ControlledReportDraftAssembleRequest) =>
+    postJson<ControlledReportDraftAssembleResult>("/controlled-report-draft/assemble", payload),
+  readDraft: (draftId: string) =>
+    request<ControlledReportDraftRecord>(`/controlled-report-draft/${encodeURIComponent(draftId)}`),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: ControlledReportDraftAuditLog[] }>("/controlled-report-draft/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -709,6 +731,10 @@ export const runControlledLegalSearchPreview = controlledLegalSearchApi.preview;
 export const getControlledLegalSearchPreview = controlledLegalSearchApi.readPreview;
 export const resolveControlledLegalCitation = controlledLegalSearchApi.resolveCitation;
 export const getControlledLegalSearchAuditLogs = controlledLegalSearchApi.auditLogs;
+export const getControlledReportDraftStatus = controlledReportDraftApi.status;
+export const assembleControlledReportDraft = controlledReportDraftApi.assemble;
+export const getControlledReportDraft = controlledReportDraftApi.readDraft;
+export const getControlledReportDraftAuditLogs = controlledReportDraftApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

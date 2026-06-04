@@ -26,6 +26,7 @@ from app.core.database import create_db_and_tables
 from controlled_legal_search_pipeline.router import router as controlled_legal_search_router
 from controlled_material_processing.router import router as controlled_material_router
 from controlled_ocr_pipeline.router import router as controlled_ocr_router
+from controlled_report_draft_pipeline.router import router as controlled_report_draft_router
 from internal_alpha.router import router as internal_alpha_router
 from legal_search_adapter.router import router as legal_search_router
 from local_sandbox.router import router as local_sandbox_router
@@ -84,5 +85,6 @@ app.include_router(personal_alpha_router)
 app.include_router(controlled_material_router)
 app.include_router(controlled_ocr_router)
 app.include_router(controlled_legal_search_router)
+app.include_router(controlled_report_draft_router)
 app.include_router(versioned_skill_training_packages_router)
 app.include_router(versioned_skill_training_runs_router)

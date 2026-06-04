@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "controlled_report_draft_pipeline": {
+    "enabled": true,
+    "mode": "local_only_controlled_report_draft",
+    "production_enabled": false,
+    "mock_report_assembly_enabled": true,
+    "requires_manual_review": true,
+    "requires_explicit_assembly_confirmation": true,
+    "llm_live_enabled": false,
+    "deepseek_live_enabled": false,
+    "ocr_live_enabled": false,
+    "legal_search_live_enabled": false,
+    "runtime_storage_enabled": true,
+    "runtime_storage_path": "storage/runtime/controlled_report_drafts",
+    "source_trace_enabled": true,
+    "final_legal_opinion_enabled": false,
+    "store_raw_material_text_in_git": false,
+    "store_raw_ocr_text_in_git": false,
+    "store_raw_legal_search_results_in_git": false,
+    "store_report_draft_in_git": false
+  },
+  "audit_logs": []
+}
