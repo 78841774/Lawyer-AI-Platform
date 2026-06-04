@@ -59,6 +59,11 @@ import type {
   InternalAlphaReadinessChecklist,
   InternalAlphaStatus,
   PersonalAlphaAuditLog,
+  PersonalAlphaDashboardAuditTimeline,
+  PersonalAlphaDashboardSourceTraceSummary,
+  PersonalAlphaDashboardStageHealth,
+  PersonalAlphaDashboardStatus,
+  PersonalAlphaDashboardSummary,
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
   PersonalAlphaStatus,
@@ -166,6 +171,11 @@ export type {
   InternalAlphaReadinessChecklist,
   InternalAlphaStatus,
   PersonalAlphaAuditLog,
+  PersonalAlphaDashboardAuditTimeline,
+  PersonalAlphaDashboardSourceTraceSummary,
+  PersonalAlphaDashboardStageHealth,
+  PersonalAlphaDashboardStatus,
+  PersonalAlphaDashboardSummary,
   PersonalAlphaDryRunRequest,
   PersonalAlphaDryRunResult,
   PersonalAlphaStatus,
@@ -785,6 +795,17 @@ export const personalAlphaWorkspaceApi = {
   }
 };
 
+export const personalAlphaDashboardApi = {
+  status: () => request<PersonalAlphaDashboardStatus>("/personal-alpha-dashboard/status"),
+  summary: () => request<PersonalAlphaDashboardSummary>("/personal-alpha-dashboard/summary"),
+  stageHealth: async () => {
+    const response = await request<{ stage_health: PersonalAlphaDashboardStageHealth[] }>("/personal-alpha-dashboard/stage-health");
+    return response.stage_health;
+  },
+  auditTimeline: () => request<PersonalAlphaDashboardAuditTimeline>("/personal-alpha-dashboard/audit-timeline"),
+  sourceTraceSummary: () => request<PersonalAlphaDashboardSourceTraceSummary>("/personal-alpha-dashboard/source-trace-summary")
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -816,6 +837,11 @@ export const getPersonalAlphaWorkspaceStatus = personalAlphaWorkspaceApi.status;
 export const runPersonalAlphaWorkspace = personalAlphaWorkspaceApi.run;
 export const getPersonalAlphaWorkspaceRun = personalAlphaWorkspaceApi.readRun;
 export const getPersonalAlphaWorkspaceAuditLogs = personalAlphaWorkspaceApi.auditLogs;
+export const getPersonalAlphaDashboardStatus = personalAlphaDashboardApi.status;
+export const getPersonalAlphaDashboardSummary = personalAlphaDashboardApi.summary;
+export const getPersonalAlphaDashboardStageHealth = personalAlphaDashboardApi.stageHealth;
+export const getPersonalAlphaDashboardAuditTimeline = personalAlphaDashboardApi.auditTimeline;
+export const getPersonalAlphaDashboardSourceTraceSummary = personalAlphaDashboardApi.sourceTraceSummary;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

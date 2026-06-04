@@ -1496,6 +1496,60 @@ export type PersonalAlphaWorkspaceAuditLog = {
   created_at: string;
 };
 
+export type PersonalAlphaDashboardStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  requires_manual_review: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  source_runtime_path: string;
+  warnings: string[];
+};
+
+export type PersonalAlphaDashboardSummary = {
+  total_workspace_runs: number;
+  ready_stage_count: number;
+  pending_stage_count: number;
+  blocked_stage_count: number;
+  audit_event_count: number;
+  source_trace_count: number;
+  mock_or_redacted_only: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaDashboardStageHealth = {
+  stage_id: string;
+  label: string;
+  status: string;
+  required: boolean;
+  mock_only: boolean;
+  source_ref_id: string;
+  notes: string;
+};
+
+export type PersonalAlphaDashboardAuditTimeline = {
+  timeline: Record<string, unknown>[];
+  mock_or_redacted_only: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaDashboardSourceTraceSummary = {
+  source_refs: Record<string, unknown>[];
+  source_trace_count: number;
+  mock_or_redacted_only: boolean;
+  warnings: string[];
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
