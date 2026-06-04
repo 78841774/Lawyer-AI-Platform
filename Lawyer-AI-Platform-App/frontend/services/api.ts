@@ -78,6 +78,13 @@ import type {
   PersonalAlphaFinalPacketPreview,
   PersonalAlphaFinalPacketRecord,
   PersonalAlphaFinalPacketStatus,
+  PersonalAlphaLawyerFinalReviewActionList,
+  PersonalAlphaLawyerFinalReviewActionRecord,
+  PersonalAlphaLawyerFinalReviewActionRequest,
+  PersonalAlphaLawyerFinalReviewActionResult,
+  PersonalAlphaLawyerFinalReviewPacketDetail,
+  PersonalAlphaLawyerFinalReviewStatus,
+  PersonalAlphaLawyerFinalReviewSummary,
   PersonalAlphaFinalReadinessRunDetail,
   PersonalAlphaFinalReadinessStatus,
   PersonalAlphaFinalReadinessSummaryResponse,
@@ -214,6 +221,13 @@ export type {
   PersonalAlphaFinalPacketPreview,
   PersonalAlphaFinalPacketRecord,
   PersonalAlphaFinalPacketStatus,
+  PersonalAlphaLawyerFinalReviewActionList,
+  PersonalAlphaLawyerFinalReviewActionRecord,
+  PersonalAlphaLawyerFinalReviewActionRequest,
+  PersonalAlphaLawyerFinalReviewActionResult,
+  PersonalAlphaLawyerFinalReviewPacketDetail,
+  PersonalAlphaLawyerFinalReviewStatus,
+  PersonalAlphaLawyerFinalReviewSummary,
   PersonalAlphaFinalReadinessRunDetail,
   PersonalAlphaFinalReadinessStatus,
   PersonalAlphaFinalReadinessSummaryResponse,
@@ -905,6 +919,29 @@ export const personalAlphaFinalPacketApi = {
     request<PersonalAlphaFinalPacketList>(`/personal-alpha-final-packet/run/${encodeURIComponent(workspaceRunId)}/packets`)
 };
 
+export const personalAlphaLawyerFinalReviewApi = {
+  getStatus: () => request<PersonalAlphaLawyerFinalReviewStatus>("/personal-alpha-lawyer-final-review/status"),
+  getPacketDetail: (packetId: string) =>
+    request<PersonalAlphaLawyerFinalReviewPacketDetail>(`/personal-alpha-lawyer-final-review/packets/${encodeURIComponent(packetId)}`),
+  getSummary: (packetId: string) =>
+    request<{
+      packet_id: string;
+      workspace_run_id: string;
+      summary: PersonalAlphaLawyerFinalReviewSummary;
+      mock_or_redacted_only: boolean;
+      raw_content_included: boolean;
+      final_legal_opinion_generated: boolean;
+      final_report_generated: boolean;
+      warnings: string[];
+    }>(`/personal-alpha-lawyer-final-review/packets/${encodeURIComponent(packetId)}/summary`),
+  listActions: (packetId: string) =>
+    request<PersonalAlphaLawyerFinalReviewActionList>(`/personal-alpha-lawyer-final-review/packets/${encodeURIComponent(packetId)}/actions`),
+  submitAction: (packetId: string, payload: PersonalAlphaLawyerFinalReviewActionRequest) =>
+    postJson<PersonalAlphaLawyerFinalReviewActionResult>(`/personal-alpha-lawyer-final-review/packets/${encodeURIComponent(packetId)}/actions`, payload),
+  getAction: (actionId: string) =>
+    request<PersonalAlphaLawyerFinalReviewActionRecord>(`/personal-alpha-lawyer-final-review/actions/${encodeURIComponent(actionId)}`)
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -963,6 +1000,12 @@ export const createPersonalAlphaFinalPacket = personalAlphaFinalPacketApi.create
 export const listPersonalAlphaFinalPackets = personalAlphaFinalPacketApi.listPackets;
 export const getPersonalAlphaFinalPacket = personalAlphaFinalPacketApi.getPacket;
 export const listPersonalAlphaFinalPacketsByRun = personalAlphaFinalPacketApi.listRunPackets;
+export const getPersonalAlphaLawyerFinalReviewStatus = personalAlphaLawyerFinalReviewApi.getStatus;
+export const getPersonalAlphaLawyerFinalReviewPacketDetail = personalAlphaLawyerFinalReviewApi.getPacketDetail;
+export const getPersonalAlphaLawyerFinalReviewSummary = personalAlphaLawyerFinalReviewApi.getSummary;
+export const getPersonalAlphaLawyerFinalReviewActions = personalAlphaLawyerFinalReviewApi.listActions;
+export const submitPersonalAlphaLawyerFinalReviewAction = personalAlphaLawyerFinalReviewApi.submitAction;
+export const getPersonalAlphaLawyerFinalReviewAction = personalAlphaLawyerFinalReviewApi.getAction;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

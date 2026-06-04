@@ -2137,6 +2137,133 @@ export type PersonalAlphaFinalPacketList = {
   warnings: string[];
 };
 
+export type PersonalAlphaLawyerFinalReviewStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  requires_final_packet: boolean;
+  requires_manual_review: boolean;
+  requires_lawyer_review: boolean;
+  final_report_generation_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  warnings: string[];
+};
+
+export type PersonalAlphaLawyerFinalReviewSafetyChecklist = {
+  local_only: boolean;
+  mock_first: boolean;
+  controlled_first: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  manual_review_required: boolean;
+  lawyer_review_required: boolean;
+  requires_final_packet: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  raw_quote_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  runtime_storage_ignored: boolean;
+};
+
+export type PersonalAlphaLawyerFinalReviewSummary = {
+  review_status: string;
+  action_count: number;
+  approved_packet_count: number;
+  revision_requested_count: number;
+  rejected_packet_count: number;
+  latest_action: string | null;
+  ready_for_controlled_final_lock: boolean;
+  requires_packet_revision: boolean;
+  requires_additional_lawyer_review: boolean;
+};
+
+export type PersonalAlphaLawyerFinalReviewActionRequest = {
+  action: string;
+  reviewer_id: string;
+  reason: string;
+  manual_review_confirmed: boolean;
+  lawyer_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+};
+
+export type PersonalAlphaLawyerFinalReviewActionRecord = {
+  action_id: string;
+  packet_id: string;
+  workspace_run_id: string;
+  action: string;
+  reviewer_id: string;
+  reason: string;
+  status: string;
+  ready_for_controlled_final_lock: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  manual_review_confirmed: boolean;
+  lawyer_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaLawyerFinalReviewActionResult = PersonalAlphaLawyerFinalReviewActionRecord;
+
+export type PersonalAlphaLawyerFinalReviewActionList = {
+  packet_id: string;
+  actions: PersonalAlphaLawyerFinalReviewActionRecord[];
+  action_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaLawyerFinalReviewPacketDetail = {
+  packet_id: string;
+  workspace_run_id: string;
+  status: string;
+  packet_status: string;
+  review_status: string;
+  latest_action: string | null;
+  can_submit_review_action: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  packet_summary: Record<string, unknown>;
+  review_actions: PersonalAlphaLawyerFinalReviewActionRecord[];
+  safety_checklist: PersonalAlphaLawyerFinalReviewSafetyChecklist;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
