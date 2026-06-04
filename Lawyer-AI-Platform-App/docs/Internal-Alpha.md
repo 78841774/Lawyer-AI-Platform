@@ -24,6 +24,8 @@ v3.4-C adds local end-to-end validation and hardening for the real case intake l
 
 v3.5 adds Run History / Fact Dedup Foundation for repeated fact extraction, legal analysis, and report generation runs.
 
+v3.6-B adds read-only Legacy Skill Analysis for existing casework Skills, SkillOpt datasets, and SkillOpt output artifacts. It confirms that legacy training data must be reshaped into reviewed data packages before any training or Skill Registry import.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -141,6 +143,8 @@ v3.5 adds runtime history tables:
 * `analysis_runs`
 * `report_runs`
 
+v3.6-B adds no database tables.
+
 v3.0 also adds case ownership fields:
 
 * `cases.workspace_id`
@@ -160,6 +164,26 @@ Existing fields `cases.case_type` and `cases.objective` are reused for the intak
 For SQLite local development, backend startup checks for missing case ownership and intake columns and adds them with `ALTER TABLE` when needed. Existing local cases are backfilled to `workspace_local_001` and `user_local_001`.
 
 Production environments should use Alembic migrations instead of startup schema patching.
+
+## Legacy Skill Analysis
+
+v3.6-B found these local legacy assets:
+
+* 17 legacy Skill assets.
+* 19 SkillOpt dataset files.
+* 96 SkillOpt dataset items.
+* 14 SkillOpt output runs.
+* 12 SkillOpt `best_skill.md` outputs.
+
+The known Skill families are:
+
+* `case-fact-extractor-v3`
+* `case-analysis-pro-v3`
+* `legal-casework-router`
+
+This stage is analysis only. It does not create Skills, publish Experience Packages, import Skill Registry records, run LLM calls, or change the Skill Training main chain.
+
+The required next step is to reshape reviewed legacy data into Dataset Packages, Runtime Rules, Prompt Templates, Report Templates, and Evaluation Rubrics before any training stage.
 
 ## APIs
 
