@@ -1,0 +1,77 @@
+{
+  "registry_version": "v3.6-C",
+  "generated_by": "manual_legacy_asset_cleanup",
+  "status": "analysis_only",
+  "source_priority": [
+    "/Users/wazhen/.codex/skills/case-analysis-pro-v3/SKILL.md",
+    "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/a10-structure-template.md",
+    "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/lawyer-output-standards.md",
+    "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/depth-standards.md",
+    "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/admission-gates.md",
+    "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/scoring.md"
+  ],
+  "notes": [
+    "No legacy script execution.",
+    "No LLM call.",
+    "No automatic training.",
+    "No Skill Registry import or publication.",
+    "Do not rewrite the A-series from generic legal workflow memory."
+  ],
+  "assets": [
+    {
+      "asset_id": "case-analysis-pro-v3.legal_analysis_chain_rules",
+      "skill_family": "case-analysis-pro-v3",
+      "asset_type": "runtime_rules",
+      "path": "Lawyer-AI-Platform-App/backend/legacy_skill_assets/runtime_rules/case-analysis-pro-v3/legal_analysis_chain_rules.md",
+      "source_refs": [
+        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/SKILL.md",
+        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/a10-structure-template.md",
+        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/lawyer-output-standards.md",
+        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/depth-standards.md",
+        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/admission-gates.md",
+        "/Users/wazhen/.codex/skills/case-analysis-pro-v3/references/scoring.md"
+      ],
+      "description": "A10 争议焦点法律深化分析，包含焦点法律问题提炼、实务观点、理论观点、实务与理论对比运用策略、综合策略结论、评分卡和深度自评卡。",
+      "a_series_structure": {
+        "Step0": [
+          "事实提炼报告.md",
+          "材料流转分析报告.md"
+        ],
+        "E1": "接案评估卡.md",
+        "00": "产出总览.md",
+        "A1": "案由分析",
+        "A2": "法规清单",
+        "A3": "类案检索",
+        "A4": "请求权 / 抗辩权基础",
+        "A5": "举证策略",
+        "A6": "诉状 / 答辩状",
+        "A7": "诉求量化 / 反请求",
+        "A8": "证据清单",
+        "A9": "质证意见",
+        "A10": "争议焦点法律深化分析",
+        "A11": "庭审提纲",
+        "A12": "代理词",
+        "A13": "结案报告 / 结案框架",
+        "E": "执行评估.md"
+      },
+      "a10_required_modules": [
+        "模块一：焦点 → 法律问题提炼",
+        "模块二：实务观点 —— 裁判倾向规律",
+        "模块三：理论观点",
+        "模块四：实务与理论对比运用策略",
+        "模块五：综合策略结论（含法官审查清单）",
+        "评分卡",
+        "深度自评卡"
+      ],
+      "drafting_outputs": [
+        "A6 诉状 / 答辩状",
+        "A12 代理词",
+        "A13 结案报告 / 结案框架"
+      ],
+      "migration_level": "Level 2: Runtime Rule Candidate",
+      "review_status": "source-aligned",
+      "training_allowed": false,
+      "registry_import_allowed": false
+    }
+  ]
+}

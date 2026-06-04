@@ -86,6 +86,17 @@ Legacy assets should be split into these buckets:
 | Dataset examples | curated SkillOpt `items.json` records | Dataset package |
 | Reference-only | scripts, OCR instructions, legal search handoff notes | Internal reference |
 
+## Legacy Skill 清洗规则
+
+1. 旧 Skill 原文优先。
+2. `references` 模板优先。
+3. 不得凭记忆或通用法律流程重写 A 系列。
+4. A10 必须保留为 `争议焦点法律深化分析`。
+5. 诉状、答辩状、代理词、结案报告等输出不得归入第十步。
+6. 所有清洗必须记录在 v3.6 changelog。
+
+For `case-analysis-pro-v3`, reshaped runtime rules must preserve the E1, 00, A1-A13, E chain from the old Skill source. Training-package builders must treat this source-aligned structure as the package boundary.
+
 ## Optimization Sequence
 
 v3.6-C should create a data reshaping script and package manifest.

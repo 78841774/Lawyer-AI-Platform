@@ -26,6 +26,8 @@ v3.5 adds Run History / Fact Dedup Foundation for repeated fact extraction, lega
 
 v3.6-B adds read-only Legacy Skill Analysis for existing casework Skills, SkillOpt datasets, and SkillOpt output artifacts. It confirms that legacy training data must be reshaped into reviewed data packages before any training or Skill Registry import.
 
+v3.6-C adds legacy Skill error-expression cleanup for `case-analysis-pro-v3`. A10 is fixed as `争议焦点法律深化分析`, and future reshaping must prefer old `SKILL.md` plus `references` templates over generic summaries.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -184,6 +186,15 @@ The known Skill families are:
 This stage is analysis only. It does not create Skills, publish Experience Packages, import Skill Registry records, run LLM calls, or change the Skill Training main chain.
 
 The required next step is to reshape reviewed legacy data into Dataset Packages, Runtime Rules, Prompt Templates, Report Templates, and Evaluation Rubrics before any training stage.
+
+### Legacy Skill 清洗规则
+
+1. 旧 Skill 原文优先。
+2. `references` 模板优先。
+3. 不得凭记忆或通用法律流程重写 A 系列。
+4. A10 必须保留为 `争议焦点法律深化分析`。
+5. 诉状、答辩状、代理词、结案报告等输出不得归入第十步。
+6. 所有清洗必须记录在 v3.6 changelog。
 
 ## APIs
 

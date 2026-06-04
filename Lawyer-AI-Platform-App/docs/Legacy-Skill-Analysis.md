@@ -134,6 +134,23 @@ Before v3.6-D training or registry import, the legacy data should be reshaped in
 5. Split reusable content into runtime rules, prompt templates, report templates, evaluation rubrics, and dataset examples.
 6. Validate that no private or unreviewed sample enters training.
 
+## Legacy Skill 清洗规则
+
+1. 旧 Skill 原文优先。
+2. `references` 模板优先。
+3. 不得凭记忆或通用法律流程重写 A 系列。
+4. A10 必须保留为 `争议焦点法律深化分析`。
+5. 诉状、答辩状、代理词、结案报告等输出不得归入第十步。
+6. 所有清洗必须记录在 v3.6 changelog。
+
+For `case-analysis-pro-v3`, future reshaping must read the original `SKILL.md` and these references before editing asset descriptions:
+
+* `references/a10-structure-template.md`
+* `references/lawyer-output-standards.md`
+* `references/depth-standards.md`
+* `references/admission-gates.md`
+* `references/scoring.md`
+
 ## Generated Reports
 
 The local script writes runtime reports to:
