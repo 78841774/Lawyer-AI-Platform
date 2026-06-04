@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "controlled_legal_search_pipeline": {
+    "enabled": true,
+    "mode": "local_only_controlled_legal_search",
+    "production_enabled": false,
+    "legal_search_live_enabled": false,
+    "legal_search_live_default": false,
+    "mock_legal_search_enabled": true,
+    "requires_explicit_legal_search_confirmation": true,
+    "requires_manual_review": true,
+    "query_redaction_enabled": true,
+    "source_trace_enabled": true,
+    "citation_resolver_enabled": true,
+    "store_raw_query_in_git": false,
+    "store_raw_legal_search_results_in_git": false,
+    "store_redacted_search_preview_in_git": false,
+    "runtime_storage_enabled": true,
+    "runtime_storage_path": "storage/runtime/controlled_legal_search_previews",
+    "final_legal_opinion_enabled": false
+  },
+  "audit_logs": []
+}

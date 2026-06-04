@@ -4,6 +4,13 @@ import type {
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
   CitationResolutionResult,
+  ControlledLegalCitationResolutionRequest,
+  ControlledLegalCitationResolutionResult,
+  ControlledLegalSearchAuditLog,
+  ControlledLegalSearchPreviewRecord,
+  ControlledLegalSearchPreviewRequest,
+  ControlledLegalSearchPreviewResult,
+  ControlledLegalSearchStatus,
   ControlledLocalReadPreviewRequest,
   ControlledLocalReadPreviewResult,
   ControlledMaterialAuditLog,
@@ -78,6 +85,13 @@ export type {
   Case as CaseRecord,
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
+  ControlledLegalCitationResolutionRequest,
+  ControlledLegalCitationResolutionResult,
+  ControlledLegalSearchAuditLog,
+  ControlledLegalSearchPreviewRecord,
+  ControlledLegalSearchPreviewRequest,
+  ControlledLegalSearchPreviewResult,
+  ControlledLegalSearchStatus,
   ControlledLocalReadPreviewRequest,
   ControlledLocalReadPreviewResult,
   ControlledMaterialAuditLog,
@@ -639,6 +653,20 @@ export const controlledOCRApi = {
   }
 };
 
+export const controlledLegalSearchApi = {
+  status: () => request<ControlledLegalSearchStatus>("/controlled-legal-search/status"),
+  preview: (payload: ControlledLegalSearchPreviewRequest) =>
+    postJson<ControlledLegalSearchPreviewResult>("/controlled-legal-search/preview", payload),
+  readPreview: (searchPreviewId: string) =>
+    request<ControlledLegalSearchPreviewRecord>(`/controlled-legal-search/preview/${encodeURIComponent(searchPreviewId)}`),
+  resolveCitation: (payload: ControlledLegalCitationResolutionRequest) =>
+    postJson<ControlledLegalCitationResolutionResult>("/controlled-legal-search/resolve-citation", payload),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: ControlledLegalSearchAuditLog[] }>("/controlled-legal-search/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -676,6 +704,11 @@ export const getControlledOCRStatus = controlledOCRApi.status;
 export const runControlledOCRPreview = controlledOCRApi.preview;
 export const getControlledOCRPreview = controlledOCRApi.readPreview;
 export const getControlledOCRAuditLogs = controlledOCRApi.auditLogs;
+export const getControlledLegalSearchStatus = controlledLegalSearchApi.status;
+export const runControlledLegalSearchPreview = controlledLegalSearchApi.preview;
+export const getControlledLegalSearchPreview = controlledLegalSearchApi.readPreview;
+export const resolveControlledLegalCitation = controlledLegalSearchApi.resolveCitation;
+export const getControlledLegalSearchAuditLogs = controlledLegalSearchApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

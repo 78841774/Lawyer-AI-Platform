@@ -908,6 +908,111 @@ export type ControlledOCRAuditLog = {
   created_at: string;
 };
 
+export type ControlledLegalSearchStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  legal_search_live_default: boolean;
+  mock_legal_search_enabled: boolean;
+  requires_explicit_legal_search_confirmation: boolean;
+  requires_manual_review: boolean;
+  query_redaction_enabled: boolean;
+  source_trace_enabled: boolean;
+  citation_resolver_enabled: boolean;
+  store_raw_query_in_git: boolean;
+  store_raw_legal_search_results_in_git: boolean;
+  store_redacted_search_preview_in_git: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  final_legal_opinion_enabled: boolean;
+  warnings: string[];
+};
+
+export type ControlledLegalSearchPreviewRequest = {
+  case_id: string;
+  workspace_id: string;
+  query_text: string;
+  query_text_redacted: string;
+  case_cause_code: string;
+  jurisdiction: string;
+  explicit_legal_search_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  legal_search_mode: string;
+  provider_mode: string;
+  preview_only: boolean;
+};
+
+export type ControlledLegalSearchPreviewResult = {
+  search_preview_id: string;
+  case_id: string;
+  workspace_id: string;
+  query_text_redacted: string;
+  case_cause_code: string;
+  jurisdiction: string;
+  legal_search_called: boolean;
+  real_legal_search_called: boolean;
+  mock_legal_search_used: boolean;
+  raw_query_stored: boolean;
+  raw_results_stored: boolean;
+  redacted_search_preview_created: boolean;
+  redacted_search_preview: string;
+  redacted_search_preview_storage_path: string;
+  citations: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  guard_results: Record<string, unknown>[];
+  audit_log_id: string;
+  allowed_to_continue: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledLegalSearchPreviewRecord = {
+  search_preview_id: string;
+  case_id: string;
+  workspace_id: string;
+  query_text_redacted: string;
+  case_cause_code: string;
+  jurisdiction: string;
+  redacted_search_preview: string;
+  citations: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledLegalCitationResolutionRequest = {
+  citation_id: string;
+  search_preview_id: string;
+  manual_review_confirmed: boolean;
+  legal_search_mode: string;
+  provider_mode: string;
+};
+
+export type ControlledLegalCitationResolutionResult = {
+  citation_id: string;
+  search_preview_id: string;
+  resolved: boolean;
+  real_legal_database_called: boolean;
+  mock_resolution_used: boolean;
+  source_ref: Record<string, unknown>;
+  warnings: string[];
+  audit_log_id: string;
+  created_at: string;
+};
+
+export type ControlledLegalSearchAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  search_preview_id?: string | null;
+  citation_id?: string | null;
+  result: string;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

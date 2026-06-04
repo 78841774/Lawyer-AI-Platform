@@ -5,6 +5,7 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
+  getControlledLegalSearchStatus,
   getControlledMaterialStatus,
   getControlledOCRStatus,
   getLegalSearchStatus,
@@ -19,7 +20,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, error } =
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, error } =
     await loadRuntime();
 
   return (
@@ -188,6 +189,26 @@ export default async function RuntimePage() {
             ]}
             actionHref="/controlled-ocr"
           />
+          <StatusCard
+            title="Controlled Legal Search"
+            provider={controlledLegalSearch?.mode ?? "local_only_controlled_legal_search"}
+            connected={controlledLegalSearch?.enabled ?? false}
+            rows={[
+              ["mode", controlledLegalSearch?.mode ?? "local_only_controlled_legal_search"],
+              ["production_enabled", formatBoolean(controlledLegalSearch?.production_enabled)],
+              ["legal_search_live_enabled", formatBoolean(controlledLegalSearch?.legal_search_live_enabled)],
+              ["legal_search_live_default", formatBoolean(controlledLegalSearch?.legal_search_live_default)],
+              ["mock_legal_search_enabled", formatBoolean(controlledLegalSearch?.mock_legal_search_enabled)],
+              ["requires_explicit_legal_search_confirmation", formatBoolean(controlledLegalSearch?.requires_explicit_legal_search_confirmation)],
+              ["requires_manual_review", formatBoolean(controlledLegalSearch?.requires_manual_review)],
+              ["query_redaction_enabled", formatBoolean(controlledLegalSearch?.query_redaction_enabled)],
+              ["citation_resolver_enabled", formatBoolean(controlledLegalSearch?.citation_resolver_enabled)],
+              ["runtime_storage_enabled", formatBoolean(controlledLegalSearch?.runtime_storage_enabled)],
+              ["runtime_storage_path", controlledLegalSearch?.runtime_storage_path ?? "storage/runtime/controlled_legal_search_previews"],
+              ["final_legal_opinion_enabled", formatBoolean(controlledLegalSearch?.final_legal_opinion_enabled)]
+            ]}
+            actionHref="/controlled-legal-search"
+          />
         </div>
 
         <Card>
@@ -209,7 +230,7 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
@@ -218,9 +239,10 @@ async function loadRuntime() {
       getInternalAlphaStatus(),
       getPersonalAlphaStatus(),
       getControlledMaterialStatus(),
-      getControlledOCRStatus()
+      getControlledOCRStatus(),
+      getControlledLegalSearchStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, error: null };
   } catch {
     return {
       runtime: null,
@@ -232,6 +254,7 @@ async function loadRuntime() {
       personalAlpha: null,
       controlledMaterial: null,
       controlledOCR: null,
+      controlledLegalSearch: null,
       error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。"
     };
   }
