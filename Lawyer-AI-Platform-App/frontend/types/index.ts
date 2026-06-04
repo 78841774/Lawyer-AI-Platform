@@ -1999,6 +1999,144 @@ export type PersonalAlphaFinalGateSummaryResponse = {
   warnings: string[];
 };
 
+export type PersonalAlphaFinalPacketStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  requires_final_gate_approval: boolean;
+  requires_manual_review: boolean;
+  final_report_generation_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  warnings: string[];
+};
+
+export type PersonalAlphaFinalPacketSafetyChecklist = {
+  local_only: boolean;
+  mock_first: boolean;
+  controlled_first: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  preview_only: boolean;
+  advisory_only: boolean;
+  manual_review_required: boolean;
+  requires_final_gate_approval: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  raw_quote_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  auto_skill_publish_enabled: boolean;
+  auto_workspace_runtime_enabled: boolean;
+  runtime_storage_ignored: boolean;
+};
+
+export type PersonalAlphaFinalPacketSection = {
+  section_id: string;
+  title: string;
+  status: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  items: Record<string, unknown>[];
+};
+
+export type PersonalAlphaFinalPacketPreview = {
+  workspace_run_id: string;
+  status: string;
+  packet_preview: {
+    title?: string;
+    case_id?: string;
+    workspace_id?: string;
+    workflow_mode?: string;
+    packet_sections?: PersonalAlphaFinalPacketSection[];
+    mock_or_redacted_only?: boolean;
+    raw_content_included?: boolean;
+    final_legal_opinion_generated?: boolean;
+    final_report_generated?: boolean;
+  };
+  can_create_packet: boolean;
+  requires_final_gate_approval: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaFinalPacketCreateRequest = {
+  reviewer_id: string;
+  manual_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+};
+
+export type PersonalAlphaFinalPacketCreateResult = {
+  packet_id: string;
+  workspace_run_id: string;
+  status: string;
+  can_proceed_to_controlled_final_review: boolean;
+  packet: Record<string, unknown>;
+  reviewer_id: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  manual_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaFinalPacketRecord = {
+  packet_id: string;
+  workspace_run_id: string;
+  status: string;
+  can_proceed_to_controlled_final_review: boolean;
+  packet: Record<string, unknown>;
+  reviewer_id: string;
+  safety_checklist: PersonalAlphaFinalPacketSafetyChecklist;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  manual_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaFinalPacketList = {
+  packets: PersonalAlphaFinalPacketRecord[];
+  packet_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

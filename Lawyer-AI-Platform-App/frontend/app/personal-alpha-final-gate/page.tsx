@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/Button";
@@ -124,6 +125,15 @@ export default function PersonalAlphaFinalGatePage() {
           title="Personal Alpha Controlled Final Review Gate"
           description="个人 Alpha 终审门禁：根据 Final Readiness metadata 和人工 gate decision，判断是否可进入 controlled final review step。该页面不生成正式法律意见，不调用真实服务。"
         />
+        {workspaceRunId.trim() && gateSummary?.can_proceed_to_controlled_final_review ? (
+          <Link href={`/personal-alpha-final-packet?workspace_run_id=${encodeURIComponent(workspaceRunId.trim())}`} className="inline-flex rounded-md border border-line bg-white px-3 py-2 text-sm text-ink">
+            View Final Review Packet
+          </Link>
+        ) : workspaceRunId.trim() ? (
+          <div className="rounded-md border border-line bg-white p-4 text-sm text-muted shadow-sm">
+            Final Review Packet requires approve_gate first. Lawyer Final Review requires a Final Review Packet before any lawyer action can be submitted.
+          </div>
+        ) : null}
         {error ? <StatusMessage message={error} /> : null}
 
         <Card>

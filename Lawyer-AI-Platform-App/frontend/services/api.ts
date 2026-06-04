@@ -72,6 +72,12 @@ import type {
   PersonalAlphaFinalGateRunDetail,
   PersonalAlphaFinalGateStatus,
   PersonalAlphaFinalGateSummaryResponse,
+  PersonalAlphaFinalPacketCreateRequest,
+  PersonalAlphaFinalPacketCreateResult,
+  PersonalAlphaFinalPacketList,
+  PersonalAlphaFinalPacketPreview,
+  PersonalAlphaFinalPacketRecord,
+  PersonalAlphaFinalPacketStatus,
   PersonalAlphaFinalReadinessRunDetail,
   PersonalAlphaFinalReadinessStatus,
   PersonalAlphaFinalReadinessSummaryResponse,
@@ -202,6 +208,12 @@ export type {
   PersonalAlphaFinalGateRunDetail,
   PersonalAlphaFinalGateStatus,
   PersonalAlphaFinalGateSummaryResponse,
+  PersonalAlphaFinalPacketCreateRequest,
+  PersonalAlphaFinalPacketCreateResult,
+  PersonalAlphaFinalPacketList,
+  PersonalAlphaFinalPacketPreview,
+  PersonalAlphaFinalPacketRecord,
+  PersonalAlphaFinalPacketStatus,
   PersonalAlphaFinalReadinessRunDetail,
   PersonalAlphaFinalReadinessStatus,
   PersonalAlphaFinalReadinessSummaryResponse,
@@ -880,6 +892,19 @@ export const personalAlphaFinalGateApi = {
     postJson<PersonalAlphaFinalGateDecisionResult>(`/personal-alpha-final-gate/run/${encodeURIComponent(workspaceRunId)}/decisions`, payload)
 };
 
+export const personalAlphaFinalPacketApi = {
+  getStatus: () => request<PersonalAlphaFinalPacketStatus>("/personal-alpha-final-packet/status"),
+  getPreview: (workspaceRunId: string) =>
+    request<PersonalAlphaFinalPacketPreview>(`/personal-alpha-final-packet/run/${encodeURIComponent(workspaceRunId)}/preview`),
+  createPacket: (workspaceRunId: string, payload: PersonalAlphaFinalPacketCreateRequest) =>
+    postJson<PersonalAlphaFinalPacketCreateResult>(`/personal-alpha-final-packet/run/${encodeURIComponent(workspaceRunId)}/create`, payload),
+  listPackets: () => request<PersonalAlphaFinalPacketList>("/personal-alpha-final-packet/packets"),
+  getPacket: (packetId: string) =>
+    request<PersonalAlphaFinalPacketRecord>(`/personal-alpha-final-packet/packets/${encodeURIComponent(packetId)}`),
+  listRunPackets: (workspaceRunId: string) =>
+    request<PersonalAlphaFinalPacketList>(`/personal-alpha-final-packet/run/${encodeURIComponent(workspaceRunId)}/packets`)
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -932,6 +957,12 @@ export const getPersonalAlphaFinalGateRunDetail = personalAlphaFinalGateApi.getR
 export const getPersonalAlphaFinalGateSummary = personalAlphaFinalGateApi.getSummary;
 export const getPersonalAlphaFinalGateDecisions = personalAlphaFinalGateApi.listDecisions;
 export const submitPersonalAlphaFinalGateDecision = personalAlphaFinalGateApi.submitDecision;
+export const getPersonalAlphaFinalPacketStatus = personalAlphaFinalPacketApi.getStatus;
+export const getPersonalAlphaFinalPacketPreview = personalAlphaFinalPacketApi.getPreview;
+export const createPersonalAlphaFinalPacket = personalAlphaFinalPacketApi.createPacket;
+export const listPersonalAlphaFinalPackets = personalAlphaFinalPacketApi.listPackets;
+export const getPersonalAlphaFinalPacket = personalAlphaFinalPacketApi.getPacket;
+export const listPersonalAlphaFinalPacketsByRun = personalAlphaFinalPacketApi.listRunPackets;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;
