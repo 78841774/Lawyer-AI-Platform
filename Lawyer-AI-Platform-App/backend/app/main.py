@@ -24,6 +24,7 @@ from app.api.workspaces import router as workspaces_router
 from app.core.config import settings
 from app.core.database import create_db_and_tables
 from controlled_legal_search_pipeline.router import router as controlled_legal_search_router
+from controlled_final_review_lock.router import router as controlled_final_review_lock_router
 from controlled_lawyer_review.router import router as controlled_lawyer_review_router
 from controlled_material_processing.router import router as controlled_material_router
 from controlled_ocr_pipeline.router import router as controlled_ocr_router
@@ -90,5 +91,6 @@ app.include_router(controlled_legal_search_router)
 app.include_router(controlled_report_draft_router)
 app.include_router(controlled_lawyer_review_router)
 app.include_router(controlled_revision_router)
+app.include_router(controlled_final_review_lock_router)
 app.include_router(versioned_skill_training_packages_router)
 app.include_router(versioned_skill_training_runs_router)

@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "controlled_final_review_lock": {
+    "enabled": true,
+    "mode": "local_only_controlled_final_review_lock",
+    "production_enabled": false,
+    "mock_final_lock_enabled": true,
+    "requires_revision_id": true,
+    "requires_review_id": true,
+    "requires_draft_id": true,
+    "requires_manual_final_confirmation": true,
+    "requires_explicit_final_lock_confirmation": true,
+    "llm_live_enabled": false,
+    "deepseek_live_enabled": false,
+    "ocr_live_enabled": false,
+    "legal_search_live_enabled": false,
+    "runtime_storage_enabled": true,
+    "runtime_storage_path": "storage/runtime/controlled_final_review_locks",
+    "source_trace_enabled": true,
+    "immutable_snapshot_enabled": true,
+    "final_legal_opinion_enabled": false,
+    "store_raw_material_text_in_git": false,
+    "store_raw_ocr_text_in_git": false,
+    "store_raw_legal_search_results_in_git": false,
+    "store_final_lock_snapshot_in_git": false
+  },
+  "audit_logs": []
+}

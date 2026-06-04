@@ -31,7 +31,8 @@ const navGroups = [
       { href: "/controlled-legal-search", label: "Controlled Legal Search" },
       { href: "/controlled-report-draft", label: "Controlled Report Draft" },
       { href: "/controlled-review", label: "Controlled Review" },
-      { href: "/controlled-revision", label: "Controlled Revision" }
+      { href: "/controlled-revision", label: "Controlled Revision" },
+      { href: "/controlled-final-review", label: "Controlled Final Review" }
     ]
   },
   {

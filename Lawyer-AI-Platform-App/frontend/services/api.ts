@@ -34,6 +34,11 @@ import type {
   ControlledOCRPreviewResult,
   ControlledOCRStatus,
   ControlledReadPreviewRecord,
+  ControlledFinalReviewLockAuditLog,
+  ControlledFinalReviewLockRecord,
+  ControlledFinalReviewLockRequest,
+  ControlledFinalReviewLockResult,
+  ControlledFinalReviewLockStatus,
   ControlledRevisionAuditLog,
   ControlledRevisionRecord,
   ControlledRevisionRequest,
@@ -131,6 +136,11 @@ export type {
   ControlledOCRPreviewResult,
   ControlledOCRStatus,
   ControlledReadPreviewRecord,
+  ControlledFinalReviewLockAuditLog,
+  ControlledFinalReviewLockRecord,
+  ControlledFinalReviewLockRequest,
+  ControlledFinalReviewLockResult,
+  ControlledFinalReviewLockStatus,
   ControlledRevisionAuditLog,
   ControlledRevisionRecord,
   ControlledRevisionRequest,
@@ -741,6 +751,18 @@ export const controlledRevisionApi = {
   }
 };
 
+export const controlledFinalReviewApi = {
+  status: () => request<ControlledFinalReviewLockStatus>("/controlled-final-review/status"),
+  lock: (payload: ControlledFinalReviewLockRequest) =>
+    postJson<ControlledFinalReviewLockResult>("/controlled-final-review/lock", payload),
+  readLock: (finalLockId: string) =>
+    request<ControlledFinalReviewLockRecord>(`/controlled-final-review/${encodeURIComponent(finalLockId)}`),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: ControlledFinalReviewLockAuditLog[] }>("/controlled-final-review/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -798,6 +820,10 @@ export const getControlledRevisionStatus = controlledRevisionApi.status;
 export const requestControlledRevision = controlledRevisionApi.requestRevision;
 export const getControlledRevision = controlledRevisionApi.readRevision;
 export const getControlledRevisionAuditLogs = controlledRevisionApi.auditLogs;
+export const getControlledFinalReviewStatus = controlledFinalReviewApi.status;
+export const lockControlledFinalReview = controlledFinalReviewApi.lock;
+export const getControlledFinalReviewLock = controlledFinalReviewApi.readLock;
+export const getControlledFinalReviewAuditLogs = controlledFinalReviewApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

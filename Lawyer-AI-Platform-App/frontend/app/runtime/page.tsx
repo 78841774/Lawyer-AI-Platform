@@ -6,6 +6,7 @@ import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
   getControlledLegalSearchStatus,
+  getControlledFinalReviewStatus,
   getControlledLawyerReviewStatus,
   getControlledMaterialStatus,
   getControlledOCRStatus,
@@ -23,7 +24,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, error } =
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview, error } =
     await loadRuntime();
 
   return (
@@ -276,6 +277,29 @@ export default async function RuntimePage() {
             ]}
             actionHref="/controlled-revision"
           />
+          <StatusCard
+            title="Controlled Final Review"
+            provider={controlledFinalReview?.mode ?? "local_only_controlled_final_review_lock"}
+            connected={controlledFinalReview?.enabled ?? false}
+            rows={[
+              ["mode", controlledFinalReview?.mode ?? "local_only_controlled_final_review_lock"],
+              ["production_enabled", formatBoolean(controlledFinalReview?.production_enabled)],
+              ["mock_final_lock_enabled", formatBoolean(controlledFinalReview?.mock_final_lock_enabled)],
+              ["requires_draft_id", formatBoolean(controlledFinalReview?.requires_draft_id)],
+              ["requires_review_id", formatBoolean(controlledFinalReview?.requires_review_id)],
+              ["requires_revision_id", formatBoolean(controlledFinalReview?.requires_revision_id)],
+              ["requires_explicit_final_lock_confirmation", formatBoolean(controlledFinalReview?.requires_explicit_final_lock_confirmation)],
+              ["requires_manual_final_confirmation", formatBoolean(controlledFinalReview?.requires_manual_final_confirmation)],
+              ["llm_live_enabled", formatBoolean(controlledFinalReview?.llm_live_enabled)],
+              ["deepseek_live_enabled", formatBoolean(controlledFinalReview?.deepseek_live_enabled)],
+              ["ocr_live_enabled", formatBoolean(controlledFinalReview?.ocr_live_enabled)],
+              ["legal_search_live_enabled", formatBoolean(controlledFinalReview?.legal_search_live_enabled)],
+              ["runtime_storage_path", controlledFinalReview?.runtime_storage_path ?? "storage/runtime/controlled_final_review_locks"],
+              ["immutable_snapshot_enabled", formatBoolean(controlledFinalReview?.immutable_snapshot_enabled)],
+              ["final_legal_opinion_enabled", formatBoolean(controlledFinalReview?.final_legal_opinion_enabled)]
+            ]}
+            actionHref="/controlled-final-review"
+          />
         </div>
 
         <Card>
@@ -297,7 +321,7 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
@@ -310,9 +334,10 @@ async function loadRuntime() {
       getControlledLegalSearchStatus(),
       getControlledReportDraftStatus(),
       getControlledLawyerReviewStatus(),
-      getControlledRevisionStatus()
+      getControlledRevisionStatus(),
+      getControlledFinalReviewStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, controlledFinalReview, error: null };
   } catch {
     return {
       runtime: null,
@@ -328,6 +353,7 @@ async function loadRuntime() {
       controlledReportDraft: null,
       controlledReview: null,
       controlledRevision: null,
+      controlledFinalReview: null,
       error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。"
     };
   }

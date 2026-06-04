@@ -1299,6 +1299,108 @@ export type ControlledRevisionAuditLog = {
   created_at: string;
 };
 
+export type ControlledFinalReviewLockStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_final_lock_enabled: boolean;
+  requires_revision_id: boolean;
+  requires_review_id: boolean;
+  requires_draft_id: boolean;
+  requires_manual_final_confirmation: boolean;
+  requires_explicit_final_lock_confirmation: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  source_trace_enabled: boolean;
+  immutable_snapshot_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  store_raw_material_text_in_git: boolean;
+  store_raw_ocr_text_in_git: boolean;
+  store_raw_legal_search_results_in_git: boolean;
+  store_final_lock_snapshot_in_git: boolean;
+  warnings: string[];
+};
+
+export type ControlledFinalReviewLockRequest = {
+  case_id: string;
+  workspace_id: string;
+  draft_id: string;
+  review_id: string;
+  revision_id: string;
+  final_review_notes: string;
+  final_checklist_confirmed: boolean;
+  explicit_final_lock_confirmation: boolean;
+  manual_final_review_confirmed: boolean;
+  lock_mode: string;
+  llm_mode: string;
+  provider_mode: string;
+  preview_only: boolean;
+};
+
+export type ControlledFinalReviewLockResult = {
+  final_lock_id: string;
+  case_id: string;
+  workspace_id: string;
+  draft_id: string;
+  review_id: string;
+  revision_id: string;
+  status: string;
+  lock_mode: string;
+  mock_final_lock_created: boolean;
+  immutable_snapshot_created: boolean;
+  final_legal_opinion_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  final_lock_storage_path: string;
+  mock_final_review_snapshot: Record<string, unknown>;
+  final_review_checklist: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  guard_results: Record<string, unknown>[];
+  audit_log_id: string;
+  allowed_to_continue: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledFinalReviewLockRecord = {
+  final_lock_id: string;
+  case_id: string;
+  workspace_id: string;
+  draft_id: string;
+  review_id: string;
+  revision_id: string;
+  lock_mode: string;
+  mock_final_review_snapshot: Record<string, unknown>;
+  final_review_checklist: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  warnings: string[];
+  created_at: string;
+  immutable_snapshot: boolean;
+};
+
+export type ControlledFinalReviewLockAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  draft_id: string;
+  review_id: string;
+  revision_id: string;
+  final_lock_id: string;
+  result: string;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
