@@ -34,6 +34,11 @@ import type {
   ControlledOCRPreviewResult,
   ControlledOCRStatus,
   ControlledReadPreviewRecord,
+  ControlledRevisionAuditLog,
+  ControlledRevisionRecord,
+  ControlledRevisionRequest,
+  ControlledRevisionResult,
+  ControlledRevisionStatus,
   ControlledReportDraftRequest,
   ControlledReportDraftResult,
   DashboardStats,
@@ -126,6 +131,11 @@ export type {
   ControlledOCRPreviewResult,
   ControlledOCRStatus,
   ControlledReadPreviewRecord,
+  ControlledRevisionAuditLog,
+  ControlledRevisionRecord,
+  ControlledRevisionRequest,
+  ControlledRevisionResult,
+  ControlledRevisionStatus,
   ControlledReportDraftRequest,
   ControlledReportDraftResult,
   DashboardStats,
@@ -719,6 +729,18 @@ export const controlledLawyerReviewApi = {
   }
 };
 
+export const controlledRevisionApi = {
+  status: () => request<ControlledRevisionStatus>("/controlled-revision/status"),
+  requestRevision: (payload: ControlledRevisionRequest) =>
+    postJson<ControlledRevisionResult>("/controlled-revision/request", payload),
+  readRevision: (revisionId: string) =>
+    request<ControlledRevisionRecord>(`/controlled-revision/${encodeURIComponent(revisionId)}`),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: ControlledRevisionAuditLog[] }>("/controlled-revision/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -772,6 +794,10 @@ export const approveControlledLawyerReview = controlledLawyerReviewApi.approve;
 export const rejectControlledLawyerReview = controlledLawyerReviewApi.reject;
 export const requestRevisionControlledLawyerReview = controlledLawyerReviewApi.requestRevision;
 export const getControlledLawyerReviewAuditLogs = controlledLawyerReviewApi.auditLogs;
+export const getControlledRevisionStatus = controlledRevisionApi.status;
+export const requestControlledRevision = controlledRevisionApi.requestRevision;
+export const getControlledRevision = controlledRevisionApi.readRevision;
+export const getControlledRevisionAuditLogs = controlledRevisionApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

@@ -10,6 +10,7 @@ import {
   getControlledMaterialStatus,
   getControlledOCRStatus,
   getControlledReportDraftStatus,
+  getControlledRevisionStatus,
   getLegalSearchStatus,
   getInternalAlphaStatus,
   getLLMStatus,
@@ -22,7 +23,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, error } =
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, error } =
     await loadRuntime();
 
   return (
@@ -254,6 +255,27 @@ export default async function RuntimePage() {
             ]}
             actionHref="/controlled-review"
           />
+          <StatusCard
+            title="Controlled Revision"
+            provider={controlledRevision?.mode ?? "local_only_controlled_revision"}
+            connected={controlledRevision?.enabled ?? false}
+            rows={[
+              ["mode", controlledRevision?.mode ?? "local_only_controlled_revision"],
+              ["production_enabled", formatBoolean(controlledRevision?.production_enabled)],
+              ["mock_revision_enabled", formatBoolean(controlledRevision?.mock_revision_enabled)],
+              ["requires_review_id", formatBoolean(controlledRevision?.requires_review_id)],
+              ["requires_explicit_revision_confirmation", formatBoolean(controlledRevision?.requires_explicit_revision_confirmation)],
+              ["requires_manual_review", formatBoolean(controlledRevision?.requires_manual_review)],
+              ["llm_live_enabled", formatBoolean(controlledRevision?.llm_live_enabled)],
+              ["deepseek_live_enabled", formatBoolean(controlledRevision?.deepseek_live_enabled)],
+              ["ocr_live_enabled", formatBoolean(controlledRevision?.ocr_live_enabled)],
+              ["legal_search_live_enabled", formatBoolean(controlledRevision?.legal_search_live_enabled)],
+              ["runtime_storage_path", controlledRevision?.runtime_storage_path ?? "storage/runtime/controlled_revisions"],
+              ["source_trace_enabled", formatBoolean(controlledRevision?.source_trace_enabled)],
+              ["final_legal_opinion_enabled", formatBoolean(controlledRevision?.final_legal_opinion_enabled)]
+            ]}
+            actionHref="/controlled-revision"
+          />
         </div>
 
         <Card>
@@ -275,7 +297,7 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
@@ -287,9 +309,10 @@ async function loadRuntime() {
       getControlledOCRStatus(),
       getControlledLegalSearchStatus(),
       getControlledReportDraftStatus(),
-      getControlledLawyerReviewStatus()
+      getControlledLawyerReviewStatus(),
+      getControlledRevisionStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, controlledMaterial, controlledOCR, controlledLegalSearch, controlledReportDraft, controlledReview, controlledRevision, error: null };
   } catch {
     return {
       runtime: null,
@@ -304,6 +327,7 @@ async function loadRuntime() {
       controlledLegalSearch: null,
       controlledReportDraft: null,
       controlledReview: null,
+      controlledRevision: null,
       error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。"
     };
   }

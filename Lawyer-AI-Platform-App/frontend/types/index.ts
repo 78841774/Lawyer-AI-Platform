@@ -1206,6 +1206,99 @@ export type ControlledLawyerReviewAuditLog = {
   created_at: string;
 };
 
+export type ControlledRevisionStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  mock_revision_enabled: boolean;
+  requires_review_id: boolean;
+  requires_manual_review: boolean;
+  requires_explicit_revision_confirmation: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  runtime_storage_enabled: boolean;
+  runtime_storage_path: string;
+  source_trace_enabled: boolean;
+  final_legal_opinion_enabled: boolean;
+  store_raw_material_text_in_git: boolean;
+  store_raw_ocr_text_in_git: boolean;
+  store_raw_legal_search_results_in_git: boolean;
+  store_revision_output_in_git: boolean;
+  warnings: string[];
+};
+
+export type ControlledRevisionRequest = {
+  case_id: string;
+  workspace_id: string;
+  review_id: string;
+  draft_id: string;
+  revision_reason: string;
+  revision_instructions: string;
+  requested_action: string;
+  explicit_revision_confirmation: boolean;
+  manual_review_confirmed: boolean;
+  llm_mode: string;
+  provider_mode: string;
+  preview_only: boolean;
+};
+
+export type ControlledRevisionResult = {
+  revision_id: string;
+  case_id: string;
+  workspace_id: string;
+  review_id: string;
+  draft_id: string;
+  status: string;
+  requested_action: string;
+  mock_revision_created: boolean;
+  final_legal_opinion_generated: boolean;
+  llm_called: boolean;
+  deepseek_live_called: boolean;
+  real_ocr_called: boolean;
+  real_legal_database_called: boolean;
+  raw_material_text_included: boolean;
+  raw_ocr_text_included: boolean;
+  raw_legal_search_results_included: boolean;
+  revision_storage_path: string;
+  mock_revision_plan: Record<string, unknown>;
+  revision_checklist: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  guard_results: Record<string, unknown>[];
+  audit_log_id: string;
+  allowed_to_continue: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledRevisionRecord = {
+  revision_id: string;
+  case_id: string;
+  workspace_id: string;
+  review_id: string;
+  draft_id: string;
+  requested_action: string;
+  mock_revision_plan: Record<string, unknown>;
+  revision_checklist: Record<string, unknown>[];
+  source_refs: Record<string, unknown>[];
+  warnings: string[];
+  created_at: string;
+};
+
+export type ControlledRevisionAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  review_id: string;
+  draft_id: string;
+  revision_id: string;
+  result: string;
+  warnings: string[];
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
