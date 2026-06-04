@@ -32,6 +32,8 @@ export type OCRRequest = {
 };
 
 export type OCRSourceRef = {
+  source_ref_id: string;
+  source_type: string;
   material_id: string;
   filename: string;
   relative_path?: string | null;
@@ -40,6 +42,9 @@ export type OCRSourceRef = {
   char_end: number;
   bbox?: Record<string, unknown> | null;
   quote: string;
+  provider: string;
+  provider_mode: string;
+  mock_only: boolean;
 };
 
 export type OCRPageResult = {
@@ -83,12 +88,16 @@ export type LegalSearchRequest = {
 };
 
 export type LegalSearchSourceRef = {
+  source_ref_id: string;
+  source_type: string;
   provider: string;
+  provider_mode: string;
   source_id: string;
   citation: string;
   url?: string | null;
   quote: string;
   retrieved_at: string;
+  mock_only: boolean;
 };
 
 export type LegalSearchHit = {
@@ -296,6 +305,7 @@ export type ReportSourceRefs = {
   source_refs?: unknown[];
   citations?: unknown[];
   trace?: Record<string, unknown>;
+  citation_summary?: Record<string, unknown>;
 } & Record<string, unknown>;
 
 export type Report = {
@@ -308,6 +318,9 @@ export type Report = {
   version: number;
   storage_path: string;
   source_refs: ReportSourceRefs;
+  citations?: unknown[];
+  trace?: Record<string, unknown>;
+  citation_summary?: Record<string, unknown>;
   llm_provider?: string | null;
   llm_status?: string | null;
   skill_used?: string | null;
@@ -317,6 +330,52 @@ export type Report = {
   run_id?: string;
   run_type?: string;
   analysis_id?: string | null;
+};
+
+export type SourceRefsStatus = {
+  source_refs_enabled: boolean;
+  citation_resolver_enabled: boolean;
+  source_trace_enabled: boolean;
+  mock_only: boolean;
+  real_material_reading_enabled: boolean;
+  real_ocr_connected: boolean;
+  real_legal_search_connected: boolean;
+  notes: string;
+};
+
+export type SourceTraceNode = {
+  node_id: string;
+  node_type: string;
+  label: string;
+  source_ref_id?: string | null;
+  metadata: Record<string, unknown>;
+};
+
+export type SourceTraceEdge = {
+  edge_id: string;
+  from_node_id: string;
+  to_node_id: string;
+  relation: string;
+  metadata: Record<string, unknown>;
+};
+
+export type SourceTrace = {
+  trace_id: string;
+  report_id: string;
+  case_id?: string | null;
+  nodes: SourceTraceNode[];
+  edges: SourceTraceEdge[];
+  warnings: string[];
+  created_at: string;
+  mock_only: boolean;
+};
+
+export type CitationResolutionResult = {
+  citation_id: string;
+  resolved: boolean;
+  source_ref?: Record<string, unknown> | null;
+  warnings: string[];
+  mock_only: boolean;
 };
 
 export type Skill = {

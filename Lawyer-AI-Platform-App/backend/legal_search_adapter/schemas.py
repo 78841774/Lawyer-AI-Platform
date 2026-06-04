@@ -17,12 +17,16 @@ class LegalSearchRequest(BaseModel):
 
 
 class LegalSearchSourceRef(BaseModel):
+    source_ref_id: str
+    source_type: str = "legal_search"
     provider: str
+    provider_mode: str = "mock"
     source_id: str
     citation: str
     url: str | None = None
     quote: str
     retrieved_at: str
+    mock_only: bool = True
 
 
 class LegalSearchHit(BaseModel):

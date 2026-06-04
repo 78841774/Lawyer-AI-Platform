@@ -38,6 +38,7 @@ def get_report_service(db: Session) -> ReportService:
 
 
 def serialize_report(report: Report) -> dict[str, Any]:
+    source_refs = parse_report_source_refs(report.source_refs)
     return {
         "report_id": report.report_id,
         "case_id": report.case_id,
@@ -47,9 +48,22 @@ def serialize_report(report: Report) -> dict[str, Any]:
         "status": report.status,
         "version": report.version,
         "storage_path": report.storage_path,
-        "source_refs": json.loads(report.source_refs),
+        "source_refs": source_refs,
+        "citations": source_refs.get("citations", []),
+        "trace": source_refs.get("trace", {}),
+        "citation_summary": source_refs.get("citation_summary", {}),
         "created_at": report.created_at
     }
+
+
+def parse_report_source_refs(value: str | None) -> dict[str, Any]:
+    if not value:
+        return {}
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
 
 
 def is_runtime_error(error: ValueError) -> bool:

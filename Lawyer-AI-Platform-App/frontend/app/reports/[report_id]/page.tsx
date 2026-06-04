@@ -56,6 +56,16 @@ export default async function ReportDetailPage({
               <div className="mt-3 text-sm text-slate-600">storage_path: {report.storage_path || "暂无"}</div>
             </section>
 
+            <section className="rounded-md border border-line bg-white p-5">
+              <div className="text-sm font-semibold text-ink">引用溯源 v3.8</div>
+              <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <TracePanel title="source_refs" value={getReportTraceValue(report, "source_refs")} />
+                <TracePanel title="citations" value={report.citations ?? report.source_refs.citations} />
+                <TracePanel title="trace" value={report.trace ?? report.source_refs.trace} />
+                <TracePanel title="citation_summary" value={report.citation_summary ?? report.source_refs.citation_summary} />
+              </div>
+            </section>
+
             {report.source_refs.skill_id || report.source_refs.package_id ? (
               <section className="rounded-md border border-line bg-white p-5">
                 <div className="text-sm font-semibold text-ink">使用技能</div>
@@ -128,9 +138,38 @@ function RuntimeRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+function TracePanel({ title, value }: { title: string; value: unknown }) {
+  return (
+    <div className="rounded-md border border-line bg-paper p-3">
+      <div className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</div>
+      <div className="mt-2 text-sm text-slate-600">
+        <SourceRefsView value={hasTraceData(value) ? value : null} />
+      </div>
+    </div>
+  );
+}
+
+function getReportTraceValue(report: { source_refs: Record<string, unknown> }, key: string) {
+  const value = report.source_refs[key];
+  return value;
+}
+
+function hasTraceData(value: unknown) {
+  if (!value) {
+    return false;
+  }
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+  if (typeof value === "object") {
+    return Object.keys(value as Record<string, unknown>).length > 0;
+  }
+  return true;
+}
+
 function SourceRefsView({ value }: { value: unknown }) {
   if (!value) {
-    return <span>暂无引用来源</span>;
+    return <span>暂无引用溯源数据</span>;
   }
   if (typeof value === "string") {
     return <span>{value || "暂无引用来源"}</span>;
@@ -145,7 +184,7 @@ function SourceRefsView({ value }: { value: unknown }) {
         ))}
       </ul>
     ) : (
-      <span>暂无引用来源</span>
+      <span>暂无引用溯源数据</span>
     );
   }
   if (typeof value === "object") {
@@ -166,7 +205,7 @@ function SourceRefsView({ value }: { value: unknown }) {
         ))}
       </dl>
     ) : (
-      <span>暂无引用来源</span>
+      <span>暂无引用溯源数据</span>
     );
   }
   return <span>{String(value)}</span>;

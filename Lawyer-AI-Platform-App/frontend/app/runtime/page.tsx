@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/Badge";
 import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getLegalSearchStatus, getLLMStatus, getOCRStatus } from "@/services/api";
+import { getLegalSearchStatus, getLLMStatus, getOCRStatus, getSourceRefsStatus } from "@/services/api";
 
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, error } = await loadRuntime();
+  const { runtime, ocr, legalSearch, sourceRefs, error } = await loadRuntime();
 
   return (
     <AppShell>
@@ -22,7 +22,7 @@ export default async function RuntimePage() {
 
         {error ? <StatusMessage message={error} /> : null}
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-4">
           <StatusCard
             title="模型状态"
             provider={runtime?.provider ?? "-"}
@@ -60,16 +60,33 @@ export default async function RuntimePage() {
             ]}
             actionHref="/legal-search"
           />
+          <StatusCard
+            title="Source Trace"
+            provider="source_refs"
+            connected={sourceRefs?.source_trace_enabled ?? false}
+            rows={[
+              ["source_refs_enabled", formatBoolean(sourceRefs?.source_refs_enabled)],
+              ["citation_resolver_enabled", formatBoolean(sourceRefs?.citation_resolver_enabled)],
+              ["source_trace_enabled", formatBoolean(sourceRefs?.source_trace_enabled)],
+              ["mock_only", formatBoolean(sourceRefs?.mock_only)],
+              ["real_material_reading_enabled", formatBoolean(sourceRefs?.real_material_reading_enabled)],
+              ["real_ocr_connected", formatBoolean(sourceRefs?.real_ocr_connected)],
+              ["real_legal_search_connected", formatBoolean(sourceRefs?.real_legal_search_connected)],
+              ["notes", sourceRefs?.notes ?? "Source refs mock trace not loaded."]
+            ]}
+            actionHref="/source-refs"
+          />
         </div>
 
         <Card>
           <CardBody>
             <h2 className="text-base font-semibold text-ink">Source Refs Foundation</h2>
             <div className="mt-4 space-y-3">
-              <InfoRow label="source_ref_types" value="material / ocr / legal_search / skill_runtime" />
+              <InfoRow label="source_ref_types" value="material / ocr / legal_search / skill_runtime / report / mock" />
               <InfoRow label="report.citations" value="prepared as optional array" />
               <InfoRow label="report.trace" value="prepared as optional object" />
-              <InfoRow label="citation_persistence" value="not_enabled" />
+              <InfoRow label="citation_summary" value="prepared as optional object" />
+              <InfoRow label="citation_persistence" value="mock resolver only" />
             </div>
           </CardBody>
         </Card>
@@ -80,14 +97,15 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
-      getLegalSearchStatus()
+      getLegalSearchStatus(),
+      getSourceRefsStatus()
     ]);
-    return { runtime, ocr, legalSearch, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, error: null };
   } catch {
-    return { runtime: null, ocr: null, legalSearch: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
+    return { runtime: null, ocr: null, legalSearch: null, sourceRefs: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 

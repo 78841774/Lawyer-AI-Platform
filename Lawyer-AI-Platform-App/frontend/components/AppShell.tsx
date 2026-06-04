@@ -21,7 +21,8 @@ const navGroups = [
       { href: "/skill-registry", label: "技能注册表" },
       { href: "/runtime", label: "运行状态" },
       { href: "/ocr", label: "OCR" },
-      { href: "/legal-search", label: "Legal Search" }
+      { href: "/legal-search", label: "Legal Search" },
+      { href: "/source-refs", label: "Source Refs" }
     ]
   },
   {

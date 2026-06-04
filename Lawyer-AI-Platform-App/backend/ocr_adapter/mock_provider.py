@@ -16,6 +16,8 @@ class MockOCRProvider(OCRProvider):
     def extract_text(self, request: OCRRequest) -> OCRResult:
         text = f"Mock OCR text for material {request.filename}. No real file content was read."
         source_ref = OCRSourceRef(
+            source_ref_id=f"source_ref_ocr_mock_{request.material_id}",
+            source_type="ocr",
             material_id=request.material_id,
             filename=request.filename,
             relative_path=request.relative_path,
@@ -23,7 +25,10 @@ class MockOCRProvider(OCRProvider):
             char_start=0,
             char_end=len(text),
             bbox=None,
-            quote=text
+            quote=text,
+            provider="mock_ocr",
+            provider_mode="mock",
+            mock_only=True
         )
         page = OCRPageResult(
             page_number=1,

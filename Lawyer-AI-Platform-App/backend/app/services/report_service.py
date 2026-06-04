@@ -15,7 +15,8 @@ from app.repositories.legal_analysis_repository import LegalAnalysisRepository
 from app.repositories.material_repository import MaterialRepository
 from app.repositories.report_repository import ReportRepository
 from app.services.skill_runtime_service import SkillRuntimeService
-from source_refs.schemas import empty_report_trace
+from source_refs.schemas import mock_citation_summary, mock_report_citations, mock_source_refs
+from source_refs.trace_builder import build_mock_source_trace
 
 
 @dataclass(frozen=True)
@@ -109,9 +110,10 @@ class ReportService:
             "analysis_id": latest_analysis.analysis_id,
             "llm_provider": llm_provider,
             "llm_status": llm_status,
-            "source_refs": [],
-            "citations": [],
-            "trace": empty_report_trace()
+            "source_refs": mock_source_refs(),
+            "citations": mock_report_citations(report_id),
+            "trace": build_mock_source_trace(report_id=report_id, case_id=case_id),
+            "citation_summary": mock_citation_summary()
         }
         if runtime_context is not None:
             source_refs["skill_id"] = self._runtime_value(runtime_context, "skill_id")

@@ -18,6 +18,8 @@ class OCRRequest(BaseModel):
 
 
 class OCRSourceRef(BaseModel):
+    source_ref_id: str
+    source_type: str = "ocr"
     material_id: str
     filename: str
     relative_path: str | None = None
@@ -26,6 +28,9 @@ class OCRSourceRef(BaseModel):
     char_end: int
     bbox: dict[str, Any] | None = None
     quote: str
+    provider: str = "mock_ocr"
+    provider_mode: str = "mock"
+    mock_only: bool = True
 
 
 class OCRPageResult(BaseModel):

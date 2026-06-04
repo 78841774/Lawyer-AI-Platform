@@ -3,6 +3,7 @@ import type {
   Case,
   CaseSkillBinding,
   CaseCauseTaxonomyEntry,
+  CitationResolutionResult,
   DashboardStats,
   Fact,
   IntakeStatus,
@@ -24,6 +25,8 @@ import type {
   ExperiencePackageDetail,
   SkillRegistryDetail,
   SkillRegistryEntry,
+  SourceRefsStatus,
+  SourceTrace,
   User,
   VersionedSkillTrainingPackage,
   VersionedSkillTrainingPackageDetail,
@@ -60,6 +63,9 @@ export type {
   ExperiencePackage as ExperiencePackageRecord,
   SkillRegistryEntry as SkillRegistryRecord,
   SkillRegistryDetail,
+  SourceRefsStatus,
+  SourceTrace,
+  CitationResolutionResult,
   Skill as WorkspaceSkillRecord,
   VersionedSkillTrainingPackage,
   VersionedSkillTrainingPackageDetail,
@@ -492,6 +498,14 @@ export const legalSearchApi = {
   })
 };
 
+export const sourceRefsApi = {
+  status: () => request<SourceRefsStatus>("/source-refs/status"),
+  mockTrace: (reportId: string) =>
+    request<SourceTrace>(`/source-refs/mock-trace/${encodeURIComponent(reportId)}`),
+  resolve: (citationId: string) =>
+    request<CitationResolutionResult>(`/source-refs/resolve/${encodeURIComponent(citationId)}`)
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -501,6 +515,9 @@ export const getOCRStatus = ocrApi.status;
 export const mockOCRExtract = ocrApi.mockExtract;
 export const getLegalSearchStatus = legalSearchApi.status;
 export const mockLegalSearch = legalSearchApi.mockSearch;
+export const getSourceRefsStatus = sourceRefsApi.status;
+export const getMockSourceTrace = sourceRefsApi.mockTrace;
+export const resolveCitation = sourceRefsApi.resolve;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

@@ -90,6 +90,22 @@ export default function LegalSearchPage() {
                 <InfoRow label="provider" value={result.provider} />
                 <InfoRow label="provider_mode" value={result.provider_mode} />
               </div>
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {result.hits.map((hit) => (
+                  <div key={hit.hit_id} className="rounded-md border border-line bg-paper p-3">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-muted">source ref</div>
+                    <div className="mt-3 space-y-2">
+                      <InfoRow label="source_ref_id" value={hit.source_ref.source_ref_id} />
+                      <InfoRow label="citation" value={hit.source_ref.citation} />
+                      <InfoRow label="source_type" value={hit.source_ref.source_type} />
+                      <InfoRow label="quote" value={hit.source_ref.quote} />
+                      <InfoRow label="provider" value={hit.source_ref.provider} />
+                      <InfoRow label="provider_mode" value={hit.source_ref.provider_mode} />
+                      <InfoRow label="mock_only" value={String(hit.source_ref.mock_only)} />
+                    </div>
+                  </div>
+                ))}
+              </div>
               <pre className="mt-4 overflow-auto rounded-md border border-line bg-paper p-4 text-xs text-slate-700">
                 {JSON.stringify({ hits: result.hits, source_refs: result.hits.map((hit) => hit.source_ref), warnings: result.warnings }, null, 2)}
               </pre>

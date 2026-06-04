@@ -23,12 +23,16 @@ class MockLegalSearchProvider(LegalSearchProvider):
     def search(self, request: LegalSearchRequest) -> LegalSearchResult:
         retrieved_at = utc_now()
         source_ref = LegalSearchSourceRef(
+            source_ref_id="source_ref_legal_search_mock_payment_dispute_001",
+            source_type="legal_search",
             provider="mock_legal_search",
+            provider_mode="mock",
             source_id="mock_case_law_payment_dispute_001",
             citation="Mock Citation",
             url=None,
             quote="Mock quote only.",
-            retrieved_at=retrieved_at
+            retrieved_at=retrieved_at,
+            mock_only=True
         )
         hit = LegalSearchHit(
             hit_id="mock_hit_payment_dispute_001",

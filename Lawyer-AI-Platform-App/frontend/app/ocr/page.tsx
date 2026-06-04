@@ -85,6 +85,22 @@ export default function OCRPage() {
                 <InfoRow label="provider" value={result.provider} />
                 <InfoRow label="provider_mode" value={result.provider_mode} />
               </div>
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {result.source_refs.map((sourceRef) => (
+                  <div key={sourceRef.source_ref_id} className="rounded-md border border-line bg-paper p-3">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-muted">source ref</div>
+                    <div className="mt-3 space-y-2">
+                      <InfoRow label="source_ref_id" value={sourceRef.source_ref_id} />
+                      <InfoRow label="material_id" value={sourceRef.material_id} />
+                      <InfoRow label="filename" value={sourceRef.filename} />
+                      <InfoRow label="relative_path" value={sourceRef.relative_path ?? "暂无"} />
+                      <InfoRow label="page_number" value={String(sourceRef.page_number)} />
+                      <InfoRow label="quote" value={sourceRef.quote} />
+                      <InfoRow label="mock_only" value={String(sourceRef.mock_only)} />
+                    </div>
+                  </div>
+                ))}
+              </div>
               <pre className="mt-4 overflow-auto rounded-md border border-line bg-paper p-4 text-xs text-slate-700">
                 {JSON.stringify({ pages: result.pages, source_refs: result.source_refs, warnings: result.warnings }, null, 2)}
               </pre>
