@@ -68,6 +68,10 @@ import type {
   PersonalAlphaDryRunResult,
   PersonalAlphaRunDetail,
   PersonalAlphaEvidenceSummaryResponse,
+  PersonalAlphaSourceReviewDecisionList,
+  PersonalAlphaSourceReviewDecisionRequest,
+  PersonalAlphaSourceReviewDecisionResult,
+  PersonalAlphaSourceReviewDecisionSummaryResponse,
   PersonalAlphaSourceReviewRunDetail,
   PersonalAlphaSourceReviewStatus,
   PersonalAlphaSourceTraceResponse,
@@ -185,6 +189,10 @@ export type {
   PersonalAlphaDryRunResult,
   PersonalAlphaRunDetail,
   PersonalAlphaEvidenceSummaryResponse,
+  PersonalAlphaSourceReviewDecisionList,
+  PersonalAlphaSourceReviewDecisionRequest,
+  PersonalAlphaSourceReviewDecisionResult,
+  PersonalAlphaSourceReviewDecisionSummaryResponse,
   PersonalAlphaSourceReviewRunDetail,
   PersonalAlphaSourceReviewStatus,
   PersonalAlphaSourceTraceResponse,
@@ -825,7 +833,13 @@ export const personalAlphaSourceReviewApi = {
   getSourceTraces: (workspaceRunId: string) =>
     request<PersonalAlphaSourceTraceResponse>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/source-traces`),
   getEvidenceSummary: (workspaceRunId: string) =>
-    request<PersonalAlphaEvidenceSummaryResponse>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/evidence-summary`)
+    request<PersonalAlphaEvidenceSummaryResponse>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/evidence-summary`),
+  listDecisions: (workspaceRunId: string) =>
+    request<PersonalAlphaSourceReviewDecisionList>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/decisions`),
+  submitDecision: (workspaceRunId: string, payload: PersonalAlphaSourceReviewDecisionRequest) =>
+    postJson<PersonalAlphaSourceReviewDecisionResult>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/decisions`, payload),
+  getDecisionSummary: (workspaceRunId: string) =>
+    request<PersonalAlphaSourceReviewDecisionSummaryResponse>(`/personal-alpha-source-review/run/${encodeURIComponent(workspaceRunId)}/decision-summary`)
 };
 
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
@@ -869,6 +883,9 @@ export const getPersonalAlphaSourceReviewStatus = personalAlphaSourceReviewApi.s
 export const getPersonalAlphaSourceReviewRunDetail = personalAlphaSourceReviewApi.getRunDetail;
 export const getPersonalAlphaSourceReviewSourceTraces = personalAlphaSourceReviewApi.getSourceTraces;
 export const getPersonalAlphaSourceReviewEvidenceSummary = personalAlphaSourceReviewApi.getEvidenceSummary;
+export const getPersonalAlphaSourceReviewDecisions = personalAlphaSourceReviewApi.listDecisions;
+export const submitPersonalAlphaSourceReviewDecision = personalAlphaSourceReviewApi.submitDecision;
+export const getPersonalAlphaSourceReviewDecisionSummary = personalAlphaSourceReviewApi.getDecisionSummary;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

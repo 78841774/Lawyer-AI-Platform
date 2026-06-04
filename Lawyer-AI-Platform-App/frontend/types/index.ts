@@ -1701,6 +1701,63 @@ export type PersonalAlphaEvidenceSummaryResponse = {
   raw_content_included: boolean;
 };
 
+export type PersonalAlphaSourceReviewDecisionRequest = {
+  source_ref_id: string;
+  decision: string;
+  reviewer_id: string;
+  reason: string;
+  manual_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+};
+
+export type PersonalAlphaSourceReviewDecisionRecord = {
+  decision_id: string;
+  workspace_run_id: string;
+  source_ref_id: string;
+  decision: string;
+  reviewer_id: string;
+  reason: string;
+  status: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  manual_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaSourceReviewDecisionResult = PersonalAlphaSourceReviewDecisionRecord;
+
+export type PersonalAlphaSourceReviewDecisionList = {
+  workspace_run_id: string;
+  decisions: PersonalAlphaSourceReviewDecisionRecord[];
+  decision_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaSourceReviewDecisionSummary = {
+  total_decisions: number;
+  approved_count: number;
+  rejected_count: number;
+  revision_requested_count: number;
+  unclear_count: number;
+  latest_decision_at: string | null;
+  ready_for_next_stage: boolean;
+  requires_additional_review: boolean;
+};
+
+export type PersonalAlphaSourceReviewDecisionSummaryResponse = {
+  workspace_run_id: string;
+  summary: PersonalAlphaSourceReviewDecisionSummary;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  warnings: string[];
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
