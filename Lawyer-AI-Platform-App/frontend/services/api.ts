@@ -7,7 +7,21 @@ import type {
   DashboardStats,
   Fact,
   IntakeStatus,
+  DatabaseReadinessStatus,
   LegalAnalysis,
+  MaterialInventoryRequest,
+  MaterialInventoryResult,
+  InternalAlphaAuditLog,
+  InternalAlphaDryRunRequest,
+  InternalAlphaDryRunResult,
+  InternalAlphaReadinessChecklist,
+  InternalAlphaStatus,
+  PersonalAlphaAuditLog,
+  PersonalAlphaDryRunRequest,
+  PersonalAlphaDryRunResult,
+  PersonalAlphaStatus,
+  PersonalCaseManifestPreview,
+  PersonalCaseManifestPreviewRequest,
   LocalSandboxAuditLog,
   LocalSandboxDryRunRequest,
   LocalSandboxDryRunResult,
@@ -15,6 +29,7 @@ import type {
   LocalSandboxStatus,
   Material,
   Report,
+  SecretManagementChecklist,
   LatestRuntimeRunsResponse,
   LegalSearchProviderStatus,
   LegalSearchRequest,
@@ -52,7 +67,21 @@ export type {
   DashboardStats,
   Fact as FactRecord,
   IntakeStatus as IntakeStatusRecord,
+  DatabaseReadinessStatus,
   LegalAnalysis as LegalAnalysisRecord,
+  MaterialInventoryRequest,
+  MaterialInventoryResult,
+  InternalAlphaAuditLog,
+  InternalAlphaDryRunRequest,
+  InternalAlphaDryRunResult,
+  InternalAlphaReadinessChecklist,
+  InternalAlphaStatus,
+  PersonalAlphaAuditLog,
+  PersonalAlphaDryRunRequest,
+  PersonalAlphaDryRunResult,
+  PersonalAlphaStatus,
+  PersonalCaseManifestPreview,
+  PersonalCaseManifestPreviewRequest,
   LocalSandboxAuditLog,
   LocalSandboxDryRunRequest,
   LocalSandboxDryRunResult,
@@ -60,6 +89,7 @@ export type {
   LocalSandboxStatus,
   Material as MaterialRecord,
   Report as ReportRecord,
+  SecretManagementChecklist,
   RuntimeRun,
   RuntimeRunsResponse,
   LatestRuntimeRunsResponse,
@@ -526,6 +556,33 @@ export const localSandboxApi = {
   }
 };
 
+export const internalAlphaApi = {
+  status: () => request<InternalAlphaStatus>("/internal-alpha/status"),
+  readiness: () => request<InternalAlphaReadinessChecklist>("/internal-alpha/readiness"),
+  secrets: () => request<SecretManagementChecklist>("/internal-alpha/secrets"),
+  database: () => request<DatabaseReadinessStatus>("/internal-alpha/database"),
+  dryRun: (payload: InternalAlphaDryRunRequest) =>
+    postJson<InternalAlphaDryRunResult>("/internal-alpha/dry-run", payload),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: InternalAlphaAuditLog[] }>("/internal-alpha/audit-logs");
+    return response.audit_logs;
+  }
+};
+
+export const personalAlphaApi = {
+  status: () => request<PersonalAlphaStatus>("/personal-alpha/status"),
+  previewManifest: (payload: PersonalCaseManifestPreviewRequest) =>
+    postJson<PersonalCaseManifestPreview>("/personal-alpha/manifest/preview", payload),
+  previewMaterialInventory: (payload: MaterialInventoryRequest) =>
+    postJson<MaterialInventoryResult>("/personal-alpha/materials/inventory", payload),
+  dryRun: (payload: PersonalAlphaDryRunRequest) =>
+    postJson<PersonalAlphaDryRunResult>("/personal-alpha/dry-run", payload),
+  auditLogs: async () => {
+    const response = await request<{ audit_logs: PersonalAlphaAuditLog[] }>("/personal-alpha/audit-logs");
+    return response.audit_logs;
+  }
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -542,6 +599,17 @@ export const getLocalSandboxStatus = localSandboxApi.status;
 export const getLocalSandboxGuards = localSandboxApi.guards;
 export const runLocalSandboxDryRun = localSandboxApi.dryRun;
 export const getLocalSandboxAuditLogs = localSandboxApi.auditLogs;
+export const getInternalAlphaStatus = internalAlphaApi.status;
+export const getInternalAlphaReadiness = internalAlphaApi.readiness;
+export const getInternalAlphaSecrets = internalAlphaApi.secrets;
+export const getInternalAlphaDatabase = internalAlphaApi.database;
+export const runInternalAlphaDryRun = internalAlphaApi.dryRun;
+export const getInternalAlphaAuditLogs = internalAlphaApi.auditLogs;
+export const getPersonalAlphaStatus = personalAlphaApi.status;
+export const previewPersonalAlphaManifest = personalAlphaApi.previewManifest;
+export const previewPersonalAlphaMaterialInventory = personalAlphaApi.previewMaterialInventory;
+export const runPersonalAlphaDryRun = personalAlphaApi.dryRun;
+export const getPersonalAlphaAuditLogs = personalAlphaApi.auditLogs;
 export const getCurrentUser = userApi.me;
 export const getAuthStatus = authApi.status;
 export const loginLocal = authApi.loginLocal;

@@ -23,9 +23,11 @@ from app.api.workspace_skills import router as workspace_skills_router
 from app.api.workspaces import router as workspaces_router
 from app.core.config import settings
 from app.core.database import create_db_and_tables
+from internal_alpha.router import router as internal_alpha_router
 from legal_search_adapter.router import router as legal_search_router
 from local_sandbox.router import router as local_sandbox_router
 from ocr_adapter.router import router as ocr_router
+from personal_alpha.router import router as personal_alpha_router
 from source_refs.router import router as source_refs_router
 from versioned_skill_training_runs.router import router as versioned_skill_training_runs_router
 
@@ -74,5 +76,7 @@ app.include_router(ocr_router)
 app.include_router(legal_search_router)
 app.include_router(source_refs_router)
 app.include_router(local_sandbox_router)
+app.include_router(internal_alpha_router)
+app.include_router(personal_alpha_router)
 app.include_router(versioned_skill_training_packages_router)
 app.include_router(versioned_skill_training_runs_router)

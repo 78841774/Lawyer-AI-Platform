@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "internal_alpha": {
+    "enabled": true,
+    "mode": "local_internal_alpha",
+    "production_enabled": false,
+    "team_mode_enabled": false,
+    "real_case_processing_enabled": false,
+    "real_case_processing_default": false,
+    "workspace_runtime_auto_enable": false,
+    "skill_aware_case_processing_auto_enable": false,
+    "requires_manual_review": true,
+    "local_only": true
+  },
+  "readiness": {
+    "sqlite_local_alpha_ready": true,
+    "postgresql_ready_check": true,
+    "alembic_ready_check": true,
+    "secret_management_check": true,
+    "backup_check": false,
+    "logging_check": true,
+    "permission_boundary_check": true
+  },
+  "audit_logs": []
+}

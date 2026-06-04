@@ -437,6 +437,235 @@ export type LocalSandboxAuditLog = {
   created_at: string;
 };
 
+export type DeploymentReadinessItem = {
+  item_id: string;
+  label: string;
+  status: string;
+  required: boolean;
+  passed: boolean;
+  notes: string;
+};
+
+export type InternalAlphaReadinessChecklist = {
+  items: DeploymentReadinessItem[];
+  required_passed: boolean;
+  manual_verification_required: boolean;
+  warnings: string[];
+};
+
+export type InternalAlphaSubsystemStatus = {
+  name: string;
+  enabled: boolean;
+  status: string;
+  mock_only: boolean;
+  notes: string;
+};
+
+export type InternalAlphaStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  team_mode_enabled: boolean;
+  real_case_processing_enabled: boolean;
+  workspace_runtime_auto_enable: boolean;
+  skill_aware_case_processing_auto_enable: boolean;
+  requires_manual_review: boolean;
+  local_only: boolean;
+  mock_only: boolean;
+  warnings: string[];
+  subsystems: InternalAlphaSubsystemStatus[];
+  readiness: InternalAlphaReadinessChecklist;
+};
+
+export type SecretManagementChecklist = {
+  env_file_not_committed: boolean;
+  api_key_not_committed: boolean;
+  jwt_secret_not_default_for_production: boolean;
+  deepseek_key_not_committed: boolean;
+  ocr_legal_search_keys_not_committed: boolean;
+  external_secret_management_required_for_production: boolean;
+  notes: string[];
+};
+
+export type DatabaseReadinessStatus = {
+  sqlite_local_ready: boolean;
+  local_db_ignored: boolean;
+  database_url_supported: boolean;
+  postgresql_ready: boolean;
+  alembic_ready: boolean;
+  production_migration_out_of_scope: boolean;
+  notes: string[];
+};
+
+export type InternalAlphaDryRunRequest = {
+  case_id: string;
+  workspace_id: string;
+  local_case_root?: string | null;
+  provider_mode: string;
+  ocr_mode: string;
+  legal_search_mode: string;
+  dry_run_only: boolean;
+  manual_review_confirmed: boolean;
+};
+
+export type InternalAlphaDryRunResult = {
+  alpha_dry_run_id: string;
+  local_sandbox_dry_run_result: Record<string, unknown>;
+  readiness_summary: Record<string, unknown>;
+  allowed_to_continue: boolean;
+  manual_review_required: boolean;
+  audit_log_id: string;
+  warnings: string[];
+  created_at: string;
+};
+
+export type InternalAlphaAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  alpha_dry_run_id: string;
+  local_sandbox_dry_run_id?: string | null;
+  provider_mode: string;
+  ocr_mode: string;
+  legal_search_mode: string;
+  result: string;
+  warnings: string[];
+  local_case_root_redacted: string;
+  created_at: string;
+};
+
+export type PersonalAlphaStatus = {
+  enabled: boolean;
+  mode: string;
+  production_enabled: boolean;
+  team_mode_enabled: boolean;
+  real_case_processing_enabled: boolean;
+  material_content_reading_enabled: boolean;
+  ocr_live_enabled: boolean;
+  legal_search_live_enabled: boolean;
+  llm_live_enabled: boolean;
+  deepseek_live_enabled: boolean;
+  requires_manual_review: boolean;
+  local_only: boolean;
+  dry_run_only: boolean;
+  warnings: string[];
+};
+
+export type RedactionChecklist = {
+  client_name_removed: boolean;
+  id_numbers_removed: boolean;
+  phone_numbers_removed: boolean;
+  addresses_removed: boolean;
+  bank_info_removed: boolean;
+  case_number_removed_or_masked: boolean;
+  file_names_redacted: boolean;
+  material_content_not_committed: boolean;
+  api_keys_not_committed: boolean;
+  local_only_confirmed: boolean;
+  manual_review_required: boolean;
+};
+
+export type PersonalCaseManifestPreviewRequest = {
+  case_id: string;
+  workspace_id: string;
+  case_title_redacted: string;
+  local_case_root?: string | null;
+  case_cause_code: string;
+  jurisdiction: string;
+  dry_run_only: boolean;
+  manual_review_confirmed: boolean;
+};
+
+export type PersonalCaseManifestPreview = {
+  manifest_id: string;
+  case_id: string;
+  workspace_id: string;
+  case_title_redacted: string;
+  case_cause_code: string;
+  jurisdiction: string;
+  local_case_root_redacted: string;
+  dry_run_only: boolean;
+  manual_review_confirmed: boolean;
+  allowed_to_continue: boolean;
+  redaction_checklist: RedactionChecklist;
+  warnings: string[];
+  created_at: string;
+};
+
+export type MaterialInventoryRequest = {
+  case_id: string;
+  workspace_id: string;
+  local_case_root?: string | null;
+  include_file_names: boolean;
+  dry_run_only: boolean;
+};
+
+export type MaterialInventoryItem = {
+  item_id: string;
+  filename_redacted: string;
+  extension?: string | null;
+  relative_path_redacted: string;
+  size_bytes?: number | null;
+  content_read: boolean;
+  mock_only: boolean;
+};
+
+export type MaterialInventoryResult = {
+  inventory_id: string;
+  case_id: string;
+  workspace_id: string;
+  local_case_root_redacted: string;
+  item_count: number;
+  items: MaterialInventoryItem[];
+  content_read: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaDryRunRequest = {
+  case_id: string;
+  workspace_id: string;
+  local_case_root?: string | null;
+  case_cause_code: string;
+  jurisdiction: string;
+  provider_mode: string;
+  ocr_mode: string;
+  legal_search_mode: string;
+  llm_mode: string;
+  dry_run_only: boolean;
+  manual_review_confirmed: boolean;
+};
+
+export type PersonalAlphaDryRunResult = {
+  personal_alpha_dry_run_id: string;
+  manifest_preview: Record<string, unknown>;
+  material_inventory: Record<string, unknown>;
+  internal_alpha_dry_run_result: Record<string, unknown>;
+  local_sandbox_dry_run_result: Record<string, unknown>;
+  mock_ocr_preview: Record<string, unknown>;
+  mock_legal_search_preview: Record<string, unknown>;
+  mock_source_trace_preview: Record<string, unknown>;
+  mock_report_draft_preview: Record<string, unknown>;
+  allowed_to_continue: boolean;
+  manual_review_required: boolean;
+  audit_log_id: string;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaAuditLog = {
+  audit_log_id: string;
+  event_type: string;
+  case_id: string;
+  workspace_id: string;
+  personal_alpha_dry_run_id: string;
+  result: string;
+  warnings: string[];
+  local_case_root_redacted: string;
+  created_at: string;
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

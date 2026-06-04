@@ -23,7 +23,9 @@ const navGroups = [
       { href: "/ocr", label: "OCR" },
       { href: "/legal-search", label: "Legal Search" },
       { href: "/source-refs", label: "Source Refs" },
-      { href: "/local-sandbox", label: "Local Sandbox" }
+      { href: "/local-sandbox", label: "Local Sandbox" },
+      { href: "/internal-alpha", label: "Internal Alpha" },
+      { href: "/personal-alpha", label: "Personal Alpha" }
     ]
   },
   {

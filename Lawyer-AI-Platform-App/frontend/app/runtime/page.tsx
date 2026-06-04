@@ -6,16 +6,18 @@ import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
   getLegalSearchStatus,
+  getInternalAlphaStatus,
   getLLMStatus,
   getLocalSandboxStatus,
   getOCRStatus,
+  getPersonalAlphaStatus,
   getSourceRefsStatus
 } from "@/services/api";
 
 export const dynamic = "force-dynamic";
 
 export default async function RuntimePage() {
-  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, error } = await loadRuntime();
+  const { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, error } = await loadRuntime();
 
   return (
     <AppShell>
@@ -28,7 +30,7 @@ export default async function RuntimePage() {
 
         {error ? <StatusMessage message={error} /> : null}
 
-        <div className="grid gap-6 lg:grid-cols-5">
+        <div className="grid gap-6 lg:grid-cols-3">
           <StatusCard
             title="模型状态"
             provider={runtime?.provider ?? "-"}
@@ -98,6 +100,40 @@ export default async function RuntimePage() {
             ]}
             actionHref="/local-sandbox"
           />
+          <StatusCard
+            title="Internal Alpha"
+            provider={internalAlpha?.mode ?? "local_internal_alpha"}
+            connected={internalAlpha?.enabled ?? false}
+            rows={[
+              ["mode", internalAlpha?.mode ?? "local_internal_alpha"],
+              ["production_enabled", formatBoolean(internalAlpha?.production_enabled)],
+              ["team_mode_enabled", formatBoolean(internalAlpha?.team_mode_enabled)],
+              ["real_case_processing_enabled", formatBoolean(internalAlpha?.real_case_processing_enabled)],
+              ["workspace_runtime_auto_enable", formatBoolean(internalAlpha?.workspace_runtime_auto_enable)],
+              ["skill_aware_case_processing_auto_enable", formatBoolean(internalAlpha?.skill_aware_case_processing_auto_enable)],
+              ["local_only", formatBoolean(internalAlpha?.local_only)],
+              ["requires_manual_review", formatBoolean(internalAlpha?.requires_manual_review)]
+            ]}
+            actionHref="/internal-alpha"
+          />
+          <StatusCard
+            title="Personal Alpha"
+            provider={personalAlpha?.mode ?? "personal_local_alpha"}
+            connected={personalAlpha?.enabled ?? false}
+            rows={[
+              ["mode", personalAlpha?.mode ?? "personal_local_alpha"],
+              ["real_case_processing_enabled", formatBoolean(personalAlpha?.real_case_processing_enabled)],
+              ["material_content_reading_enabled", formatBoolean(personalAlpha?.material_content_reading_enabled)],
+              ["ocr_live_enabled", formatBoolean(personalAlpha?.ocr_live_enabled)],
+              ["legal_search_live_enabled", formatBoolean(personalAlpha?.legal_search_live_enabled)],
+              ["llm_live_enabled", formatBoolean(personalAlpha?.llm_live_enabled)],
+              ["deepseek_live_enabled", formatBoolean(personalAlpha?.deepseek_live_enabled)],
+              ["local_only", formatBoolean(personalAlpha?.local_only)],
+              ["dry_run_only", formatBoolean(personalAlpha?.dry_run_only)],
+              ["requires_manual_review", formatBoolean(personalAlpha?.requires_manual_review)]
+            ]}
+            actionHref="/personal-alpha"
+          />
         </div>
 
         <Card>
@@ -119,16 +155,18 @@ export default async function RuntimePage() {
 
 async function loadRuntime() {
   try {
-    const [runtime, ocr, legalSearch, sourceRefs, localSandbox] = await Promise.all([
+    const [runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha] = await Promise.all([
       getLLMStatus(),
       getOCRStatus(),
       getLegalSearchStatus(),
       getSourceRefsStatus(),
-      getLocalSandboxStatus()
+      getLocalSandboxStatus(),
+      getInternalAlphaStatus(),
+      getPersonalAlphaStatus()
     ]);
-    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, error: null };
+    return { runtime, ocr, legalSearch, sourceRefs, localSandbox, internalAlpha, personalAlpha, error: null };
   } catch {
-    return { runtime: null, ocr: null, legalSearch: null, sourceRefs: null, localSandbox: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
+    return { runtime: null, ocr: null, legalSearch: null, sourceRefs: null, localSandbox: null, internalAlpha: null, personalAlpha: null, error: "后端 API 暂不可用，请确认 8001 端口的后端服务已启动。" };
   }
 }
 
