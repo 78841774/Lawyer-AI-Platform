@@ -14,6 +14,7 @@ from app.repositories.identity_repository import IdentityRepository
 from app.repositories.legal_analysis_repository import LegalAnalysisRepository
 from app.repositories.material_repository import MaterialRepository
 from app.repositories.report_repository import ReportRepository
+from app.repositories.runtime_run_repository import RuntimeRunRepository
 from app.services.case_service import CaseService
 from app.services.identity_service import IdentityService
 
@@ -81,6 +82,10 @@ def build_intake_status(case: Case, db: Session) -> dict[str, Any]:
     facts_count = len(FactRepository(db).list_by_case_id(case.case_id))
     analyses_count = len(LegalAnalysisRepository(db).list_by_case_id(case.case_id))
     reports_count = len(ReportRepository(db).list_by_case_id(case.case_id))
+    runtime_run_repository = RuntimeRunRepository(db)
+    latest_extraction_run = runtime_run_repository.latest_extraction_run(case.case_id)
+    latest_analysis_run = runtime_run_repository.latest_analysis_run(case.case_id)
+    latest_report_run = runtime_run_repository.latest_report_run(case.case_id)
 
     has_materials = materials_count > 0
     ready_for_fact_extraction = has_materials and facts_count == 0
@@ -104,7 +109,10 @@ def build_intake_status(case: Case, db: Session) -> dict[str, Any]:
         "ready_for_fact_extraction": ready_for_fact_extraction,
         "ready_for_analysis": ready_for_analysis,
         "ready_for_report": ready_for_report,
-        "next_recommended_action": next_recommended_action
+        "next_recommended_action": next_recommended_action,
+        "latest_extraction_run_id": latest_extraction_run.run_id if latest_extraction_run else None,
+        "latest_analysis_run_id": latest_analysis_run.run_id if latest_analysis_run else None,
+        "latest_report_run_id": latest_report_run.run_id if latest_report_run else None
     }
 
 

@@ -95,6 +95,46 @@ export type Fact = {
   created_at: string;
 };
 
+export type RuntimeRun = {
+  run_id: string;
+  run_type: "fact_extraction" | "legal_analysis" | "report_generation";
+  case_id: string;
+  status: string;
+  is_latest: boolean;
+  llm_provider?: string | null;
+  llm_status?: string | null;
+  skill_id?: string | null;
+  package_id?: string | null;
+  counts: Record<string, number>;
+  materials_count?: number;
+  facts_created_count?: number;
+  facts_reused_count?: number;
+  facts_skipped_count?: number;
+  facts_count?: number;
+  analysis_id?: string | null;
+  report_id?: string | null;
+  source_material_ids?: string[];
+  source_fact_ids?: string[];
+  source_refs?: unknown;
+  error_message?: string | null;
+  created_at: string;
+  completed_at?: string | null;
+};
+
+export type RuntimeRunsResponse = {
+  case_id: string;
+  extraction_runs: RuntimeRun[];
+  analysis_runs: RuntimeRun[];
+  report_runs: RuntimeRun[];
+};
+
+export type LatestRuntimeRunsResponse = {
+  case_id: string;
+  latest_extraction_run: RuntimeRun | null;
+  latest_analysis_run: RuntimeRun | null;
+  latest_report_run: RuntimeRun | null;
+};
+
 export type IntakeStatus = {
   case_id: string;
   intake_status: string;
@@ -107,6 +147,9 @@ export type IntakeStatus = {
   ready_for_analysis: boolean;
   ready_for_report: boolean;
   next_recommended_action: string | null;
+  latest_extraction_run_id?: string | null;
+  latest_analysis_run_id?: string | null;
+  latest_report_run_id?: string | null;
 };
 
 export type LegalAnalysis = {
@@ -129,6 +172,11 @@ export type LegalAnalysis = {
   llm_status?: string | null;
   skill_used?: string;
   package_used?: string;
+  run_id?: string;
+  run_type?: string;
+  facts_count?: number;
+  source_fact_ids?: string[];
+  source_refs?: unknown;
 };
 
 export type ReportSourceRefs = {
@@ -161,6 +209,9 @@ export type Report = {
   package_used?: string | null;
   created_at: string;
   updated_at?: string | null;
+  run_id?: string;
+  run_type?: string;
+  analysis_id?: string | null;
 };
 
 export type Skill = {

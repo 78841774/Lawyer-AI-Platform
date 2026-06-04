@@ -24,6 +24,8 @@ class ReportGenerationResult:
     package_used: str | None = None
     llm_provider: str | None = None
     llm_status: str | None = None
+    analysis_id: str | None = None
+    source_refs: dict[str, object] | None = None
 
 
 class ReportService:
@@ -127,7 +129,9 @@ class ReportService:
             skill_used=self._runtime_value(runtime_context, "skill_id"),
             package_used=self._runtime_value(runtime_context, "package_id"),
             llm_provider=llm_provider,
-            llm_status=llm_status
+            llm_status=llm_status,
+            analysis_id=latest_analysis.analysis_id,
+            source_refs=source_refs
         )
 
     def list_reports(self, case_id: str) -> list[Report]:

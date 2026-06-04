@@ -12,6 +12,7 @@ from app.api.legal_analysis import router as legal_analysis_router
 from app.api.llm import router as llm_router
 from app.api.materials import router as materials_router
 from app.api.reports import router as reports_router
+from app.api.runtime_runs import router as runtime_runs_router
 from app.api.skill_registry import router as skill_registry_router
 from app.api.skills import router as skills_router
 from app.api.users import router as users_router
@@ -55,6 +56,7 @@ app.include_router(materials_router)
 app.include_router(facts_router)
 app.include_router(legal_analysis_router)
 app.include_router(reports_router)
+app.include_router(runtime_runs_router)
 app.include_router(skills_router)
 app.include_router(experience_packages_router)
 app.include_router(skill_registry_router)

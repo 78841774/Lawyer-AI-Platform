@@ -22,6 +22,8 @@ v3.4-B adds folder-aware material intake so local users can upload a case materi
 
 v3.4-C adds local end-to-end validation and hardening for the real case intake loop.
 
+v3.5 adds Run History / Fact Dedup Foundation for repeated fact extraction, legal analysis, and report generation runs.
+
 ## Scope
 
 This stage adds local identity and workspace ownership only. It does not add:
@@ -133,6 +135,12 @@ v3.1 adds:
 
 * `auth_tokens`
 
+v3.5 adds runtime history tables:
+
+* `extraction_runs`
+* `analysis_runs`
+* `report_runs`
+
 v3.0 also adds case ownership fields:
 
 * `cases.workspace_id`
@@ -235,6 +243,20 @@ Current persisted runtime data is limited:
 * Legal analysis list records persist `analysis_id`, `case_id`, `status`, `risk_level`, `confidence`, and `created_at`, but not independent LLM metadata.
 
 No `/skill-candidates/*` API, Skill Candidate table, Real Business Intake flow, or production deployment is added in this phase.
+
+## Run History / Fact Dedup Foundation
+
+v3.5 persists runtime runs for:
+
+* `POST /cases/{case_id}/facts/extract`
+* `POST /cases/{case_id}/analysis/run`
+* `POST /cases/{case_id}/reports/generate`
+
+Each run records `run_id`, status, LLM metadata, skill/package metadata, source references, created/completed timestamps, and an `is_latest` marker. Only one run of each type is marked latest per case.
+
+Fact extraction now applies deterministic deduplication within the same case. If normalized fact content, `material_id`, and `fact_type` match an existing fact, the existing fact is reused instead of creating a duplicate. This phase does not add semantic deduplication, vectors, OCR, DeepSeek Live validation, production deployment, or Skill Training main-chain changes.
+
+Case Detail displays `运行历史` with fact extraction, legal analysis, and report generation run groups. Intake Status also returns latest run ids when available.
 
 ## Report / Skill Visibility
 

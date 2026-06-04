@@ -19,6 +19,9 @@ class LegalAnalysisRunResult:
     package_used: str | None = None
     llm_provider: str | None = None
     llm_status: str | None = None
+    facts_count: int = 0
+    source_fact_ids: list[str] | None = None
+    source_refs: list[dict[str, str | None]] | None = None
 
 
 class LegalAnalysisService:
@@ -84,7 +87,10 @@ class LegalAnalysisService:
             skill_used=self._runtime_value(runtime_context, "skill_id"),
             package_used=self._runtime_value(runtime_context, "package_id"),
             llm_provider=self._response_value(llm_response, "provider"),
-            llm_status=self._response_value(llm_response, "status")
+            llm_status=self._response_value(llm_response, "status"),
+            facts_count=len(facts),
+            source_fact_ids=[fact.fact_id for fact in facts],
+            source_refs=self._build_source_refs(facts)
         )
 
     def list_analyses(self, case_id: str) -> list[LegalAnalysis]:
@@ -126,6 +132,17 @@ class LegalAnalysisService:
                 *fact_lines
             ]
         )
+
+    def _build_source_refs(self, facts: list[Fact]) -> list[dict[str, str | None]]:
+        return [
+            {
+                "fact_id": fact.fact_id,
+                "material_id": fact.material_id,
+                "fact_type": fact.fact_type,
+                "status": fact.status
+            }
+            for fact in facts
+        ]
 
     def _build_llm_context(
         self,

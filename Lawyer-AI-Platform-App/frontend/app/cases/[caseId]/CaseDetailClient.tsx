@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
-import type { Material, RuntimeStatus } from "@/types";
+import type { Material, RuntimeRun, RuntimeStatus } from "@/types";
 
 type ActionStatus = {
   loading: boolean;
@@ -215,6 +215,9 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
               <InfoRow label="ready_for_fact_extraction" value={formatBoolean(detail.intakeStatus?.ready_for_fact_extraction)} />
               <InfoRow label="ready_for_analysis" value={formatBoolean(detail.intakeStatus?.ready_for_analysis)} />
               <InfoRow label="ready_for_report" value={formatBoolean(detail.intakeStatus?.ready_for_report)} />
+              <InfoRow label="latest_extraction_run_id" value={displayValue(detail.intakeStatus?.latest_extraction_run_id)} />
+              <InfoRow label="latest_analysis_run_id" value={displayValue(detail.intakeStatus?.latest_analysis_run_id)} />
+              <InfoRow label="latest_report_run_id" value={displayValue(detail.intakeStatus?.latest_report_run_id)} />
             </div>
             <div className="rounded-md border border-line bg-slate-50 px-3 py-2 text-sm text-muted">
               {formatActionHint(detail.intakeStatus?.next_recommended_action)}
@@ -291,9 +294,11 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                 onClick={() =>
                   runAction("抽取事实", async () => {
                     const result = await extractFacts(caseId);
+                    const stats = `创建事实数 ${result.facts_created_count} / 复用事实数 ${result.facts_reused_count} / 跳过事实数 ${result.facts_skipped_count}`;
                     if (result.skill_used && result.package_used) {
-                      return `事实抽取使用技能: ${result.skill_used} / Package: ${result.package_used}`;
+                      return `事实抽取使用技能: ${result.skill_used} / Package: ${result.package_used}；${stats}`;
                     }
+                    return `事实抽取完成；${stats}`;
                   })
                 }
               >
@@ -323,8 +328,9 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                 runAction("运行法律分析", async () => {
                   const result = await runLegalAnalysis(caseId);
                   if (result.skill_used && result.package_used) {
-                    return `法律分析使用技能: ${result.skill_used} / Package: ${result.package_used}`;
+                    return `法律分析使用技能: ${result.skill_used} / Package: ${result.package_used}；run_id: ${result.run_id ?? "暂无"}`;
                   }
+                  return `法律分析完成；run_id: ${result.run_id ?? "暂无"}`;
                 })
               }
             >
@@ -351,8 +357,9 @@ export function CaseDetailClient({ caseId }: { caseId: string }) {
                   const skillId = result.source_refs.skill_id;
                   const packageId = result.source_refs.package_id;
                   if (skillId && packageId) {
-                    return `报告已生成，使用技能: ${skillId} / Package: ${packageId}`;
+                    return `报告已生成，使用技能: ${skillId} / Package: ${packageId}；run_id: ${result.run_id ?? "暂无"}`;
                   }
+                  return `报告已生成；run_id: ${result.run_id ?? "暂无"}`;
                 })
               }
             >
@@ -614,6 +621,60 @@ function RuntimeTraceSection({
             </div>
           </section>
 
+          <section className="border-t border-line pt-4">
+            <h3 className="text-sm font-semibold text-ink">运行历史</h3>
+          </section>
+
+          <RuntimeHistorySection
+            title="事实抽取运行"
+            empty="暂无运行记录"
+            runs={detail.runtimeRuns?.extraction_runs ?? []}
+            buildRows={(run) => [
+              ["run_id", run.run_id],
+              ["status", run.status],
+              ["materials_count", String(run.materials_count ?? run.counts.materials_count ?? 0)],
+              ["创建事实数", String(run.facts_created_count ?? run.counts.facts_created_count ?? 0)],
+              ["复用事实数", String(run.facts_reused_count ?? run.counts.facts_reused_count ?? 0)],
+              ["跳过事实数", String(run.facts_skipped_count ?? run.counts.facts_skipped_count ?? 0)],
+              ["llm_provider", run.llm_provider ?? "暂无"],
+              ["llm_status", run.llm_status ?? "暂无"],
+              ["created_at", formatDate(run.created_at)],
+              ["completed_at", run.completed_at ? formatDate(run.completed_at) : "暂无"]
+            ]}
+          />
+
+          <RuntimeHistorySection
+            title="法律分析运行"
+            empty="暂无运行记录"
+            runs={detail.runtimeRuns?.analysis_runs ?? []}
+            buildRows={(run) => [
+              ["run_id", run.run_id],
+              ["status", run.status],
+              ["analysis_id", run.analysis_id ?? "暂无"],
+              ["facts_count", String(run.facts_count ?? run.counts.facts_count ?? 0)],
+              ["llm_provider", run.llm_provider ?? "暂无"],
+              ["llm_status", run.llm_status ?? "暂无"],
+              ["created_at", formatDate(run.created_at)],
+              ["completed_at", run.completed_at ? formatDate(run.completed_at) : "暂无"]
+            ]}
+          />
+
+          <RuntimeHistorySection
+            title="报告生成运行"
+            empty="暂无运行记录"
+            runs={detail.runtimeRuns?.report_runs ?? []}
+            buildRows={(run) => [
+              ["run_id", run.run_id],
+              ["status", run.status],
+              ["report_id", run.report_id ?? "暂无"],
+              ["analysis_id", run.analysis_id ?? "暂无"],
+              ["llm_provider", run.llm_provider ?? "暂无"],
+              ["llm_status", run.llm_status ?? "暂无"],
+              ["created_at", formatDate(run.created_at)],
+              ["completed_at", run.completed_at ? formatDate(run.completed_at) : "暂无"]
+            ]}
+          />
+
           <section>
             <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">事实抽取记录</h3>
             <TraceList empty="暂无事实抽取记录。可以先上传材料并运行事实抽取。">
@@ -677,6 +738,40 @@ function RuntimeTraceSection({
   );
 }
 
+function RuntimeHistorySection({
+  title,
+  empty,
+  runs,
+  buildRows
+}: {
+  title: string;
+  empty: string;
+  runs: RuntimeRun[];
+  buildRows: (run: RuntimeRun) => Array<[string, string]>;
+}) {
+  return (
+    <section>
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</h3>
+      <TraceList empty={empty}>
+        {runs.map((run) => (
+          <TraceItem
+            key={run.run_id}
+            title={run.run_id}
+            badge={run.is_latest ? "最新" : "历史运行"}
+            rows={[
+              ...buildRows(run),
+              ["skill_id", run.skill_id ?? "暂无"],
+              ["package_id", run.package_id ?? "暂无"],
+              ["error_message", run.error_message ?? "暂无"],
+              ["source_refs", formatSourceRefs(run.source_refs)]
+            ]}
+          />
+        ))}
+      </TraceList>
+    </section>
+  );
+}
+
 function TraceList({ empty, children }: { empty: string; children: React.ReactNode }) {
   const hasChildren = Array.isArray(children) ? children.length > 0 : Boolean(children);
   return <div className="mt-3 space-y-3">{hasChildren ? children : <div className="text-sm text-muted">{empty}</div>}</div>;
@@ -684,14 +779,19 @@ function TraceList({ empty, children }: { empty: string; children: React.ReactNo
 
 function TraceItem({
   title,
+  badge,
   rows
 }: {
   title: string;
+  badge?: string;
   rows: Array<[string, string]>;
 }) {
   return (
     <article className="rounded-md border border-line p-3">
-      <div className="text-sm font-medium text-ink">{title}</div>
+      <div className="flex items-start justify-between gap-3">
+        <div className="break-all text-sm font-medium text-ink">{title}</div>
+        {badge ? <Badge tone={badge === "最新" ? "gold" : "muted"}>{badge}</Badge> : null}
+      </div>
       <div className="mt-2 space-y-2">
         {rows.map(([label, value]) => (
           <div key={label} className="flex items-start justify-between gap-4 text-xs">

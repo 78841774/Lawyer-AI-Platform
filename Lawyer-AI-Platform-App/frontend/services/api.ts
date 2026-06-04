@@ -8,6 +8,9 @@ import type {
   LegalAnalysis,
   Material,
   Report,
+  LatestRuntimeRunsResponse,
+  RuntimeRun,
+  RuntimeRunsResponse,
   RuntimeStatus,
   Skill,
   ExperiencePackage,
@@ -32,6 +35,9 @@ export type {
   LegalAnalysis as LegalAnalysisRecord,
   Material as MaterialRecord,
   Report as ReportRecord,
+  RuntimeRun,
+  RuntimeRunsResponse,
+  LatestRuntimeRunsResponse,
   RuntimeStatus as LLMStatus,
   ExperiencePackage as ExperiencePackageRecord,
   SkillRegistryEntry as SkillRegistryRecord,
@@ -69,6 +75,7 @@ export type CaseDetail = {
   facts: Fact[];
   analyses: LegalAnalysis[];
   reports: Report[];
+  runtimeRuns: RuntimeRunsResponse | null;
 };
 
 export type CaseCreatePayload = {
@@ -89,9 +96,19 @@ export type CaseCreatePayload = {
 
 export type ExtractFactsResponse = {
   case_id: string;
+  run_id: string;
+  run_type: "fact_extraction";
+  status: string;
   facts: Fact[];
-  skill_used?: string;
-  package_used?: string;
+  llm_provider?: string | null;
+  llm_status?: string | null;
+  skill_used?: string | null;
+  package_used?: string | null;
+  materials_count: number;
+  facts_created_count: number;
+  facts_reused_count: number;
+  facts_skipped_count: number;
+  source_refs?: unknown;
 };
 
 export class ApiError extends Error {
@@ -267,6 +284,11 @@ export const caseApi = {
   intakeStatus: (caseId: string) => request<IntakeStatus>(`/cases/${caseId}/intake/status`)
 };
 
+export const runtimeRunApi = {
+  listByCase: (caseId: string) => request<RuntimeRunsResponse>(`/cases/${caseId}/runtime-runs`),
+  latestByCase: (caseId: string) => request<LatestRuntimeRunsResponse>(`/cases/${caseId}/runtime-runs/latest`)
+};
+
 export const materialApi = {
   listByCase: (caseId: string) => request<Material[]>(`/cases/${caseId}/materials`),
   upload: (caseId: string, file: File, relativePath?: string) => {
@@ -381,6 +403,8 @@ export const getCases = caseApi.listWithLocalFallback;
 export const createCase = caseApi.create;
 export const getCase = caseApi.get;
 export const getCaseIntakeStatus = caseApi.intakeStatus;
+export const getCaseRuntimeRuns = runtimeRunApi.listByCase;
+export const getCaseLatestRuntimeRuns = runtimeRunApi.latestByCase;
 export const getCaseMaterials = materialApi.listByCase;
 export const uploadMaterial = materialApi.upload;
 export const uploadMaterialsBatch = materialApi.uploadBatch;
@@ -412,13 +436,14 @@ export const publishSkillToRegistry = skillRegistryApi.publish;
 export const deprecateSkillInRegistry = skillRegistryApi.deprecate;
 
 export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
-  const [caseRecord, intakeStatus, materials, facts, analyses, reports] = await Promise.all([
+  const [caseRecord, intakeStatus, materials, facts, analyses, reports, runtimeRuns] = await Promise.all([
     caseApi.get(caseId),
     caseApi.intakeStatus(caseId).catch(() => null),
     materialApi.listByCase(caseId),
     factApi.listByCase(caseId),
     analysisApi.listByCase(caseId),
-    reportApi.listByCase(caseId)
+    reportApi.listByCase(caseId),
+    runtimeRunApi.listByCase(caseId).catch(() => null)
   ]);
 
   return {
@@ -427,7 +452,8 @@ export async function getCaseDetail(caseId: string): Promise<CaseDetail> {
     materials,
     facts,
     analyses,
-    reports
+    reports,
+    runtimeRuns
   };
 }
 

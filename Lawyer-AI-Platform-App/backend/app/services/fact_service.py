@@ -19,6 +19,21 @@ class FactExtractionResult:
     package_used: str | None = None
     llm_provider: str | None = None
     llm_status: str | None = None
+    materials_count: int = 0
+    facts_created_count: int = 0
+    facts_reused_count: int = 0
+    facts_skipped_count: int = 0
+    source_refs: list[dict[str, str | None]] | None = None
+
+
+@dataclass(frozen=True)
+class FactCandidate:
+    material_id: str
+    content: str
+    fact_type: str
+    confidence: float
+    source_text: str | None
+    status: str
 
 
 class FactService:
@@ -49,14 +64,20 @@ class FactService:
         facts: list[Fact] = []
         llm_provider: str | None = None
         llm_status: str | None = None
+        facts_created_count = 0
+        facts_reused_count = 0
+        facts_skipped_count = 0
 
         for material in materials:
-            extracted_facts, llm_response = self._extract_material_facts(
+            extracted_facts, llm_response, created_count, reused_count, skipped_count = self._extract_material_facts(
                 case=case,
                 material=material,
                 runtime_context=runtime_context
             )
             facts.extend(extracted_facts)
+            facts_created_count += created_count
+            facts_reused_count += reused_count
+            facts_skipped_count += skipped_count
             if llm_response is not None:
                 llm_provider = self._response_value(llm_response, "provider")
                 llm_status = self._response_value(llm_response, "status")
@@ -66,7 +87,12 @@ class FactService:
             skill_used=self._runtime_value(runtime_context, "skill_id"),
             package_used=self._runtime_value(runtime_context, "package_id"),
             llm_provider=llm_provider,
-            llm_status=llm_status
+            llm_status=llm_status,
+            materials_count=len(materials),
+            facts_created_count=facts_created_count,
+            facts_reused_count=facts_reused_count,
+            facts_skipped_count=facts_skipped_count,
+            source_refs=self._build_source_refs(materials)
         )
 
     def list_facts(self, case_id: str) -> list[Fact]:
@@ -80,36 +106,40 @@ class FactService:
         case: Case,
         material: Material,
         runtime_context: dict[str, object] | None = None
-    ) -> tuple[list[Fact], dict[str, object] | None]:
+    ) -> tuple[list[Fact], dict[str, object] | None, int, int, int]:
         material_path = Path(material.storage_path)
         if not material_path.exists():
-            return [
-                self.fact_repository.create(
-                    fact_id=self.fact_repository.next_fact_id(),
-                    case_id=material.case_id,
-                    material_id=material.material_id,
-                    content=f"Material file not found: {material.filename}",
-                    fact_type="material_file_missing",
-                    confidence=0.0,
-                    source_text=str(material_path),
-                    status="skipped"
-                )
-            ], None
+            return self._save_fact_candidates(
+                case_id=material.case_id,
+                candidates=[
+                    FactCandidate(
+                        material_id=material.material_id,
+                        content=f"Material file not found: {material.filename}",
+                        fact_type="material_file_missing",
+                        confidence=0.0,
+                        source_text=str(material_path),
+                        status="skipped"
+                    )
+                ],
+                llm_response=None
+            )
 
         text = material_path.read_text(encoding="utf-8", errors="ignore").strip()
         if not text:
-            return [
-                self.fact_repository.create(
-                    fact_id=self.fact_repository.next_fact_id(),
-                    case_id=material.case_id,
-                    material_id=material.material_id,
-                    content=f"Material file is empty: {material.filename}",
-                    fact_type="material_empty",
-                    confidence=0.0,
-                    source_text=str(material_path),
-                    status="skipped"
-                )
-            ], None
+            return self._save_fact_candidates(
+                case_id=material.case_id,
+                candidates=[
+                    FactCandidate(
+                        material_id=material.material_id,
+                        content=f"Material file is empty: {material.filename}",
+                        fact_type="material_empty",
+                        confidence=0.0,
+                        source_text=str(material_path),
+                        status="skipped"
+                    )
+                ],
+                llm_response=None
+            )
 
         prompt = self._build_fact_prompt(
             case=case,
@@ -130,10 +160,8 @@ class FactService:
         llm_output = str(llm_response.get("output") or "")
         statements = self._parse_llm_facts(llm_output)
         fact_type = self._build_fact_type(runtime_context)
-        facts = [
-            self.fact_repository.create(
-                fact_id=self.fact_repository.next_fact_id(),
-                case_id=material.case_id,
+        candidates = [
+            FactCandidate(
                 material_id=material.material_id,
                 content=statement,
                 fact_type=fact_type,
@@ -143,7 +171,62 @@ class FactService:
             )
             for statement in statements
         ]
-        return facts, llm_response
+        return self._save_fact_candidates(
+            case_id=material.case_id,
+            candidates=candidates,
+            llm_response=llm_response
+        )
+
+    def _save_fact_candidates(
+        self,
+        *,
+        case_id: str,
+        candidates: list[FactCandidate],
+        llm_response: dict[str, object] | None
+    ) -> tuple[list[Fact], dict[str, object] | None, int, int, int]:
+        facts: list[Fact] = []
+        created_count = 0
+        reused_count = 0
+        skipped_count = 0
+        for candidate in candidates:
+            if candidate.status != "extracted":
+                skipped_count += 1
+
+            existing_fact = self.fact_repository.find_duplicate(
+                case_id=case_id,
+                material_id=candidate.material_id,
+                content=candidate.content,
+                fact_type=candidate.fact_type
+            )
+            if existing_fact is not None:
+                facts.append(existing_fact)
+                reused_count += 1
+                continue
+
+            facts.append(
+                self.fact_repository.create(
+                    fact_id=self.fact_repository.next_fact_id(),
+                    case_id=case_id,
+                    material_id=candidate.material_id,
+                    content=candidate.content,
+                    fact_type=candidate.fact_type,
+                    confidence=candidate.confidence,
+                    source_text=candidate.source_text,
+                    status=candidate.status
+                )
+            )
+            created_count += 1
+        return facts, llm_response, created_count, reused_count, skipped_count
+
+    def _build_source_refs(self, materials: list[Material]) -> list[dict[str, str | None]]:
+        return [
+            {
+                "material_id": material.material_id,
+                "filename": material.filename,
+                "relative_path": material.relative_path or material.filename
+            }
+            for material in materials
+        ]
 
     def _build_fact_prompt(
         self,

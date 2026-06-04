@@ -44,7 +44,7 @@ token_local_001 / user_local_001 / Local Dev Token / active
 
 Local SQLite startup also checks `cases` for missing `workspace_id` and `owner_user_id` columns. If they are missing, the backend adds them and backfills existing cases to the local demo workspace and user. Production environments should use Alembic migrations for these schema changes.
 
-v3.4 local startup also checks for missing real-case intake and folder-aware material columns. This is a SQLite MVP compatibility path only. Production environments should use Alembic migrations.
+v3.4 local startup also checks for missing real-case intake and folder-aware material columns. v3.5 creates `extraction_runs`, `analysis_runs`, and `report_runs` in local SQLite. This is a SQLite MVP compatibility path only. Production environments should use Alembic migrations.
 
 The local dev token plaintext is configured with:
 
@@ -125,6 +125,20 @@ python scripts/validate_real_case_intake_v3_4.py
 The script logs in with the local demo user, creates a sanitized test case, uploads temporary folder-aware text materials, runs facts, analysis, and report generation, and prints the final `next_recommended_action`.
 
 It does not commit files and does not write test materials into the repository. Use only sanitized materials for browser testing.
+
+## Run History E2E Check
+
+Start the local backend in mock mode, then run:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+python scripts/validate_run_history_v3_5.py
+```
+
+The script logs in, creates a sanitized case, uploads temporary folder-aware text materials, runs facts extraction twice, legal analysis twice, and report generation twice. It verifies deterministic fact deduplication, run counts, and latest run markers.
+
+The script uses `tempfile` and does not write test materials into the repository.
 
 ## AIHome.law Frontend
 

@@ -116,3 +116,33 @@ python scripts/validate_real_case_intake_v3_4.py
 ```
 
 The script uses temporary sanitized text files and does not write test material files into the repository.
+
+## v3.5 Run History / Fact Dedup
+
+v3.5 adds runtime history for repeated intake processing:
+
+```text
+facts/extract -> extraction_runs
+analysis/run -> analysis_runs
+reports/generate -> report_runs
+```
+
+Each run stores a `run_id`, status, latest marker, LLM metadata, skill/package metadata, timestamps, and source references. Case Detail displays the three run groups under `运行历史`.
+
+Fact extraction now uses deterministic deduplication. Within the same case, a fact is reused when normalized content, source material id, and fact type match an existing fact. The response includes:
+
+* `facts_created_count`
+* `facts_reused_count`
+* `facts_skipped_count`
+
+`GET /cases/{case_id}/intake/status` also returns latest run ids when run history exists.
+
+The v3.5 validation script is:
+
+```bash
+cd Lawyer-AI-Platform-App/backend
+source .venv/bin/activate
+python scripts/validate_run_history_v3_5.py
+```
+
+This phase does not add complex OCR, semantic/vector deduplication, DeepSeek Live validation, production deployment, or Skill Training main-chain changes.

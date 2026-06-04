@@ -43,6 +43,9 @@ export default async function RuntimePage() {
               <InfoRow label="未来延迟" value="暂不可用" />
               <InfoRow label="未来成本" value="暂不可用" />
               <InfoRow label="未来错误日志" value="即将推出" />
+              <InfoRow label="Runtime Trace" value="现在包含 facts / analysis / reports 的运行历史。" />
+              <InfoRow label="Run History" value="可在案件详情页查看。" />
+              <InfoRow label="v3.5" value="支持 latest run 标记和事实去重统计。" />
             </div>
           </CardBody>
         </Card>

@@ -1,3 +1,6 @@
+import re
+import string
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -41,6 +44,24 @@ class FactRepository:
         self.db.refresh(fact)
         return fact
 
+    def find_duplicate(
+        self,
+        *,
+        case_id: str,
+        material_id: str,
+        content: str,
+        fact_type: str
+    ) -> Fact | None:
+        normalized_content = normalize_fact_text(content)
+        for fact in self.list_by_case_id(case_id):
+            if fact.material_id != material_id:
+                continue
+            if fact.fact_type != fact_type:
+                continue
+            if normalize_fact_text(fact.content) == normalized_content:
+                return fact
+        return None
+
     def get_by_fact_id(self, fact_id: str) -> Fact | None:
         return self.db.execute(
             select(Fact).where(Fact.fact_id == fact_id)
@@ -57,3 +78,8 @@ class FactRepository:
 
     def count_all(self) -> int:
         return self.db.query(Fact).count()
+
+
+def normalize_fact_text(value: str) -> str:
+    normalized = re.sub(r"\s+", " ", value.strip().lower())
+    return normalized.strip(string.whitespace + string.punctuation + "，。！？；：、“”‘’（）【】《》")
