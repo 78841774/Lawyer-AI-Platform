@@ -2972,6 +2972,175 @@ export type PersonalAlphaCaseOSMetadataClosureExportPreview = {
   warnings: string[];
 };
 
+export type PersonalAlphaCaseOSExportPackageStatus = {
+  case_id: string;
+  enabled: boolean;
+  mode: string;
+  can_create_export_package: boolean;
+  requires_metadata_closure: boolean;
+  requires_manual_review: boolean;
+  supported_formats: string[];
+  storage_mode: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  advisory_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSExportPackageCreateRequest = {
+  format: string;
+  reviewer_id: string;
+  manual_review_confirmed: boolean;
+  lawyer_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  redacted_only_confirmation: boolean;
+  no_raw_content_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+};
+
+export type PersonalAlphaCaseOSExportPackageContentSummary = {
+  section_count: number;
+  item_count: number;
+  includes_case_profile: boolean;
+  includes_stage_summary: boolean;
+  includes_final_lock_summary: boolean;
+  includes_metadata_closure: boolean;
+  includes_audit_summary: boolean;
+  includes_safety_checklist: boolean;
+  includes_raw_content: boolean;
+};
+
+export type PersonalAlphaCaseOSExportPackageSafetyStats = {
+  passed: boolean;
+  raw_content_included: boolean;
+  path_like_value_count: number;
+  api_key_like_value_count: number;
+  personal_identifier_like_value_count: number;
+  unsafe_value_count: number;
+  checked_fields: string[];
+};
+
+export type PersonalAlphaCaseOSExportPackageUnsafeItem = {
+  field_name: string;
+  reason: string;
+};
+
+export type PersonalAlphaCaseOSExportPackageRecord = {
+  package_id: string;
+  case_id: string;
+  format: string;
+  status: string;
+  reviewer_id: string;
+  storage_mode: string;
+  file_path_redacted: boolean;
+  file_name: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  created_at: string;
+};
+
+export type PersonalAlphaCaseOSExportPackageCreateResult = {
+  package_id: string;
+  case_id: string;
+  format: string;
+  status: string;
+  reviewer_id: string;
+  storage_mode: string;
+  stored: boolean;
+  file_created: boolean;
+  file_path_redacted: boolean;
+  file_name: string;
+  content_summary: PersonalAlphaCaseOSExportPackageContentSummary;
+  safety_check: PersonalAlphaCaseOSExportPackageSafetyStats;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  manual_review_confirmed: boolean;
+  lawyer_review_confirmed: boolean;
+  metadata_only_confirmation: boolean;
+  redacted_only_confirmation: boolean;
+  no_raw_content_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaCaseOSExportPackageList = {
+  case_id: string;
+  packages: PersonalAlphaCaseOSExportPackageRecord[];
+  package_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSExportPackageDetail = {
+  package: PersonalAlphaCaseOSExportPackageRecord | null;
+  content_summary: PersonalAlphaCaseOSExportPackageContentSummary;
+  safety_check: PersonalAlphaCaseOSExportPackageSafetyStats;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSExportPackageContent = {
+  package_id: string;
+  case_id: string;
+  format: string;
+  content_type: string;
+  content: unknown;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSExportPackageSafetyCheck = {
+  package_id: string;
+  case_id: string;
+  safety_check: PersonalAlphaCaseOSExportPackageSafetyStats;
+  unsafe_items: PersonalAlphaCaseOSExportPackageUnsafeItem[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSExportPackageSummary = {
+  case_id: string;
+  summary: {
+    package_count: number;
+    json_package_count: number;
+    markdown_package_count: number;
+    latest_package_id: string | null;
+    latest_package_created_at: string | null;
+    all_packages_metadata_only: boolean;
+    unsafe_package_count: number;
+    raw_content_package_count: number;
+  };
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSExportPackageSection = {
+  section_id: string;
+  title: string;
+  item_count: number;
+  raw_content_included: boolean;
+};
+
 export type PersonalAlphaCaseOSCaseDetail = {
   case_id: string;
   title: string;

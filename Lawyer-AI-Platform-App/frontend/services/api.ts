@@ -68,6 +68,14 @@ import type {
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
+  PersonalAlphaCaseOSExportPackageContent,
+  PersonalAlphaCaseOSExportPackageCreateRequest,
+  PersonalAlphaCaseOSExportPackageCreateResult,
+  PersonalAlphaCaseOSExportPackageDetail,
+  PersonalAlphaCaseOSExportPackageList,
+  PersonalAlphaCaseOSExportPackageSafetyCheck,
+  PersonalAlphaCaseOSExportPackageStatus,
+  PersonalAlphaCaseOSExportPackageSummary,
   PersonalAlphaCaseOSFinalLockConsolidation,
   PersonalAlphaCaseOSMetadataClosure,
   PersonalAlphaCaseOSMetadataClosureBlockers,
@@ -243,6 +251,14 @@ export type {
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
+  PersonalAlphaCaseOSExportPackageContent,
+  PersonalAlphaCaseOSExportPackageCreateRequest,
+  PersonalAlphaCaseOSExportPackageCreateResult,
+  PersonalAlphaCaseOSExportPackageDetail,
+  PersonalAlphaCaseOSExportPackageList,
+  PersonalAlphaCaseOSExportPackageSafetyCheck,
+  PersonalAlphaCaseOSExportPackageStatus,
+  PersonalAlphaCaseOSExportPackageSummary,
   PersonalAlphaCaseOSFinalLockConsolidation,
   PersonalAlphaCaseOSMetadataClosure,
   PersonalAlphaCaseOSMetadataClosureBlockers,
@@ -1072,6 +1088,20 @@ export const personalAlphaCaseOSApi = {
     request<PersonalAlphaCaseOSMetadataClosureBlockers>(`/case-os/${encodeURIComponent(caseId)}/metadata-closure/blockers`),
   getMetadataClosureExportPreview: (caseId: string) =>
     request<PersonalAlphaCaseOSMetadataClosureExportPreview>(`/case-os/${encodeURIComponent(caseId)}/metadata-closure/export-preview`),
+  getExportPackageStatus: (caseId: string) =>
+    request<PersonalAlphaCaseOSExportPackageStatus>(`/case-os/${encodeURIComponent(caseId)}/export-packages/status`),
+  createExportPackage: (caseId: string, payload: PersonalAlphaCaseOSExportPackageCreateRequest) =>
+    postJson<PersonalAlphaCaseOSExportPackageCreateResult>(`/case-os/${encodeURIComponent(caseId)}/export-packages/create`, payload),
+  listExportPackages: (caseId: string) =>
+    request<PersonalAlphaCaseOSExportPackageList>(`/case-os/${encodeURIComponent(caseId)}/export-packages`),
+  getExportPackage: (caseId: string, packageId: string) =>
+    request<PersonalAlphaCaseOSExportPackageDetail>(`/case-os/${encodeURIComponent(caseId)}/export-packages/${encodeURIComponent(packageId)}`),
+  getExportPackageContent: (caseId: string, packageId: string) =>
+    request<PersonalAlphaCaseOSExportPackageContent>(`/case-os/${encodeURIComponent(caseId)}/export-packages/${encodeURIComponent(packageId)}/content`),
+  getExportPackageSafetyCheck: (caseId: string, packageId: string) =>
+    request<PersonalAlphaCaseOSExportPackageSafetyCheck>(`/case-os/${encodeURIComponent(caseId)}/export-packages/${encodeURIComponent(packageId)}/safety-check`),
+  getExportPackageSummary: (caseId: string) =>
+    request<PersonalAlphaCaseOSExportPackageSummary>(`/case-os/${encodeURIComponent(caseId)}/export-packages/summary`),
   getNextAction: (caseId: string) =>
     request<PersonalAlphaCaseOSNextAction>(`/case-os/${encodeURIComponent(caseId)}/next-action`),
   getStageOrchestration: (caseId: string) =>
@@ -1180,6 +1210,13 @@ export const getPersonalAlphaCaseOSMetadataClosure = personalAlphaCaseOSApi.getM
 export const getPersonalAlphaCaseOSMetadataClosureChecklist = personalAlphaCaseOSApi.getMetadataClosureChecklist;
 export const getPersonalAlphaCaseOSMetadataClosureBlockers = personalAlphaCaseOSApi.getMetadataClosureBlockers;
 export const getPersonalAlphaCaseOSMetadataClosureExportPreview = personalAlphaCaseOSApi.getMetadataClosureExportPreview;
+export const getPersonalAlphaCaseOSExportPackageStatus = personalAlphaCaseOSApi.getExportPackageStatus;
+export const createPersonalAlphaCaseOSExportPackage = personalAlphaCaseOSApi.createExportPackage;
+export const listPersonalAlphaCaseOSExportPackages = personalAlphaCaseOSApi.listExportPackages;
+export const getPersonalAlphaCaseOSExportPackage = personalAlphaCaseOSApi.getExportPackage;
+export const getPersonalAlphaCaseOSExportPackageContent = personalAlphaCaseOSApi.getExportPackageContent;
+export const getPersonalAlphaCaseOSExportPackageSafetyCheck = personalAlphaCaseOSApi.getExportPackageSafetyCheck;
+export const getPersonalAlphaCaseOSExportPackageSummary = personalAlphaCaseOSApi.getExportPackageSummary;
 export const getPersonalAlphaCaseOSNextAction = personalAlphaCaseOSApi.getNextAction;
 export const getPersonalAlphaCaseOSStageOrchestration = personalAlphaCaseOSApi.getStageOrchestration;
 export const getPersonalAlphaCaseOSStageTransitions = personalAlphaCaseOSApi.getStageTransitions;

@@ -3,6 +3,7 @@ from typing import Any
 from fastapi import APIRouter
 
 from personal_alpha_case_os.case_os_engine import (
+    create_personal_alpha_case_os_export_package,
     get_personal_alpha_case_os_action_eligibility,
     get_personal_alpha_case_os_audit_timeline_filters,
     get_personal_alpha_case_os_audit_timeline_redaction_check,
@@ -10,6 +11,11 @@ from personal_alpha_case_os.case_os_engine import (
     get_personal_alpha_case_os_audit_timeline,
     get_personal_alpha_case_os_blockers,
     get_personal_alpha_case_os_case_detail,
+    get_personal_alpha_case_os_export_package,
+    get_personal_alpha_case_os_export_package_content,
+    get_personal_alpha_case_os_export_package_safety_check,
+    get_personal_alpha_case_os_export_package_status,
+    get_personal_alpha_case_os_export_package_summary,
     get_personal_alpha_case_os_final_lock_consolidation,
     get_personal_alpha_case_os_metadata_closure,
     get_personal_alpha_case_os_metadata_closure_blockers,
@@ -26,8 +32,10 @@ from personal_alpha_case_os.case_os_engine import (
     get_personal_alpha_case_os_stage_transitions,
     get_personal_alpha_case_os_status,
     get_personal_alpha_case_os_unified_audit_timeline,
+    list_personal_alpha_case_os_export_packages,
     list_personal_alpha_case_os_cases,
 )
+from personal_alpha_case_os.schemas import PersonalAlphaCaseOSExportPackageCreateRequest
 
 router = APIRouter(prefix="/case-os", tags=["personal-alpha-case-os"])
 
@@ -148,6 +156,41 @@ def personal_alpha_case_os_metadata_closure_export_preview(case_id: str) -> dict
     return get_personal_alpha_case_os_metadata_closure_export_preview(case_id)
 
 
+@router.get("/{case_id}/export-packages/status")
+def personal_alpha_case_os_export_package_status(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_export_package_status(case_id)
+
+
+@router.post("/{case_id}/export-packages/create")
+def personal_alpha_case_os_export_package_create(case_id: str, payload: PersonalAlphaCaseOSExportPackageCreateRequest) -> dict[str, Any]:
+    return create_personal_alpha_case_os_export_package(case_id, payload)
+
+
+@router.get("/{case_id}/export-packages")
+def personal_alpha_case_os_export_packages(case_id: str) -> dict[str, Any]:
+    return list_personal_alpha_case_os_export_packages(case_id)
+
+
+@router.get("/{case_id}/export-packages/summary")
+def personal_alpha_case_os_export_package_summary(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_export_package_summary(case_id)
+
+
+@router.get("/{case_id}/export-packages/{package_id}")
+def personal_alpha_case_os_export_package(case_id: str, package_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_export_package(case_id, package_id)
+
+
+@router.get("/{case_id}/export-packages/{package_id}/content")
+def personal_alpha_case_os_export_package_content(case_id: str, package_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_export_package_content(case_id, package_id)
+
+
+@router.get("/{case_id}/export-packages/{package_id}/safety-check")
+def personal_alpha_case_os_export_package_safety_check(case_id: str, package_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_export_package_safety_check(case_id, package_id)
+
+
 @router.get("/{case_id}/stage-orchestration")
 def personal_alpha_case_os_stage_orchestration(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_stage_orchestration(case_id)
@@ -207,3 +250,8 @@ def personal_alpha_case_os_path_like_metadata_closure(case_id: str) -> dict[str,
 @router.get("/{case_id:path}/final-lock-consolidation")
 def personal_alpha_case_os_path_like_final_lock_consolidation(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_final_lock_consolidation(case_id)
+
+
+@router.get("/{case_id:path}/export-packages/status")
+def personal_alpha_case_os_path_like_export_package_status(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_export_package_status(case_id)

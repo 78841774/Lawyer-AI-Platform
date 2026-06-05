@@ -17,6 +17,14 @@ import {
   PersonalAlphaCaseOSAuditTimelineSummary,
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
+  PersonalAlphaCaseOSExportPackageContent,
+  PersonalAlphaCaseOSExportPackageCreateRequest,
+  PersonalAlphaCaseOSExportPackageCreateResult,
+  PersonalAlphaCaseOSExportPackageDetail,
+  PersonalAlphaCaseOSExportPackageList,
+  PersonalAlphaCaseOSExportPackageSafetyCheck,
+  PersonalAlphaCaseOSExportPackageStatus,
+  PersonalAlphaCaseOSExportPackageSummary,
   PersonalAlphaCaseOSFinalLockConsolidation,
   PersonalAlphaCaseOSMetadataClosure,
   PersonalAlphaCaseOSMetadataClosureBlockers,
@@ -39,6 +47,12 @@ import {
   getPersonalAlphaCaseOSAuditTimelineSummary,
   getPersonalAlphaCaseOSBlockers,
   getPersonalAlphaCaseOSCaseDetail,
+  createPersonalAlphaCaseOSExportPackage,
+  getPersonalAlphaCaseOSExportPackage,
+  getPersonalAlphaCaseOSExportPackageContent,
+  getPersonalAlphaCaseOSExportPackageSafetyCheck,
+  getPersonalAlphaCaseOSExportPackageStatus,
+  getPersonalAlphaCaseOSExportPackageSummary,
   getPersonalAlphaCaseOSFinalLockConsolidation,
   getPersonalAlphaCaseOSMetadataClosure,
   getPersonalAlphaCaseOSMetadataClosureBlockers,
@@ -53,6 +67,7 @@ import {
   getPersonalAlphaCaseOSStageOrchestration,
   getPersonalAlphaCaseOSStageTransitions,
   getPersonalAlphaCaseOSUnifiedAuditTimeline,
+  listPersonalAlphaCaseOSExportPackages,
   validatePersonalAlphaCaseOSReviewStateTransition
 } from "@/services/api";
 
@@ -100,6 +115,18 @@ const REVIEW_STATE_OPTIONS = [
   "blocked"
 ];
 
+const DEFAULT_EXPORT_PACKAGE_FORM: PersonalAlphaCaseOSExportPackageCreateRequest = {
+  format: "json",
+  reviewer_id: "local_demo_lawyer",
+  manual_review_confirmed: true,
+  lawyer_review_confirmed: true,
+  metadata_only_confirmation: true,
+  redacted_only_confirmation: true,
+  no_raw_content_confirmation: true,
+  no_final_legal_opinion_confirmation: true,
+  no_final_report_generation_confirmation: true
+};
+
 export default function PersonalAlphaCaseOSDetailPage() {
   const params = useParams<{ caseId: string }>();
   const caseId = decodeURIComponent(params.caseId);
@@ -125,6 +152,14 @@ export default function PersonalAlphaCaseOSDetailPage() {
   const [metadataClosureChecklist, setMetadataClosureChecklist] = useState<PersonalAlphaCaseOSMetadataClosureChecklist | null>(null);
   const [metadataClosureBlockers, setMetadataClosureBlockers] = useState<PersonalAlphaCaseOSMetadataClosureBlockers | null>(null);
   const [metadataClosureExportPreview, setMetadataClosureExportPreview] = useState<PersonalAlphaCaseOSMetadataClosureExportPreview | null>(null);
+  const [exportPackageStatus, setExportPackageStatus] = useState<PersonalAlphaCaseOSExportPackageStatus | null>(null);
+  const [exportPackageSummary, setExportPackageSummary] = useState<PersonalAlphaCaseOSExportPackageSummary | null>(null);
+  const [exportPackageList, setExportPackageList] = useState<PersonalAlphaCaseOSExportPackageList | null>(null);
+  const [exportPackageDetail, setExportPackageDetail] = useState<PersonalAlphaCaseOSExportPackageDetail | null>(null);
+  const [exportPackageContent, setExportPackageContent] = useState<PersonalAlphaCaseOSExportPackageContent | null>(null);
+  const [exportPackageSafetyCheck, setExportPackageSafetyCheck] = useState<PersonalAlphaCaseOSExportPackageSafetyCheck | null>(null);
+  const [exportPackageCreateResult, setExportPackageCreateResult] = useState<PersonalAlphaCaseOSExportPackageCreateResult | null>(null);
+  const [exportPackageForm, setExportPackageForm] = useState<PersonalAlphaCaseOSExportPackageCreateRequest>(DEFAULT_EXPORT_PACKAGE_FORM);
   const [transitionFromState, setTransitionFromState] = useState("final_lock_pending");
   const [transitionToState, setTransitionToState] = useState("final_lock_created");
   const [safetyResponse, setSafetyResponse] = useState<Record<string, unknown> | null>(null);
@@ -157,7 +192,10 @@ export default function PersonalAlphaCaseOSDetailPage() {
         nextMetadataClosure,
         nextMetadataClosureChecklist,
         nextMetadataClosureBlockers,
-        nextMetadataClosureExportPreview
+        nextMetadataClosureExportPreview,
+        nextExportPackageStatus,
+        nextExportPackageSummary,
+        nextExportPackageList
       ] = await Promise.all([
         getPersonalAlphaCaseOSCaseDetail(caseId),
         getPersonalAlphaCaseOSAuditTimeline(caseId),
@@ -180,7 +218,10 @@ export default function PersonalAlphaCaseOSDetailPage() {
         getPersonalAlphaCaseOSMetadataClosure(caseId),
         getPersonalAlphaCaseOSMetadataClosureChecklist(caseId),
         getPersonalAlphaCaseOSMetadataClosureBlockers(caseId),
-        getPersonalAlphaCaseOSMetadataClosureExportPreview(caseId)
+        getPersonalAlphaCaseOSMetadataClosureExportPreview(caseId),
+        getPersonalAlphaCaseOSExportPackageStatus(caseId),
+        getPersonalAlphaCaseOSExportPackageSummary(caseId),
+        listPersonalAlphaCaseOSExportPackages(caseId)
       ]);
       setDetail(nextDetail);
       setTimeline(nextTimeline);
@@ -204,6 +245,9 @@ export default function PersonalAlphaCaseOSDetailPage() {
       setMetadataClosureChecklist(nextMetadataClosureChecklist);
       setMetadataClosureBlockers(nextMetadataClosureBlockers);
       setMetadataClosureExportPreview(nextMetadataClosureExportPreview);
+      setExportPackageStatus(nextExportPackageStatus);
+      setExportPackageSummary(nextExportPackageSummary);
+      setExportPackageList(nextExportPackageList);
     } catch {
       setError("Case OS detail 加载失败。若 case_id 不存在，后端会返回 safe not_found，不暴露本地路径或原文。");
     } finally {
@@ -248,6 +292,80 @@ export default function PersonalAlphaCaseOSDetailPage() {
       setTransitionValidation(nextValidation);
     } catch {
       setError("Transition validation 加载失败。v6.3 只做校验，不执行 workflow action。");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function updateExportPackageForm(key: keyof PersonalAlphaCaseOSExportPackageCreateRequest, value: string | boolean) {
+    setExportPackageForm((current) => ({
+      ...current,
+      [key]: value
+    }));
+  }
+
+  async function refreshExportPackages() {
+    const [nextStatus, nextSummary, nextList] = await Promise.all([
+      getPersonalAlphaCaseOSExportPackageStatus(caseId),
+      getPersonalAlphaCaseOSExportPackageSummary(caseId),
+      listPersonalAlphaCaseOSExportPackages(caseId)
+    ]);
+    setExportPackageStatus(nextStatus);
+    setExportPackageSummary(nextSummary);
+    setExportPackageList(nextList);
+  }
+
+  async function createExportPackage() {
+    setLoading(true);
+    setError("");
+    try {
+      const result = await createPersonalAlphaCaseOSExportPackage(caseId, exportPackageForm);
+      setExportPackageCreateResult(result);
+      await refreshExportPackages();
+      if (result.package_id) {
+        await viewExportPackage(result.package_id);
+      }
+    } catch {
+      setError("Export package 创建失败。后端会在缺少确认、closure 未 ready 或 unsafe 输入时返回 blocked。");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function viewExportPackage(packageId: string) {
+    setLoading(true);
+    setError("");
+    try {
+      const detailValue = await getPersonalAlphaCaseOSExportPackage(caseId, packageId);
+      setExportPackageDetail(detailValue);
+    } catch {
+      setError("Export package detail 加载失败。");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function viewExportPackageContent(packageId: string) {
+    setLoading(true);
+    setError("");
+    try {
+      const contentValue = await getPersonalAlphaCaseOSExportPackageContent(caseId, packageId);
+      setExportPackageContent(contentValue);
+    } catch {
+      setError("Export package content 加载失败。");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function viewExportPackageSafetyCheck(packageId: string) {
+    setLoading(true);
+    setError("");
+    try {
+      const safetyValue = await getPersonalAlphaCaseOSExportPackageSafetyCheck(caseId, packageId);
+      setExportPackageSafetyCheck(safetyValue);
+    } catch {
+      setError("Export package safety check 加载失败。");
     } finally {
       setLoading(false);
     }
@@ -501,6 +619,193 @@ export default function PersonalAlphaCaseOSDetailPage() {
               ))}
             </div>
             <ReasonList reasons={metadataClosureExportPreview?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Export Package Status</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="enabled" value={String(exportPackageStatus?.enabled ?? true)} />
+              <InfoRow label="can_create_export_package" value={String(exportPackageStatus?.can_create_export_package ?? false)} />
+              <InfoRow label="supported_formats" value={(exportPackageStatus?.supported_formats ?? []).join(", ") || "-"} />
+              <InfoRow label="storage_mode" value={exportPackageStatus?.storage_mode ?? "-"} />
+              <InfoRow label="metadata_only" value={String(exportPackageStatus?.metadata_only ?? true)} />
+              <InfoRow label="redacted_only" value={String(exportPackageStatus?.redacted_only ?? true)} />
+              <InfoRow label="raw_content_included" value={String(exportPackageStatus?.raw_content_included ?? false)} />
+              <InfoRow label="final_report_generated" value={String(exportPackageStatus?.final_report_generated ?? false)} />
+            </div>
+            <ReasonList reasons={exportPackageStatus?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Create Export Package</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <label className="grid gap-2 text-xs text-muted">
+                <span className="uppercase tracking-wide">format</span>
+                <select
+                  value={exportPackageForm.format}
+                  onChange={(event) => updateExportPackageForm("format", event.target.value)}
+                  className="h-10 rounded-md border border-line bg-white px-3 text-sm text-ink"
+                >
+                  <option value="json">json</option>
+                  <option value="markdown">markdown</option>
+                </select>
+              </label>
+              <label className="grid gap-2 text-xs text-muted">
+                <span className="uppercase tracking-wide">reviewer_id</span>
+                <input
+                  value={exportPackageForm.reviewer_id}
+                  onChange={(event) => updateExportPackageForm("reviewer_id", event.target.value)}
+                  className="h-10 rounded-md border border-line bg-white px-3 text-sm text-ink"
+                />
+              </label>
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              <ConfirmBox label="manual_review_confirmed" checked={exportPackageForm.manual_review_confirmed} onChange={(value) => updateExportPackageForm("manual_review_confirmed", value)} />
+              <ConfirmBox label="lawyer_review_confirmed" checked={exportPackageForm.lawyer_review_confirmed} onChange={(value) => updateExportPackageForm("lawyer_review_confirmed", value)} />
+              <ConfirmBox label="metadata_only_confirmation" checked={exportPackageForm.metadata_only_confirmation} onChange={(value) => updateExportPackageForm("metadata_only_confirmation", value)} />
+              <ConfirmBox label="redacted_only_confirmation" checked={exportPackageForm.redacted_only_confirmation} onChange={(value) => updateExportPackageForm("redacted_only_confirmation", value)} />
+              <ConfirmBox label="no_raw_content_confirmation" checked={exportPackageForm.no_raw_content_confirmation} onChange={(value) => updateExportPackageForm("no_raw_content_confirmation", value)} />
+              <ConfirmBox label="no_final_legal_opinion_confirmation" checked={exportPackageForm.no_final_legal_opinion_confirmation} onChange={(value) => updateExportPackageForm("no_final_legal_opinion_confirmation", value)} />
+              <ConfirmBox label="no_final_report_generation_confirmation" checked={exportPackageForm.no_final_report_generation_confirmation} onChange={(value) => updateExportPackageForm("no_final_report_generation_confirmation", value)} />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Button type="button" onClick={() => void createExportPackage()} disabled={loading || !exportPackageStatus?.can_create_export_package}>
+                Create Export Package
+              </Button>
+              <Button type="button" variant="secondary" onClick={() => void refreshExportPackages()} disabled={loading}>
+                Refresh Packages
+              </Button>
+            </div>
+            {exportPackageCreateResult ? (
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <InfoRow label="status" value={exportPackageCreateResult.status} />
+                <InfoRow label="package_id" value={exportPackageCreateResult.package_id || "-"} />
+                <InfoRow label="stored" value={String(exportPackageCreateResult.stored)} />
+                <InfoRow label="file_created" value={String(exportPackageCreateResult.file_created)} />
+                <InfoRow label="file_path_redacted" value={String(exportPackageCreateResult.file_path_redacted)} />
+                <InfoRow label="raw_content_included" value={String(exportPackageCreateResult.raw_content_included)} />
+                <InfoRow label="final_legal_opinion_generated" value={String(exportPackageCreateResult.final_legal_opinion_generated)} />
+                <InfoRow label="final_report_generated" value={String(exportPackageCreateResult.final_report_generated)} />
+              </div>
+            ) : null}
+            <ReasonList reasons={exportPackageCreateResult?.warnings ?? []} tone={exportPackageCreateResult?.status === "export_package_created" ? "default" : "danger"} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Export Package Summary</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="package_count" value={String(exportPackageSummary?.summary.package_count ?? 0)} />
+              <InfoRow label="json_package_count" value={String(exportPackageSummary?.summary.json_package_count ?? 0)} />
+              <InfoRow label="markdown_package_count" value={String(exportPackageSummary?.summary.markdown_package_count ?? 0)} />
+              <InfoRow label="latest_package_id" value={exportPackageSummary?.summary.latest_package_id ?? "-"} />
+              <InfoRow label="unsafe_package_count" value={String(exportPackageSummary?.summary.unsafe_package_count ?? 0)} />
+              <InfoRow label="raw_content_package_count" value={String(exportPackageSummary?.summary.raw_content_package_count ?? 0)} />
+              <InfoRow label="all_packages_metadata_only" value={String(exportPackageSummary?.summary.all_packages_metadata_only ?? true)} />
+              <InfoRow label="raw_content_included" value={String(exportPackageSummary?.raw_content_included ?? false)} />
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Export Package List</h2>
+            <div className="mt-4 space-y-3">
+              {(exportPackageList?.packages ?? []).map((item) => (
+                <div key={item.package_id} className="rounded-md border border-line bg-white p-4">
+                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    <InfoRow label="package_id" value={item.package_id} />
+                    <InfoRow label="format" value={item.format} />
+                    <InfoRow label="status" value={item.status} />
+                    <InfoRow label="storage_mode" value={item.storage_mode} />
+                    <InfoRow label="file_path_redacted" value={String(item.file_path_redacted)} />
+                    <InfoRow label="raw_content_included" value={String(item.raw_content_included)} />
+                    <InfoRow label="created_at" value={item.created_at || "-"} />
+                    <InfoRow label="file_name" value={item.file_name || "-"} />
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <Button type="button" variant="secondary" onClick={() => void viewExportPackage(item.package_id)} disabled={loading}>
+                      View Package
+                    </Button>
+                    <Button type="button" variant="secondary" onClick={() => void viewExportPackageContent(item.package_id)} disabled={loading}>
+                      View Content
+                    </Button>
+                    <Button type="button" variant="secondary" onClick={() => void viewExportPackageSafetyCheck(item.package_id)} disabled={loading}>
+                      Safety Check
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              {!(exportPackageList?.packages ?? []).length ? (
+                <div className="rounded-md border border-dashed border-line p-5 text-sm text-muted">
+                  暂无 metadata-only export package。
+                </div>
+              ) : null}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Export Package Detail</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="package_id" value={exportPackageDetail?.package?.package_id ?? "-"} />
+              <InfoRow label="format" value={exportPackageDetail?.package?.format ?? "-"} />
+              <InfoRow label="status" value={exportPackageDetail?.package?.status ?? "-"} />
+              <InfoRow label="section_count" value={String(exportPackageDetail?.content_summary.section_count ?? 0)} />
+              <InfoRow label="item_count" value={String(exportPackageDetail?.content_summary.item_count ?? 0)} />
+              <InfoRow label="safety_passed" value={String(exportPackageDetail?.safety_check.passed ?? true)} />
+              <InfoRow label="raw_content_included" value={String(exportPackageDetail?.raw_content_included ?? false)} />
+              <InfoRow label="file_path_redacted" value={String(exportPackageDetail?.package?.file_path_redacted ?? true)} />
+            </div>
+            <ReasonList reasons={exportPackageDetail?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Export Package Content</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="package_id" value={exportPackageContent?.package_id ?? "-"} />
+              <InfoRow label="content_type" value={exportPackageContent?.content_type ?? "-"} />
+              <InfoRow label="raw_content_included" value={String(exportPackageContent?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(exportPackageContent?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(exportPackageContent?.final_report_generated ?? false)} />
+            </div>
+            <pre className="mt-4 max-h-96 overflow-auto rounded-md bg-slate-950 p-4 text-xs leading-5 text-slate-100">
+              {typeof exportPackageContent?.content === "string"
+                ? exportPackageContent.content
+                : JSON.stringify(exportPackageContent?.content ?? {}, null, 2)}
+            </pre>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Export Package Safety Check</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="passed" value={String(exportPackageSafetyCheck?.safety_check.passed ?? true)} />
+              <InfoRow label="raw_content_included" value={String(exportPackageSafetyCheck?.safety_check.raw_content_included ?? false)} />
+              <InfoRow label="path_like_value_count" value={String(exportPackageSafetyCheck?.safety_check.path_like_value_count ?? 0)} />
+              <InfoRow label="api_key_like_value_count" value={String(exportPackageSafetyCheck?.safety_check.api_key_like_value_count ?? 0)} />
+              <InfoRow label="personal_identifier_like_value_count" value={String(exportPackageSafetyCheck?.safety_check.personal_identifier_like_value_count ?? 0)} />
+              <InfoRow label="unsafe_value_count" value={String(exportPackageSafetyCheck?.safety_check.unsafe_value_count ?? 0)} />
+              <InfoRow label="unsafe_items" value={String(exportPackageSafetyCheck?.unsafe_items.length ?? 0)} />
+              <InfoRow label="mock_or_redacted_only" value={String(exportPackageSafetyCheck?.mock_or_redacted_only ?? true)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(exportPackageSafetyCheck?.unsafe_items ?? []).map((item) => (
+                <div key={`${item.field_name}-${item.reason}`} className="rounded-md border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">
+                  <div>field_name: {item.field_name}</div>
+                  <div>reason: {item.reason}</div>
+                </div>
+              ))}
+            </div>
           </CardBody>
         </Card>
 
@@ -885,6 +1190,13 @@ export default function PersonalAlphaCaseOSDetailPage() {
           <JsonPanel title="metadata_closure_checklist" value={metadataClosureChecklist} />
           <JsonPanel title="metadata_closure_blockers" value={metadataClosureBlockers} />
           <JsonPanel title="metadata_closure_export_preview" value={metadataClosureExportPreview} />
+          <JsonPanel title="export_package_status" value={exportPackageStatus} />
+          <JsonPanel title="export_package_summary" value={exportPackageSummary} />
+          <JsonPanel title="export_package_list" value={exportPackageList} />
+          <JsonPanel title="export_package_detail" value={exportPackageDetail} />
+          <JsonPanel title="export_package_content" value={exportPackageContent} />
+          <JsonPanel title="export_package_safety_check" value={exportPackageSafetyCheck} />
+          <JsonPanel title="export_package_create_result" value={exportPackageCreateResult} />
           <JsonPanel title="review_state" value={reviewState} />
           <JsonPanel title="review_state_summary" value={reviewStateSummary} />
           <JsonPanel title="review_state_history" value={reviewStateHistory} />
@@ -974,6 +1286,20 @@ function LabelList({ label, values, tone = "default" }: { label: string; values:
       <div className="font-semibold text-ink">{label}</div>
       <div className="mt-1 leading-5">{values.join(" / ")}</div>
     </div>
+  );
+}
+
+function ConfirmBox({ label, checked, onChange }: { label: string; checked: boolean; onChange: (value: boolean) => void }) {
+  return (
+    <label className="flex items-center gap-3 rounded-md border border-line bg-paper px-3 py-2 text-xs text-muted">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        className="h-4 w-4 rounded border-line"
+      />
+      <span>{label}</span>
+    </label>
   );
 }
 

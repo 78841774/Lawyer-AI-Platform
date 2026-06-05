@@ -574,6 +574,177 @@ class PersonalAlphaCaseOSMetadataClosureExportPreview(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class PersonalAlphaCaseOSExportPackageStatus(BaseModel):
+    case_id: str
+    enabled: bool = True
+    mode: str = "local_only_personal_alpha_case_os_export_package"
+    can_create_export_package: bool = False
+    requires_metadata_closure: bool = True
+    requires_manual_review: bool = True
+    supported_formats: list[str] = Field(default_factory=lambda: ["json", "markdown"])
+    storage_mode: str = "ignored_runtime_storage"
+    production_enabled: bool = False
+    mock_first_enabled: bool = True
+    controlled_first_enabled: bool = True
+    metadata_only: bool = True
+    redacted_only: bool = True
+    advisory_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSExportPackageCreateRequest(BaseModel):
+    format: str
+    reviewer_id: str = "local_demo_lawyer"
+    manual_review_confirmed: bool = False
+    lawyer_review_confirmed: bool = False
+    metadata_only_confirmation: bool = False
+    redacted_only_confirmation: bool = False
+    no_raw_content_confirmation: bool = False
+    no_final_legal_opinion_confirmation: bool = False
+    no_final_report_generation_confirmation: bool = False
+
+
+class PersonalAlphaCaseOSExportPackageContentSummary(BaseModel):
+    section_count: int = 0
+    item_count: int = 0
+    includes_case_profile: bool = True
+    includes_stage_summary: bool = True
+    includes_final_lock_summary: bool = True
+    includes_metadata_closure: bool = True
+    includes_audit_summary: bool = True
+    includes_safety_checklist: bool = True
+    includes_raw_content: bool = False
+
+
+class PersonalAlphaCaseOSExportPackageUnsafeItem(BaseModel):
+    field_name: str
+    reason: str
+
+
+class PersonalAlphaCaseOSExportPackageSafetyStats(BaseModel):
+    passed: bool = True
+    raw_content_included: bool = False
+    path_like_value_count: int = 0
+    api_key_like_value_count: int = 0
+    personal_identifier_like_value_count: int = 0
+    unsafe_value_count: int = 0
+    checked_fields: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSExportPackageRecord(BaseModel):
+    package_id: str
+    case_id: str
+    format: str
+    status: str = "export_package_created"
+    reviewer_id: str = "local_demo_lawyer"
+    storage_mode: str = "ignored_runtime_storage"
+    file_path_redacted: bool = True
+    file_name: str = "redacted_or_safe_metadata_filename.json"
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    created_at: str = ""
+
+
+class PersonalAlphaCaseOSExportPackageCreateResult(BaseModel):
+    package_id: str = ""
+    case_id: str
+    format: str
+    status: str = "blocked"
+    reviewer_id: str = "local_demo_lawyer"
+    storage_mode: str = "ignored_runtime_storage"
+    stored: bool = False
+    file_created: bool = False
+    file_path_redacted: bool = True
+    file_name: str = "redacted_or_safe_metadata_filename.json"
+    content_summary: PersonalAlphaCaseOSExportPackageContentSummary
+    safety_check: PersonalAlphaCaseOSExportPackageSafetyStats
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    manual_review_confirmed: bool = False
+    lawyer_review_confirmed: bool = False
+    metadata_only_confirmation: bool = False
+    redacted_only_confirmation: bool = False
+    no_raw_content_confirmation: bool = False
+    no_final_legal_opinion_confirmation: bool = False
+    no_final_report_generation_confirmation: bool = False
+    warnings: list[str] = Field(default_factory=list)
+    created_at: str = ""
+
+
+class PersonalAlphaCaseOSExportPackageList(BaseModel):
+    case_id: str
+    packages: list[PersonalAlphaCaseOSExportPackageRecord] = Field(default_factory=list)
+    package_count: int = 0
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSExportPackageDetail(BaseModel):
+    package: PersonalAlphaCaseOSExportPackageRecord | None = None
+    content_summary: PersonalAlphaCaseOSExportPackageContentSummary
+    safety_check: PersonalAlphaCaseOSExportPackageSafetyStats
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSExportPackageContent(BaseModel):
+    package_id: str
+    case_id: str
+    format: str
+    content_type: str
+    content: Any
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSExportPackageSafetyCheck(BaseModel):
+    package_id: str
+    case_id: str
+    safety_check: PersonalAlphaCaseOSExportPackageSafetyStats
+    unsafe_items: list[PersonalAlphaCaseOSExportPackageUnsafeItem] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSExportPackageSummaryStats(BaseModel):
+    package_count: int = 0
+    json_package_count: int = 0
+    markdown_package_count: int = 0
+    latest_package_id: str | None = None
+    latest_package_created_at: str | None = None
+    all_packages_metadata_only: bool = True
+    unsafe_package_count: int = 0
+    raw_content_package_count: int = 0
+
+
+class PersonalAlphaCaseOSExportPackageSummary(BaseModel):
+    case_id: str
+    summary: PersonalAlphaCaseOSExportPackageSummaryStats
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSExportPackageSection(BaseModel):
+    section_id: str
+    title: str
+    item_count: int = 0
+    raw_content_included: bool = False
+
+
 class PersonalAlphaCaseOSCaseDetail(BaseModel):
     case_id: str
     title: str

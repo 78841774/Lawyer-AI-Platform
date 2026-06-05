@@ -4,6 +4,15 @@ from pathlib import Path
 from typing import Any
 
 from personal_alpha_case_os.audit_engine import build_case_os_audit_timeline
+from personal_alpha_case_os.export_package_engine import (
+    build_export_package_status,
+    create_export_package,
+    get_export_package_content,
+    get_export_package_detail,
+    get_export_package_safety_check,
+    get_export_package_summary,
+    list_export_packages,
+)
 from personal_alpha_case_os.final_lock_consolidation import build_final_lock_consolidation
 from personal_alpha_case_os.metadata_closure_checklist import build_metadata_closure_checklist
 from personal_alpha_case_os.metadata_closure_engine import build_metadata_closure, build_metadata_closure_blockers
@@ -12,6 +21,7 @@ from personal_alpha_case_os.next_action_engine import build_next_action
 from personal_alpha_case_os.schemas import (
     PersonalAlphaCaseOSCaseDetail,
     PersonalAlphaCaseOSCaseListItem,
+    PersonalAlphaCaseOSExportPackageCreateRequest,
     PersonalAlphaCaseOSProfile,
     PersonalAlphaCaseOSSafetyChecklist,
     PersonalAlphaCaseOSStatus,
@@ -294,6 +304,48 @@ def get_personal_alpha_case_os_metadata_closure_export_preview(case_id: str) -> 
     checklist = build_metadata_closure_checklist(safe_case_id, context, audit_summary, redaction_check)
     closure = build_metadata_closure(safe_case_id, context, review_state, audit_summary, redaction_check, checklist)
     return build_metadata_closure_export_preview(safe_case_id, context, closure, checklist, audit_summary)
+
+
+def get_personal_alpha_case_os_export_package_status(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    return build_export_package_status(safe_case_id, context)
+
+
+def create_personal_alpha_case_os_export_package(case_id: str, payload: PersonalAlphaCaseOSExportPackageCreateRequest) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    return create_export_package(safe_case_id, context, payload)
+
+
+def list_personal_alpha_case_os_export_packages(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    return list_export_packages(safe_case_id, context)
+
+
+def get_personal_alpha_case_os_export_package(case_id: str, package_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    return get_export_package_detail(safe_case_id, context, package_id)
+
+
+def get_personal_alpha_case_os_export_package_content(case_id: str, package_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    return get_export_package_content(safe_case_id, context, package_id)
+
+
+def get_personal_alpha_case_os_export_package_safety_check(case_id: str, package_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    return get_export_package_safety_check(safe_case_id, context, package_id)
+
+
+def get_personal_alpha_case_os_export_package_summary(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    return get_export_package_summary(safe_case_id, context)
 
 
 def _case_contexts() -> list[dict[str, Any]]:
