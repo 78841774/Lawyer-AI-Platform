@@ -69,6 +69,11 @@ import type {
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
   PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSReviewState,
+  PersonalAlphaCaseOSReviewStateHistory,
+  PersonalAlphaCaseOSReviewStateSummary,
+  PersonalAlphaCaseOSReviewStateTransitionValidation,
+  PersonalAlphaCaseOSReviewStateTransitions,
   PersonalAlphaCaseOSSafetyChecklist,
   PersonalAlphaCaseOSStageOrchestration,
   PersonalAlphaCaseOSStageState,
@@ -234,6 +239,11 @@ export type {
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
   PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSReviewState,
+  PersonalAlphaCaseOSReviewStateHistory,
+  PersonalAlphaCaseOSReviewStateSummary,
+  PersonalAlphaCaseOSReviewStateTransitionValidation,
+  PersonalAlphaCaseOSReviewStateTransitions,
   PersonalAlphaCaseOSSafetyChecklist,
   PersonalAlphaCaseOSStageOrchestration,
   PersonalAlphaCaseOSStageState,
@@ -1030,6 +1040,18 @@ export const personalAlphaCaseOSApi = {
     request<PersonalAlphaCaseOSAuditTimelineRedactionCheck>(`/case-os/${encodeURIComponent(caseId)}/audit-timeline/redaction-check`),
   getAuditTimelineFilters: (caseId: string) =>
     request<PersonalAlphaCaseOSAuditTimelineAvailableFilters>(`/case-os/${encodeURIComponent(caseId)}/audit-timeline/filters`),
+  getReviewState: (caseId: string) =>
+    request<PersonalAlphaCaseOSReviewState>(`/case-os/${encodeURIComponent(caseId)}/review-state`),
+  getReviewStateHistory: (caseId: string) =>
+    request<PersonalAlphaCaseOSReviewStateHistory>(`/case-os/${encodeURIComponent(caseId)}/review-state/history`),
+  getReviewStateTransitions: (caseId: string) =>
+    request<PersonalAlphaCaseOSReviewStateTransitions>(`/case-os/${encodeURIComponent(caseId)}/review-state/transitions`),
+  validateReviewStateTransition: (caseId: string, fromState: string, toState: string) =>
+    request<PersonalAlphaCaseOSReviewStateTransitionValidation>(
+      `/case-os/${encodeURIComponent(caseId)}/review-state/validate-transition?from_state=${encodeURIComponent(fromState)}&to_state=${encodeURIComponent(toState)}`
+    ),
+  getReviewStateSummary: (caseId: string) =>
+    request<PersonalAlphaCaseOSReviewStateSummary>(`/case-os/${encodeURIComponent(caseId)}/review-state/summary`),
   getNextAction: (caseId: string) =>
     request<PersonalAlphaCaseOSNextAction>(`/case-os/${encodeURIComponent(caseId)}/next-action`),
   getStageOrchestration: (caseId: string) =>
@@ -1128,6 +1150,11 @@ export const getPersonalAlphaCaseOSUnifiedAuditTimeline = personalAlphaCaseOSApi
 export const getPersonalAlphaCaseOSAuditTimelineSummary = personalAlphaCaseOSApi.getAuditTimelineSummary;
 export const getPersonalAlphaCaseOSAuditTimelineRedactionCheck = personalAlphaCaseOSApi.getAuditTimelineRedactionCheck;
 export const getPersonalAlphaCaseOSAuditTimelineFilters = personalAlphaCaseOSApi.getAuditTimelineFilters;
+export const getPersonalAlphaCaseOSReviewState = personalAlphaCaseOSApi.getReviewState;
+export const getPersonalAlphaCaseOSReviewStateHistory = personalAlphaCaseOSApi.getReviewStateHistory;
+export const getPersonalAlphaCaseOSReviewStateTransitions = personalAlphaCaseOSApi.getReviewStateTransitions;
+export const validatePersonalAlphaCaseOSReviewStateTransition = personalAlphaCaseOSApi.validateReviewStateTransition;
+export const getPersonalAlphaCaseOSReviewStateSummary = personalAlphaCaseOSApi.getReviewStateSummary;
 export const getPersonalAlphaCaseOSNextAction = personalAlphaCaseOSApi.getNextAction;
 export const getPersonalAlphaCaseOSStageOrchestration = personalAlphaCaseOSApi.getStageOrchestration;
 export const getPersonalAlphaCaseOSStageTransitions = personalAlphaCaseOSApi.getStageTransitions;

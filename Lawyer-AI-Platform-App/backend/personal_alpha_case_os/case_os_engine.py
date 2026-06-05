@@ -20,6 +20,13 @@ from personal_alpha_case_os.stage_orchestrator import (
 )
 from personal_alpha_case_os.state_machine import build_stage_summary
 from personal_alpha_case_os.audit_filters import available_filters_payload
+from personal_alpha_case_os.review_state_history import build_review_state_history
+from personal_alpha_case_os.review_state_machine import (
+    build_review_state,
+    build_review_state_summary,
+    build_review_state_transitions,
+    validate_case_review_transition,
+)
 from personal_alpha_case_os.unified_audit_engine import (
     build_unified_audit_summary,
     build_unified_audit_timeline,
@@ -214,6 +221,30 @@ def get_personal_alpha_case_os_audit_timeline_filters(case_id: str) -> dict[str,
         return available_filters_payload("", ["case_id contains unsafe raw content or path-like value."])
     warnings = [] if _context_for_case(case_id) else ["Case not found."]
     return available_filters_payload(_safe_value(case_id), warnings)
+
+
+def get_personal_alpha_case_os_review_state(case_id: str) -> dict[str, Any]:
+    context = _safe_audit_context(case_id)
+    return build_review_state(_safe_value(case_id), context)
+
+
+def get_personal_alpha_case_os_review_state_history(case_id: str) -> dict[str, Any]:
+    context = _safe_audit_context(case_id)
+    return build_review_state_history(_safe_value(case_id), context)
+
+
+def get_personal_alpha_case_os_review_state_transitions(case_id: str) -> dict[str, Any]:
+    context = _safe_audit_context(case_id)
+    return build_review_state_transitions(_safe_value(case_id), context)
+
+
+def get_personal_alpha_case_os_review_state_transition_validation(case_id: str, from_state: str, to_state: str) -> dict[str, Any]:
+    return validate_case_review_transition(_safe_value(case_id), from_state, to_state)
+
+
+def get_personal_alpha_case_os_review_state_summary(case_id: str) -> dict[str, Any]:
+    context = _safe_audit_context(case_id)
+    return build_review_state_summary(_safe_value(case_id), context)
 
 
 def _case_contexts() -> list[dict[str, Any]]:

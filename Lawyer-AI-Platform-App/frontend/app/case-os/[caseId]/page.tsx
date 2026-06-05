@@ -18,6 +18,11 @@ import {
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSReviewState,
+  PersonalAlphaCaseOSReviewStateHistory,
+  PersonalAlphaCaseOSReviewStateSummary,
+  PersonalAlphaCaseOSReviewStateTransitionValidation,
+  PersonalAlphaCaseOSReviewStateTransitions,
   PersonalAlphaCaseOSStageOrchestration,
   PersonalAlphaCaseOSStageState,
   PersonalAlphaCaseOSStageTransitions,
@@ -30,10 +35,15 @@ import {
   getPersonalAlphaCaseOSBlockers,
   getPersonalAlphaCaseOSCaseDetail,
   getPersonalAlphaCaseOSNextAction,
+  getPersonalAlphaCaseOSReviewState,
+  getPersonalAlphaCaseOSReviewStateHistory,
+  getPersonalAlphaCaseOSReviewStateSummary,
+  getPersonalAlphaCaseOSReviewStateTransitions,
   getPersonalAlphaCaseOSSafetyChecklist,
   getPersonalAlphaCaseOSStageOrchestration,
   getPersonalAlphaCaseOSStageTransitions,
-  getPersonalAlphaCaseOSUnifiedAuditTimeline
+  getPersonalAlphaCaseOSUnifiedAuditTimeline,
+  validatePersonalAlphaCaseOSReviewStateTransition
 } from "@/services/api";
 
 const FALLBACK_STAGE_ORDER = [
@@ -56,6 +66,30 @@ const DEFAULT_AUDIT_FILTERS: Partial<PersonalAlphaCaseOSAuditTimelineFilters> = 
   offset: 0
 };
 
+const REVIEW_STATE_OPTIONS = [
+  "draft",
+  "intake_ready",
+  "workspace_run_ready",
+  "source_review_pending",
+  "source_reviewed",
+  "source_decision_pending",
+  "source_decision_completed",
+  "final_readiness_pending",
+  "final_readiness_ready",
+  "final_gate_pending",
+  "final_gate_approved",
+  "final_packet_pending",
+  "final_packet_created",
+  "lawyer_final_review_pending",
+  "lawyer_review_approved",
+  "lawyer_review_revision_requested",
+  "lawyer_review_rejected",
+  "final_lock_pending",
+  "final_lock_created",
+  "completed_metadata_review",
+  "blocked"
+];
+
 export default function PersonalAlphaCaseOSDetailPage() {
   const params = useParams<{ caseId: string }>();
   const caseId = decodeURIComponent(params.caseId);
@@ -71,6 +105,13 @@ export default function PersonalAlphaCaseOSDetailPage() {
   const [redactionCheck, setRedactionCheck] = useState<PersonalAlphaCaseOSAuditTimelineRedactionCheck | null>(null);
   const [availableFilters, setAvailableFilters] = useState<PersonalAlphaCaseOSAuditTimelineAvailableFilters | null>(null);
   const [auditFilters, setAuditFilters] = useState<Partial<PersonalAlphaCaseOSAuditTimelineFilters>>(DEFAULT_AUDIT_FILTERS);
+  const [reviewState, setReviewState] = useState<PersonalAlphaCaseOSReviewState | null>(null);
+  const [reviewStateHistory, setReviewStateHistory] = useState<PersonalAlphaCaseOSReviewStateHistory | null>(null);
+  const [reviewStateTransitions, setReviewStateTransitions] = useState<PersonalAlphaCaseOSReviewStateTransitions | null>(null);
+  const [reviewStateSummary, setReviewStateSummary] = useState<PersonalAlphaCaseOSReviewStateSummary | null>(null);
+  const [transitionValidation, setTransitionValidation] = useState<PersonalAlphaCaseOSReviewStateTransitionValidation | null>(null);
+  const [transitionFromState, setTransitionFromState] = useState("final_lock_pending");
+  const [transitionToState, setTransitionToState] = useState("final_lock_created");
   const [safetyResponse, setSafetyResponse] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -91,7 +132,12 @@ export default function PersonalAlphaCaseOSDetailPage() {
         nextUnifiedAuditTimeline,
         nextAuditSummary,
         nextRedactionCheck,
-        nextAvailableFilters
+        nextAvailableFilters,
+        nextReviewState,
+        nextReviewStateHistory,
+        nextReviewStateTransitions,
+        nextReviewStateSummary,
+        nextTransitionValidation
       ] = await Promise.all([
         getPersonalAlphaCaseOSCaseDetail(caseId),
         getPersonalAlphaCaseOSAuditTimeline(caseId),
@@ -104,7 +150,12 @@ export default function PersonalAlphaCaseOSDetailPage() {
         getPersonalAlphaCaseOSUnifiedAuditTimeline(caseId, DEFAULT_AUDIT_FILTERS),
         getPersonalAlphaCaseOSAuditTimelineSummary(caseId),
         getPersonalAlphaCaseOSAuditTimelineRedactionCheck(caseId),
-        getPersonalAlphaCaseOSAuditTimelineFilters(caseId)
+        getPersonalAlphaCaseOSAuditTimelineFilters(caseId),
+        getPersonalAlphaCaseOSReviewState(caseId),
+        getPersonalAlphaCaseOSReviewStateHistory(caseId),
+        getPersonalAlphaCaseOSReviewStateTransitions(caseId),
+        getPersonalAlphaCaseOSReviewStateSummary(caseId),
+        validatePersonalAlphaCaseOSReviewStateTransition(caseId, transitionFromState, transitionToState)
       ]);
       setDetail(nextDetail);
       setTimeline(nextTimeline);
@@ -118,6 +169,11 @@ export default function PersonalAlphaCaseOSDetailPage() {
       setAuditSummary(nextAuditSummary);
       setRedactionCheck(nextRedactionCheck);
       setAvailableFilters(nextAvailableFilters);
+      setReviewState(nextReviewState);
+      setReviewStateHistory(nextReviewStateHistory);
+      setReviewStateTransitions(nextReviewStateTransitions);
+      setReviewStateSummary(nextReviewStateSummary);
+      setTransitionValidation(nextTransitionValidation);
     } catch {
       setError("Case OS detail 加载失败。若 case_id 不存在，后端会返回 safe not_found，不暴露本地路径或原文。");
     } finally {
@@ -152,6 +208,19 @@ export default function PersonalAlphaCaseOSDetailPage() {
   function resetAuditFilters() {
     setAuditFilters(DEFAULT_AUDIT_FILTERS);
     void loadFilteredAuditTimeline(DEFAULT_AUDIT_FILTERS);
+  }
+
+  async function validateTransition() {
+    setLoading(true);
+    setError("");
+    try {
+      const nextValidation = await validatePersonalAlphaCaseOSReviewStateTransition(caseId, transitionFromState, transitionToState);
+      setTransitionValidation(nextValidation);
+    } catch {
+      setError("Transition validation 加载失败。v6.3 只做校验，不执行 workflow action。");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const stageCards = useMemo(() => {
@@ -241,6 +310,130 @@ export default function PersonalAlphaCaseOSDetailPage() {
             </CardBody>
           </Card>
         </div>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Review State Machine</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="review_state" value={reviewState?.review_state ?? "-"} />
+              <InfoRow label="review_state_label" value={reviewState?.review_state_label ?? "-"} />
+              <InfoRow label="current_stage" value={reviewState?.current_stage ?? "-"} />
+              <InfoRow label="next_action" value={reviewState?.next_action ?? "-"} />
+              <InfoRow label="target_route" value={reviewState?.target_route ?? "-"} />
+              <InfoRow label="blocked" value={String(reviewState?.blocked ?? false)} />
+              <InfoRow label="terminal" value={String(reviewState?.terminal ?? false)} />
+              <InfoRow label="completed_metadata_review" value={String(reviewState?.completed_metadata_review ?? false)} />
+              <InfoRow label="would_execute_action" value="false" />
+              <InfoRow label="raw_content_included" value={String(reviewState?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(reviewState?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(reviewState?.final_report_generated ?? false)} />
+            </div>
+            <ReasonList reasons={reviewState?.blocked_reasons ?? []} tone="danger" />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Review State Summary</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="review_state" value={reviewStateSummary?.summary.review_state ?? "-"} />
+              <InfoRow label="history_count" value={String(reviewStateSummary?.summary.history_count ?? 0)} />
+              <InfoRow label="available_transition_count" value={String(reviewStateSummary?.summary.available_transition_count ?? 0)} />
+              <InfoRow label="blocked_transition_count" value={String(reviewStateSummary?.summary.blocked_transition_count ?? 0)} />
+              <InfoRow label="requires_manual_review" value={String(reviewStateSummary?.summary.requires_manual_review ?? true)} />
+              <InfoRow label="requires_lawyer_review" value={String(reviewStateSummary?.summary.requires_lawyer_review ?? true)} />
+              <InfoRow label="terminal" value={String(reviewStateSummary?.summary.terminal ?? false)} />
+              <InfoRow label="blocked" value={String(reviewStateSummary?.summary.blocked ?? false)} />
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Review State History</h2>
+            <div className="mt-4 space-y-3">
+              {(reviewStateHistory?.history ?? []).map((item) => (
+                <div key={item.state_history_id} className="rounded-md border border-line bg-white p-4">
+                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-ink">
+                        {item.from_state} {"->"} {item.to_state}
+                      </div>
+                      <div className="mt-1 text-xs text-muted">{item.transition}</div>
+                    </div>
+                    <div className="text-xs text-muted">{item.created_at || "-"}</div>
+                  </div>
+                  <div className="mt-3 grid gap-2 text-xs text-muted md:grid-cols-4">
+                    <span>result: {item.result}</span>
+                    <span>stage_id: {item.stage_id}</span>
+                    <span>module: {item.module}</span>
+                    <span>raw: {String(item.raw_content_included)}</span>
+                  </div>
+                </div>
+              ))}
+              {!(reviewStateHistory?.history ?? []).length ? (
+                <div className="rounded-md border border-dashed border-line p-5 text-sm text-muted">
+                  暂无 review state history metadata。
+                </div>
+              ) : null}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Available Transitions</h2>
+            <div className="mt-4 space-y-3">
+              {[...(reviewStateTransitions?.available_transitions ?? []), ...(reviewStateTransitions?.blocked_transitions ?? [])].map((transition) => (
+                <div key={transition.transition} className="rounded-md border border-line bg-white p-4">
+                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-ink">
+                        {transition.from_state} {"->"} {transition.to_state}
+                      </div>
+                      <div className="mt-1 text-xs text-muted">{transition.reason}</div>
+                    </div>
+                    <div className="text-xs text-muted">allowed: {String(transition.allowed)}</div>
+                  </div>
+                  <div className="mt-3 grid gap-2 text-xs text-muted md:grid-cols-4">
+                    <span>target_action: {transition.target_action ?? "-"}</span>
+                    <span>target_route: {transition.target_route ?? "-"}</span>
+                    <span>confirmations: {transition.required_confirmations.length}</span>
+                    <span>raw: {String(transition.raw_content_included)}</span>
+                  </div>
+                  <LabelList label="required_confirmations" values={transition.required_confirmations} />
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Transition Validation Panel</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <FilterSelect label="from_state" value={transitionFromState} options={REVIEW_STATE_OPTIONS} onChange={setTransitionFromState} />
+              <FilterSelect label="to_state" value={transitionToState} options={REVIEW_STATE_OPTIONS} onChange={setTransitionToState} />
+              <InfoRow label="would_execute_action" value={String(transitionValidation?.would_execute_action ?? false)} />
+              <InfoRow label="valid_transition" value={String(transitionValidation?.valid_transition ?? false)} />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Button type="button" onClick={() => void validateTransition()} disabled={loading}>
+                Validate Transition
+              </Button>
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="allowed" value={String(transitionValidation?.allowed ?? false)} />
+              <InfoRow label="transition" value={transitionValidation?.transition ?? "-"} />
+              <InfoRow label="target_action" value={transitionValidation?.target_action ?? "-"} />
+              <InfoRow label="target_route" value={transitionValidation?.target_route ?? "-"} />
+              <InfoRow label="raw_content_included" value={String(transitionValidation?.raw_content_included ?? false)} />
+              <InfoRow label="mock_or_redacted_only" value={String(transitionValidation?.mock_or_redacted_only ?? true)} />
+            </div>
+            <ReasonList reasons={transitionValidation?.blocked_reasons ?? []} tone="danger" />
+            <LabelList label="required_confirmations" values={transitionValidation?.required_confirmations ?? []} />
+          </CardBody>
+        </Card>
 
         <Card>
           <CardBody>
@@ -531,6 +724,11 @@ export default function PersonalAlphaCaseOSDetailPage() {
         </Card>
 
         <div className="grid gap-4 xl:grid-cols-2">
+          <JsonPanel title="review_state" value={reviewState} />
+          <JsonPanel title="review_state_summary" value={reviewStateSummary} />
+          <JsonPanel title="review_state_history" value={reviewStateHistory} />
+          <JsonPanel title="review_state_transitions" value={reviewStateTransitions} />
+          <JsonPanel title="transition_validation" value={transitionValidation} />
           <JsonPanel title="unified_audit_timeline" value={unifiedAuditTimeline} />
           <JsonPanel title="audit_summary" value={auditSummary} />
           <JsonPanel title="redaction_check" value={redactionCheck} />

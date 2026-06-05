@@ -330,6 +330,113 @@ class PersonalAlphaCaseOSAuditTimelineAvailableFilters(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class PersonalAlphaCaseOSReviewState(BaseModel):
+    case_id: str
+    review_state: str
+    review_state_label: str
+    current_stage: str
+    next_action: str
+    target_route: str | None = None
+    blocked: bool = False
+    blocked_reasons: list[str] = Field(default_factory=list)
+    terminal: bool = False
+    completed_metadata_review: bool = False
+    state_source: str = "derived_from_case_os_metadata"
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReviewStateHistoryItem(BaseModel):
+    state_history_id: str
+    from_state: str
+    to_state: str
+    transition: str
+    result: str = "metadata_transition_available"
+    source_event_id: str
+    stage_id: str
+    module: str
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    created_at: str = ""
+
+
+class PersonalAlphaCaseOSReviewStateHistory(BaseModel):
+    case_id: str
+    history: list[PersonalAlphaCaseOSReviewStateHistoryItem] = Field(default_factory=list)
+    history_count: int = 0
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReviewStateTransition(BaseModel):
+    transition: str
+    from_state: str
+    to_state: str
+    allowed: bool = False
+    reason: str
+    target_action: str | None = None
+    target_route: str | None = None
+    required_confirmations: list[str] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+
+
+class PersonalAlphaCaseOSReviewStateTransitions(BaseModel):
+    case_id: str
+    current_state: str
+    available_transitions: list[PersonalAlphaCaseOSReviewStateTransition] = Field(default_factory=list)
+    blocked_transitions: list[PersonalAlphaCaseOSReviewStateTransition] = Field(default_factory=list)
+    terminal: bool = False
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReviewStateTransitionValidation(BaseModel):
+    case_id: str
+    from_state: str
+    to_state: str
+    transition: str
+    allowed: bool = False
+    valid_transition: bool = False
+    would_execute_action: bool = False
+    target_action: str | None = None
+    target_route: str | None = None
+    blocked_reasons: list[str] = Field(default_factory=list)
+    required_confirmations: list[str] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReviewStateSummaryStats(BaseModel):
+    review_state: str
+    terminal: bool = False
+    completed_metadata_review: bool = False
+    blocked: bool = False
+    history_count: int = 0
+    available_transition_count: int = 0
+    blocked_transition_count: int = 0
+    next_action: str
+    target_route: str | None = None
+    requires_manual_review: bool = True
+    requires_lawyer_review: bool = True
+
+
+class PersonalAlphaCaseOSReviewStateSummary(BaseModel):
+    case_id: str
+    summary: PersonalAlphaCaseOSReviewStateSummaryStats
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
 class PersonalAlphaCaseOSCaseDetail(BaseModel):
     case_id: str
     title: str
