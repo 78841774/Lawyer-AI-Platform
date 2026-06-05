@@ -3,6 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
+  DiagnosticsPanel,
+  TrustSafetyPanel
+} from "@/components/personal-production/ProductionShowcaseUI";
+import {
   PersonalEnterpriseQueryList,
   PersonalEnterpriseQueryResult,
   PersonalIntelligenceAuditTimeline,
@@ -234,7 +238,7 @@ export default function PersonalIntelligencePage() {
           <StatusCard label="律师确认" value={status?.confirmation_queue_enabled ?? true} />
         </section>
 
-        <Panel title="Provider Cards">
+        <Panel title="Provider Cards / Provider 状态">
           <div className="grid gap-3 md:grid-cols-5">
             {(providers?.providers ?? []).map((provider) => (
               <div key={provider.provider_id} className="rounded-md border border-line bg-white p-4">
@@ -313,7 +317,7 @@ export default function PersonalIntelligencePage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-          <Panel title="Citation Candidates / Source Trace">
+          <Panel title="Citation Candidates / Source Trace / 来源追踪候选">
             <div className="grid gap-3">
               {(sourceTraces?.source_traces ?? []).slice(0, 8).map((trace) => (
                 <div key={trace.source_trace_id} className="rounded-md border border-line bg-white p-3 text-xs text-muted">
@@ -373,37 +377,21 @@ export default function PersonalIntelligencePage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <Panel title="安全清单">
-            <div className="grid gap-2">
-              {(safety?.safety_checklist ?? []).map((item) => (
-                <div key={item} className="flex items-center justify-between rounded-md border border-line bg-white px-3 py-2">
-                  <span className="text-sm text-ink">{item}</span>
-                  <StatusBadge tone="safe" label="通过" />
-                </div>
-              ))}
-            </div>
-          </Panel>
+          <TrustSafetyPanel items={safety?.safety_checklist ?? []} title="安全清单" />
 
           <Panel title="Developer Diagnostics">
-            <details className="rounded-md border border-line bg-slate-950 text-slate-100">
-              <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-200">JSON metadata</summary>
-              <pre className="max-h-96 overflow-auto border-t border-slate-800 p-4 text-xs leading-5">
-                {JSON.stringify(
-                  {
-                    status,
-                    providers,
-                    legal_search: legalSearch,
-                    enterprise_query: enterpriseQuery,
-                    source_traces: sourceTraces,
-                    confirmation_queue: confirmationQueue,
-                    audit,
-                    safety
-                  },
-                  null,
-                  2
-                )}
-              </pre>
-            </details>
+            <DiagnosticsPanel
+              data={{
+                status,
+                providers,
+                legal_search: legalSearch,
+                enterprise_query: enterpriseQuery,
+                source_traces: sourceTraces,
+                confirmation_queue: confirmationQueue,
+                audit,
+                safety
+              }}
+            />
           </Panel>
         </section>
       </div>

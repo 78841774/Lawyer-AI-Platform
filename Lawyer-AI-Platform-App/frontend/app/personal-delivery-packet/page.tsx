@@ -3,6 +3,12 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
+  DarkSafetyBadge,
+  DiagnosticsPanel,
+  ShowcaseStepper,
+  TrustSafetyPanel
+} from "@/components/personal-production/ProductionShowcaseUI";
+import {
   DeliveryPacketList,
   DeliveryPacketRecord,
   DeliveryPacketRuntimeList,
@@ -26,13 +32,14 @@ const stepper = [
 
 const safetyChecks = [
   "未读取真实案件原文",
+  "未读取真实案件材料",
   "未调用真实 provider",
   "未读取 API key",
   "未生成最终法律意见",
   "未生成最终报告",
   "未自动对外交付",
   "未发送邮件",
-  "未生成真实最终交付文件",
+  "未生成真实 PDF/DOCX",
   "律师复核必需",
   "最终锁定必需",
   "来源追踪必需",
@@ -264,14 +271,12 @@ export default function PersonalDeliveryPacketPage() {
             <div>
               <div className="flex flex-wrap gap-2">
                 {["mock-first", "metadata-only", "律师复核必需", "不自动对外交付"].map((badge) => (
-                  <span key={badge} className="rounded-md border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100">
-                    {badge}
-                  </span>
+                  <DarkSafetyBadge key={badge} label={badge} />
                 ))}
               </div>
               <h1 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">个人生产交付包</h1>
               <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-300 md:text-base">
-                把 v7.5 真实案件生产工作流 metadata 汇总成受控交付包草案，覆盖交付项清单、来源追踪包、律师复核摘要、导出准备度与最终锁定队列。
+                把 v7.5 受控案件生产工作流 metadata 汇总成受控交付包草案，覆盖交付项清单、来源追踪包、律师复核摘要、导出准备度与最终锁定队列。
               </p>
               <div className="mt-5 grid gap-2 text-sm text-slate-300 sm:grid-cols-2">
                 <span>不生成最终法律意见</span>
@@ -292,14 +297,12 @@ export default function PersonalDeliveryPacketPage() {
           </div>
         </section>
 
-        <section className="grid gap-3 md:grid-cols-5">
-          {stepper.map((step, index) => (
-            <div key={step.label} className="rounded-md border border-line bg-white p-4 shadow-sm">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-sm font-semibold text-white">{index + 1}</div>
-              <div className="mt-3 text-sm font-semibold text-ink">{step.label}</div>
-              <div className="mt-1 text-xs text-muted">{step.detail}</div>
-            </div>
-          ))}
+        <section className="rounded-md border border-line bg-white p-5 shadow-sm">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-ink">交付流程 Stepper</h2>
+            <span className="text-xs text-muted">草案 · 交付项 · 来源追踪 · 律师复核 · 最终锁定</span>
+          </div>
+          <ShowcaseStepper steps={stepper.map((step) => ({ label: step.label, detail: step.detail, status: "draft metadata" }))} columns="md:grid-cols-3 xl:grid-cols-5" />
         </section>
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
@@ -455,24 +458,12 @@ export default function PersonalDeliveryPacketPage() {
             />
           </Panel>
 
-          <Panel title="安全检查清单">
-            <div className="grid gap-2">
-              {(safety?.safety_checklist?.length ? safety.safety_checklist : safetyChecks).map((item) => (
-                <div key={item} className="flex items-center justify-between gap-3 rounded-md border border-line bg-white px-3 py-2">
-                  <span className="text-sm text-ink">{item}</span>
-                  <span className="rounded-md bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">已启用</span>
-                </div>
-              ))}
-            </div>
-          </Panel>
+          <TrustSafetyPanel items={safety?.safety_checklist?.length ? safety.safety_checklist : safetyChecks} title="安全检查清单" />
         </section>
 
-        <details className="rounded-md border border-line bg-white p-4 shadow-sm">
-          <summary className="cursor-pointer text-sm font-semibold text-ink">Developer Diagnostics</summary>
-          <pre className="mt-4 max-h-[420px] overflow-auto rounded-md bg-slate-950 p-4 text-xs leading-5 text-slate-100">
-            {JSON.stringify({ status, runtimes, selectedPacket, readiness, reviewSummary, finalLocks, safety }, null, 2)}
-          </pre>
-        </details>
+        <Panel title="Developer Diagnostics">
+          <DiagnosticsPanel data={{ status, runtimes, selectedPacket, readiness, reviewSummary, finalLocks, safety }} />
+        </Panel>
       </div>
     </AppShell>
   );

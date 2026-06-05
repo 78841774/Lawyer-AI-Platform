@@ -18,6 +18,7 @@
 - v7.5 builds Real Case Production Workflow foundations without final report generation or external delivery.
 - v7.6 builds Personal Delivery Packet foundations without live provider calls, final legal opinion generation, final report generation, real PDF/DOCX generation, email sending, or external delivery.
 - v7.7 builds Personal Production Pilot & Showcase Pack foundations without live provider calls, API key access, raw content exposure, final legal opinion generation, final report generation, real PDF/DOCX generation, email sending, external delivery, or Skill publishing.
+- v7.8 does not add provider runtime scope. It unifies UI polish, Trust / Safety presentation, diagnostics folding, and showcase navigation while preserving provider-gated behavior.
 
 ## Boundary
 

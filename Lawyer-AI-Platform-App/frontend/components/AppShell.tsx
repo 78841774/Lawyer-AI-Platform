@@ -35,14 +35,6 @@ const navGroups = [
       { href: "/personal-alpha-lawyer-final-review", label: "Personal Alpha Lawyer Final Review" },
       { href: "/personal-alpha-final-lock", label: "Personal Alpha Final Lock" },
       { href: "/case-os", label: "Personal Alpha Case OS" },
-      { href: "/personal-production", label: "Personal Production" },
-      { href: "/personal-ai-gateway", label: "AI Gateway" },
-      { href: "/personal-material-runtime", label: "Material Runtime" },
-      { href: "/personal-intelligence", label: "法律与企业信息网关" },
-      { href: "/personal-skill-studio", label: "经验包与技能工作室" },
-      { href: "/personal-case-production", label: "真实案件生产工作流" },
-      { href: "/personal-delivery-packet", label: "个人生产交付包" },
-      { href: "/personal-showcase-pack", label: "个人生产试点与展示包" },
       { href: "/controlled-material", label: "Controlled Material" },
       { href: "/controlled-ocr", label: "Controlled OCR" },
       { href: "/controlled-legal-search", label: "Controlled Legal Search" },
@@ -50,6 +42,19 @@ const navGroups = [
       { href: "/controlled-review", label: "Controlled Review" },
       { href: "/controlled-revision", label: "Controlled Revision" },
       { href: "/controlled-final-review", label: "Controlled Final Review" }
+    ]
+  },
+  {
+    label: "个人生产",
+    items: [
+      { href: "/personal-production", label: "个人生产总控台" },
+      { href: "/personal-showcase-pack", label: "个人生产试点与展示包" },
+      { href: "/personal-delivery-packet", label: "个人生产交付包" },
+      { href: "/personal-case-production", label: "受控案件生产工作流" },
+      { href: "/personal-skill-studio", label: "经验包与技能工作室" },
+      { href: "/personal-intelligence", label: "法律与企业信息网关" },
+      { href: "/personal-material-runtime", label: "材料解析与 OCR Runtime" },
+      { href: "/personal-ai-gateway", label: "AI 网关与草稿 Runtime" }
     ]
   },
   {

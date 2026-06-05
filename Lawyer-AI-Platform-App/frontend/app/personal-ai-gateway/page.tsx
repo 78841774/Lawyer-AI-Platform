@@ -3,6 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
+  DiagnosticsPanel,
+  TrustSafetyPanel
+} from "@/components/personal-production/ProductionShowcaseUI";
+import {
   PersonalAIAuditTimeline,
   PersonalAIGatewayStatus,
   PersonalAIMockRunResult,
@@ -134,16 +138,16 @@ export default function PersonalAIGatewayPage() {
           <div className="grid gap-6 p-6 md:grid-cols-[1.35fr_0.75fr] md:p-8">
             <div>
               <div className="inline-flex items-center rounded-md border border-teal-300/40 bg-teal-300/10 px-3 py-1 text-xs font-medium text-teal-100">
-                {status?.version ?? "v7.1"} · Mock-first provider gateway
+                {status?.version ?? "v7.1"} · mock-first provider gateway
               </div>
               <h1 className="mt-5 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-                AIHome.law AI Provider Gateway
+                AIHome.law AI 网关与草稿 Runtime
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                Controlled prompt runtime for AI-assisted draft workflows. Live provider calls stay disabled, provider secrets stay hidden, and every output remains draft-only.
+                受控 prompt runtime 仅用于草稿流程验证。真实 provider 调用保持关闭，provider secret 不展示，输出始终保持 draft-only。
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {["Mock-first", "Draft-only", "Lawyer review required", "Source-traced output", "No final legal opinion"].map((badge) => (
+                {["mock-first", "draft-only", "律师复核必需", "来源可追踪", "不生成最终法律意见"].map((badge) => (
                   <SafetyBadge key={badge} label={badge} />
                 ))}
               </div>
@@ -151,10 +155,10 @@ export default function PersonalAIGatewayPage() {
             <div className="rounded-md border border-slate-700 bg-white/5 p-5">
               <div className="text-xs uppercase tracking-wide text-teal-200">Gateway posture</div>
               <div className="mt-4 grid gap-3">
-                <HeroMetric label="Gateway enabled" value={status?.enabled ?? true} />
-                <HeroMetric label="Live provider call" value={status?.live_provider_call_enabled ?? false} invert />
-                <HeroMetric label="External delivery" value={status?.external_delivery_enabled ?? false} invert />
-                <HeroMetric label="Final legal opinion" value={status?.final_legal_opinion_generated ?? false} invert />
+                <HeroMetric label="网关启用" value={status?.enabled ?? true} />
+                <HeroMetric label="真实 provider 调用" value={status?.live_provider_call_enabled ?? false} invert />
+                <HeroMetric label="外部交付" value={status?.external_delivery_enabled ?? false} invert />
+                <HeroMetric label="最终法律意见" value={status?.final_legal_opinion_generated ?? false} invert />
               </div>
               <button
                 type="button"
@@ -162,14 +166,14 @@ export default function PersonalAIGatewayPage() {
                 disabled={loading}
                 className="mt-5 w-full rounded-md bg-teal-300 px-3 py-2 text-sm font-semibold text-slate-950 disabled:opacity-60"
               >
-                {loading ? "Refreshing" : "Refresh Gateway"}
+                {loading ? "刷新中" : "刷新 AI 网关"}
               </button>
             </div>
           </div>
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-          <Panel title="Provider Cards">
+          <Panel title="Provider Cards / Provider 状态">
             <div className="grid gap-3 md:grid-cols-3">
               {(providers?.providers ?? []).map((provider) => (
                 <div key={provider.provider_id} className="rounded-md border border-line bg-white p-4">
@@ -191,7 +195,7 @@ export default function PersonalAIGatewayPage() {
             </div>
           </Panel>
 
-          <Panel title="Prompt Template Registry">
+          <Panel title="Prompt Template Registry / 草稿模板">
             <div className="grid gap-3 md:grid-cols-2">
               {(templates?.templates ?? []).map((template) => (
                 <div key={template.template_id} className="rounded-md border border-line bg-white p-4">
@@ -214,7 +218,7 @@ export default function PersonalAIGatewayPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-2">
-          <Panel title="Prompt Render Preview">
+          <Panel title="Prompt Render Preview / 草稿预览">
             <GatewayForm
               providers={providers}
               templates={templates}
@@ -252,7 +256,7 @@ export default function PersonalAIGatewayPage() {
             ) : null}
           </Panel>
 
-          <Panel title="Mock AI Run">
+          <Panel title="Mock AI Run / 模拟运行">
             <GatewayForm
               providers={providers}
               templates={templates}
@@ -296,7 +300,7 @@ export default function PersonalAIGatewayPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[1fr_0.9fr_0.9fr]">
-          <Panel title="Runs">
+          <Panel title="Runs / 模拟运行记录">
             <div className="grid gap-3">
               {(runs?.runs ?? []).slice(0, 5).map((run) => (
                 <MetadataRow key={run.ai_run_id} label={run.ai_run_id} value={`${run.provider_id} · ${run.template_id}`} />
@@ -305,7 +309,7 @@ export default function PersonalAIGatewayPage() {
             </div>
           </Panel>
 
-          <Panel title="Audit Metadata">
+          <Panel title="Audit Metadata / 审计 metadata">
             <div className="grid gap-3">
               {(audit?.events ?? []).slice(0, 5).map((event) => (
                 <MetadataRow key={event.ai_run_id} label={event.ai_run_id} value={`${event.mode} · live_call_executed=${String(event.live_call_executed)}`} />
@@ -314,7 +318,7 @@ export default function PersonalAIGatewayPage() {
             </div>
           </Panel>
 
-          <Panel title="Token Usage">
+          <Panel title="Token Usage / 估算用量">
             <div className="grid gap-3">
               <MetricCard label="run_count" value={String(tokenUsage?.run_count ?? 0)} />
               <MetricCard label="estimated_total_tokens" value={String(tokenUsage?.estimated_total_tokens ?? 0)} />
@@ -324,41 +328,23 @@ export default function PersonalAIGatewayPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
-          <Panel title="Safety Panel">
-            <div className="grid gap-2">
-              {Object.entries(safety?.safety ?? {}).map(([key, value]) => (
-                <div key={key} className="flex items-center justify-between rounded-md border border-line bg-white px-3 py-2">
-                  <span className="text-sm text-ink">{key}</span>
-                  <StatusBadge tone={value ? "safe" : "blocked"} label={String(value)} />
-                </div>
-              ))}
-            </div>
-          </Panel>
+          <TrustSafetyPanel title="Safety Panel / 安全边界" />
 
           <Panel title="Developer Diagnostics">
-            <details className="rounded-md border border-line bg-slate-950 text-slate-100">
-              <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-200">
-                API metadata
-              </summary>
-              <pre className="max-h-96 overflow-auto border-t border-slate-800 p-4 text-xs leading-5">
-                {JSON.stringify(
-                  {
-                    status,
-                    providers,
-                    templates,
-                    selected_template: selectedTemplateRecord,
-                    preview_result: previewResult,
-                    mock_run_result: mockRunResult,
-                    runs,
-                    audit,
-                    token_usage: tokenUsage,
-                    safety
-                  },
-                  null,
-                  2
-                )}
-              </pre>
-            </details>
+            <DiagnosticsPanel
+              data={{
+                status,
+                providers,
+                templates,
+                selected_template: selectedTemplateRecord,
+                preview_result: previewResult,
+                mock_run_result: mockRunResult,
+                runs,
+                audit,
+                token_usage: tokenUsage,
+                safety
+              }}
+            />
           </Panel>
         </section>
       </div>

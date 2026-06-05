@@ -3,6 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
+  DiagnosticsPanel,
+  TrustSafetyPanel
+} from "@/components/personal-production/ProductionShowcaseUI";
+import {
   PersonalMaterialAuditTimeline,
   PersonalMaterialParseJobList,
   PersonalMaterialParseJobResult,
@@ -209,16 +213,16 @@ export default function PersonalMaterialRuntimePage() {
           <div className="grid gap-6 p-6 md:grid-cols-[1.35fr_0.75fr] md:p-8">
             <div>
               <div className="inline-flex items-center rounded-md border border-lime-300/40 bg-lime-300/10 px-3 py-1 text-xs font-medium text-lime-100">
-                {status?.version ?? "v7.2"} · Mock-first provider runtime
+                {status?.version ?? "v7.2"} · mock-first material runtime
               </div>
               <h1 className="mt-5 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-                AIHome.law Material Runtime
+                AIHome.law 材料解析与 OCR Runtime
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                Controlled file parsing and PaddleOCR-ready runtime for metadata-only material processing. OCR previews stay controlled and lawyer review remains required.
+                受控文件解析与 PaddleOCR-ready runtime，仅处理 metadata 与预览状态。OCR preview 不暴露原文，律师复核保持必需。
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {["Controlled file parsing", "PaddleOCR-ready", "OCR review required", "Source trace required", "No raw OCR exposure"].map((badge) => (
+                {["受控材料解析", "PaddleOCR-ready", "OCR 复核必需", "来源追踪必需", "不暴露 raw OCR"].map((badge) => (
                   <SafetyBadge key={badge} label={badge} />
                 ))}
               </div>
@@ -226,10 +230,10 @@ export default function PersonalMaterialRuntimePage() {
             <div className="rounded-md border border-slate-700 bg-white/5 p-5">
               <div className="text-xs uppercase tracking-wide text-lime-200">Runtime posture</div>
               <div className="mt-4 grid gap-3">
-                <HeroMetric label="Material runtime" value={status?.material_parser_runtime_enabled ?? true} />
-                <HeroMetric label="OCR runtime" value={status?.ocr_runtime_enabled ?? true} />
-                <HeroMetric label="Live provider call" value={status?.live_provider_call_enabled ?? false} invert />
-                <HeroMetric label="OCR source text exposed" value={status?.raw_ocr_text_exposed ?? false} invert />
+                <HeroMetric label="材料解析 Runtime" value={status?.material_parser_runtime_enabled ?? true} />
+                <HeroMetric label="OCR Runtime" value={status?.ocr_runtime_enabled ?? true} />
+                <HeroMetric label="真实 provider 调用" value={status?.live_provider_call_enabled ?? false} invert />
+                <HeroMetric label="OCR 原文暴露" value={status?.raw_ocr_text_exposed ?? false} invert />
               </div>
               <button
                 type="button"
@@ -237,13 +241,13 @@ export default function PersonalMaterialRuntimePage() {
                 disabled={loading}
                 className="mt-5 w-full rounded-md bg-lime-300 px-3 py-2 text-sm font-semibold text-slate-950 disabled:opacity-60"
               >
-                {loading ? "Refreshing" : "Refresh Runtime"}
+                {loading ? "刷新中" : "刷新 Runtime"}
               </button>
             </div>
           </div>
         </section>
 
-        <Panel title="Provider Cards">
+        <Panel title="Provider Cards / Provider 状态">
           <div className="grid gap-3 md:grid-cols-3">
             {(providers?.providers ?? []).map((provider) => (
               <div key={provider.provider_id} className="rounded-md border border-line bg-white p-4">
@@ -266,7 +270,7 @@ export default function PersonalMaterialRuntimePage() {
         </Panel>
 
         <section className="grid gap-6 xl:grid-cols-2">
-          <Panel title="Parse Job Mock Form">
+          <Panel title="Parse Job Mock Form / 材料解析草案">
             <div className="grid gap-4">
               <SelectField label="provider" value={parserProvider} options={parserProviders.map((provider) => provider.provider_id)} onChange={setParserProvider} />
               <SelectField label="parse_type" value={parseType} options={parseTypes} onChange={setParseType} />
@@ -302,7 +306,7 @@ export default function PersonalMaterialRuntimePage() {
             ) : null}
           </Panel>
 
-          <Panel title="OCR Job Mock Form">
+          <Panel title="OCR Job Mock Form / OCR 预览草案">
             <div className="grid gap-4">
               <SelectField label="provider" value={ocrProvider} options={ocrProviders.map((provider) => provider.provider_id)} onChange={setOCRProvider} />
               <SelectField label="ocr_job_type" value={ocrJobType} options={ocrJobTypes} onChange={setOCRJobType} />
@@ -332,7 +336,7 @@ export default function PersonalMaterialRuntimePage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <Panel title="OCR Preview Panel">
+          <Panel title="OCR Preview Panel / OCR 预览状态">
             <MetricGrid
               metrics={{
                 page_count: activePreview?.page_count ?? 0,
@@ -349,7 +353,7 @@ export default function PersonalMaterialRuntimePage() {
             </div>
           </Panel>
 
-          <Panel title="OCR Review Queue">
+          <Panel title="OCR Review Queue / OCR 复核队列">
             <div className="grid gap-3">
               <SelectField
                 label="ocr_job_id"
@@ -379,7 +383,7 @@ export default function PersonalMaterialRuntimePage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-3">
-          <Panel title="Source Trace Panel">
+          <Panel title="Source Trace Panel / 来源追踪">
             <div className="grid gap-3">
               {(sourceTraces?.source_traces ?? []).slice(0, 6).map((trace) => (
                 <div key={trace.source_trace_id} className="rounded-md border border-line bg-white p-3 text-xs text-muted">
@@ -398,7 +402,7 @@ export default function PersonalMaterialRuntimePage() {
             </div>
           </Panel>
 
-          <Panel title="Audit Metadata">
+          <Panel title="Audit Metadata / 审计 metadata">
             <div className="grid gap-3">
               {(audit?.events ?? []).slice(0, 6).map((event) => (
                 <MetadataRow key={event.event_id} label={event.event_type} value={`${event.job_id} · live=${String(event.live_call_executed)}`} />
@@ -407,43 +411,25 @@ export default function PersonalMaterialRuntimePage() {
             </div>
           </Panel>
 
-          <Panel title="Safety Panel">
-            <div className="grid gap-2">
-              {Object.entries(safety?.safety ?? {}).map(([key, value]) => (
-                <div key={key} className="flex items-center justify-between rounded-md border border-line bg-white px-3 py-2">
-                  <span className="text-sm text-ink">{key}</span>
-                  <StatusBadge tone={value ? "safe" : "blocked"} label={String(value)} />
-                </div>
-              ))}
-            </div>
-          </Panel>
+          <TrustSafetyPanel title="Safety Panel / 安全边界" />
         </section>
 
         <Panel title="Developer Diagnostics">
-          <details className="rounded-md border border-line bg-slate-950 text-slate-100">
-            <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-200">
-              API metadata
-            </summary>
-            <pre className="max-h-96 overflow-auto border-t border-slate-800 p-4 text-xs leading-5">
-              {JSON.stringify(
-                {
-                  status,
-                  providers,
-                  parse_result: parseResult,
-                  ocr_result: ocrResult,
-                  ocr_preview: ocrPreview,
-                  parse_jobs: parseJobs,
-                  ocr_jobs: ocrJobs,
-                  review_queue: reviewQueue,
-                  source_traces: sourceTraces,
-                  audit,
-                  safety
-                },
-                null,
-                2
-              )}
-            </pre>
-          </details>
+          <DiagnosticsPanel
+            data={{
+              status,
+              providers,
+              parse_result: parseResult,
+              ocr_result: ocrResult,
+              ocr_preview: ocrPreview,
+              parse_jobs: parseJobs,
+              ocr_jobs: ocrJobs,
+              review_queue: reviewQueue,
+              source_traces: sourceTraces,
+              audit,
+              safety
+            }}
+          />
         </Panel>
       </div>
     </AppShell>

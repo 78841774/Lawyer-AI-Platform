@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
+  DarkSafetyBadge,
+  DiagnosticsPanel,
+  TrustSafetyPanel
+} from "@/components/personal-production/ProductionShowcaseUI";
+import {
   createPersonalExperiencePackage,
   createPersonalSkillCandidate,
   createPersonalSkillEvaluation,
@@ -143,7 +148,7 @@ export default function PersonalSkillStudioPage() {
         <section className="grid gap-4 md:grid-cols-6">
           {["工作室状态", "经验包草案", "技能候选草案", "测试用例", "评估记录", "发布门禁"].map((label) => <StatusCard key={label} label={label} />)}
         </section>
-        <Panel title="Runtime Cards">
+        <Panel title="Runtime Cards / 工作室 Runtime">
           <div className="grid gap-3 md:grid-cols-5">
             {(data.runtimes?.runtimes ?? []).map((runtime: any) => <Card key={runtime.runtime_id} title={runtime.display_name} lines={[runtime.runtime_id, `live_enabled=${runtime.live_enabled}`, `auto_publish=${runtime.auto_publish_enabled}`]} />)}
           </div>
@@ -182,20 +187,18 @@ export default function PersonalSkillStudioPage() {
             </FormGrid>
           </Panel>
         </section>
-        <Panel title="Promotion Queue">
+        <Panel title="Promotion Queue / 发布门禁队列">
           <FormGrid>
             <Select value={promotionAction} options={promotionActions} onChange={setPromotionAction} />
             <Button label="提交发布门禁动作" onClick={() => void submitPromotion()} />
           </FormGrid>
         </Panel>
-        <Panel title="Source Trace">
-          <div className="grid gap-3 md:grid-cols-3">{(data.traces?.source_traces ?? []).slice(0, 6).map((trace: any) => <Card key={trace.source_trace_id} title={trace.source_trace_id} lines={[trace.source_type, trace.source_label, `raw=${trace.raw_content_returned}`]} />)}</div>
+        <Panel title="Source Trace / 来源追踪">
+          <div className="grid gap-3 md:grid-cols-3">{(data.traces?.source_traces ?? []).slice(0, 6).map((trace: any) => <Card key={trace.source_trace_id} title={trace.source_trace_id} lines={[trace.source_type, trace.source_label, `raw_content_returned=${trace.raw_content_returned}`]} />)}</div>
         </Panel>
-        <Panel title="安全清单">
-          <div className="grid gap-2">{(data.safety?.safety_checklist ?? []).map((item: string) => <Row key={item} label={item} value="通过" />)}</div>
-        </Panel>
+        <TrustSafetyPanel items={data.safety?.safety_checklist ?? []} title="安全清单" />
         <Panel title="Developer Diagnostics">
-          <details className="rounded-md border border-line bg-slate-950 text-slate-100"><summary className="cursor-pointer px-4 py-3 text-sm">JSON metadata</summary><pre className="max-h-96 overflow-auto p-4 text-xs">{JSON.stringify(data, null, 2)}</pre></details>
+          <DiagnosticsPanel data={data} />
         </Panel>
       </div>
     </AppShell>
@@ -203,7 +206,7 @@ export default function PersonalSkillStudioPage() {
 }
 
 function Hero({ title, subtitle, badges }: { title: string; subtitle: string; badges: string[] }) {
-  return <section className="rounded-md border border-slate-800 bg-[#1f261f] p-8 text-white"><h1 className="text-4xl font-semibold">{title}</h1><p className="mt-4 text-slate-300">{subtitle}</p><div className="mt-5 flex flex-wrap gap-2">{badges.map((badge) => <span key={badge} className="rounded-md border border-white/20 px-3 py-1 text-xs">{badge}</span>)}</div></section>;
+  return <section className="rounded-md border border-slate-800 bg-[#1f261f] p-8 text-white"><h1 className="text-4xl font-semibold">{title}</h1><p className="mt-4 text-slate-300">{subtitle}</p><div className="mt-5 flex flex-wrap gap-2">{badges.map((badge) => <DarkSafetyBadge key={badge} label={badge} />)}</div></section>;
 }
 function Panel({ title, children }: { title: string; children: React.ReactNode }) { return <section className="rounded-md border border-line bg-paper p-5"><h2 className="text-base font-semibold text-ink">{title}</h2><div className="mt-4">{children}</div></section>; }
 function StatusCard({ label }: { label: string }) { return <div className="rounded-md border border-line bg-white p-4"><div className="text-xs text-muted">{label}</div><div className="mt-2 text-xl font-semibold text-ink">已就绪</div></div>; }
@@ -213,4 +216,3 @@ function Text({ label, value, onChange }: { label: string; value: string; onChan
 function Select({ value, options, onChange }: { value: string; options: string[]; onChange: (value: string) => void }) { return <select className="rounded-md border border-line px-3 py-2 text-sm" value={value} onChange={(event) => onChange(event.target.value)}>{options.map((option) => <option key={option}>{option}</option>)}</select>; }
 function Confirm({ checked, onChange }: { checked: boolean; onChange: (value: boolean) => void }) { return <label className="flex gap-2 text-sm"><input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} />明确确认：仅模拟结果、无原文、无最终意见、未自动发布</label>; }
 function Button({ label, onClick }: { label: string; onClick: () => void }) { return <button type="button" className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white" onClick={onClick}>{label}</button>; }
-function Row({ label, value }: { label: string; value: string }) { return <div className="flex justify-between rounded-md border border-line bg-white px-3 py-2 text-sm"><span>{label}</span><span>{value}</span></div>; }

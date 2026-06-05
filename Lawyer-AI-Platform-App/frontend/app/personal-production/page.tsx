@@ -3,6 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
+  DarkSafetyBadge,
+  DiagnosticsPanel,
+  ShowcaseStepper,
+  TrustSafetyPanel
+} from "@/components/personal-production/ProductionShowcaseUI";
+import {
   PersonalProductionConsoleSummary,
   PersonalProductionMode,
   PersonalProductionProviderCapabilities,
@@ -22,24 +28,24 @@ import {
 } from "@/services/api";
 
 const workflowSteps = [
-  "Intake",
-  "Materials",
+  "案件录入",
+  "材料接入",
   "OCR",
-  "Fact Extraction",
+  "事实提炼",
   "法律检索与企业信息核验",
-  "Draft Analysis",
-  "Lawyer Review",
+  "草稿分析",
+  "律师复核",
   "个人生产交付包",
   "个人生产试点与展示包"
 ];
 
 const safetyMessages = [
-  "AI 辅助草稿",
+  "仅模拟结果",
   "律师复核必需",
   "来源可追踪",
   "受控运行",
-  "交付前锁定",
-  "不自动对外发送"
+  "最终锁定必需",
+  "不自动对外交付"
 ];
 
 export default function PersonalProductionPage() {
@@ -107,7 +113,7 @@ export default function PersonalProductionPage() {
       { label: "PaddleOCR-ready", value: Boolean(readiness?.readiness.ocr_runtime_gateway_registered) },
       { label: "法律与企业信息网关", value: Boolean(readiness?.readiness.legal_intelligence_gateway_registered && readiness?.readiness.enterprise_intelligence_gateway_registered) },
       { label: "经验包与技能工作室", value: Boolean(readiness?.readiness.skill_studio_gateway_registered) },
-      { label: "真实案件生产工作流", value: Boolean(readiness?.readiness.case_production_gateway_registered) },
+      { label: "受控案件生产工作流", value: Boolean(readiness?.readiness.case_production_gateway_registered) },
       {
         label: "个人生产交付包",
         value: Boolean(
@@ -141,27 +147,27 @@ export default function PersonalProductionPage() {
           <div className="grid gap-6 p-6 md:grid-cols-[1.4fr_0.8fr] md:p-8">
             <div>
               <div className="inline-flex items-center rounded-md border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100">
-                {status?.version ?? "v7.0"} · Personal Production & Showcase
+                {status?.version ?? "v7.8"} · 个人生产总控台
               </div>
               <h1 className="mt-5 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-                {showcase?.headline ?? "AIHome.law Personal Production Console"}
+                {showcase?.headline ?? "AIHome.law 个人生产总控台"}
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                {showcase?.subheadline ?? "Controlled AI-assisted legal workflow for personal production validation."}
+                {showcase?.subheadline ?? "面向个人生产验证的受控运行总览，集中展示 readiness、runtime、来源追踪和律师复核边界。"}
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {(showcase?.trust_badges ?? ["AI-assisted draft", "Lawyer review required", "Source-traced", "Controlled runtime", "Manual final lock"]).map((badge) => (
-                  <SafetyBadge key={badge} label={badge} />
+                {(showcase?.trust_badges ?? ["仅模拟结果", "律师复核必需", "来源可追踪", "受控运行", "最终锁定必需"]).map((badge) => (
+                  <DarkSafetyBadge key={badge} label={badge} />
                 ))}
               </div>
             </div>
             <div className="rounded-md border border-slate-700 bg-white/5 p-5">
               <div className="text-xs uppercase tracking-wide text-cyan-200">Runtime posture</div>
               <div className="mt-4 grid gap-3">
-                <HeroMetric label="Showcase ready" value={status?.showcase_ready ?? true} />
-                <HeroMetric label="Real provider live" value={status?.real_provider_call_enabled ?? false} invert />
-                <HeroMetric label="Team workspace" value={status?.team_workspace_enabled ?? false} invert />
-                <HeroMetric label="External delivery" value={status?.external_client_delivery_ready ?? false} invert />
+                <HeroMetric label="展示就绪" value={status?.showcase_ready ?? true} />
+                <HeroMetric label="真实 provider 调用" value={status?.real_provider_call_enabled ?? false} invert />
+                <HeroMetric label="团队工作区" value={status?.team_workspace_enabled ?? false} invert />
+                <HeroMetric label="外部交付" value={status?.external_client_delivery_ready ?? false} invert />
               </div>
               <button
                 type="button"
@@ -169,7 +175,7 @@ export default function PersonalProductionPage() {
                 disabled={loading}
                 className="mt-5 w-full rounded-md bg-cyan-300 px-3 py-2 text-sm font-semibold text-slate-950 disabled:opacity-60"
               >
-                {loading ? "Refreshing" : "Refresh Console"}
+                {loading ? "刷新中" : "刷新总控台"}
               </button>
             </div>
           </div>
@@ -182,7 +188,7 @@ export default function PersonalProductionPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <Panel title="Runtime Capability Grid">
+          <Panel title="Runtime 能力矩阵">
             <div className="grid gap-3 md:grid-cols-2">
               {(runtimeRegistry?.runtimes ?? []).map((runtime) => (
                 <RuntimeCard key={runtime.runtime_id} runtime={runtime} />
@@ -190,7 +196,7 @@ export default function PersonalProductionPage() {
             </div>
           </Panel>
 
-          <Panel title="Provider Capability Preview">
+          <Panel title="Provider 能力预览">
             <div className="grid gap-3">
               {(providerCapabilities?.providers ?? []).map((provider) => (
                 <CapabilityCard key={provider.provider_id} provider={provider} />
@@ -200,26 +206,23 @@ export default function PersonalProductionPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
-          <Panel title="Controlled Workflow Stepper">
-            <div className="grid gap-3 md:grid-cols-4">
-              {workflowSteps.map((step, index) => (
-                <div key={step} className="rounded-md border border-line bg-white p-4">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-sm font-semibold text-white">
-                    {index + 1}
-                  </div>
-                  <div className="mt-3 text-sm font-semibold text-ink">{step}</div>
-                  <div className="mt-2 text-xs text-muted">Controlled · Review gated</div>
-                </div>
-              ))}
-            </div>
+          <Panel title="受控工作流 Stepper">
+            <ShowcaseStepper
+              columns="md:grid-cols-3 xl:grid-cols-5"
+              steps={workflowSteps.map((step) => ({
+                label: step,
+                detail: "受控运行 · 律师复核",
+                status: "mock metadata"
+              }))}
+            />
           </Panel>
 
-          <Panel title="Safety & Trust Panel">
+          <Panel title="安全与信任摘要">
             <div className="grid gap-2">
               {safetyMessages.map((message) => (
                 <div key={message} className="flex items-center justify-between rounded-md border border-line bg-white px-3 py-2">
                   <span className="text-sm text-ink">{message}</span>
-                  <StatusBadge tone="safe" label="enabled" />
+                  <StatusBadge tone="safe" label="已启用" />
                 </div>
               ))}
             </div>
@@ -232,47 +235,43 @@ export default function PersonalProductionPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <Panel title="Next v7 Roadmap">
+          <Panel title="v7 Roadmap 总览">
             <div className="grid gap-3">
               {(consoleSummary?.next_steps ?? [
                 "v7.1 AI Provider Gateway & Prompt Runtime",
                 "v7.2 Controlled Material Parsing & PaddleOCR Runtime",
                 "v7.3 Legal & Enterprise Intelligence Gateway",
                 "v7.4 Experience Package Skill Studio",
-                "v7.5 Real Case Production Workflow"
+                "v7.5 Real Case Production Workflow",
+                "v7.6 Personal Delivery Packet",
+                "v7.7 Personal Production Pilot & Showcase Pack",
+                "v7.8 UI Polish & Showcase Hardening"
               ]).map((step) => (
                 <div key={step} className="rounded-md border border-line bg-white px-4 py-3 text-sm font-medium text-ink">
                   {step}
-                  {step.includes("v7.5") ? <span className="ml-2 text-xs text-emerald-700">current stage</span> : null}
+                  {step.includes("v7.8") ? <span className="ml-2 text-xs text-emerald-700">当前阶段</span> : null}
                 </div>
               ))}
             </div>
           </Panel>
 
-          <Panel title="Developer Diagnostics">
-            <details className="rounded-md border border-line bg-slate-950 text-slate-100">
-              <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-200">
-                API metadata
-              </summary>
-              <pre className="max-h-96 overflow-auto border-t border-slate-800 p-4 text-xs leading-5">
-                {JSON.stringify(
-                  {
-                    status,
-                    mode,
-                    showcase,
-                    runtime_registry: runtimeRegistry,
-                    provider_capabilities: providerCapabilities,
-                    readiness,
-                    safety,
-                    console_summary: consoleSummary
-                  },
-                  null,
-                  2
-                )}
-              </pre>
-            </details>
-          </Panel>
+          <TrustSafetyPanel items={safetyMessages} />
         </section>
+
+        <Panel title="Developer Diagnostics">
+          <DiagnosticsPanel
+            data={{
+              status,
+              mode,
+              showcase,
+              runtime_registry: runtimeRegistry,
+              provider_capabilities: providerCapabilities,
+              readiness,
+              safety,
+              console_summary: consoleSummary
+            }}
+          />
+        </Panel>
       </div>
     </AppShell>
   );
@@ -285,10 +284,6 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
       <div className="mt-4">{children}</div>
     </section>
   );
-}
-
-function SafetyBadge({ label }: { label: string }) {
-  return <span className="rounded-md border border-white/20 bg-white/10 px-3 py-1 text-xs text-slate-100">{label}</span>;
 }
 
 function StatusBadge({ label, tone }: { label: string; tone: "safe" | "blocked" | "preview" }) {
@@ -315,8 +310,8 @@ function ReadinessCard({ label, ready }: { label: string; ready: boolean }) {
     <div className="rounded-md border border-line bg-white p-4 shadow-sm">
       <div className="text-xs uppercase tracking-wide text-muted">{label}</div>
       <div className="mt-3 flex items-center justify-between">
-        <div className="text-xl font-semibold text-ink">{ready ? "Ready" : "Pending"}</div>
-        <StatusBadge tone={ready ? "safe" : "preview"} label={ready ? "pass" : "preview"} />
+        <div className="text-xl font-semibold text-ink">{ready ? "已就绪" : "待确认"}</div>
+        <StatusBadge tone={ready ? "safe" : "preview"} label={ready ? "通过" : "预览"} />
       </div>
     </div>
   );

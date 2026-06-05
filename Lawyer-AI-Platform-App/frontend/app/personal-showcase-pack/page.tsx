@@ -3,6 +3,12 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
+  DarkSafetyBadge,
+  DiagnosticsPanel,
+  ShowcaseStepper,
+  TrustSafetyPanel
+} from "@/components/personal-production/ProductionShowcaseUI";
+import {
   PilotSampleList,
   ShowcaseMetrics,
   ShowcaseRuntimeList,
@@ -162,9 +168,7 @@ export default function PersonalShowcasePackPage() {
             <div>
               <div className="flex flex-wrap gap-2">
                 {["试点展示", "mock metadata", "律师复核必需", "来源可追踪", "不自动对外交付"].map((badge) => (
-                  <span key={badge} className="rounded-md border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100">
-                    {badge}
-                  </span>
+                  <DarkSafetyBadge key={badge} label={badge} />
                 ))}
               </div>
               <h1 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">个人生产试点与展示包</h1>
@@ -178,7 +182,9 @@ export default function PersonalShowcasePackPage() {
                 <span>未调用真实 provider</span>
                 <span>未读取 API key</span>
                 <span>未读取真实案件材料</span>
-                <span>不生成最终法律意见或最终报告</span>
+                <span>未生成最终法律意见</span>
+                <span>未生成最终报告</span>
+                <span>未自动对外交付</span>
                 <span>不生成真实 PDF/DOCX</span>
               </div>
             </div>
@@ -196,28 +202,22 @@ export default function PersonalShowcasePackPage() {
 
         <section className="rounded-md border border-line bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-ink">Story Flow</h2>
+            <h2 className="text-lg font-semibold text-ink">演示故事线 Stepper</h2>
             <span className="text-xs text-muted">方向 C · 演示故事线</span>
           </div>
-          <div className="mt-5 grid gap-3 lg:grid-cols-7">
-            {stageCards.map((stage, index) => (
-              <div key={String(stage.stage_id)} className="rounded-md border border-line bg-slate-50 p-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-sm font-semibold text-white">{index + 1}</div>
-                <div className="mt-3 text-sm font-semibold text-ink">{String(stage.display_name)}</div>
-                <div className="mt-2 grid gap-1 text-xs text-muted">
-                  <span>{String(stage.status)}</span>
-                  <span>runtime: {String(stage.linked_runtime)}</span>
-                  <span>source_trace_required: {String(stage.source_trace_required ?? true)}</span>
-                  <span>lawyer_review_required: {String(stage.lawyer_review_required ?? true)}</span>
-                  <span>final_output_generated: {String(stage.final_output_generated ?? false)}</span>
-                </div>
-              </div>
-            ))}
+          <div className="mt-5">
+            <ShowcaseStepper
+              steps={stageCards.map((stage) => ({
+                label: String(stage.display_name),
+                detail: `${String(stage.linked_runtime)} · 来源追踪=${String(stage.source_trace_required ?? true)} · 律师复核=${String(stage.lawyer_review_required ?? true)}`,
+                status: String(stage.status)
+              }))}
+            />
           </div>
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-          <Panel title="Pilot Sample Cards">
+          <Panel title="Pilot Sample Cards / 试点样本">
             <div className="grid gap-3">
               {(samples?.pilot_samples ?? []).slice(0, 3).map((sample) => (
                 <div key={sample.pilot_sample_id} className="rounded-md border border-line bg-slate-50 p-4">
@@ -246,7 +246,7 @@ export default function PersonalShowcasePackPage() {
             </div>
           </Panel>
 
-          <Panel title="Showcase Summary">
+          <Panel title="展示摘要">
             <InfoRows
               rows={[
                 ["页面用途", "仅用于试点展示和产品演示"],
@@ -303,18 +303,9 @@ export default function PersonalShowcasePackPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-2">
-          <Panel title="Trust / Safety Panel">
-            <div className="grid gap-2">
-              {(trustPanel?.trust_items?.length ? trustPanel.trust_items : safety?.safety_checklist ?? []).map((item) => (
-                <div key={item} className="flex items-center justify-between gap-3 rounded-md border border-line bg-white px-3 py-2">
-                  <span className="text-sm text-ink">{item}</span>
-                  <span className="rounded-md bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">已启用</span>
-                </div>
-              ))}
-            </div>
-          </Panel>
+          <TrustSafetyPanel items={trustPanel?.trust_items?.length ? trustPanel.trust_items : safety?.safety_checklist ?? []} />
 
-          <Panel title="Safety Flags">
+          <Panel title="Safety Flags / 安全标记">
             <InfoRows
               rows={[
                 ["real_provider_called", trustPanel?.flags?.real_provider_called],
@@ -331,12 +322,9 @@ export default function PersonalShowcasePackPage() {
           </Panel>
         </section>
 
-        <details className="rounded-md border border-line bg-white p-4 shadow-sm">
-          <summary className="cursor-pointer text-sm font-semibold text-ink">Developer Diagnostics</summary>
-          <pre className="mt-4 max-h-[420px] overflow-auto rounded-md bg-slate-950 p-4 text-xs leading-5 text-slate-100">
-            {JSON.stringify({ status, runtimes, metrics, trustPanel, safety, samples, flows, selectedFlow }, null, 2)}
-          </pre>
-        </details>
+        <Panel title="Developer Diagnostics">
+          <DiagnosticsPanel data={{ status, runtimes, metrics, trustPanel, safety, samples, flows, selectedFlow }} />
+        </Panel>
       </div>
     </AppShell>
   );
