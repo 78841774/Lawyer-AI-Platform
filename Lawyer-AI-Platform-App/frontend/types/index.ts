@@ -2464,6 +2464,9 @@ export type PersonalAlphaCaseOSStageState = {
   stage_id: string;
   label: string;
   status: string;
+  ready: boolean;
+  blocked: boolean;
+  required: boolean;
   next_action: string | null;
   target_route: string | null;
   target_id: string | null;
@@ -2493,6 +2496,88 @@ export type PersonalAlphaCaseOSNextAction = {
   blocked_reasons: string[];
   mock_or_redacted_only: boolean;
   raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSActionEligibilityItem = {
+  action: string;
+  label: string;
+  eligible: boolean;
+  target_route: string;
+  blocked_reasons: string[];
+  required_confirmations: string[];
+  requires: string[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+};
+
+export type PersonalAlphaCaseOSActionEligibility = {
+  case_id: string;
+  actions: PersonalAlphaCaseOSActionEligibilityItem[];
+  action: string | null;
+  eligible: boolean;
+  requires: string[];
+  blocked_reasons: string[];
+  current_stage: string;
+  next_action: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSStageTransition = {
+  from_stage: string;
+  to_stage: string;
+  transition_status: string;
+  allowed: boolean;
+  reason: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+};
+
+export type PersonalAlphaCaseOSStageTransitions = {
+  case_id: string;
+  transitions: PersonalAlphaCaseOSStageTransition[];
+  current_stage: string;
+  next_action: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSStageBlocker = {
+  stage_id: string;
+  blocked: boolean;
+  blocked_reasons: string[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+};
+
+export type PersonalAlphaCaseOSBlockers = {
+  case_id: string;
+  blocked: boolean;
+  blocked_reasons: string[];
+  stage_blockers: PersonalAlphaCaseOSStageBlocker[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSStageOrchestration = {
+  case_id: string;
+  current_stage: string;
+  next_action: string;
+  next_action_label: string;
+  target_route: string;
+  blocked: boolean;
+  blocked_reasons: string[];
+  stage_order: string[];
+  stages: PersonalAlphaCaseOSStageState[];
+  action_eligibility: PersonalAlphaCaseOSActionEligibility;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
   warnings: string[];
 };
 

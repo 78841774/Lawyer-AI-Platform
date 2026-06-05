@@ -12,6 +12,12 @@ from personal_alpha_case_os.schemas import (
     PersonalAlphaCaseOSSafetyChecklist,
     PersonalAlphaCaseOSStatus,
 )
+from personal_alpha_case_os.stage_eligibility import build_action_eligibility
+from personal_alpha_case_os.stage_orchestrator import (
+    build_blockers,
+    build_stage_orchestration,
+    build_stage_transitions,
+)
 from personal_alpha_case_os.state_machine import build_stage_summary
 from personal_alpha_final_gate.gate_storage import list_final_gate_decisions
 from personal_alpha_final_lock.lock_storage import list_final_lock_records
@@ -153,6 +159,26 @@ def get_personal_alpha_case_os_safety_checklist(case_id: str) -> dict[str, Any]:
     }
 
 
+def get_personal_alpha_case_os_stage_orchestration(case_id: str) -> dict[str, Any]:
+    context, next_action = _safe_orchestration_context(case_id)
+    return build_stage_orchestration(_safe_value(case_id), context, next_action)
+
+
+def get_personal_alpha_case_os_stage_transitions(case_id: str) -> dict[str, Any]:
+    context, next_action = _safe_orchestration_context(case_id)
+    return build_stage_transitions(_safe_value(case_id), context, next_action)
+
+
+def get_personal_alpha_case_os_action_eligibility(case_id: str) -> dict[str, Any]:
+    context, next_action = _safe_orchestration_context(case_id)
+    return build_action_eligibility(_safe_value(case_id), context, next_action)
+
+
+def get_personal_alpha_case_os_blockers(case_id: str) -> dict[str, Any]:
+    context, next_action = _safe_orchestration_context(case_id)
+    return build_blockers(_safe_value(case_id), context, next_action)
+
+
 def _case_contexts() -> list[dict[str, Any]]:
     workspace_runs = _load_workspace_records()
     packets = list_final_packet_records()
@@ -194,6 +220,39 @@ def _context_for_case(case_id: str) -> dict[str, Any] | None:
     if safe_case_id == "case_v60_demo_001":
         return _demo_context()
     return None
+
+
+def _safe_orchestration_context(case_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
+    safe_case_id = _safe_value(case_id)
+    if _looks_unsafe(case_id):
+        context = _empty_context("")
+        context["blocked"] = True
+        context["blocked_reasons"] = ["case_id contains unsafe raw content or path-like value."]
+        return context, _blocked_next_action("", "case_id contains unsafe raw content or path-like value.")
+    context = _context_for_case(case_id)
+    if not context:
+        context = _empty_context(safe_case_id)
+        context["blocked"] = True
+        context["blocked_reasons"] = ["Case not found."]
+        return context, _blocked_next_action(safe_case_id, "Case not found.")
+    return context, build_next_action(safe_case_id, context)
+
+
+def _blocked_next_action(case_id: str, reason: str) -> dict[str, Any]:
+    target_route = f"/case-os/{case_id}" if case_id else "/case-os"
+    return {
+        "case_id": case_id,
+        "current_stage": "blocked",
+        "next_action": "resolve_blockers",
+        "next_action_label": "Resolve Blockers",
+        "target_route": target_route,
+        "target_id": None,
+        "blocked": True,
+        "blocked_reasons": [reason],
+        "mock_or_redacted_only": True,
+        "raw_content_included": False,
+        "warnings": [reason],
+    }
 
 
 def _load_workspace_records() -> list[dict[str, Any]]:

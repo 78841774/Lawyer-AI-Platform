@@ -59,12 +59,16 @@ import type {
   InternalAlphaReadinessChecklist,
   InternalAlphaStatus,
   PersonalAlphaAuditLog,
+  PersonalAlphaCaseOSActionEligibility,
   PersonalAlphaCaseOSAuditTimeline,
+  PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
   PersonalAlphaCaseOSNextAction,
   PersonalAlphaCaseOSSafetyChecklist,
+  PersonalAlphaCaseOSStageOrchestration,
   PersonalAlphaCaseOSStageState,
+  PersonalAlphaCaseOSStageTransitions,
   PersonalAlphaCaseOSStatus,
   PersonalAlphaDashboardAuditTimeline,
   PersonalAlphaDashboardSourceTraceSummary,
@@ -215,12 +219,16 @@ export type {
   InternalAlphaReadinessChecklist,
   InternalAlphaStatus,
   PersonalAlphaAuditLog,
+  PersonalAlphaCaseOSActionEligibility,
   PersonalAlphaCaseOSAuditTimeline,
+  PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
   PersonalAlphaCaseOSNextAction,
   PersonalAlphaCaseOSSafetyChecklist,
+  PersonalAlphaCaseOSStageOrchestration,
   PersonalAlphaCaseOSStageState,
+  PersonalAlphaCaseOSStageTransitions,
   PersonalAlphaCaseOSStatus,
   PersonalAlphaDashboardAuditTimeline,
   PersonalAlphaDashboardSourceTraceSummary,
@@ -990,6 +998,14 @@ export const personalAlphaCaseOSApi = {
     request<PersonalAlphaCaseOSAuditTimeline>(`/case-os/${encodeURIComponent(caseId)}/audit-timeline`),
   getNextAction: (caseId: string) =>
     request<PersonalAlphaCaseOSNextAction>(`/case-os/${encodeURIComponent(caseId)}/next-action`),
+  getStageOrchestration: (caseId: string) =>
+    request<PersonalAlphaCaseOSStageOrchestration>(`/case-os/${encodeURIComponent(caseId)}/stage-orchestration`),
+  getStageTransitions: (caseId: string) =>
+    request<PersonalAlphaCaseOSStageTransitions>(`/case-os/${encodeURIComponent(caseId)}/stage-transitions`),
+  getActionEligibility: (caseId: string) =>
+    request<PersonalAlphaCaseOSActionEligibility>(`/case-os/${encodeURIComponent(caseId)}/action-eligibility`),
+  getBlockers: (caseId: string) =>
+    request<PersonalAlphaCaseOSBlockers>(`/case-os/${encodeURIComponent(caseId)}/blockers`),
   getSafetyChecklist: (caseId: string) =>
     request<{
       case_id: string;
@@ -1075,6 +1091,10 @@ export const listPersonalAlphaCaseOSCases = personalAlphaCaseOSApi.listCases;
 export const getPersonalAlphaCaseOSCaseDetail = personalAlphaCaseOSApi.getCaseDetail;
 export const getPersonalAlphaCaseOSAuditTimeline = personalAlphaCaseOSApi.getAuditTimeline;
 export const getPersonalAlphaCaseOSNextAction = personalAlphaCaseOSApi.getNextAction;
+export const getPersonalAlphaCaseOSStageOrchestration = personalAlphaCaseOSApi.getStageOrchestration;
+export const getPersonalAlphaCaseOSStageTransitions = personalAlphaCaseOSApi.getStageTransitions;
+export const getPersonalAlphaCaseOSActionEligibility = personalAlphaCaseOSApi.getActionEligibility;
+export const getPersonalAlphaCaseOSBlockers = personalAlphaCaseOSApi.getBlockers;
 export const getPersonalAlphaCaseOSSafetyChecklist = personalAlphaCaseOSApi.getSafetyChecklist;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;

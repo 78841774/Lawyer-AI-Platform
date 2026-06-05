@@ -9,18 +9,26 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
+  PersonalAlphaCaseOSActionEligibility,
   PersonalAlphaCaseOSAuditTimeline,
+  PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSStageOrchestration,
   PersonalAlphaCaseOSStageState,
+  PersonalAlphaCaseOSStageTransitions,
+  getPersonalAlphaCaseOSActionEligibility,
   getPersonalAlphaCaseOSAuditTimeline,
+  getPersonalAlphaCaseOSBlockers,
   getPersonalAlphaCaseOSCaseDetail,
   getPersonalAlphaCaseOSNextAction,
-  getPersonalAlphaCaseOSSafetyChecklist
+  getPersonalAlphaCaseOSSafetyChecklist,
+  getPersonalAlphaCaseOSStageOrchestration,
+  getPersonalAlphaCaseOSStageTransitions
 } from "@/services/api";
 
-const STAGE_ORDER = [
-  "workspace",
+const FALLBACK_STAGE_ORDER = [
+  "workspace_run",
   "source_review",
   "source_review_decision",
   "final_readiness",
@@ -36,6 +44,10 @@ export default function PersonalAlphaCaseOSDetailPage() {
   const [detail, setDetail] = useState<PersonalAlphaCaseOSCaseDetail | null>(null);
   const [timeline, setTimeline] = useState<PersonalAlphaCaseOSAuditTimeline | null>(null);
   const [nextAction, setNextAction] = useState<PersonalAlphaCaseOSNextAction | null>(null);
+  const [stageOrchestration, setStageOrchestration] = useState<PersonalAlphaCaseOSStageOrchestration | null>(null);
+  const [stageTransitions, setStageTransitions] = useState<PersonalAlphaCaseOSStageTransitions | null>(null);
+  const [actionEligibility, setActionEligibility] = useState<PersonalAlphaCaseOSActionEligibility | null>(null);
+  const [blockers, setBlockers] = useState<PersonalAlphaCaseOSBlockers | null>(null);
   const [safetyResponse, setSafetyResponse] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -44,16 +56,33 @@ export default function PersonalAlphaCaseOSDetailPage() {
     setLoading(true);
     setError("");
     try {
-      const [nextDetail, nextTimeline, nextActionValue, nextSafety] = await Promise.all([
+      const [
+        nextDetail,
+        nextTimeline,
+        nextActionValue,
+        nextSafety,
+        nextStageOrchestration,
+        nextStageTransitions,
+        nextActionEligibility,
+        nextBlockers
+      ] = await Promise.all([
         getPersonalAlphaCaseOSCaseDetail(caseId),
         getPersonalAlphaCaseOSAuditTimeline(caseId),
         getPersonalAlphaCaseOSNextAction(caseId),
-        getPersonalAlphaCaseOSSafetyChecklist(caseId)
+        getPersonalAlphaCaseOSSafetyChecklist(caseId),
+        getPersonalAlphaCaseOSStageOrchestration(caseId),
+        getPersonalAlphaCaseOSStageTransitions(caseId),
+        getPersonalAlphaCaseOSActionEligibility(caseId),
+        getPersonalAlphaCaseOSBlockers(caseId)
       ]);
       setDetail(nextDetail);
       setTimeline(nextTimeline);
       setNextAction(nextActionValue);
       setSafetyResponse(nextSafety);
+      setStageOrchestration(nextStageOrchestration);
+      setStageTransitions(nextStageTransitions);
+      setActionEligibility(nextActionEligibility);
+      setBlockers(nextBlockers);
     } catch {
       setError("Case OS detail 加载失败。若 case_id 不存在，后端会返回 safe not_found，不暴露本地路径或原文。");
     } finally {
@@ -66,14 +95,17 @@ export default function PersonalAlphaCaseOSDetailPage() {
   }, [caseId]);
 
   const stageCards = useMemo(() => {
+    if (stageOrchestration?.stages?.length) {
+      return stageOrchestration.stages;
+    }
     const summary = detail?.stage_summary ?? {};
-    return STAGE_ORDER.map((stageId) => ({
-      stageId,
-      stage: summary[stageId as keyof typeof summary] as PersonalAlphaCaseOSStageState | undefined
-    }));
-  }, [detail]);
+    return FALLBACK_STAGE_ORDER.map((stageId) => {
+      const summaryKey = stageId === "workspace_run" ? "workspace" : stageId;
+      return summary[summaryKey as keyof typeof summary] as PersonalAlphaCaseOSStageState | undefined;
+    }).filter(Boolean) as PersonalAlphaCaseOSStageState[];
+  }, [detail, stageOrchestration]);
 
-  const actionHref = buildActionHref(nextAction?.target_route, nextAction?.target_id);
+  const actionHref = buildActionHref(stageOrchestration?.target_route ?? nextAction?.target_route, nextAction?.target_id);
 
   return (
     <AppShell>
@@ -88,7 +120,7 @@ export default function PersonalAlphaCaseOSDetailPage() {
 
         <div className="flex flex-wrap gap-3">
           <Link href="/case-os">
-            <Button type="button">Back to Case OS</Button>
+            <Button type="button" variant="secondary">Back to Case OS</Button>
           </Link>
           <Button type="button" onClick={() => void loadDetail()} disabled={loading}>
             {loading ? "刷新中..." : "Refresh Detail"}
@@ -102,15 +134,15 @@ export default function PersonalAlphaCaseOSDetailPage() {
 
         <Card>
           <CardBody>
-            <h2 className="text-base font-semibold text-ink">Run Summary</h2>
+            <h2 className="text-base font-semibold text-ink">Case Profile</h2>
             <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-              <InfoRow label="case_id" value={detail?.case_id ?? caseId} />
+              <InfoRow label="case_id" value={detail?.profile?.case_id ?? detail?.case_id ?? caseId} />
+              <InfoRow label="title" value={detail?.profile?.title ?? detail?.title ?? "-"} />
+              <InfoRow label="case_type" value={detail?.profile?.case_type ?? "-"} />
+              <InfoRow label="jurisdiction" value={detail?.profile?.jurisdiction ?? "-"} />
+              <InfoRow label="client_name" value={detail?.profile?.client_name ?? "-"} />
+              <InfoRow label="opposing_party" value={detail?.profile?.opposing_party ?? "-"} />
               <InfoRow label="workspace_id" value={detail?.workspace_id ?? "-"} />
-              <InfoRow label="current_stage" value={detail?.current_stage ?? "-"} />
-              <InfoRow label="next_action" value={detail?.next_action ?? nextAction?.next_action ?? "-"} />
-              <InfoRow label="blocked" value={String(detail?.blocked ?? nextAction?.blocked ?? false)} />
-              <InfoRow label="workspace_runs" value={String(detail?.workspace_runs?.length ?? 0)} />
-              <InfoRow label="raw_content_included" value={String(detail?.raw_content_included ?? false)} />
               <InfoRow label="mock_or_redacted_only" value={String(detail?.mock_or_redacted_only ?? true)} />
             </div>
           </CardBody>
@@ -118,41 +150,153 @@ export default function PersonalAlphaCaseOSDetailPage() {
 
         <Card>
           <CardBody>
-            <h2 className="text-base font-semibold text-ink">Next Action</h2>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
-              <InfoRow label="action" value={nextAction?.next_action ?? "-"} />
-              <InfoRow label="label" value={nextAction?.next_action_label ?? "-"} />
-              <InfoRow label="target_route" value={nextAction?.target_route ?? "-"} />
-              <InfoRow label="target_id" value={nextAction?.target_id ?? "-"} />
-              <InfoRow label="blocked" value={String(nextAction?.blocked ?? false)} />
-              <InfoRow label="raw_content_included" value={String(nextAction?.raw_content_included ?? false)} />
+            <h2 className="text-base font-semibold text-ink">Stage Orchestration</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="current_stage" value={stageOrchestration?.current_stage ?? detail?.current_stage ?? "-"} />
+              <InfoRow label="next_action" value={stageOrchestration?.next_action ?? detail?.next_action ?? "-"} />
+              <InfoRow label="next_action_label" value={stageOrchestration?.next_action_label ?? nextAction?.next_action_label ?? "-"} />
+              <InfoRow label="target_route" value={stageOrchestration?.target_route ?? nextAction?.target_route ?? "-"} />
+              <InfoRow label="blocked" value={String(stageOrchestration?.blocked ?? detail?.blocked ?? false)} />
+              <InfoRow label="raw_content_included" value={String(stageOrchestration?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(stageOrchestration?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(stageOrchestration?.final_report_generated ?? false)} />
             </div>
-            {nextAction?.blocked_reasons?.length ? (
-              <div className="mt-4 rounded-md border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
-                {nextAction.blocked_reasons.join(" / ")}
-              </div>
-            ) : null}
+            <ReasonList reasons={stageOrchestration?.blocked_reasons ?? detail?.blocked_reasons ?? []} tone="danger" />
           </CardBody>
         </Card>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {stageCards.map(({ stageId, stage }) => (
-            <Card key={stageId}>
-              <CardBody>
-                <div className="text-xs uppercase tracking-wide text-muted">{stage?.stage_id ?? stageId}</div>
-                <div className="mt-2 text-base font-semibold text-ink">{stage?.label ?? stageId}</div>
-                <div className="mt-3 rounded-md border border-line bg-paper px-3 py-2 text-sm text-muted">
-                  {stage?.status ?? "pending"}
-                </div>
-                <div className="mt-3 space-y-2 text-xs text-muted">
-                  <div>next: {stage?.next_action ?? "-"}</div>
-                  <div>raw: {String(stage?.raw_content_included ?? false)}</div>
-                  <div>metadata: {String(stage?.mock_or_redacted_only ?? true)}</div>
-                </div>
-              </CardBody>
-            </Card>
-          ))}
+        <div id="next-action">
+          <Card>
+            <CardBody>
+              <h2 className="text-base font-semibold text-ink">Next Action</h2>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <InfoRow label="action" value={nextAction?.next_action ?? "-"} />
+                <InfoRow label="label" value={nextAction?.next_action_label ?? "-"} />
+                <InfoRow label="target_route" value={nextAction?.target_route ?? "-"} />
+                <InfoRow label="target_id" value={nextAction?.target_id ?? "-"} />
+                <InfoRow label="blocked" value={String(nextAction?.blocked ?? false)} />
+                <InfoRow label="raw_content_included" value={String(nextAction?.raw_content_included ?? false)} />
+              </div>
+              <ReasonList reasons={nextAction?.blocked_reasons ?? []} tone="danger" />
+            </CardBody>
+          </Card>
         </div>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Stage Progress</h2>
+            <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {stageCards.map((stage) => (
+                <div key={stage.stage_id} className="rounded-md border border-line bg-white p-4">
+                  <div className="text-xs uppercase tracking-wide text-muted">{stage.stage_id}</div>
+                  <div className="mt-2 text-base font-semibold text-ink">{stage.label}</div>
+                  <div className={`mt-3 rounded-md border px-3 py-2 text-sm ${stage.blocked ? "border-rose-200 bg-rose-50 text-rose-800" : stage.ready ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-line bg-paper text-muted"}`}>
+                    {stage.status}
+                  </div>
+                  <div className="mt-3 space-y-2 text-xs text-muted">
+                    <div>ready: {String(stage.ready)}</div>
+                    <div>required: {String(stage.required)}</div>
+                    <div>blocked: {String(stage.blocked)}</div>
+                    <div>next_action: {stage.next_action ?? "-"}</div>
+                    <div>target_route: {stage.target_route ?? "-"}</div>
+                  </div>
+                  {stage.target_route ? (
+                    <div className="mt-4">
+                      <Link href={buildActionHref(stage.target_route, stage.target_id)}>
+                        <Button type="button" variant="secondary">Go to Stage</Button>
+                      </Link>
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Stage Summary</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              {Object.entries(detail?.stage_summary ?? {}).map(([key, value]) => (
+                <div key={key} className="rounded-md border border-line bg-paper p-3">
+                  <div className="text-xs uppercase tracking-wide text-muted">{key}</div>
+                  <pre className="mt-2 max-h-32 overflow-auto text-xs leading-5 text-ink">
+                    {JSON.stringify(value, null, 2)}
+                  </pre>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Action Eligibility</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(actionEligibility?.actions ?? []).map((item) => (
+                <div key={item.action} className="rounded-md border border-line bg-white p-4">
+                  <div className="text-sm font-semibold text-ink">{item.label}</div>
+                  <div className="mt-1 text-xs text-muted">{item.action}</div>
+                  <div className="mt-3 grid gap-2 text-xs text-muted">
+                    <span>eligible: {String(item.eligible)}</span>
+                    <span>target_route: {item.target_route}</span>
+                    <span>raw_content_included: {String(item.raw_content_included)}</span>
+                  </div>
+                  <LabelList label="required_confirmations" values={item.required_confirmations} />
+                  <LabelList label="blocked_reasons" values={item.blocked_reasons} tone="danger" />
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Blockers</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="blocked" value={String(blockers?.blocked ?? false)} />
+              <InfoRow label="raw_content_included" value={String(blockers?.raw_content_included ?? false)} />
+              <InfoRow label="mock_or_redacted_only" value={String(blockers?.mock_or_redacted_only ?? true)} />
+              <InfoRow label="stage_blockers" value={String(blockers?.stage_blockers?.length ?? 0)} />
+            </div>
+            <ReasonList reasons={blockers?.blocked_reasons ?? []} tone="danger" />
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              {(blockers?.stage_blockers ?? []).map((item) => (
+                <div key={item.stage_id} className="rounded-md border border-line bg-paper p-3">
+                  <div className="text-sm font-semibold text-ink">{item.stage_id}</div>
+                  <div className="mt-2 text-xs text-muted">blocked: {String(item.blocked)}</div>
+                  <ReasonList reasons={item.blocked_reasons} tone="danger" />
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Stage Transitions</h2>
+            <div className="mt-4 space-y-3">
+              {(stageTransitions?.transitions ?? []).map((transition) => (
+                <div key={`${transition.from_stage}-${transition.to_stage}`} className="rounded-md border border-line bg-white p-4">
+                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-ink">
+                        {transition.from_stage} {"->"} {transition.to_stage}
+                      </div>
+                      <div className="mt-1 text-xs text-muted">{transition.reason}</div>
+                    </div>
+                    <div className="text-xs text-muted">allowed: {String(transition.allowed)}</div>
+                  </div>
+                  <div className="mt-3 grid gap-2 text-xs text-muted md:grid-cols-3">
+                    <span>transition_status: {transition.transition_status}</span>
+                    <span>metadata: {String(transition.mock_or_redacted_only)}</span>
+                    <span>raw: {String(transition.raw_content_included)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
 
         <Card>
           <CardBody>
@@ -195,20 +339,19 @@ export default function PersonalAlphaCaseOSDetailPage() {
           </CardBody>
         </Card>
 
-        <Card>
-          <CardBody>
-            <h2 className="text-base font-semibold text-ink">Metadata JSON</h2>
-            <pre className="mt-4 max-h-96 overflow-auto rounded-md bg-slate-950 p-4 text-xs leading-5 text-slate-100">
-              {JSON.stringify({ detail, timeline, nextAction, safetyResponse }, null, 2)}
-            </pre>
-          </CardBody>
-        </Card>
+        <div className="grid gap-4 xl:grid-cols-2">
+          <JsonPanel title="stage_orchestration" value={stageOrchestration} />
+          <JsonPanel title="action_eligibility" value={actionEligibility} />
+          <JsonPanel title="blockers" value={blockers} />
+          <JsonPanel title="stage_transitions" value={stageTransitions} />
+          <JsonPanel title="case_os_detail" value={{ detail, timeline, nextAction, safetyResponse }} />
+        </div>
       </div>
     </AppShell>
   );
 }
 
-function buildActionHref(targetRoute?: string, targetId?: string | null) {
+function buildActionHref(targetRoute?: string | null, targetId?: string | null) {
   if (!targetRoute) {
     return "";
   }
@@ -223,6 +366,44 @@ function buildActionHref(targetRoute?: string, targetId?: string | null) {
     return targetRoute;
   }
   return `${targetRoute}?workspace_run_id=${encoded}`;
+}
+
+function ReasonList({ reasons, tone = "default" }: { reasons: string[]; tone?: "default" | "danger" }) {
+  if (!reasons.length) {
+    return null;
+  }
+  const toneClass = tone === "danger" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-line bg-paper text-muted";
+  return (
+    <div className={`mt-4 rounded-md border p-3 text-sm ${toneClass}`}>
+      {reasons.join(" / ")}
+    </div>
+  );
+}
+
+function LabelList({ label, values, tone = "default" }: { label: string; values: string[]; tone?: "default" | "danger" }) {
+  if (!values.length) {
+    return null;
+  }
+  const toneClass = tone === "danger" ? "text-rose-800" : "text-muted";
+  return (
+    <div className={`mt-3 text-xs ${toneClass}`}>
+      <div className="font-semibold text-ink">{label}</div>
+      <div className="mt-1 leading-5">{values.join(" / ")}</div>
+    </div>
+  );
+}
+
+function JsonPanel({ title, value }: { title: string; value: unknown }) {
+  return (
+    <Card>
+      <CardBody>
+        <h2 className="text-base font-semibold text-ink">{title}</h2>
+        <pre className="mt-4 max-h-96 overflow-auto rounded-md bg-slate-950 p-4 text-xs leading-5 text-slate-100">
+          {JSON.stringify(value, null, 2)}
+        </pre>
+      </CardBody>
+    </Card>
+  );
 }
 
 function StatusMessage({ message }: { message: string }) {

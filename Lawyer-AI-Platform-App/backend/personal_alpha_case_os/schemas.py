@@ -67,6 +67,9 @@ class PersonalAlphaCaseOSStageState(BaseModel):
     stage_id: str
     label: str
     status: str = "pending"
+    ready: bool = False
+    blocked: bool = False
+    required: bool = True
     next_action: str | None = None
     target_route: str | None = None
     target_id: str | None = None
@@ -96,6 +99,88 @@ class PersonalAlphaCaseOSNextAction(BaseModel):
     blocked_reasons: list[str] = Field(default_factory=list)
     mock_or_redacted_only: bool = True
     raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSActionEligibilityItem(BaseModel):
+    action: str
+    label: str
+    eligible: bool = False
+    target_route: str
+    blocked_reasons: list[str] = Field(default_factory=list)
+    required_confirmations: list[str] = Field(default_factory=list)
+    requires: list[str] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+
+
+class PersonalAlphaCaseOSActionEligibility(BaseModel):
+    case_id: str
+    actions: list[PersonalAlphaCaseOSActionEligibilityItem] = Field(default_factory=list)
+    action: str | None = None
+    eligible: bool = False
+    requires: list[str] = Field(default_factory=list)
+    blocked_reasons: list[str] = Field(default_factory=list)
+    current_stage: str
+    next_action: str
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSStageTransition(BaseModel):
+    from_stage: str
+    to_stage: str
+    transition_status: str
+    allowed: bool = False
+    reason: str
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+
+
+class PersonalAlphaCaseOSStageTransitions(BaseModel):
+    case_id: str
+    transitions: list[PersonalAlphaCaseOSStageTransition] = Field(default_factory=list)
+    current_stage: str
+    next_action: str
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSStageBlocker(BaseModel):
+    stage_id: str
+    blocked: bool = False
+    blocked_reasons: list[str] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+
+
+class PersonalAlphaCaseOSBlockers(BaseModel):
+    case_id: str
+    blocked: bool = False
+    blocked_reasons: list[str] = Field(default_factory=list)
+    stage_blockers: list[PersonalAlphaCaseOSStageBlocker] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSStageOrchestration(BaseModel):
+    case_id: str
+    current_stage: str
+    next_action: str
+    next_action_label: str
+    target_route: str
+    blocked: bool = False
+    blocked_reasons: list[str] = Field(default_factory=list)
+    stage_order: list[str] = Field(default_factory=list)
+    stages: list[PersonalAlphaCaseOSStageState] = Field(default_factory=list)
+    action_eligibility: PersonalAlphaCaseOSActionEligibility
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
     warnings: list[str] = Field(default_factory=list)
 
 

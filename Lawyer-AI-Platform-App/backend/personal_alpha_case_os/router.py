@@ -3,10 +3,14 @@ from typing import Any
 from fastapi import APIRouter
 
 from personal_alpha_case_os.case_os_engine import (
+    get_personal_alpha_case_os_action_eligibility,
     get_personal_alpha_case_os_audit_timeline,
+    get_personal_alpha_case_os_blockers,
     get_personal_alpha_case_os_case_detail,
     get_personal_alpha_case_os_next_action,
     get_personal_alpha_case_os_safety_checklist,
+    get_personal_alpha_case_os_stage_orchestration,
+    get_personal_alpha_case_os_stage_transitions,
     get_personal_alpha_case_os_status,
     list_personal_alpha_case_os_cases,
 )
@@ -42,3 +46,28 @@ def personal_alpha_case_os_next_action(case_id: str) -> dict[str, Any]:
 @router.get("/{case_id}/safety-checklist")
 def personal_alpha_case_os_safety_checklist(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_safety_checklist(case_id)
+
+
+@router.get("/{case_id}/stage-orchestration")
+def personal_alpha_case_os_stage_orchestration(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_stage_orchestration(case_id)
+
+
+@router.get("/{case_id}/stage-transitions")
+def personal_alpha_case_os_stage_transitions(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_stage_transitions(case_id)
+
+
+@router.get("/{case_id}/action-eligibility")
+def personal_alpha_case_os_action_eligibility(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_action_eligibility(case_id)
+
+
+@router.get("/{case_id}/blockers")
+def personal_alpha_case_os_blockers(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_blockers(case_id)
+
+
+@router.get("/{case_id:path}/stage-orchestration")
+def personal_alpha_case_os_path_like_stage_orchestration(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_stage_orchestration(case_id)

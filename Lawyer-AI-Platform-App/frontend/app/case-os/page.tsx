@@ -99,29 +99,42 @@ export default function PersonalAlphaCaseOSPage() {
             <div className="mt-4 grid gap-3">
               {cases.length ? (
                 cases.map((caseItem) => (
-                  <Link
+                  <div
                     key={caseItem.case_id}
-                    href={`/case-os/${encodeURIComponent(caseItem.case_id)}`}
-                    className="rounded-md border border-line bg-white p-4 transition hover:border-gold hover:bg-amber-50/30"
+                    className="rounded-md border border-line bg-white p-4"
                   >
                     <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                       <div>
                         <div className="text-sm font-semibold text-ink">{caseItem.title}</div>
                         <div className="mt-1 text-xs text-muted">{caseItem.case_id}</div>
                       </div>
-                      <div className="grid gap-2 text-xs text-muted md:grid-cols-3">
+                      <div className="grid gap-2 text-xs text-muted md:grid-cols-4">
                         <span>status: {caseItem.latest_lock_id ? "locked" : "open"}</span>
-                        <span>stage: {caseItem.current_stage}</span>
-                        <span>next: {caseItem.next_action}</span>
+                        <span>current_stage: {caseItem.current_stage}</span>
+                        <span>next_action: {caseItem.next_action}</span>
+                        <span>blocked: {String(caseItem.blocked)}</span>
                       </div>
                     </div>
+                    {caseItem.blocked_reasons.length ? (
+                      <div className="mt-3 rounded-md border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">
+                        {caseItem.blocked_reasons.join(" / ")}
+                      </div>
+                    ) : null}
                     <div className="mt-3 grid gap-2 md:grid-cols-4">
                       <MiniMetric label="workspace run" value={caseItem.latest_workspace_run_id ? 1 : 0} />
                       <MiniMetric label="packet" value={caseItem.latest_packet_id ? 1 : 0} />
                       <MiniMetric label="lock" value={caseItem.latest_lock_id ? 1 : 0} />
                       <MiniMetric label="blocked" value={caseItem.blocked ? 1 : 0} />
                     </div>
-                  </Link>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <Link href={`/case-os/${encodeURIComponent(caseItem.case_id)}`}>
+                        <Button type="button">View Case OS</Button>
+                      </Link>
+                      <Link href={`/case-os/${encodeURIComponent(caseItem.case_id)}#next-action`}>
+                        <Button type="button" variant="secondary">View Next Action</Button>
+                      </Link>
+                    </div>
+                  </div>
                 ))
               ) : (
                 <div className="rounded-md border border-dashed border-line p-5 text-sm text-muted">
