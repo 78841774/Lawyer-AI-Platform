@@ -26,3 +26,10 @@ Before starting a new Codex session, read these files:
 ## Commit Boundary
 
 Each version commit should include code, tests, docs, changelog, and project context updates that are part of that version.
+
+## Current Handoff
+
+- Stable baseline: `v7.5-personal-production-workflow-stack` at commit `75ca460`.
+- Active local worktree scope: v7.6 Personal Delivery Packet.
+- v7.6 must remain mock-first, metadata-only, draft-only, lawyer-review-required, final-lock-required, and source-trace-required.
+- Do not start v7.7 until v7.6 validation and release preparation are complete and the user explicitly approves the next phase.

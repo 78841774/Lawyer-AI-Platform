@@ -33,6 +33,11 @@ def build_personal_production_readiness() -> dict:
         "enterprise_intelligence_gateway_registered": _runtime_gateway_registered(runtime_registry, "enterprise_intelligence_runtime"),
         "skill_studio_gateway_registered": _runtime_gateway_registered(runtime_registry, "experience_package_studio_runtime"),
         "case_production_gateway_registered": _runtime_gateway_registered(runtime_registry, "case_production_runtime"),
+        "delivery_packet_gateway_registered": _runtime_gateway_registered(runtime_registry, "delivery_packet_runtime"),
+        "packet_item_gateway_registered": _runtime_gateway_registered(runtime_registry, "packet_item_runtime"),
+        "source_bundle_gateway_registered": _runtime_gateway_registered(runtime_registry, "source_bundle_runtime"),
+        "export_readiness_gateway_registered": _runtime_gateway_registered(runtime_registry, "export_readiness_engine"),
+        "final_lock_gateway_registered": _runtime_gateway_registered(runtime_registry, "final_lock_engine"),
         "skill_training_runtime_registered": _runtime_registered(runtime_registry, "skill_training_runtime"),
         "delivery_runtime_registered": _runtime_registered(runtime_registry, "delivery_runtime"),
         "lawyer_review_required": bool(mode.get("lawyer_review_required", False)),
@@ -74,7 +79,7 @@ def build_console_summary() -> dict:
             "v7.3 Legal & Enterprise Intelligence Gateway implemented; validation and release pending",
             "v7.4 Experience Package Skill Studio implemented; validation and release pending",
             "v7.5 Real Case Production Workflow implemented; validation and release pending",
-            "v7.6 Personal Delivery Packet not started",
+            "v7.6 Personal Delivery Packet metadata-only validation pending",
         ],
         runtime_summary={
             "registered_runtime_count": int(runtime_registry.get("registered_runtime_count", 0)),
@@ -93,6 +98,11 @@ def build_console_summary() -> dict:
             "enterprise_intelligence_gateway_registered": bool(readiness.get("readiness", {}).get("enterprise_intelligence_gateway_registered", False)),
             "skill_studio_gateway_registered": bool(readiness.get("readiness", {}).get("skill_studio_gateway_registered", False)),
             "case_production_gateway_registered": bool(readiness.get("readiness", {}).get("case_production_gateway_registered", False)),
+            "delivery_packet_gateway_registered": bool(readiness.get("readiness", {}).get("delivery_packet_gateway_registered", False)),
+            "packet_item_gateway_registered": bool(readiness.get("readiness", {}).get("packet_item_gateway_registered", False)),
+            "source_bundle_gateway_registered": bool(readiness.get("readiness", {}).get("source_bundle_gateway_registered", False)),
+            "export_readiness_gateway_registered": bool(readiness.get("readiness", {}).get("export_readiness_gateway_registered", False)),
+            "final_lock_gateway_registered": bool(readiness.get("readiness", {}).get("final_lock_gateway_registered", False)),
         },
     ).model_dump()
 

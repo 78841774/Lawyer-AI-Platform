@@ -16,7 +16,7 @@
 - v7.3 builds Kuaicha 365 LawSkills API and Tianyancha AI gateway foundations.
 - v7.4 builds Experience Package Skill Studio foundations without automatic Skill publishing.
 - v7.5 builds Real Case Production Workflow foundations without final report generation or external delivery.
-- v7.6 Personal Delivery Packet has not started.
+- v7.6 builds Personal Delivery Packet foundations without live provider calls, final legal opinion generation, final report generation, real PDF/DOCX generation, email sending, or external delivery.
 
 ## Boundary
 

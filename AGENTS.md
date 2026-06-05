@@ -59,4 +59,4 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: v7.3-v7.5 validation and release preparation. Do not start v7.6 until validation passes and the user explicitly starts Personal Delivery Packet work.
+Next Task: v7.7 Personal Production Pilot & Showcase Pack. Do not start v7.7 implementation until the user explicitly confirms v7.6 commit/release handling and starts Pilot & Showcase Pack work.

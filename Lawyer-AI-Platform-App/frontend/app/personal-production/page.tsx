@@ -29,7 +29,7 @@ const workflowSteps = [
   "法律检索与企业信息核验",
   "Draft Analysis",
   "Lawyer Review",
-  "Delivery Packet"
+  "个人生产交付包"
 ];
 
 const safetyMessages = [
@@ -106,7 +106,17 @@ export default function PersonalProductionPage() {
       { label: "PaddleOCR-ready", value: Boolean(readiness?.readiness.ocr_runtime_gateway_registered) },
       { label: "法律与企业信息网关", value: Boolean(readiness?.readiness.legal_intelligence_gateway_registered && readiness?.readiness.enterprise_intelligence_gateway_registered) },
       { label: "经验包与技能工作室", value: Boolean(readiness?.readiness.skill_studio_gateway_registered) },
-      { label: "真实案件生产工作流", value: Boolean(readiness?.readiness.case_production_gateway_registered) }
+      { label: "真实案件生产工作流", value: Boolean(readiness?.readiness.case_production_gateway_registered) },
+      {
+        label: "个人生产交付包",
+        value: Boolean(
+          readiness?.readiness.delivery_packet_gateway_registered &&
+            readiness?.readiness.packet_item_gateway_registered &&
+            readiness?.readiness.source_bundle_gateway_registered &&
+            readiness?.readiness.export_readiness_gateway_registered &&
+            readiness?.readiness.final_lock_gateway_registered
+        )
+      }
     ],
     [readiness]
   );
@@ -302,7 +312,7 @@ function ReadinessCard({ label, ready }: { label: string; ready: boolean }) {
 }
 
 function RuntimeCard({ runtime }: { runtime: { label: string; category: string; status: string; live_enabled: boolean; controlled_available: boolean; production_ready: boolean; gateway_registered?: boolean; target_route?: string } }) {
-  const gatewayRuntime = ["ai", "ocr", "material_parser", "legal_search", "enterprise_intelligence", "skill_studio", "case_production"].includes(runtime.category);
+  const gatewayRuntime = ["ai", "ocr", "material_parser", "legal_search", "enterprise_intelligence", "skill_studio", "case_production", "delivery_packet"].includes(runtime.category);
   return (
     <div className="rounded-md border border-line bg-white p-4">
       <div className="flex items-start justify-between gap-3">
@@ -323,6 +333,7 @@ function RuntimeCard({ runtime }: { runtime: { label: string; category: string; 
         {runtime.category === "enterprise_intelligence" ? <span>天眼查 AI placeholder: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "skill_studio" ? <span>Skill Studio draft-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "case_production" ? <span>Case Production controlled: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "delivery_packet" ? <span>Delivery Packet metadata-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {gatewayRuntime ? <span>target_route: {runtime.target_route}</span> : null}
       </div>
     </div>

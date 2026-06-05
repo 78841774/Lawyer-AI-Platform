@@ -4654,6 +4654,68 @@ export type CaseProductionSourceTraceList = Record<string, unknown> & { source_t
 export type CaseProductionAuditTimeline = Record<string, unknown>;
 export type CaseProductionSafetyStatus = Record<string, unknown> & { safety_checklist: string[] };
 
+export type PersonalDeliveryPacketStatus = Record<string, unknown>;
+export type DeliveryPacketRuntime = Record<string, unknown> & { runtime_id: string; display_name: string; runtime_type: string };
+export type DeliveryPacketRuntimeList = Record<string, unknown> & { runtimes: DeliveryPacketRuntime[] };
+export type DeliveryPacketMockRequest = {
+  production_case_id: string;
+  workflow_run_id?: string | null;
+  packet_title: string;
+  packet_scope: string;
+  client_alias: string;
+  delivery_purpose: string;
+  explicit_mock_confirmation: boolean;
+  explicit_lawyer_review_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+  explicit_no_external_delivery_confirmation: boolean;
+};
+export type DeliveryPacketRecord = Record<string, unknown> & { delivery_packet_id: string; packet_title: string; packet_status: string };
+export type DeliveryPacketList = Record<string, unknown> & { delivery_packets: DeliveryPacketRecord[] };
+export type PacketItemMockRequest = {
+  delivery_packet_id: string;
+  item_title: string;
+  item_type: string;
+  linked_object_type: string;
+  linked_object_id: string;
+  source_trace_ids: string[];
+  explicit_mock_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+};
+export type PacketItemRecord = Record<string, unknown> & { packet_item_id: string; delivery_packet_id: string; item_type: string };
+export type PacketItemList = Record<string, unknown> & { packet_items: PacketItemRecord[] };
+export type SourceBundleMockRequest = {
+  delivery_packet_id: string;
+  source_trace_ids: string[];
+  bundle_scope: string;
+  explicit_mock_confirmation: boolean;
+  explicit_source_trace_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+};
+export type SourceBundleRecord = Record<string, unknown> & { source_bundle_id: string; delivery_packet_id: string; source_trace_ids: string[] };
+export type SourceBundleList = Record<string, unknown> & { source_bundles: SourceBundleRecord[] };
+export type ExportReadiness = Record<string, unknown> & { delivery_packet_id: string; export_readiness_status: string };
+export type ExportReadinessList = Record<string, unknown> & { readiness: ExportReadiness[] };
+export type FinalLockActionRequest = {
+  action: string;
+  reviewer_id: string;
+  reviewer_note?: string | null;
+  explicit_lawyer_confirmation: boolean;
+  explicit_final_lock_confirmation: boolean;
+  explicit_no_real_export_confirmation: boolean;
+  explicit_no_email_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+  explicit_no_final_report_confirmation: boolean;
+  explicit_no_external_delivery_confirmation: boolean;
+};
+export type FinalLockRecord = Record<string, unknown> & { final_lock_id: string; delivery_packet_id: string; action: string };
+export type FinalLockList = Record<string, unknown> & { final_locks: FinalLockRecord[] };
+export type ReviewSummary = Record<string, unknown> & { delivery_packet_id: string; lawyer_review_status: string };
+export type ReviewSummaryList = Record<string, unknown> & { review_summaries: ReviewSummary[] };
+export type DeliveryPacketAuditTimeline = Record<string, unknown>;
+export type DeliveryPacketSafetyStatus = Record<string, unknown> & { safety_checklist: string[] };
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

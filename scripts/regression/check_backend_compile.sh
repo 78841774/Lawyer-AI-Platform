@@ -39,6 +39,7 @@ fi
   personal_material_runtime \
   personal_intelligence_gateway \
   personal_skill_studio \
-  personal_case_production
+  personal_case_production \
+  personal_delivery_packet
 
 pass "backend compileall"

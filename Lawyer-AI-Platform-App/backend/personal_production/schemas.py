@@ -20,6 +20,7 @@ class PersonalProductionStatus(BaseModel):
     skill_training_runtime_registered: bool = True
     skill_studio_runtime_registered: bool = True
     case_production_runtime_registered: bool = True
+    personal_delivery_packet_runtime_registered: bool = True
     delivery_runtime_registered: bool = True
     mock_first_enabled: bool = True
     controlled_first_enabled: bool = True

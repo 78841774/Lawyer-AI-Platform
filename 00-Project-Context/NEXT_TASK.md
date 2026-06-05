@@ -1,30 +1,47 @@
 # Next Task
 
-Next Task: v7.3-v7.5 validation and release preparation
+Next Task: v7.7 Personal Production Pilot & Showcase Pack
 
-## Goal
+## Current Gate
 
-Validate and close the current local worktree implementation for:
+v7.6 Personal Delivery Packet is implemented and locally validated in the current worktree, but it is not yet committed, tagged, or pushed.
 
-- v7.3 Legal & Enterprise Intelligence Gateway.
-- v7.4 Experience Package Skill Studio.
-- v7.5 Real Case Production Workflow.
+Before starting v7.7, wait for explicit user confirmation on the v7.6 commit and release flow.
 
-## Expected Direction
+## v7.7 Goal
 
-- Confirm v7.3 legal search and enterprise intelligence gateway APIs.
-- Confirm v7.4 experience package, skill candidate, test case, evaluation, and promotion gate APIs.
-- Confirm v7.5 case production, workflow orchestration, readiness, and lawyer review gate APIs.
-- Keep all three versions mock-first, controlled-first, provider-gated, source-trace-required, and lawyer-review-required.
-- Keep v7.3, v7.4, and v7.5 marked as validation/release pending until commit and tag are created.
-- Do not start v7.6 Personal Delivery Packet unless validation passes and the user explicitly starts it.
+Prepare the personal production stack for pilot and showcase use:
 
-## Safety Boundary
+- Showcase-ready guided demo flow.
+- Pilot-safe explanation panels.
+- Chinese UI copy refinement.
+- Scenario selection for controlled demos.
+- Safety and trust presentation around mock-first, provider-gated workflows.
+- Release notes and demo script preparation.
 
-- No real provider calls.
-- No API key reads.
-- No raw case material reads.
-- No final legal opinion.
-- No final report.
-- No external delivery.
-- No automatic Skill publish.
+## Boundaries
+
+- Do not start v7.7 implementation until the user explicitly approves it.
+- Do not commit, tag, or push v7.6 without explicit user confirmation.
+- Do not call real providers.
+- Do not read API keys.
+- Do not read or expose raw case materials.
+- Do not generate final legal opinions.
+- Do not generate final reports.
+- Do not generate real final delivery files.
+- Do not send email.
+- Do not trigger external delivery.
+- Do not automatically publish Skills.
+
+## v7.6 Carry Forward
+
+The v7.6 Personal Delivery Packet safety posture remains:
+
+- mock-first.
+- controlled-first.
+- metadata-only.
+- draft-only.
+- lawyer-review-required.
+- final-lock-required.
+- source-trace-required.
+- provider-gated.

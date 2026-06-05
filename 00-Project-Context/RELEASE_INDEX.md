@@ -6,9 +6,10 @@
 - v7.0 commit: `54a35ce`
 - v7.1 commit: `e5bd136`
 - v7.2 commit: `5464b9f`
-- v7.3 commit: pending
-- v7.4 commit: pending
-- v7.5 commit: pending
+- v7.3 commit: `75ca460`
+- v7.4 commit: `75ca460`
+- v7.5 commit: `75ca460`
+- v7.6 commit: pending
 
 ## Known Tags
 
@@ -35,6 +36,7 @@
 - `v7.0-personal-production-runtime-showcase-foundation`: detected
 - `v7.1-personal-ai-gateway-prompt-runtime`: detected
 - `v7.2-controlled-material-parsing-paddleocr-runtime`: detected
-- `v7.3-legal-enterprise-intelligence-gateway`: pending
-- `v7.4-experience-package-skill-studio`: pending
-- `v7.5-real-case-production-workflow`: pending
+- `v7.3-legal-enterprise-intelligence-gateway`: superseded by comprehensive tag `v7.5-personal-production-workflow-stack`
+- `v7.4-experience-package-skill-studio`: superseded by comprehensive tag `v7.5-personal-production-workflow-stack`
+- `v7.5-personal-production-workflow-stack`: detected
+- `v7.6-personal-delivery-packet`: pending
