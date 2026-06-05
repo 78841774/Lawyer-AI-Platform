@@ -35,6 +35,7 @@ const navGroups = [
       { href: "/personal-alpha-lawyer-final-review", label: "Personal Alpha Lawyer Final Review" },
       { href: "/personal-alpha-final-lock", label: "Personal Alpha Final Lock" },
       { href: "/case-os", label: "Personal Alpha Case OS" },
+      { href: "/personal-production", label: "Personal Production" },
       { href: "/controlled-material", label: "Controlled Material" },
       { href: "/controlled-ocr", label: "Controlled OCR" },
       { href: "/controlled-legal-search", label: "Controlled Legal Search" },

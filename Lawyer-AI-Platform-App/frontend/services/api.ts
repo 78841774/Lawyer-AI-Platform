@@ -161,6 +161,14 @@ import type {
   PersonalAlphaWorkspaceRunRecord,
   PersonalAlphaWorkspaceRunResult,
   PersonalAlphaWorkspaceStatus,
+  PersonalProductionConsoleSummary,
+  PersonalProductionMode,
+  PersonalProductionProviderCapabilities,
+  PersonalProductionReadiness,
+  PersonalProductionRuntimeRegistry,
+  PersonalProductionSafety,
+  PersonalProductionShowcase,
+  PersonalProductionStatus,
   PersonalCaseManifestPreview,
   PersonalCaseManifestPreviewRequest,
   LocalSandboxAuditLog,
@@ -362,6 +370,14 @@ export type {
   PersonalAlphaWorkspaceRunRecord,
   PersonalAlphaWorkspaceRunResult,
   PersonalAlphaWorkspaceStatus,
+  PersonalProductionConsoleSummary,
+  PersonalProductionMode,
+  PersonalProductionProviderCapabilities,
+  PersonalProductionReadiness,
+  PersonalProductionRuntimeRegistry,
+  PersonalProductionSafety,
+  PersonalProductionShowcase,
+  PersonalProductionStatus,
   PersonalCaseManifestPreview,
   PersonalCaseManifestPreviewRequest,
   LocalSandboxAuditLog,
@@ -1188,6 +1204,17 @@ export const personalAlphaCaseOSApi = {
     }>(`/case-os/${encodeURIComponent(caseId)}/safety-checklist`)
 };
 
+export const personalProductionApi = {
+  getStatus: () => request<PersonalProductionStatus>("/personal-production/status"),
+  getMode: () => request<PersonalProductionMode>("/personal-production/mode"),
+  getShowcase: () => request<PersonalProductionShowcase>("/personal-production/showcase"),
+  getRuntimeRegistry: () => request<PersonalProductionRuntimeRegistry>("/personal-production/runtime-registry"),
+  getProviderCapabilities: () => request<PersonalProductionProviderCapabilities>("/personal-production/provider-capabilities"),
+  getReadiness: () => request<PersonalProductionReadiness>("/personal-production/readiness"),
+  getSafety: () => request<PersonalProductionSafety>("/personal-production/safety"),
+  getConsoleSummary: () => request<PersonalProductionConsoleSummary>("/personal-production/console-summary")
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -1307,6 +1334,14 @@ export const getPersonalAlphaCaseOSStageTransitions = personalAlphaCaseOSApi.get
 export const getPersonalAlphaCaseOSActionEligibility = personalAlphaCaseOSApi.getActionEligibility;
 export const getPersonalAlphaCaseOSBlockers = personalAlphaCaseOSApi.getBlockers;
 export const getPersonalAlphaCaseOSSafetyChecklist = personalAlphaCaseOSApi.getSafetyChecklist;
+export const getPersonalProductionStatus = personalProductionApi.getStatus;
+export const getPersonalProductionMode = personalProductionApi.getMode;
+export const getPersonalProductionShowcase = personalProductionApi.getShowcase;
+export const getPersonalProductionRuntimeRegistry = personalProductionApi.getRuntimeRegistry;
+export const getPersonalProductionProviderCapabilities = personalProductionApi.getProviderCapabilities;
+export const getPersonalProductionReadiness = personalProductionApi.getReadiness;
+export const getPersonalProductionSafety = personalProductionApi.getSafety;
+export const getPersonalProductionConsoleSummary = personalProductionApi.getConsoleSummary;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

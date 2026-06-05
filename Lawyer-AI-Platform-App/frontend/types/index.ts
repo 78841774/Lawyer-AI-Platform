@@ -3559,6 +3559,164 @@ export type PersonalAlphaCaseOSCaseDetail = {
   warnings: string[];
 };
 
+export type PersonalProductionStatus = {
+  enabled: boolean;
+  mode: string;
+  version: string;
+  personal_production_phase: boolean;
+  showcase_ready: boolean;
+  production_validation_ready: boolean;
+  external_client_delivery_ready: boolean;
+  team_workspace_enabled: boolean;
+  real_provider_call_enabled: boolean;
+  ai_runtime_registered: boolean;
+  ocr_runtime_registered: boolean;
+  legal_search_runtime_registered: boolean;
+  skill_training_runtime_registered: boolean;
+  delivery_runtime_registered: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  lawyer_review_required: boolean;
+  manual_final_lock_required: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalProductionMode = {
+  personal_production_mode: string;
+  personal_production_enabled: boolean;
+  real_provider_enabled: boolean;
+  external_delivery_enabled: boolean;
+  team_workspace_enabled: boolean;
+  showcase_mode_enabled: boolean;
+  developer_diagnostics_enabled: boolean;
+  lawyer_review_required: boolean;
+  manual_final_lock_required: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalProductionShowcase = {
+  showcase_mode_enabled: boolean;
+  showcase_safe: boolean;
+  public_demo_safe: boolean;
+  developer_diagnostics_collapsed: boolean;
+  raw_content_visible: boolean;
+  internal_paths_visible: boolean;
+  provider_secrets_visible: boolean;
+  headline: string;
+  subheadline: string;
+  trust_badges: string[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalProductionRuntimeItem = {
+  runtime_id: string;
+  label: string;
+  category: string;
+  mode: string;
+  enabled: boolean;
+  live_enabled: boolean;
+  mock_available: boolean;
+  controlled_available: boolean;
+  production_ready: boolean;
+  provider_configured: boolean;
+  manual_approval_required: boolean;
+  lawyer_review_required: boolean;
+  status: string;
+  target_route: string;
+  warnings: string[];
+};
+
+export type PersonalProductionRuntimeRegistry = {
+  runtimes: PersonalProductionRuntimeItem[];
+  registered_runtime_count: number;
+  live_runtime_count: number;
+  controlled_runtime_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalProductionProviderCapability = {
+  provider_id: string;
+  label: string;
+  category: string;
+  configured: boolean;
+  live_enabled: boolean;
+  mock_supported: boolean;
+  controlled_live_supported: boolean;
+  requires_api_key: boolean;
+  api_key_present: boolean;
+  api_key_visible: boolean;
+  status: string;
+  next_action: string;
+};
+
+export type PersonalProductionProviderCapabilities = {
+  providers: PersonalProductionProviderCapability[];
+  provider_count: number;
+  configured_provider_count: number;
+  live_provider_count: number;
+  provider_secrets_visible: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalProductionReadiness = {
+  personal_production_ready: boolean;
+  showcase_ready: boolean;
+  readiness: Record<string, boolean>;
+  missing_requirements: string[];
+  next_action: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalProductionSafety = {
+  safety: Record<string, boolean>;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalProductionConsoleSummary = {
+  title: string;
+  phase: string;
+  version: string;
+  showcase_ready: boolean;
+  personal_production_ready: boolean;
+  external_client_delivery_ready: boolean;
+  team_workspace_enabled: boolean;
+  next_steps: string[];
+  runtime_summary: Record<string, number>;
+  trust_summary: Record<string, boolean>;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;
