@@ -10,7 +10,22 @@ RUNTIME_DEFINITIONS = [
         "gateway_registered": True,
         "warnings": ["AI Gateway registered in v7.1. Live provider calls remain disabled."],
     },
-    {"runtime_id": "ocr_runtime", "label": "OCR Runtime", "category": "ocr"},
+    {
+        "runtime_id": "material_parser_runtime",
+        "label": "Material Parsing Runtime",
+        "category": "material_parser",
+        "target_route": "/personal-material-runtime",
+        "gateway_registered": True,
+        "warnings": ["MinerU and Docling placeholders registered in v7.2. Live parsing remains disabled."],
+    },
+    {
+        "runtime_id": "ocr_runtime",
+        "label": "OCR Runtime",
+        "category": "ocr",
+        "target_route": "/personal-material-runtime",
+        "gateway_registered": True,
+        "warnings": ["PaddleOCR-ready placeholder registered in v7.2. Live OCR remains disabled."],
+    },
     {"runtime_id": "legal_search_runtime", "label": "Legal Search Runtime", "category": "legal_search"},
     {"runtime_id": "skill_training_runtime", "label": "Skill Training Runtime", "category": "skill_training"},
     {"runtime_id": "delivery_runtime", "label": "Delivery Runtime", "category": "delivery"},
@@ -29,7 +44,7 @@ def build_runtime_registry() -> dict:
             gateway_registered=bool(definition.get("gateway_registered", False)),
             warnings=definition.get(
                 "warnings",
-                ["Runtime is registered for controlled foundation use; live mode is disabled in v7.1."],
+                ["Runtime is registered for controlled foundation use; live mode is disabled in v7.2."],
             ),
         )
         for definition in RUNTIME_DEFINITIONS

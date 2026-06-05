@@ -12,7 +12,7 @@
 ## Version Scope
 
 - v7.1 only builds the AI Gateway for AI provider metadata, prompt rendering preview, and draft-only mock AI runs.
-- v7.2 builds Controlled Material Parsing and PaddleOCR runtime foundations.
+- v7.2 introduces MinerU, Docling, and PaddleOCR placeholders for Controlled Material Parsing and OCR runtime foundations.
 - v7.3 builds Kuaicha 365 LawSkills API and Tianyancha AI gateway foundations.
 
 ## Boundary

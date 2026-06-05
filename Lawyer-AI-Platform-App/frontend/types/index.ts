@@ -3571,6 +3571,7 @@ export type PersonalProductionStatus = {
   real_provider_call_enabled: boolean;
   ai_runtime_registered: boolean;
   ai_gateway_registered: boolean;
+  material_parsing_runtime_registered: boolean;
   ocr_runtime_registered: boolean;
   legal_search_runtime_registered: boolean;
   skill_training_runtime_registered: boolean;
@@ -3956,6 +3957,340 @@ export type PersonalAISafetyStatus = {
   all_safety_checks_passed: boolean;
   mock_or_redacted_only: boolean;
   raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalMaterialRuntimeStatus = {
+  enabled: boolean;
+  mode: string;
+  version: string;
+  mock_first_enabled: boolean;
+  controlled_live_supported: boolean;
+  live_provider_call_enabled: boolean;
+  material_parser_runtime_enabled: boolean;
+  ocr_runtime_enabled: boolean;
+  ocr_review_queue_enabled: boolean;
+  source_trace_enabled: boolean;
+  manual_approval_required: boolean;
+  lawyer_review_required: boolean;
+  raw_ocr_controlled: boolean;
+  raw_ocr_text_exposed: boolean;
+  external_delivery_enabled: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalMaterialProvider = {
+  provider_id: string;
+  label: string;
+  category: string;
+  configured: boolean;
+  live_enabled: boolean;
+  mock_supported: boolean;
+  controlled_live_supported: boolean;
+  requires_api_key: boolean;
+  api_key_present: boolean;
+  api_key_visible: boolean;
+  status: string;
+  target_version: string;
+  target_route: string;
+  next_action: string;
+  warnings: string[];
+};
+
+export type PersonalMaterialProviderList = {
+  providers: PersonalMaterialProvider[];
+  provider_count: number;
+  configured_provider_count: number;
+  live_provider_count: number;
+  provider_secrets_visible: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalMaterialParseSummary = {
+  page_count: number;
+  section_count: number;
+  table_count: number;
+  image_count: number;
+  mock_preview_only: boolean;
+};
+
+export type PersonalMaterialParseJobRequest = {
+  case_id: string;
+  material_id: string;
+  parser_provider_id: string;
+  parse_type: string;
+  manual_approval_confirmed: boolean;
+  mock_data_only_confirmation: boolean;
+  no_raw_content_confirmation: boolean;
+  no_external_upload_confirmation: boolean;
+};
+
+export type PersonalMaterialParseJobResult = {
+  parse_job_id?: string | null;
+  case_id: string;
+  material_id: string;
+  parser_provider_id: string;
+  parse_type: string;
+  mode: string;
+  status: string;
+  would_call_provider: boolean;
+  live_call_executed: boolean;
+  parse_summary: PersonalMaterialParseSummary;
+  source_trace_required: boolean;
+  requires_lawyer_review: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_material_text_exposed: boolean;
+  raw_ocr_text_exposed: boolean;
+  controlled_preview_only: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  external_delivery_enabled: boolean;
+  blocked_reasons: string[];
+  warnings: string[];
+};
+
+export type PersonalMaterialParseJobRecord = PersonalMaterialParseJobResult & {
+  parse_job_id: string;
+  created_at: string;
+};
+
+export type PersonalMaterialParseJobList = {
+  parse_jobs: PersonalMaterialParseJobRecord[];
+  job_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalOCRPreview = {
+  ocr_job_id?: string | null;
+  case_id?: string | null;
+  material_id?: string | null;
+  ocr_provider_id?: string | null;
+  status: string;
+  page_count: number;
+  recognized_block_count: number;
+  average_confidence: number;
+  low_confidence_block_count: number;
+  table_detected: boolean;
+  layout_detected: boolean;
+  key_information_detected: boolean;
+  preview_blocks: Record<string, string | number | boolean>[];
+  controlled_preview_only: boolean;
+  raw_ocr_text_exposed: boolean;
+  requires_lawyer_review: boolean;
+  source_trace_required: boolean;
+  used_in_ai_prompt: boolean;
+  used_in_final_output: boolean;
+  eligible_for_ai_prompt_after_review: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalOCRJobRequest = {
+  case_id: string;
+  material_id: string;
+  ocr_provider_id: string;
+  ocr_job_type: string;
+  manual_approval_confirmed: boolean;
+  lawyer_review_required_confirmation: boolean;
+  source_trace_required_confirmation: boolean;
+  no_raw_ocr_exposure_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+};
+
+export type PersonalOCRJobResult = {
+  ocr_job_id?: string | null;
+  case_id: string;
+  material_id: string;
+  ocr_provider_id: string;
+  ocr_job_type: string;
+  mode: string;
+  status: string;
+  would_call_provider: boolean;
+  live_call_executed: boolean;
+  ocr_preview: PersonalOCRPreview;
+  review_status: string;
+  source_trace_required: boolean;
+  requires_lawyer_review: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  controlled_preview_only: boolean;
+  used_in_ai_prompt: boolean;
+  used_in_final_output: boolean;
+  eligible_for_ai_prompt_after_review: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  external_delivery_enabled: boolean;
+  blocked_reasons: string[];
+  warnings: string[];
+};
+
+export type PersonalOCRJobRecord = PersonalOCRJobResult & {
+  ocr_job_id: string;
+  created_at: string;
+};
+
+export type PersonalOCRJobList = {
+  ocr_jobs: PersonalOCRJobRecord[];
+  job_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalOCRReviewItem = {
+  ocr_job_id: string;
+  case_id: string;
+  material_id: string;
+  ocr_provider_id: string;
+  review_status: string;
+  confidence: number;
+  low_confidence_block_count: number;
+  requires_lawyer_review: boolean;
+  source_trace_required: boolean;
+  controlled_preview_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  used_in_ai_prompt: boolean;
+  used_in_final_output: boolean;
+  eligible_for_ai_prompt_after_review: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  created_at: string;
+  updated_at: string;
+  warnings: string[];
+};
+
+export type PersonalOCRReviewQueue = {
+  items: PersonalOCRReviewItem[];
+  item_count: number;
+  pending_review_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalOCRReviewActionRequest = {
+  action: string;
+  reviewer_id: string;
+  manual_review_confirmed: boolean;
+  no_raw_ocr_exposure_confirmation: boolean;
+  lawyer_review_required_confirmation: boolean;
+};
+
+export type PersonalOCRReviewActionResult = {
+  ocr_job_id: string;
+  action: string;
+  reviewer_id: string;
+  status: string;
+  review_status: string;
+  manual_review_confirmed: boolean;
+  controlled_preview_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  used_in_ai_prompt: boolean;
+  used_in_final_output: boolean;
+  eligible_for_ai_prompt_after_review: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  blocked_reasons: string[];
+  warnings: string[];
+};
+
+export type PersonalMaterialSourceTrace = {
+  source_trace_id: string;
+  case_id: string;
+  material_id: string;
+  job_id: string;
+  source_type: string;
+  provider_id: string;
+  page_number: number;
+  block_id: string;
+  bbox_redacted: boolean;
+  bbox: Record<string, number>;
+  confidence: number;
+  created_at: string;
+  manual_review_status: string;
+  controlled_preview_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  used_in_ai_prompt: boolean;
+  used_in_final_output: boolean;
+  eligible_for_ai_prompt_after_review: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+};
+
+export type PersonalMaterialSourceTraceList = {
+  source_traces: PersonalMaterialSourceTrace[];
+  source_trace_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalMaterialAuditEvent = {
+  event_id: string;
+  event_type: string;
+  case_id: string;
+  material_id: string;
+  provider_id: string;
+  job_id: string;
+  mode: string;
+  live_call_executed: boolean;
+  manual_approval_confirmed: boolean;
+  raw_ocr_text_exposed: boolean;
+  controlled_preview_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  created_at: string;
+};
+
+export type PersonalMaterialAuditTimeline = {
+  events: PersonalMaterialAuditEvent[];
+  event_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalMaterialSafetyStatus = {
+  safety: Record<string, boolean>;
+  all_safety_checks_passed: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  raw_ocr_text_exposed: boolean;
   final_legal_opinion_generated: boolean;
   final_report_generated: boolean;
   warnings: string[];

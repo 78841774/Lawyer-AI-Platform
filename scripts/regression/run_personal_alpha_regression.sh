@@ -19,6 +19,7 @@ checks=(
   "check_case_os_release_candidate_apis.sh"
   "check_personal_production_apis.sh"
   "check_personal_ai_gateway_apis.sh"
+  "check_personal_material_runtime_apis.sh"
   "check_metadata_only_responses.sh"
   "check_safe_not_found.sh"
   "check_injected_path_inputs.sh"

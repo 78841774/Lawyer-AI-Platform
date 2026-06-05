@@ -4,7 +4,8 @@
 
 - v6.9 commit: `986ecba`
 - v7.0 commit: `54a35ce`
-- v7.1 commit: pending until the current v7.1 submission is committed
+- v7.1 commit: `e5bd136`
+- v7.2 commit: pending until the current v7.2 submission is committed
 
 ## Known Tags
 
@@ -29,4 +30,5 @@
 - `v6.8-personal-alpha-case-os-hardening`: detected
 - `v6.9-personal-alpha-case-os-release-candidate`: detected
 - `v7.0-personal-production-runtime-showcase-foundation`: detected
-- `v7.1-personal-ai-gateway-prompt-runtime`: pending
+- `v7.1-personal-ai-gateway-prompt-runtime`: detected
+- `v7.2-controlled-material-parsing-paddleocr-runtime`: pending

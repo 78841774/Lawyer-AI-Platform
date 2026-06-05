@@ -3,9 +3,9 @@
 ## v7.x Personal Production Route
 
 - v7.0 Personal Production Runtime & Showcase Foundation.
-- v7.1 AI Provider Gateway & Prompt Runtime.
-- v7.2 Controlled Material Parsing & PaddleOCR Runtime.
-- v7.3 Legal & Enterprise Intelligence Gateway.
+- v7.1 AI Provider Gateway & Prompt Runtime completed.
+- v7.2 Controlled Material Parsing & PaddleOCR Runtime completed.
+- v7.3 Legal & Enterprise Intelligence Gateway next.
 - v7.4 Experience Package Skill Studio.
 - v7.5 Real Case Production Workflow.
 - v7.6 Personal Delivery Packet.

@@ -8,7 +8,8 @@ AIHome.law / Lawyer-AI-Platform is currently focused on personal production vali
 
 - v6.9 Personal Alpha Case OS Release Candidate is complete.
 - v7.0 Personal Production Runtime & Showcase Foundation is complete.
-- v7.1 AI Provider Gateway & Prompt Runtime is included in the current development scope.
+- v7.1 AI Provider Gateway & Prompt Runtime is complete at commit `e5bd136`.
+- v7.2 Controlled Material Parsing & PaddleOCR Runtime is complete in the current development scope.
 
 ## Direction
 
@@ -25,6 +26,8 @@ Team workspace features and external client delivery versions are deferred.
 
 - Personal Alpha Case OS is release-candidate ready.
 - Personal Production Console is available for controlled showcase use.
-- AI Provider Gateway and Prompt Runtime are being developed for v7.1.
+- AI Provider Gateway and Prompt Runtime are complete for v7.1.
+- Controlled Material Parsing and PaddleOCR Runtime are complete for v7.2.
+- Legal & Enterprise Intelligence Gateway is the next planned stage for v7.3.
 - Real provider calls remain disabled.
 - External delivery remains disabled.

@@ -37,6 +37,7 @@ const navGroups = [
       { href: "/case-os", label: "Personal Alpha Case OS" },
       { href: "/personal-production", label: "Personal Production" },
       { href: "/personal-ai-gateway", label: "AI Gateway" },
+      { href: "/personal-material-runtime", label: "Material Runtime" },
       { href: "/controlled-material", label: "Controlled Material" },
       { href: "/controlled-ocr", label: "Controlled OCR" },
       { href: "/controlled-legal-search", label: "Controlled Legal Search" },

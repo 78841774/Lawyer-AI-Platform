@@ -175,6 +175,24 @@ import type {
   PersonalAIRunRecord,
   PersonalAISafetyStatus,
   PersonalAITokenUsageSummary,
+  PersonalMaterialAuditTimeline,
+  PersonalMaterialParseJobList,
+  PersonalMaterialParseJobRecord,
+  PersonalMaterialParseJobRequest,
+  PersonalMaterialParseJobResult,
+  PersonalMaterialProvider,
+  PersonalMaterialProviderList,
+  PersonalMaterialRuntimeStatus,
+  PersonalMaterialSafetyStatus,
+  PersonalMaterialSourceTraceList,
+  PersonalOCRJobList,
+  PersonalOCRJobRecord,
+  PersonalOCRJobRequest,
+  PersonalOCRJobResult,
+  PersonalOCRPreview,
+  PersonalOCRReviewActionRequest,
+  PersonalOCRReviewActionResult,
+  PersonalOCRReviewQueue,
   PersonalProductionConsoleSummary,
   PersonalProductionMode,
   PersonalProductionProviderCapabilities,
@@ -398,6 +416,24 @@ export type {
   PersonalAIRunRecord,
   PersonalAISafetyStatus,
   PersonalAITokenUsageSummary,
+  PersonalMaterialAuditTimeline,
+  PersonalMaterialParseJobList,
+  PersonalMaterialParseJobRecord,
+  PersonalMaterialParseJobRequest,
+  PersonalMaterialParseJobResult,
+  PersonalMaterialProvider,
+  PersonalMaterialProviderList,
+  PersonalMaterialRuntimeStatus,
+  PersonalMaterialSafetyStatus,
+  PersonalMaterialSourceTraceList,
+  PersonalOCRJobList,
+  PersonalOCRJobRecord,
+  PersonalOCRJobRequest,
+  PersonalOCRJobResult,
+  PersonalOCRPreview,
+  PersonalOCRReviewActionRequest,
+  PersonalOCRReviewActionResult,
+  PersonalOCRReviewQueue,
   PersonalProductionConsoleSummary,
   PersonalProductionMode,
   PersonalProductionProviderCapabilities,
@@ -1263,6 +1299,34 @@ export const personalAIGatewayApi = {
   getSafety: () => request<PersonalAISafetyStatus>("/personal-ai-gateway/safety")
 };
 
+export const personalMaterialRuntimeApi = {
+  getStatus: () => request<PersonalMaterialRuntimeStatus>("/personal-material-runtime/status"),
+  getProviders: () => request<PersonalMaterialProviderList>("/personal-material-runtime/providers"),
+  getProvider: (providerId: string) =>
+    request<PersonalMaterialProvider>(`/personal-material-runtime/providers/${encodeURIComponent(providerId)}`),
+  createMockParseJob: (payload: PersonalMaterialParseJobRequest) =>
+    postJson<PersonalMaterialParseJobResult>("/personal-material-runtime/parse-jobs/mock", payload),
+  listParseJobs: () => request<PersonalMaterialParseJobList>("/personal-material-runtime/parse-jobs"),
+  getParseJob: (parseJobId: string) =>
+    request<PersonalMaterialParseJobRecord>(`/personal-material-runtime/parse-jobs/${encodeURIComponent(parseJobId)}`),
+  createMockOCRJob: (payload: PersonalOCRJobRequest) =>
+    postJson<PersonalOCRJobResult>("/personal-material-runtime/ocr-jobs/mock", payload),
+  listOCRJobs: () => request<PersonalOCRJobList>("/personal-material-runtime/ocr-jobs"),
+  getOCRJob: (ocrJobId: string) =>
+    request<PersonalOCRJobRecord>(`/personal-material-runtime/ocr-jobs/${encodeURIComponent(ocrJobId)}`),
+  getOCRPreview: (ocrJobId: string) =>
+    request<PersonalOCRPreview>(`/personal-material-runtime/ocr-jobs/${encodeURIComponent(ocrJobId)}/preview`),
+  getOCRReviewQueue: () => request<PersonalOCRReviewQueue>("/personal-material-runtime/ocr-review-queue"),
+  submitOCRReviewAction: (ocrJobId: string, payload: PersonalOCRReviewActionRequest) =>
+    postJson<PersonalOCRReviewActionResult>(
+      `/personal-material-runtime/ocr-review-queue/${encodeURIComponent(ocrJobId)}/actions`,
+      payload
+    ),
+  getSourceTraces: () => request<PersonalMaterialSourceTraceList>("/personal-material-runtime/source-traces"),
+  getAudit: () => request<PersonalMaterialAuditTimeline>("/personal-material-runtime/audit"),
+  getSafety: () => request<PersonalMaterialSafetyStatus>("/personal-material-runtime/safety")
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -1402,6 +1466,21 @@ export const getPersonalAIRun = personalAIGatewayApi.getRun;
 export const getPersonalAIAudit = personalAIGatewayApi.getAudit;
 export const getPersonalAITokenUsageSummary = personalAIGatewayApi.getTokenUsageSummary;
 export const getPersonalAISafety = personalAIGatewayApi.getSafety;
+export const getPersonalMaterialRuntimeStatus = personalMaterialRuntimeApi.getStatus;
+export const getPersonalMaterialRuntimeProviders = personalMaterialRuntimeApi.getProviders;
+export const getPersonalMaterialRuntimeProvider = personalMaterialRuntimeApi.getProvider;
+export const createPersonalMaterialParseJob = personalMaterialRuntimeApi.createMockParseJob;
+export const listPersonalMaterialParseJobs = personalMaterialRuntimeApi.listParseJobs;
+export const getPersonalMaterialParseJob = personalMaterialRuntimeApi.getParseJob;
+export const createPersonalOCRJob = personalMaterialRuntimeApi.createMockOCRJob;
+export const listPersonalOCRJobs = personalMaterialRuntimeApi.listOCRJobs;
+export const getPersonalOCRJob = personalMaterialRuntimeApi.getOCRJob;
+export const getPersonalOCRPreview = personalMaterialRuntimeApi.getOCRPreview;
+export const getPersonalOCRReviewQueue = personalMaterialRuntimeApi.getOCRReviewQueue;
+export const submitPersonalOCRReviewAction = personalMaterialRuntimeApi.submitOCRReviewAction;
+export const getPersonalMaterialSourceTraces = personalMaterialRuntimeApi.getSourceTraces;
+export const getPersonalMaterialAudit = personalMaterialRuntimeApi.getAudit;
+export const getPersonalMaterialSafety = personalMaterialRuntimeApi.getSafety;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

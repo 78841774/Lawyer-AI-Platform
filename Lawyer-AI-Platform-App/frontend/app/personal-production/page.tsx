@@ -101,7 +101,9 @@ export default function PersonalProductionPage() {
       { label: "Regression Suite", value: Boolean(readiness?.readiness.regression_suite_passed) },
       { label: "Hardening", value: Boolean(readiness?.readiness.hardening_layer_enabled) },
       { label: "Personal Production Mode", value: Boolean(readiness?.readiness.personal_production_mode_defined) },
-      { label: "AI Gateway", value: Boolean(readiness?.readiness.ai_gateway_registered) }
+      { label: "AI Gateway", value: Boolean(readiness?.readiness.ai_gateway_registered) },
+      { label: "Material Runtime", value: Boolean(readiness?.readiness.material_runtime_gateway_registered) },
+      { label: "PaddleOCR-ready", value: Boolean(readiness?.readiness.ocr_runtime_gateway_registered) }
     ],
     [readiness]
   );
@@ -149,7 +151,7 @@ export default function PersonalProductionPage() {
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-5">
+        <section className="grid gap-4 md:grid-cols-7">
           {readinessCards.map((card) => (
             <ReadinessCard key={card.label} label={card.label} ready={card.value} />
           ))}
@@ -210,13 +212,13 @@ export default function PersonalProductionPage() {
             <div className="grid gap-3">
               {(consoleSummary?.next_steps ?? [
                 "v7.1 AI Provider Gateway & Prompt Runtime",
-                "v7.2 Controlled OCR Runtime",
+                "v7.2 Controlled Material Parsing & PaddleOCR Runtime",
                 "v7.3 Legal Search API Gateway",
                 "v7.4 Experience Package Skill Studio"
               ]).map((step) => (
                 <div key={step} className="rounded-md border border-line bg-white px-4 py-3 text-sm font-medium text-ink">
                   {step}
-                  {step.includes("v7.1") ? <span className="ml-2 text-xs text-emerald-700">current stage</span> : null}
+                  {step.includes("v7.2") ? <span className="ml-2 text-xs text-emerald-700">current stage</span> : null}
                 </div>
               ))}
             </div>
@@ -296,6 +298,7 @@ function ReadinessCard({ label, ready }: { label: string; ready: boolean }) {
 }
 
 function RuntimeCard({ runtime }: { runtime: { label: string; category: string; status: string; live_enabled: boolean; controlled_available: boolean; production_ready: boolean; gateway_registered?: boolean; target_route?: string } }) {
+  const gatewayRuntime = ["ai", "ocr", "material_parser"].includes(runtime.category);
   return (
     <div className="rounded-md border border-line bg-white p-4">
       <div className="flex items-start justify-between gap-3">
@@ -309,14 +312,17 @@ function RuntimeCard({ runtime }: { runtime: { label: string; category: string; 
         <span>controlled_available: {String(runtime.controlled_available)}</span>
         <span>live_enabled: {String(runtime.live_enabled)}</span>
         <span>production_ready: {String(runtime.production_ready)}</span>
-        {runtime.category === "ai" ? <span>ai_gateway_registered: {String(Boolean(runtime.gateway_registered))}</span> : null}
-        {runtime.category === "ai" ? <span>target_route: {runtime.target_route}</span> : null}
+        {gatewayRuntime ? <span>gateway_registered: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "ocr" ? <span>PaddleOCR-ready: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "material_parser" ? <span>MinerU / Docling placeholder: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {gatewayRuntime ? <span>target_route: {runtime.target_route}</span> : null}
       </div>
     </div>
   );
 }
 
 function CapabilityCard({ provider }: { provider: { label: string; category: string; configured: boolean; live_enabled: boolean; api_key_visible: boolean; next_action: string; gateway_registered?: boolean; target_route?: string } }) {
+  const gatewayProvider = ["ai_model", "ocr", "file_parser"].includes(provider.category);
   return (
     <div className="rounded-md border border-line bg-white p-4">
       <div className="flex items-start justify-between gap-3">
@@ -330,8 +336,8 @@ function CapabilityCard({ provider }: { provider: { label: string; category: str
         <span>configured: {String(provider.configured)}</span>
         <span>live_enabled: {String(provider.live_enabled)}</span>
         <span>secrets_visible: {String(provider.api_key_visible)}</span>
-        {provider.category === "ai_model" ? <span>gateway_registered: {String(Boolean(provider.gateway_registered))}</span> : null}
-        {provider.category === "ai_model" ? <span>target_route: {provider.target_route}</span> : null}
+        {gatewayProvider ? <span>gateway_registered: {String(Boolean(provider.gateway_registered))}</span> : null}
+        {gatewayProvider ? <span>target_route: {provider.target_route}</span> : null}
         <span>next_action: {provider.next_action}</span>
       </div>
     </div>

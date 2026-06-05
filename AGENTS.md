@@ -59,4 +59,4 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: v7.2 Controlled Material Parsing & PaddleOCR Runtime.
+Next Task: v7.3 Legal & Enterprise Intelligence Gateway.

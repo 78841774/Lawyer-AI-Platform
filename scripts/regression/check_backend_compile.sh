@@ -33,6 +33,9 @@ fi
   personal_alpha_final_packet \
   personal_alpha_lawyer_final_review \
   personal_alpha_final_lock \
-  personal_alpha_case_os
+  personal_alpha_case_os \
+  personal_production \
+  personal_ai_gateway \
+  personal_material_runtime
 
 pass "backend compileall"

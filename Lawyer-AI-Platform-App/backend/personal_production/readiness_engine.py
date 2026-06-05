@@ -23,7 +23,10 @@ def build_personal_production_readiness() -> dict:
         "showcase_mode_enabled": bool(showcase.get("showcase_mode_enabled", False)),
         "ai_runtime_registered": _runtime_registered(runtime_registry, "ai_model_runtime"),
         "ai_gateway_registered": _runtime_gateway_registered(runtime_registry, "ai_model_runtime"),
+        "material_parsing_runtime_registered": _runtime_registered(runtime_registry, "material_parser_runtime"),
+        "material_runtime_gateway_registered": _runtime_gateway_registered(runtime_registry, "material_parser_runtime"),
         "ocr_runtime_registered": _runtime_registered(runtime_registry, "ocr_runtime"),
+        "ocr_runtime_gateway_registered": _runtime_gateway_registered(runtime_registry, "ocr_runtime"),
         "legal_search_runtime_registered": _runtime_registered(runtime_registry, "legal_search_runtime"),
         "skill_training_runtime_registered": _runtime_registered(runtime_registry, "skill_training_runtime"),
         "delivery_runtime_registered": _runtime_registered(runtime_registry, "delivery_runtime"),
@@ -62,7 +65,7 @@ def build_console_summary() -> dict:
         team_workspace_enabled=bool(status.get("team_workspace_enabled", False)),
         next_steps=[
             "v7.1 AI Provider Gateway & Prompt Runtime completed",
-            "v7.2 Controlled OCR Runtime",
+            "v7.2 Controlled Material Parsing & PaddleOCR Runtime completed",
             "v7.3 Legal Search API Gateway",
             "v7.4 Experience Package Skill Studio",
         ],
@@ -77,6 +80,8 @@ def build_console_summary() -> dict:
             "source_trace_required": bool(safety_flags.get("source_trace_required", False)),
             "external_delivery_disabled": not bool(status.get("external_client_delivery_ready", True)),
             "ai_gateway_registered": bool(readiness.get("readiness", {}).get("ai_gateway_registered", False)),
+            "material_runtime_registered": bool(readiness.get("readiness", {}).get("material_runtime_gateway_registered", False)),
+            "ocr_runtime_registered": bool(readiness.get("readiness", {}).get("ocr_runtime_gateway_registered", False)),
         },
     ).model_dump()
 
