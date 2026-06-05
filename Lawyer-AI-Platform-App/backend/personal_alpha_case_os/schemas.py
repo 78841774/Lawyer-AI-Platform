@@ -221,6 +221,115 @@ class PersonalAlphaCaseOSAuditTimeline(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class PersonalAlphaCaseOSAuditTimelineFilters(BaseModel):
+    stage_id: str | None = None
+    event_type: str | None = None
+    result: str | None = None
+    safety_status: str | None = None
+    limit: int = 100
+    offset: int = 0
+
+
+class PersonalAlphaCaseOSUnifiedAuditEvent(BaseModel):
+    timeline_event_id: str
+    case_id: str
+    workspace_run_id: str | None = None
+    packet_id: str | None = None
+    lock_id: str | None = None
+    stage_id: str
+    module: str
+    event_type: str = "metadata_stage_status"
+    result: str = "metadata_ready"
+    safety_status: str = "safe_metadata_only"
+    actor_id: str = "local_metadata_reviewer"
+    action: str | None = None
+    target_id: str | None = None
+    message: str = ""
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    redacted: bool = False
+    warnings: list[str] = Field(default_factory=list)
+    created_at: str = ""
+
+
+class PersonalAlphaCaseOSUnifiedAuditTimeline(BaseModel):
+    case_id: str
+    filters: PersonalAlphaCaseOSAuditTimelineFilters
+    timeline: list[PersonalAlphaCaseOSUnifiedAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    returned_count: int = 0
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSAuditStageSummary(BaseModel):
+    stage_id: str
+    event_count: int = 0
+    latest_result: str | None = None
+    blocked: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSAuditTimelineSummaryStats(BaseModel):
+    total_events: int = 0
+    stage_count: int = 0
+    blocked_event_count: int = 0
+    warning_event_count: int = 0
+    redacted_event_count: int = 0
+    unsafe_event_count: int = 0
+    raw_content_event_count: int = 0
+    latest_event_at: str | None = None
+    modules: list[str] = Field(default_factory=list)
+    stages: list[PersonalAlphaCaseOSAuditStageSummary] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSAuditTimelineSummary(BaseModel):
+    case_id: str
+    summary: PersonalAlphaCaseOSAuditTimelineSummaryStats
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSUnsafeAuditEventSummary(BaseModel):
+    timeline_event_id: str
+    field_name: str
+    reason: str
+
+
+class PersonalAlphaCaseOSAuditTimelineRedactionStats(BaseModel):
+    passed: bool = True
+    unsafe_event_count: int = 0
+    raw_content_event_count: int = 0
+    path_like_value_count: int = 0
+    api_key_like_value_count: int = 0
+    personal_identifier_like_value_count: int = 0
+    redacted_event_count: int = 0
+    checked_fields: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSAuditTimelineRedactionCheck(BaseModel):
+    case_id: str
+    redaction_check: PersonalAlphaCaseOSAuditTimelineRedactionStats
+    unsafe_events: list[PersonalAlphaCaseOSUnsafeAuditEventSummary] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSAuditTimelineAvailableFilters(BaseModel):
+    case_id: str
+    available_filters: dict[str, list[str]] = Field(default_factory=dict)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
 class PersonalAlphaCaseOSCaseDetail(BaseModel):
     case_id: str
     title: str

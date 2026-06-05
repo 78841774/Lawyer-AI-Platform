@@ -2618,6 +2618,118 @@ export type PersonalAlphaCaseOSAuditTimeline = {
   warnings: string[];
 };
 
+export type PersonalAlphaCaseOSAuditTimelineFilters = {
+  stage_id?: string | null;
+  event_type?: string | null;
+  result?: string | null;
+  safety_status?: string | null;
+  limit: number;
+  offset: number;
+};
+
+export type PersonalAlphaCaseOSUnifiedAuditEvent = {
+  timeline_event_id: string;
+  case_id: string;
+  workspace_run_id: string | null;
+  packet_id: string | null;
+  lock_id: string | null;
+  stage_id: string;
+  module: string;
+  event_type: string;
+  result: string;
+  safety_status: string;
+  actor_id: string;
+  action: string | null;
+  target_id: string | null;
+  message: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  redacted: boolean;
+  warnings: string[];
+  created_at: string;
+};
+
+export type PersonalAlphaCaseOSUnifiedAuditTimeline = {
+  case_id: string;
+  filters: PersonalAlphaCaseOSAuditTimelineFilters;
+  timeline: PersonalAlphaCaseOSUnifiedAuditEvent[];
+  event_count: number;
+  returned_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSAuditStageSummary = {
+  stage_id: string;
+  event_count: number;
+  latest_result: string | null;
+  blocked: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSAuditTimelineSummaryStats = {
+  total_events: number;
+  stage_count: number;
+  blocked_event_count: number;
+  warning_event_count: number;
+  redacted_event_count: number;
+  unsafe_event_count: number;
+  raw_content_event_count: number;
+  latest_event_at: string | null;
+  modules: string[];
+  stages: PersonalAlphaCaseOSAuditStageSummary[];
+};
+
+export type PersonalAlphaCaseOSAuditTimelineSummary = {
+  case_id: string;
+  summary: PersonalAlphaCaseOSAuditTimelineSummaryStats;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSUnsafeAuditEventSummary = {
+  timeline_event_id: string;
+  field_name: string;
+  reason: string;
+};
+
+export type PersonalAlphaCaseOSAuditTimelineRedactionCheck = {
+  case_id: string;
+  redaction_check: {
+    passed: boolean;
+    unsafe_event_count: number;
+    raw_content_event_count: number;
+    path_like_value_count: number;
+    api_key_like_value_count: number;
+    personal_identifier_like_value_count: number;
+    redacted_event_count: number;
+    checked_fields: string[];
+  };
+  unsafe_events: PersonalAlphaCaseOSUnsafeAuditEventSummary[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSAuditTimelineAvailableFilters = {
+  case_id: string;
+  available_filters: {
+    stage_id: string[];
+    event_type: string[];
+    result: string[];
+    safety_status: string[];
+  };
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
 export type PersonalAlphaCaseOSCaseDetail = {
   case_id: string;
   title: string;

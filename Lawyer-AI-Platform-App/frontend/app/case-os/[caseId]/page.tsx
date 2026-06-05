@@ -11,20 +11,29 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
   PersonalAlphaCaseOSActionEligibility,
   PersonalAlphaCaseOSAuditTimeline,
+  PersonalAlphaCaseOSAuditTimelineAvailableFilters,
+  PersonalAlphaCaseOSAuditTimelineFilters,
+  PersonalAlphaCaseOSAuditTimelineRedactionCheck,
+  PersonalAlphaCaseOSAuditTimelineSummary,
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSNextAction,
   PersonalAlphaCaseOSStageOrchestration,
   PersonalAlphaCaseOSStageState,
   PersonalAlphaCaseOSStageTransitions,
+  PersonalAlphaCaseOSUnifiedAuditTimeline,
   getPersonalAlphaCaseOSActionEligibility,
   getPersonalAlphaCaseOSAuditTimeline,
+  getPersonalAlphaCaseOSAuditTimelineFilters,
+  getPersonalAlphaCaseOSAuditTimelineRedactionCheck,
+  getPersonalAlphaCaseOSAuditTimelineSummary,
   getPersonalAlphaCaseOSBlockers,
   getPersonalAlphaCaseOSCaseDetail,
   getPersonalAlphaCaseOSNextAction,
   getPersonalAlphaCaseOSSafetyChecklist,
   getPersonalAlphaCaseOSStageOrchestration,
-  getPersonalAlphaCaseOSStageTransitions
+  getPersonalAlphaCaseOSStageTransitions,
+  getPersonalAlphaCaseOSUnifiedAuditTimeline
 } from "@/services/api";
 
 const FALLBACK_STAGE_ORDER = [
@@ -38,6 +47,15 @@ const FALLBACK_STAGE_ORDER = [
   "final_lock"
 ];
 
+const DEFAULT_AUDIT_FILTERS: Partial<PersonalAlphaCaseOSAuditTimelineFilters> = {
+  stage_id: "",
+  event_type: "",
+  result: "",
+  safety_status: "",
+  limit: 100,
+  offset: 0
+};
+
 export default function PersonalAlphaCaseOSDetailPage() {
   const params = useParams<{ caseId: string }>();
   const caseId = decodeURIComponent(params.caseId);
@@ -48,6 +66,11 @@ export default function PersonalAlphaCaseOSDetailPage() {
   const [stageTransitions, setStageTransitions] = useState<PersonalAlphaCaseOSStageTransitions | null>(null);
   const [actionEligibility, setActionEligibility] = useState<PersonalAlphaCaseOSActionEligibility | null>(null);
   const [blockers, setBlockers] = useState<PersonalAlphaCaseOSBlockers | null>(null);
+  const [unifiedAuditTimeline, setUnifiedAuditTimeline] = useState<PersonalAlphaCaseOSUnifiedAuditTimeline | null>(null);
+  const [auditSummary, setAuditSummary] = useState<PersonalAlphaCaseOSAuditTimelineSummary | null>(null);
+  const [redactionCheck, setRedactionCheck] = useState<PersonalAlphaCaseOSAuditTimelineRedactionCheck | null>(null);
+  const [availableFilters, setAvailableFilters] = useState<PersonalAlphaCaseOSAuditTimelineAvailableFilters | null>(null);
+  const [auditFilters, setAuditFilters] = useState<Partial<PersonalAlphaCaseOSAuditTimelineFilters>>(DEFAULT_AUDIT_FILTERS);
   const [safetyResponse, setSafetyResponse] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -64,7 +87,11 @@ export default function PersonalAlphaCaseOSDetailPage() {
         nextStageOrchestration,
         nextStageTransitions,
         nextActionEligibility,
-        nextBlockers
+        nextBlockers,
+        nextUnifiedAuditTimeline,
+        nextAuditSummary,
+        nextRedactionCheck,
+        nextAvailableFilters
       ] = await Promise.all([
         getPersonalAlphaCaseOSCaseDetail(caseId),
         getPersonalAlphaCaseOSAuditTimeline(caseId),
@@ -73,7 +100,11 @@ export default function PersonalAlphaCaseOSDetailPage() {
         getPersonalAlphaCaseOSStageOrchestration(caseId),
         getPersonalAlphaCaseOSStageTransitions(caseId),
         getPersonalAlphaCaseOSActionEligibility(caseId),
-        getPersonalAlphaCaseOSBlockers(caseId)
+        getPersonalAlphaCaseOSBlockers(caseId),
+        getPersonalAlphaCaseOSUnifiedAuditTimeline(caseId, DEFAULT_AUDIT_FILTERS),
+        getPersonalAlphaCaseOSAuditTimelineSummary(caseId),
+        getPersonalAlphaCaseOSAuditTimelineRedactionCheck(caseId),
+        getPersonalAlphaCaseOSAuditTimelineFilters(caseId)
       ]);
       setDetail(nextDetail);
       setTimeline(nextTimeline);
@@ -83,6 +114,10 @@ export default function PersonalAlphaCaseOSDetailPage() {
       setStageTransitions(nextStageTransitions);
       setActionEligibility(nextActionEligibility);
       setBlockers(nextBlockers);
+      setUnifiedAuditTimeline(nextUnifiedAuditTimeline);
+      setAuditSummary(nextAuditSummary);
+      setRedactionCheck(nextRedactionCheck);
+      setAvailableFilters(nextAvailableFilters);
     } catch {
       setError("Case OS detail 加载失败。若 case_id 不存在，后端会返回 safe not_found，不暴露本地路径或原文。");
     } finally {
@@ -93,6 +128,31 @@ export default function PersonalAlphaCaseOSDetailPage() {
   useEffect(() => {
     void loadDetail();
   }, [caseId]);
+
+  async function loadFilteredAuditTimeline(filters: Partial<PersonalAlphaCaseOSAuditTimelineFilters>) {
+    setLoading(true);
+    setError("");
+    try {
+      const nextTimeline = await getPersonalAlphaCaseOSUnifiedAuditTimeline(caseId, filters);
+      setUnifiedAuditTimeline(nextTimeline);
+    } catch {
+      setError("Unified Audit Timeline 加载失败。后端会保持 metadata-only/redacted-only 安全边界。");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function updateAuditFilter(key: keyof PersonalAlphaCaseOSAuditTimelineFilters, value: string) {
+    setAuditFilters((current) => ({
+      ...current,
+      [key]: key === "limit" || key === "offset" ? Number(value) : value
+    }));
+  }
+
+  function resetAuditFilters() {
+    setAuditFilters(DEFAULT_AUDIT_FILTERS);
+    void loadFilteredAuditTimeline(DEFAULT_AUDIT_FILTERS);
+  }
 
   const stageCards = useMemo(() => {
     if (stageOrchestration?.stages?.length) {
@@ -311,6 +371,137 @@ export default function PersonalAlphaCaseOSDetailPage() {
 
         <Card>
           <CardBody>
+            <h2 className="text-base font-semibold text-ink">Audit Filters</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <FilterSelect
+                label="stage_id"
+                value={String(auditFilters.stage_id ?? "")}
+                options={availableFilters?.available_filters.stage_id ?? []}
+                onChange={(value) => updateAuditFilter("stage_id", value)}
+              />
+              <FilterSelect
+                label="event_type"
+                value={String(auditFilters.event_type ?? "")}
+                options={availableFilters?.available_filters.event_type ?? []}
+                onChange={(value) => updateAuditFilter("event_type", value)}
+              />
+              <FilterSelect
+                label="result"
+                value={String(auditFilters.result ?? "")}
+                options={availableFilters?.available_filters.result ?? []}
+                onChange={(value) => updateAuditFilter("result", value)}
+              />
+              <FilterSelect
+                label="safety_status"
+                value={String(auditFilters.safety_status ?? "")}
+                options={availableFilters?.available_filters.safety_status ?? []}
+                onChange={(value) => updateAuditFilter("safety_status", value)}
+              />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Button type="button" onClick={() => void loadFilteredAuditTimeline(auditFilters)} disabled={loading}>
+                Apply Filters
+              </Button>
+              <Button type="button" variant="secondary" onClick={resetAuditFilters} disabled={loading}>
+                Reset Filters
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Audit Summary</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="total_events" value={String(auditSummary?.summary.total_events ?? 0)} />
+              <InfoRow label="blocked_event_count" value={String(auditSummary?.summary.blocked_event_count ?? 0)} />
+              <InfoRow label="warning_event_count" value={String(auditSummary?.summary.warning_event_count ?? 0)} />
+              <InfoRow label="redacted_event_count" value={String(auditSummary?.summary.redacted_event_count ?? 0)} />
+              <InfoRow label="unsafe_event_count" value={String(auditSummary?.summary.unsafe_event_count ?? 0)} />
+              <InfoRow label="raw_content_event_count" value={String(auditSummary?.summary.raw_content_event_count ?? 0)} />
+              <InfoRow label="latest_event_at" value={auditSummary?.summary.latest_event_at ?? "-"} />
+              <InfoRow label="stage_count" value={String(auditSummary?.summary.stage_count ?? 0)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              {(auditSummary?.summary.stages ?? []).map((stage) => (
+                <div key={stage.stage_id} className="rounded-md border border-line bg-paper p-3">
+                  <div className="text-sm font-semibold text-ink">{stage.stage_id}</div>
+                  <div className="mt-2 text-xs text-muted">events: {stage.event_count}</div>
+                  <div className="mt-1 text-xs text-muted">latest_result: {stage.latest_result ?? "-"}</div>
+                  <div className="mt-1 text-xs text-muted">blocked: {String(stage.blocked)}</div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Redaction Check</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="passed" value={String(redactionCheck?.redaction_check.passed ?? true)} />
+              <InfoRow label="unsafe_event_count" value={String(redactionCheck?.redaction_check.unsafe_event_count ?? 0)} />
+              <InfoRow label="path_like_value_count" value={String(redactionCheck?.redaction_check.path_like_value_count ?? 0)} />
+              <InfoRow label="api_key_like_value_count" value={String(redactionCheck?.redaction_check.api_key_like_value_count ?? 0)} />
+              <InfoRow label="personal_identifier_like_value_count" value={String(redactionCheck?.redaction_check.personal_identifier_like_value_count ?? 0)} />
+              <InfoRow label="redacted_event_count" value={String(redactionCheck?.redaction_check.redacted_event_count ?? 0)} />
+              <InfoRow label="raw_content_event_count" value={String(redactionCheck?.redaction_check.raw_content_event_count ?? 0)} />
+              <InfoRow label="checked_fields" value={String(redactionCheck?.redaction_check.checked_fields.length ?? 0)} />
+            </div>
+            <LabelList label="checked_fields" values={redactionCheck?.redaction_check.checked_fields ?? []} />
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(redactionCheck?.unsafe_events ?? []).map((event) => (
+                <div key={`${event.timeline_event_id}-${event.field_name}`} className="rounded-md border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">
+                  <div className="font-semibold">{event.timeline_event_id}</div>
+                  <div className="mt-1">field: {event.field_name}</div>
+                  <div className="mt-1">reason: {event.reason}</div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Unified Audit Timeline</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="event_count" value={String(unifiedAuditTimeline?.event_count ?? 0)} />
+              <InfoRow label="returned_count" value={String(unifiedAuditTimeline?.returned_count ?? 0)} />
+              <InfoRow label="raw_content_included" value={String(unifiedAuditTimeline?.raw_content_included ?? false)} />
+              <InfoRow label="mock_or_redacted_only" value={String(unifiedAuditTimeline?.mock_or_redacted_only ?? true)} />
+            </div>
+            <div className="mt-4 space-y-3">
+              {(unifiedAuditTimeline?.timeline ?? []).map((event) => (
+                <div key={event.timeline_event_id} className="rounded-md border border-line bg-white p-4">
+                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-ink">{event.stage_id}</div>
+                      <div className="mt-1 text-xs text-muted">{event.timeline_event_id}</div>
+                    </div>
+                    <div className="text-xs text-muted">{event.created_at || "-"}</div>
+                  </div>
+                  <div className="mt-3 grid gap-2 text-xs text-muted md:grid-cols-4">
+                    <span>event_type: {event.event_type}</span>
+                    <span>result: {event.result}</span>
+                    <span>safety_status: {event.safety_status}</span>
+                    <span>redacted: {String(event.redacted)}</span>
+                  </div>
+                  <div className="mt-3 rounded-md border border-line bg-paper p-3 text-xs text-muted">
+                    {event.message || "-"}
+                  </div>
+                </div>
+              ))}
+              {!(unifiedAuditTimeline?.timeline ?? []).length ? (
+                <div className="rounded-md border border-dashed border-line p-5 text-sm text-muted">
+                  当前过滤条件下暂无 unified audit metadata events。
+                </div>
+              ) : null}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
             <h2 className="text-base font-semibold text-ink">Audit Timeline</h2>
             <div className="mt-4 space-y-3">
               {(timeline?.timeline ?? detail?.audit_timeline ?? []).map((event) => (
@@ -340,6 +531,10 @@ export default function PersonalAlphaCaseOSDetailPage() {
         </Card>
 
         <div className="grid gap-4 xl:grid-cols-2">
+          <JsonPanel title="unified_audit_timeline" value={unifiedAuditTimeline} />
+          <JsonPanel title="audit_summary" value={auditSummary} />
+          <JsonPanel title="redaction_check" value={redactionCheck} />
+          <JsonPanel title="available_filters" value={availableFilters} />
           <JsonPanel title="stage_orchestration" value={stageOrchestration} />
           <JsonPanel title="action_eligibility" value={actionEligibility} />
           <JsonPanel title="blockers" value={blockers} />
@@ -366,6 +561,36 @@ function buildActionHref(targetRoute?: string | null, targetId?: string | null) 
     return targetRoute;
   }
   return `${targetRoute}?workspace_run_id=${encoded}`;
+}
+
+function FilterSelect({
+  label,
+  value,
+  options,
+  onChange
+}: {
+  label: string;
+  value: string;
+  options: string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="grid gap-2 text-xs text-muted">
+      <span className="uppercase tracking-wide">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-10 rounded-md border border-line bg-white px-3 text-sm text-ink"
+      >
+        <option value="">All</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
 }
 
 function ReasonList({ reasons, tone = "default" }: { reasons: string[]; tone?: "default" | "danger" }) {

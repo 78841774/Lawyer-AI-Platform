@@ -61,6 +61,10 @@ import type {
   PersonalAlphaAuditLog,
   PersonalAlphaCaseOSActionEligibility,
   PersonalAlphaCaseOSAuditTimeline,
+  PersonalAlphaCaseOSAuditTimelineAvailableFilters,
+  PersonalAlphaCaseOSAuditTimelineFilters,
+  PersonalAlphaCaseOSAuditTimelineRedactionCheck,
+  PersonalAlphaCaseOSAuditTimelineSummary,
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
@@ -70,6 +74,7 @@ import type {
   PersonalAlphaCaseOSStageState,
   PersonalAlphaCaseOSStageTransitions,
   PersonalAlphaCaseOSStatus,
+  PersonalAlphaCaseOSUnifiedAuditTimeline,
   PersonalAlphaDashboardAuditTimeline,
   PersonalAlphaDashboardSourceTraceSummary,
   PersonalAlphaDashboardStageHealth,
@@ -221,6 +226,10 @@ export type {
   PersonalAlphaAuditLog,
   PersonalAlphaCaseOSActionEligibility,
   PersonalAlphaCaseOSAuditTimeline,
+  PersonalAlphaCaseOSAuditTimelineAvailableFilters,
+  PersonalAlphaCaseOSAuditTimelineFilters,
+  PersonalAlphaCaseOSAuditTimelineRedactionCheck,
+  PersonalAlphaCaseOSAuditTimelineSummary,
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
@@ -230,6 +239,7 @@ export type {
   PersonalAlphaCaseOSStageState,
   PersonalAlphaCaseOSStageTransitions,
   PersonalAlphaCaseOSStatus,
+  PersonalAlphaCaseOSUnifiedAuditTimeline,
   PersonalAlphaDashboardAuditTimeline,
   PersonalAlphaDashboardSourceTraceSummary,
   PersonalAlphaDashboardStageHealth,
@@ -432,6 +442,20 @@ async function postJson<T>(path: string, payload?: unknown): Promise<T> {
   }
 
   return response.json();
+}
+
+function buildAuditTimelineQuery(filters?: Partial<PersonalAlphaCaseOSAuditTimelineFilters>) {
+  if (!filters) {
+    return "";
+  }
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      params.set(key, String(value));
+    }
+  });
+  const query = params.toString();
+  return query ? `?${query}` : "";
 }
 
 async function postForm<T>(path: string, formData: FormData): Promise<T> {
@@ -996,6 +1020,16 @@ export const personalAlphaCaseOSApi = {
     request<PersonalAlphaCaseOSCaseDetail>(`/case-os/${encodeURIComponent(caseId)}`),
   getAuditTimeline: (caseId: string) =>
     request<PersonalAlphaCaseOSAuditTimeline>(`/case-os/${encodeURIComponent(caseId)}/audit-timeline`),
+  getUnifiedAuditTimeline: (caseId: string, filters?: Partial<PersonalAlphaCaseOSAuditTimelineFilters>) =>
+    request<PersonalAlphaCaseOSUnifiedAuditTimeline>(
+      `/case-os/${encodeURIComponent(caseId)}/audit-timeline/unified${buildAuditTimelineQuery(filters)}`
+    ),
+  getAuditTimelineSummary: (caseId: string) =>
+    request<PersonalAlphaCaseOSAuditTimelineSummary>(`/case-os/${encodeURIComponent(caseId)}/audit-timeline/summary`),
+  getAuditTimelineRedactionCheck: (caseId: string) =>
+    request<PersonalAlphaCaseOSAuditTimelineRedactionCheck>(`/case-os/${encodeURIComponent(caseId)}/audit-timeline/redaction-check`),
+  getAuditTimelineFilters: (caseId: string) =>
+    request<PersonalAlphaCaseOSAuditTimelineAvailableFilters>(`/case-os/${encodeURIComponent(caseId)}/audit-timeline/filters`),
   getNextAction: (caseId: string) =>
     request<PersonalAlphaCaseOSNextAction>(`/case-os/${encodeURIComponent(caseId)}/next-action`),
   getStageOrchestration: (caseId: string) =>
@@ -1090,6 +1124,10 @@ export const getPersonalAlphaCaseOSStatus = personalAlphaCaseOSApi.getStatus;
 export const listPersonalAlphaCaseOSCases = personalAlphaCaseOSApi.listCases;
 export const getPersonalAlphaCaseOSCaseDetail = personalAlphaCaseOSApi.getCaseDetail;
 export const getPersonalAlphaCaseOSAuditTimeline = personalAlphaCaseOSApi.getAuditTimeline;
+export const getPersonalAlphaCaseOSUnifiedAuditTimeline = personalAlphaCaseOSApi.getUnifiedAuditTimeline;
+export const getPersonalAlphaCaseOSAuditTimelineSummary = personalAlphaCaseOSApi.getAuditTimelineSummary;
+export const getPersonalAlphaCaseOSAuditTimelineRedactionCheck = personalAlphaCaseOSApi.getAuditTimelineRedactionCheck;
+export const getPersonalAlphaCaseOSAuditTimelineFilters = personalAlphaCaseOSApi.getAuditTimelineFilters;
 export const getPersonalAlphaCaseOSNextAction = personalAlphaCaseOSApi.getNextAction;
 export const getPersonalAlphaCaseOSStageOrchestration = personalAlphaCaseOSApi.getStageOrchestration;
 export const getPersonalAlphaCaseOSStageTransitions = personalAlphaCaseOSApi.getStageTransitions;

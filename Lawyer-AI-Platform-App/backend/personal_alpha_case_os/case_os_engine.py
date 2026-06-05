@@ -19,6 +19,13 @@ from personal_alpha_case_os.stage_orchestrator import (
     build_stage_transitions,
 )
 from personal_alpha_case_os.state_machine import build_stage_summary
+from personal_alpha_case_os.audit_filters import available_filters_payload
+from personal_alpha_case_os.unified_audit_engine import (
+    build_unified_audit_summary,
+    build_unified_audit_timeline,
+    build_unified_redaction_check,
+    legacy_audit_timeline_from_unified,
+)
 from personal_alpha_final_gate.gate_storage import list_final_gate_decisions
 from personal_alpha_final_lock.lock_storage import list_final_lock_records
 from personal_alpha_final_packet.packet_storage import list_final_packet_records
@@ -120,17 +127,8 @@ def get_personal_alpha_case_os_case_detail(case_id: str) -> dict[str, Any]:
 
 
 def get_personal_alpha_case_os_audit_timeline(case_id: str) -> dict[str, Any]:
-    context = _context_for_case(case_id)
-    if not context or _looks_unsafe(case_id):
-        return {
-            "case_id": _safe_value(case_id),
-            "timeline": [],
-            "event_count": 0,
-            "mock_or_redacted_only": True,
-            "raw_content_included": False,
-            "warnings": ["Case not found."],
-        }
-    return build_case_os_audit_timeline(case_id, context)
+    context = _safe_audit_context(case_id)
+    return legacy_audit_timeline_from_unified(_safe_value(case_id), context)
 
 
 def get_personal_alpha_case_os_next_action(case_id: str) -> dict[str, Any]:
@@ -177,6 +175,45 @@ def get_personal_alpha_case_os_action_eligibility(case_id: str) -> dict[str, Any
 def get_personal_alpha_case_os_blockers(case_id: str) -> dict[str, Any]:
     context, next_action = _safe_orchestration_context(case_id)
     return build_blockers(_safe_value(case_id), context, next_action)
+
+
+def get_personal_alpha_case_os_unified_audit_timeline(
+    case_id: str,
+    stage_id: str | None = None,
+    event_type: str | None = None,
+    result: str | None = None,
+    safety_status: str | None = None,
+    limit: int | None = None,
+    offset: int | None = None,
+) -> dict[str, Any]:
+    context = _safe_audit_context(case_id)
+    return build_unified_audit_timeline(
+        _safe_value(case_id),
+        context,
+        stage_id=stage_id,
+        event_type=event_type,
+        result=result,
+        safety_status=safety_status,
+        limit=limit,
+        offset=offset,
+    )
+
+
+def get_personal_alpha_case_os_audit_timeline_summary(case_id: str) -> dict[str, Any]:
+    context = _safe_audit_context(case_id)
+    return build_unified_audit_summary(_safe_value(case_id), context)
+
+
+def get_personal_alpha_case_os_audit_timeline_redaction_check(case_id: str) -> dict[str, Any]:
+    context = _safe_audit_context(case_id)
+    return build_unified_redaction_check(_safe_value(case_id), context)
+
+
+def get_personal_alpha_case_os_audit_timeline_filters(case_id: str) -> dict[str, Any]:
+    if _looks_unsafe(case_id):
+        return available_filters_payload("", ["case_id contains unsafe raw content or path-like value."])
+    warnings = [] if _context_for_case(case_id) else ["Case not found."]
+    return available_filters_payload(_safe_value(case_id), warnings)
 
 
 def _case_contexts() -> list[dict[str, Any]]:
@@ -236,6 +273,22 @@ def _safe_orchestration_context(case_id: str) -> tuple[dict[str, Any], dict[str,
         context["blocked_reasons"] = ["Case not found."]
         return context, _blocked_next_action(safe_case_id, "Case not found.")
     return context, build_next_action(safe_case_id, context)
+
+
+def _safe_audit_context(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    if _looks_unsafe(case_id):
+        context = _empty_context("")
+        context["blocked"] = True
+        context["blocked_reasons"] = ["case_id contains unsafe raw content or path-like value."]
+        return context
+    context = _context_for_case(case_id)
+    if not context:
+        context = _empty_context(safe_case_id)
+        context["blocked"] = True
+        context["blocked_reasons"] = ["Case not found."]
+        return context
+    return context
 
 
 def _blocked_next_action(case_id: str, reason: str) -> dict[str, Any]:
