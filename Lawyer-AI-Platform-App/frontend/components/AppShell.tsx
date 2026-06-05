@@ -42,6 +42,7 @@ const navGroups = [
       { href: "/personal-skill-studio", label: "经验包与技能工作室" },
       { href: "/personal-case-production", label: "真实案件生产工作流" },
       { href: "/personal-delivery-packet", label: "个人生产交付包" },
+      { href: "/personal-showcase-pack", label: "个人生产试点与展示包" },
       { href: "/controlled-material", label: "Controlled Material" },
       { href: "/controlled-ocr", label: "Controlled OCR" },
       { href: "/controlled-legal-search", label: "Controlled Legal Search" },

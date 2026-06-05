@@ -225,6 +225,7 @@ import type {
   PacketItemRecord,
   PersonalCaseProductionStatus,
   PersonalDeliveryPacketStatus,
+  PersonalShowcasePackStatus,
   PersonalSkillStudioRuntime,
   PersonalSkillStudioRuntimeList,
   PersonalSkillStudioStatus,
@@ -239,6 +240,9 @@ import type {
   ReviewGateActionResult,
   ReviewSummary,
   ReviewSummaryList,
+  PilotSampleList,
+  PilotSampleMockRequest,
+  PilotSampleRecord,
   SkillCandidateDraft,
   SkillCandidateDraftList,
   SkillCandidateMockRequest,
@@ -253,6 +257,15 @@ import type {
   SourceBundleList,
   SourceBundleMockRequest,
   SourceBundleRecord,
+  ShowcaseAuditTimeline,
+  ShowcaseMetrics,
+  ShowcaseRuntime,
+  ShowcaseRuntimeList,
+  ShowcaseSafetyStatus,
+  StoryFlowList,
+  StoryFlowMockRequest,
+  StoryFlowRecord,
+  TrustPanel,
   StageRunList,
   StageRunMockRequest,
   StageRunRecord,
@@ -543,6 +556,7 @@ export type {
   PacketItemRecord,
   PersonalCaseProductionStatus,
   PersonalDeliveryPacketStatus,
+  PersonalShowcasePackStatus,
   PersonalSkillStudioRuntime,
   PersonalSkillStudioRuntimeList,
   PersonalSkillStudioStatus,
@@ -557,6 +571,9 @@ export type {
   ReviewGateActionResult,
   ReviewSummary,
   ReviewSummaryList,
+  PilotSampleList,
+  PilotSampleMockRequest,
+  PilotSampleRecord,
   SkillCandidateDraft,
   SkillCandidateDraftList,
   SkillCandidateMockRequest,
@@ -571,6 +588,15 @@ export type {
   SourceBundleList,
   SourceBundleMockRequest,
   SourceBundleRecord,
+  ShowcaseAuditTimeline,
+  ShowcaseMetrics,
+  ShowcaseRuntime,
+  ShowcaseRuntimeList,
+  ShowcaseSafetyStatus,
+  StoryFlowList,
+  StoryFlowMockRequest,
+  StoryFlowRecord,
+  TrustPanel,
   StageRunList,
   StageRunMockRequest,
   StageRunRecord,
@@ -1592,6 +1618,26 @@ export const personalDeliveryPacketApi = {
     request<ReviewSummary>(`/personal-delivery-packet/review-summaries/${encodeURIComponent(deliveryPacketId)}`),
   getAudit: () => request<DeliveryPacketAuditTimeline>("/personal-delivery-packet/audit"),
   getSafety: () => request<DeliveryPacketSafetyStatus>("/personal-delivery-packet/safety")
+};
+
+export const personalShowcasePackApi = {
+  getStatus: () => request<PersonalShowcasePackStatus>("/personal-showcase-pack/status"),
+  listRuntimes: () => request<ShowcaseRuntimeList>("/personal-showcase-pack/runtimes"),
+  getRuntime: (runtimeId: string) =>
+    request<ShowcaseRuntime>(`/personal-showcase-pack/runtimes/${encodeURIComponent(runtimeId)}`),
+  createPilotSample: (payload: PilotSampleMockRequest) =>
+    postJson<PilotSampleRecord>("/personal-showcase-pack/pilot-samples/mock", payload),
+  listPilotSamples: () => request<PilotSampleList>("/personal-showcase-pack/pilot-samples"),
+  getPilotSample: (pilotSampleId: string) =>
+    request<PilotSampleRecord>(`/personal-showcase-pack/pilot-samples/${encodeURIComponent(pilotSampleId)}`),
+  createStoryFlow: (payload: StoryFlowMockRequest) => postJson<StoryFlowRecord>("/personal-showcase-pack/story-flows/mock", payload),
+  listStoryFlows: () => request<StoryFlowList>("/personal-showcase-pack/story-flows"),
+  getStoryFlow: (storyFlowId: string) =>
+    request<StoryFlowRecord>(`/personal-showcase-pack/story-flows/${encodeURIComponent(storyFlowId)}`),
+  getMetrics: () => request<ShowcaseMetrics>("/personal-showcase-pack/metrics"),
+  getTrustPanel: () => request<TrustPanel>("/personal-showcase-pack/trust-panel"),
+  getAudit: () => request<ShowcaseAuditTimeline>("/personal-showcase-pack/audit"),
+  getSafety: () => request<ShowcaseSafetyStatus>("/personal-showcase-pack/safety")
 };
 
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.

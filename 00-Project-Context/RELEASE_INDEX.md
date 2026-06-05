@@ -9,7 +9,8 @@
 - v7.3 commit: `75ca460`
 - v7.4 commit: `75ca460`
 - v7.5 commit: `75ca460`
-- v7.6 commit: pending
+- v7.6 commit: `3461e28`
+- v7.7 commit: pending
 
 ## Known Tags
 
@@ -39,4 +40,5 @@
 - `v7.3-legal-enterprise-intelligence-gateway`: superseded by comprehensive tag `v7.5-personal-production-workflow-stack`
 - `v7.4-experience-package-skill-studio`: superseded by comprehensive tag `v7.5-personal-production-workflow-stack`
 - `v7.5-personal-production-workflow-stack`: detected
-- `v7.6-personal-delivery-packet`: pending
+- `v7.6-personal-delivery-packet`: detected
+- `v7.7-personal-production-pilot-showcase-pack`: pending

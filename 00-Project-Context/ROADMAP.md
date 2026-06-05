@@ -8,8 +8,8 @@
 - v7.3 Legal & Enterprise Intelligence Gateway completed.
 - v7.4 Experience Package Skill Studio completed.
 - v7.5 Real Case Production Workflow completed as part of tag `v7.5-personal-production-workflow-stack`.
-- v7.6 Personal Delivery Packet implemented and locally validated; release pending.
-- v7.7 Personal Production Pilot & Showcase Pack.
+- v7.6 Personal Delivery Packet completed.
+- v7.7 Personal Production Pilot & Showcase Pack implemented in the current worktree for validation; release pending.
 
 ## Later
 
@@ -18,4 +18,4 @@
 
 ## Current Priority
 
-Current priority is v7.6 Personal Delivery Packet release preparation, followed by v7.7 Personal Production Pilot & Showcase Pack. Personal production validation and showcase readiness come before team edition and external client delivery.
+Current priority is v7.7 Personal Production Pilot & Showcase Pack local validation and release preparation. Personal production validation and showcase readiness come before team edition and external client delivery.

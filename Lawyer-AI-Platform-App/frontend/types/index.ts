@@ -4716,6 +4716,43 @@ export type ReviewSummaryList = Record<string, unknown> & { review_summaries: Re
 export type DeliveryPacketAuditTimeline = Record<string, unknown>;
 export type DeliveryPacketSafetyStatus = Record<string, unknown> & { safety_checklist: string[] };
 
+export type PersonalShowcasePackStatus = Record<string, unknown>;
+export type ShowcaseRuntime = Record<string, unknown> & { runtime_id: string; display_name: string; runtime_type: string };
+export type ShowcaseRuntimeList = Record<string, unknown> & { runtimes: ShowcaseRuntime[] };
+export type PilotSampleMockRequest = {
+  sample_title: string;
+  sample_type: string;
+  legal_area: string;
+  case_cause: string;
+  risk_level: string;
+  demo_persona: string;
+  linked_runtime_ids?: string[];
+  explicit_mock_confirmation: boolean;
+  explicit_no_real_case_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+  explicit_no_external_delivery_confirmation: boolean;
+};
+export type PilotSampleRecord = Record<string, unknown> & { pilot_sample_id: string; sample_title: string; sample_type: string };
+export type PilotSampleList = Record<string, unknown> & { pilot_samples: PilotSampleRecord[] };
+export type StoryFlowMockRequest = {
+  pilot_sample_id: string;
+  story_title: string;
+  story_scope: string;
+  selected_stage_ids: string[];
+  explicit_mock_confirmation: boolean;
+  explicit_no_real_case_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+  explicit_no_external_delivery_confirmation: boolean;
+};
+export type StoryStageCard = Record<string, unknown> & { stage_id: string; display_name: string; linked_runtime: string };
+export type StoryFlowRecord = Record<string, unknown> & { story_flow_id: string; pilot_sample_id: string; story_title: string; stage_cards: StoryStageCard[] };
+export type StoryFlowList = Record<string, unknown> & { story_flows: StoryFlowRecord[] };
+export type ShowcaseMetrics = Record<string, unknown> & { pilot_sample_count: number; story_flow_count: number };
+export type TrustPanel = Record<string, unknown> & { trust_items: string[]; flags: Record<string, boolean> };
+export type ShowcaseAuditTimeline = Record<string, unknown>;
+export type ShowcaseSafetyStatus = Record<string, unknown> & { safety_checklist: string[] };
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

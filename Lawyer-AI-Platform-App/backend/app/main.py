@@ -50,6 +50,7 @@ from personal_delivery_packet.router import router as personal_delivery_packet_r
 from personal_intelligence_gateway.router import router as personal_intelligence_gateway_router
 from personal_material_runtime.router import router as personal_material_runtime_router
 from personal_production.router import router as personal_production_router
+from personal_showcase_pack.router import router as personal_showcase_pack_router
 from personal_skill_studio.router import router as personal_skill_studio_router
 from source_refs.router import router as source_refs_router
 from versioned_skill_training_runs.router import router as versioned_skill_training_runs_router
@@ -117,6 +118,7 @@ app.include_router(personal_intelligence_gateway_router)
 app.include_router(personal_skill_studio_router)
 app.include_router(personal_case_production_router)
 app.include_router(personal_delivery_packet_router)
+app.include_router(personal_showcase_pack_router)
 app.include_router(controlled_material_router)
 app.include_router(controlled_ocr_router)
 app.include_router(controlled_legal_search_router)

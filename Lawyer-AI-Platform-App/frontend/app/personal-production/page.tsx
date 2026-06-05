@@ -29,7 +29,8 @@ const workflowSteps = [
   "法律检索与企业信息核验",
   "Draft Analysis",
   "Lawyer Review",
-  "个人生产交付包"
+  "个人生产交付包",
+  "个人生产试点与展示包"
 ];
 
 const safetyMessages = [
@@ -115,6 +116,16 @@ export default function PersonalProductionPage() {
             readiness?.readiness.source_bundle_gateway_registered &&
             readiness?.readiness.export_readiness_gateway_registered &&
             readiness?.readiness.final_lock_gateway_registered
+        )
+      },
+      {
+        label: "个人生产试点与展示包",
+        value: Boolean(
+          readiness?.readiness.showcase_pack_gateway_registered &&
+            readiness?.readiness.pilot_sample_gateway_registered &&
+            readiness?.readiness.story_flow_gateway_registered &&
+            readiness?.readiness.showcase_metrics_gateway_registered &&
+            readiness?.readiness.trust_panel_gateway_registered
         )
       }
     ],
@@ -312,7 +323,7 @@ function ReadinessCard({ label, ready }: { label: string; ready: boolean }) {
 }
 
 function RuntimeCard({ runtime }: { runtime: { label: string; category: string; status: string; live_enabled: boolean; controlled_available: boolean; production_ready: boolean; gateway_registered?: boolean; target_route?: string } }) {
-  const gatewayRuntime = ["ai", "ocr", "material_parser", "legal_search", "enterprise_intelligence", "skill_studio", "case_production", "delivery_packet"].includes(runtime.category);
+  const gatewayRuntime = ["ai", "ocr", "material_parser", "legal_search", "enterprise_intelligence", "skill_studio", "case_production", "delivery_packet", "showcase_pack"].includes(runtime.category);
   return (
     <div className="rounded-md border border-line bg-white p-4">
       <div className="flex items-start justify-between gap-3">
@@ -334,6 +345,7 @@ function RuntimeCard({ runtime }: { runtime: { label: string; category: string; 
         {runtime.category === "skill_studio" ? <span>Skill Studio draft-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "case_production" ? <span>Case Production controlled: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "delivery_packet" ? <span>Delivery Packet metadata-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "showcase_pack" ? <span>Showcase Pack synthetic-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {gatewayRuntime ? <span>target_route: {runtime.target_route}</span> : null}
       </div>
     </div>

@@ -59,4 +59,4 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: v7.7 Personal Production Pilot & Showcase Pack. Do not start v7.7 implementation until the user explicitly confirms v7.6 commit/release handling and starts Pilot & Showcase Pack work.
+Next Task: v7.7 Personal Production Pilot & Showcase Pack validation / release pending. Do not commit, tag, or push v7.7 until the user explicitly confirms commit/release handling.

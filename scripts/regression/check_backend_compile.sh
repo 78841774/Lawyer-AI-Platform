@@ -40,6 +40,7 @@ fi
   personal_intelligence_gateway \
   personal_skill_studio \
   personal_case_production \
-  personal_delivery_packet
+  personal_delivery_packet \
+  personal_showcase_pack
 
 pass "backend compileall"
