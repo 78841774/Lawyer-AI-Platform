@@ -39,6 +39,7 @@ import {
   PersonalAlphaCaseOSQualityScore,
   PersonalAlphaCaseOSQualityStatus,
   PersonalAlphaCaseOSQualitySummary,
+  PersonalAlphaCaseOSReleaseCandidateCaseReadiness,
   PersonalAlphaCaseOSResponseConsistency,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
@@ -79,6 +80,7 @@ import {
   getPersonalAlphaCaseOSQualityScore,
   getPersonalAlphaCaseOSQualityStatus,
   getPersonalAlphaCaseOSQualitySummary,
+  getPersonalAlphaCaseOSReleaseCandidateCaseReadiness,
   getPersonalAlphaCaseOSReviewState,
   getPersonalAlphaCaseOSReviewStateHistory,
   getPersonalAlphaCaseOSReviewStateSummary,
@@ -189,6 +191,7 @@ export default function PersonalAlphaCaseOSDetailPage() {
   const [hardeningSafetyCheck, setHardeningSafetyCheck] = useState<PersonalAlphaCaseOSHardeningSafetyCheck | null>(null);
   const [responseConsistency, setResponseConsistency] = useState<PersonalAlphaCaseOSResponseConsistency | null>(null);
   const [runtimeStorageCheck, setRuntimeStorageCheck] = useState<PersonalAlphaCaseOSRuntimeStorageCheck | null>(null);
+  const [releaseCandidateCaseReadiness, setReleaseCandidateCaseReadiness] = useState<PersonalAlphaCaseOSReleaseCandidateCaseReadiness | null>(null);
   const [exportPackageForm, setExportPackageForm] = useState<PersonalAlphaCaseOSExportPackageCreateRequest>(DEFAULT_EXPORT_PACKAGE_FORM);
   const [transitionFromState, setTransitionFromState] = useState("final_lock_pending");
   const [transitionToState, setTransitionToState] = useState("final_lock_created");
@@ -235,7 +238,8 @@ export default function PersonalAlphaCaseOSDetailPage() {
         nextQualitySummary,
         nextHardeningSafetyCheck,
         nextResponseConsistency,
-        nextRuntimeStorageCheck
+        nextRuntimeStorageCheck,
+        nextReleaseCandidateCaseReadiness
       ] = await Promise.all([
         getPersonalAlphaCaseOSCaseDetail(caseId),
         getPersonalAlphaCaseOSAuditTimeline(caseId),
@@ -271,7 +275,8 @@ export default function PersonalAlphaCaseOSDetailPage() {
         getPersonalAlphaCaseOSQualitySummary(caseId),
         getPersonalAlphaCaseOSHardeningSafetyCheck(caseId),
         getPersonalAlphaCaseOSHardeningResponseConsistency(caseId),
-        getPersonalAlphaCaseOSHardeningRuntimeStorageCheck(caseId)
+        getPersonalAlphaCaseOSHardeningRuntimeStorageCheck(caseId),
+        getPersonalAlphaCaseOSReleaseCandidateCaseReadiness(caseId)
       ]);
       setDetail(nextDetail);
       setTimeline(nextTimeline);
@@ -308,6 +313,7 @@ export default function PersonalAlphaCaseOSDetailPage() {
       setHardeningSafetyCheck(nextHardeningSafetyCheck);
       setResponseConsistency(nextResponseConsistency);
       setRuntimeStorageCheck(nextRuntimeStorageCheck);
+      setReleaseCandidateCaseReadiness(nextReleaseCandidateCaseReadiness);
     } catch {
       setError("Case OS detail 加载失败。若 case_id 不存在，后端会返回 safe not_found，不暴露本地路径或原文。");
     } finally {
@@ -931,6 +937,27 @@ export default function PersonalAlphaCaseOSDetailPage() {
 
         <Card>
           <CardBody>
+            <h2 className="text-base font-semibold text-ink">Release Candidate Case Readiness</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="release_candidate_case_ready" value={String(releaseCandidateCaseReadiness?.release_candidate_case_ready ?? false)} />
+              <InfoRow label="quality_summary_available" value={String(releaseCandidateCaseReadiness?.case_readiness.quality_summary_available ?? false)} />
+              <InfoRow label="metadata_closure_ready" value={String(releaseCandidateCaseReadiness?.case_readiness.metadata_closure_ready ?? false)} />
+              <InfoRow label="export_package_available" value={String(releaseCandidateCaseReadiness?.case_readiness.export_package_available ?? false)} />
+              <InfoRow label="hardening_safety_check_passed" value={String(releaseCandidateCaseReadiness?.case_readiness.hardening_safety_check_passed ?? false)} />
+              <InfoRow label="response_consistency_passed" value={String(releaseCandidateCaseReadiness?.case_readiness.response_consistency_passed ?? false)} />
+              <InfoRow label="runtime_storage_check_passed" value={String(releaseCandidateCaseReadiness?.case_readiness.runtime_storage_check_passed ?? false)} />
+              <InfoRow label="ready_for_personal_alpha_review" value={String(releaseCandidateCaseReadiness?.case_readiness.ready_for_personal_alpha_review ?? false)} />
+              <InfoRow label="next_action" value={releaseCandidateCaseReadiness?.next_action ?? "resolve_quality_findings"} />
+              <InfoRow label="raw_content_included" value={String(releaseCandidateCaseReadiness?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(releaseCandidateCaseReadiness?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(releaseCandidateCaseReadiness?.final_report_generated ?? false)} />
+            </div>
+            <ReasonList reasons={releaseCandidateCaseReadiness?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
             <h2 className="text-base font-semibold text-ink">Export Package Status</h2>
             <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               <InfoRow label="enabled" value={String(exportPackageStatus?.enabled ?? true)} />
@@ -1502,6 +1529,7 @@ export default function PersonalAlphaCaseOSDetailPage() {
           <JsonPanel title="hardening_safety_check" value={hardeningSafetyCheck} />
           <JsonPanel title="response_consistency" value={responseConsistency} />
           <JsonPanel title="runtime_storage_check" value={runtimeStorageCheck} />
+          <JsonPanel title="release_candidate_case_readiness" value={releaseCandidateCaseReadiness} />
           <JsonPanel title="final_lock_consolidation" value={finalLockConsolidation} />
           <JsonPanel title="metadata_closure" value={metadataClosure} />
           <JsonPanel title="metadata_closure_checklist" value={metadataClosureChecklist} />

@@ -3405,6 +3405,133 @@ export type PersonalAlphaCaseOSRuntimeStorageCheck = {
   warnings: string[];
 };
 
+export type PersonalAlphaCaseOSReleaseCandidateStatus = {
+  enabled: boolean;
+  mode: string;
+  release_candidate_version: string;
+  release_candidate_name: string;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  advisory_only: boolean;
+  regression_suite_required: boolean;
+  hardening_required: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  raw_content_included: boolean;
+  next_major_version: string;
+  next_major_direction: string;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSReleaseCandidateSummary = {
+  release_candidate_version: string;
+  summary: Record<string, boolean>;
+  capability_count: number;
+  ready_capability_count: number;
+  missing_capabilities: string[];
+  next_major_version: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSReleaseCandidateChecklistItem = {
+  check_id: string;
+  label: string;
+  passed: boolean;
+  required: boolean;
+  category: string;
+  source: string;
+};
+
+export type PersonalAlphaCaseOSReleaseCandidateChecklist = {
+  release_candidate_version: string;
+  checklist: PersonalAlphaCaseOSReleaseCandidateChecklistItem[];
+  passed_count: number;
+  failed_count: number;
+  required_failed_count: number;
+  release_candidate_ready: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSReleaseCandidateReadiness = {
+  release_candidate_version: string;
+  release_candidate_ready: boolean;
+  readiness: Record<string, boolean | number>;
+  next_action: string;
+  next_major_version: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSReleaseCandidateUnsafeItem = {
+  scope: string;
+  field_name: string;
+  reason: string;
+};
+
+export type PersonalAlphaCaseOSReleaseCandidateAudit = {
+  release_candidate_version: string;
+  audit: Record<string, boolean | number>;
+  unsafe_items: PersonalAlphaCaseOSReleaseCandidateUnsafeItem[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSReleaseNotesPreviewSection = {
+  section_id: string;
+  title: string;
+  included: boolean;
+  raw_content_included: boolean;
+};
+
+export type PersonalAlphaCaseOSReleaseNotesPreview = {
+  release_candidate_version: string;
+  release_notes_preview: {
+    title: string;
+    release_type: string;
+    sections: PersonalAlphaCaseOSReleaseNotesPreviewSection[];
+  };
+  next_major_version: string;
+  next_major_direction: string;
+  would_create_file: boolean;
+  would_generate_final_report: boolean;
+  would_generate_legal_opinion: boolean;
+  would_include_raw_content: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSReleaseCandidateCaseReadiness = {
+  case_id: string;
+  release_candidate_case_ready: boolean;
+  case_readiness: Record<string, boolean>;
+  next_action: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
 export type PersonalAlphaCaseOSCaseDetail = {
   case_id: string;
   title: string;

@@ -1011,6 +1011,129 @@ class PersonalAlphaCaseOSRuntimeStorageCheck(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class PersonalAlphaCaseOSReleaseCandidateStatus(BaseModel):
+    enabled: bool = True
+    mode: str = "local_only_personal_alpha_case_os_release_candidate"
+    release_candidate_version: str = "v6.9"
+    release_candidate_name: str = "Personal Alpha Case OS Release Candidate"
+    production_enabled: bool = False
+    mock_first_enabled: bool = True
+    controlled_first_enabled: bool = True
+    metadata_only: bool = True
+    redacted_only: bool = True
+    advisory_only: bool = True
+    regression_suite_required: bool = True
+    hardening_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    raw_content_included: bool = False
+    next_major_version: str = "v7.0 Personal Production Workspace Foundation"
+    next_major_direction: str = "Controlled personal production delivery validation before external client delivery."
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReleaseCandidateSummary(BaseModel):
+    release_candidate_version: str = "v6.9"
+    summary: dict[str, bool] = Field(default_factory=dict)
+    capability_count: int = 0
+    ready_capability_count: int = 0
+    missing_capabilities: list[str] = Field(default_factory=list)
+    next_major_version: str = "v7.0 Personal Production Workspace Foundation"
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReleaseCandidateChecklistItem(BaseModel):
+    check_id: str
+    label: str
+    passed: bool = False
+    required: bool = True
+    category: str
+    source: str
+
+
+class PersonalAlphaCaseOSReleaseCandidateChecklist(BaseModel):
+    release_candidate_version: str = "v6.9"
+    checklist: list[PersonalAlphaCaseOSReleaseCandidateChecklistItem] = Field(default_factory=list)
+    passed_count: int = 0
+    failed_count: int = 0
+    required_failed_count: int = 0
+    release_candidate_ready: bool = False
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReleaseCandidateReadiness(BaseModel):
+    release_candidate_version: str = "v6.9"
+    release_candidate_ready: bool = False
+    readiness: dict[str, bool | int] = Field(default_factory=dict)
+    next_action: str = "resolve_release_candidate_blockers"
+    next_major_version: str = "v7.0 Personal Production Workspace Foundation"
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReleaseCandidateUnsafeItem(BaseModel):
+    scope: str
+    field_name: str
+    reason: str
+
+
+class PersonalAlphaCaseOSReleaseCandidateAudit(BaseModel):
+    release_candidate_version: str = "v6.9"
+    audit: dict[str, bool | int] = Field(default_factory=dict)
+    unsafe_items: list[PersonalAlphaCaseOSReleaseCandidateUnsafeItem] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReleaseNotesPreviewSection(BaseModel):
+    section_id: str
+    title: str
+    included: bool = True
+    raw_content_included: bool = False
+
+
+class PersonalAlphaCaseOSReleaseNotesPreview(BaseModel):
+    release_candidate_version: str = "v6.9"
+    release_notes_preview: dict[str, Any] = Field(default_factory=dict)
+    next_major_version: str = "v7.0 Personal Production Workspace Foundation"
+    next_major_direction: str = "Controlled personal production delivery validation before external client delivery."
+    would_create_file: bool = False
+    would_generate_final_report: bool = False
+    would_generate_legal_opinion: bool = False
+    would_include_raw_content: bool = False
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSReleaseCandidateCaseReadiness(BaseModel):
+    case_id: str
+    release_candidate_case_ready: bool = False
+    case_readiness: dict[str, bool] = Field(default_factory=dict)
+    next_action: str = "resolve_quality_findings"
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
 class PersonalAlphaCaseOSCaseDetail(BaseModel):
     case_id: str
     title: str

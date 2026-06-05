@@ -9,13 +9,31 @@ import { InfoRow } from "@/components/ui/InfoRow";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import {
   PersonalAlphaCaseOSCaseListItem,
+  PersonalAlphaCaseOSReleaseCandidateAudit,
+  PersonalAlphaCaseOSReleaseCandidateChecklist,
+  PersonalAlphaCaseOSReleaseCandidateReadiness,
+  PersonalAlphaCaseOSReleaseCandidateStatus,
+  PersonalAlphaCaseOSReleaseCandidateSummary,
+  PersonalAlphaCaseOSReleaseNotesPreview,
   PersonalAlphaCaseOSStatus,
+  getPersonalAlphaCaseOSReleaseCandidateAudit,
+  getPersonalAlphaCaseOSReleaseCandidateChecklist,
+  getPersonalAlphaCaseOSReleaseCandidateReadiness,
+  getPersonalAlphaCaseOSReleaseCandidateStatus,
+  getPersonalAlphaCaseOSReleaseCandidateSummary,
+  getPersonalAlphaCaseOSReleaseNotesPreview,
   getPersonalAlphaCaseOSStatus,
   listPersonalAlphaCaseOSCases
 } from "@/services/api";
 
 export default function PersonalAlphaCaseOSPage() {
   const [status, setStatus] = useState<PersonalAlphaCaseOSStatus | null>(null);
+  const [rcStatus, setRcStatus] = useState<PersonalAlphaCaseOSReleaseCandidateStatus | null>(null);
+  const [rcSummary, setRcSummary] = useState<PersonalAlphaCaseOSReleaseCandidateSummary | null>(null);
+  const [rcChecklist, setRcChecklist] = useState<PersonalAlphaCaseOSReleaseCandidateChecklist | null>(null);
+  const [rcReadiness, setRcReadiness] = useState<PersonalAlphaCaseOSReleaseCandidateReadiness | null>(null);
+  const [rcAudit, setRcAudit] = useState<PersonalAlphaCaseOSReleaseCandidateAudit | null>(null);
+  const [rcReleaseNotesPreview, setRcReleaseNotesPreview] = useState<PersonalAlphaCaseOSReleaseNotesPreview | null>(null);
   const [cases, setCases] = useState<PersonalAlphaCaseOSCaseListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -24,12 +42,33 @@ export default function PersonalAlphaCaseOSPage() {
     setLoading(true);
     setError("");
     try {
-      const [nextStatus, nextCases] = await Promise.all([
+      const [
+        nextStatus,
+        nextCases,
+        nextRcStatus,
+        nextRcSummary,
+        nextRcChecklist,
+        nextRcReadiness,
+        nextRcAudit,
+        nextRcReleaseNotesPreview
+      ] = await Promise.all([
         getPersonalAlphaCaseOSStatus(),
-        listPersonalAlphaCaseOSCases()
+        listPersonalAlphaCaseOSCases(),
+        getPersonalAlphaCaseOSReleaseCandidateStatus(),
+        getPersonalAlphaCaseOSReleaseCandidateSummary(),
+        getPersonalAlphaCaseOSReleaseCandidateChecklist(),
+        getPersonalAlphaCaseOSReleaseCandidateReadiness(),
+        getPersonalAlphaCaseOSReleaseCandidateAudit(),
+        getPersonalAlphaCaseOSReleaseNotesPreview()
       ]);
       setStatus(nextStatus);
       setCases(nextCases);
+      setRcStatus(nextRcStatus);
+      setRcSummary(nextRcSummary);
+      setRcChecklist(nextRcChecklist);
+      setRcReadiness(nextRcReadiness);
+      setRcAudit(nextRcAudit);
+      setRcReleaseNotesPreview(nextRcReleaseNotesPreview);
     } catch {
       setError("Personal Alpha Case OS API 暂不可用，请确认后端服务已启动。");
     } finally {
@@ -95,6 +134,122 @@ export default function PersonalAlphaCaseOSPage() {
 
         <Card>
           <CardBody>
+            <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h2 className="text-base font-semibold text-ink">Release Candidate Overview</h2>
+                <p className="mt-1 text-sm text-muted">
+                  v6.9 收口 v6.x metadata capabilities，并准备进入 Personal Production Workspace Foundation。
+                </p>
+              </div>
+              <div className="rounded-md border border-line bg-paper px-3 py-2 text-xs text-muted">
+                ready: {String(rcReadiness?.release_candidate_ready ?? false)}
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="release_candidate_version" value={rcStatus?.release_candidate_version ?? "v6.9"} />
+              <InfoRow label="mode" value={rcStatus?.mode ?? "local_only_personal_alpha_case_os_release_candidate"} />
+              <InfoRow label="metadata_only" value={String(rcStatus?.metadata_only ?? true)} />
+              <InfoRow label="advisory_only" value={String(rcStatus?.advisory_only ?? true)} />
+              <InfoRow label="regression_suite_required" value={String(rcStatus?.regression_suite_required ?? true)} />
+              <InfoRow label="hardening_required" value={String(rcStatus?.hardening_required ?? true)} />
+              <InfoRow label="next_major_version" value={rcStatus?.next_major_version ?? "v7.0 Personal Production Workspace Foundation"} />
+              <InfoRow label="next_major_direction" value={rcStatus?.next_major_direction ?? "Controlled personal production delivery validation before external client delivery."} />
+            </div>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              {[
+                "case_os_foundation",
+                "stage_orchestration",
+                "unified_audit_timeline",
+                "review_state_machine",
+                "final_lock_consolidation",
+                "export_package",
+                "quality_checklist",
+                "regression_suite",
+                "hardening_layer",
+                "personal_production_next_step_defined",
+                "release_candidate_ready"
+              ].map((key) => (
+                <InfoRow key={key} label={key} value={String(rcSummary?.summary?.[key] ?? false)} />
+              ))}
+            </div>
+
+            <div className="mt-5 grid gap-4 xl:grid-cols-2">
+              <div>
+                <h3 className="text-sm font-semibold text-ink">RC Checklist</h3>
+                <div className="mt-3 max-h-80 overflow-auto rounded-md border border-line">
+                  {(rcChecklist?.checklist ?? []).map((item) => (
+                    <div key={item.check_id} className="grid gap-2 border-b border-line px-3 py-2 text-xs last:border-b-0 md:grid-cols-[1.4fr_2fr_1fr_1fr_1fr]">
+                      <span className="font-medium text-ink">{item.check_id}</span>
+                      <span className="text-muted">{item.label}</span>
+                      <span>{item.category}</span>
+                      <span>passed: {String(item.passed)}</span>
+                      <span>required: {String(item.required)} / {item.source}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-ink">RC Readiness</h3>
+                  <div className="mt-3 grid gap-2 md:grid-cols-2">
+                    <MiniMetric label="release candidate ready" value={rcReadiness?.release_candidate_ready ? 1 : 0} />
+                    <MiniMetric label="required failed" value={Number(rcReadiness?.readiness?.required_failed_count ?? 0)} />
+                    <BooleanLine label="regression_suite_available" value={Boolean(rcReadiness?.readiness?.regression_suite_available)} />
+                    <BooleanLine label="hardening_layer_available" value={Boolean(rcReadiness?.readiness?.hardening_layer_available)} />
+                    <BooleanLine label="docs_complete" value={Boolean(rcReadiness?.readiness?.docs_complete)} />
+                    <BooleanLine label="changelogs_complete" value={Boolean(rcReadiness?.readiness?.changelogs_complete)} />
+                    <BooleanLine label="safety_boundary_passed" value={Boolean(rcReadiness?.readiness?.safety_boundary_passed)} />
+                    <BooleanLine label="personal_production_next_step_defined" value={Boolean(rcReadiness?.readiness?.personal_production_next_step_defined)} />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-ink">RC Audit</h3>
+                  <div className="mt-3 grid gap-2 md:grid-cols-2">
+                    {[
+                      "passed",
+                      "raw_content_check_passed",
+                      "provider_check_passed",
+                      "runtime_storage_check_passed",
+                      "response_consistency_check_passed",
+                      "regression_suite_check_passed",
+                      "roadmap_check_passed"
+                    ].map((key) => (
+                      <BooleanLine key={key} label={key} value={Boolean(rcAudit?.audit?.[key])} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-md border border-line bg-paper p-4">
+              <h3 className="text-sm font-semibold text-ink">Release Notes Preview</h3>
+              <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <InfoRow label="title" value={rcReleaseNotesPreview?.release_notes_preview?.title ?? "v6.9 Personal Alpha Case OS Release Candidate"} />
+                <InfoRow label="release_type" value={rcReleaseNotesPreview?.release_notes_preview?.release_type ?? "metadata_only_release_candidate_preview"} />
+                <InfoRow label="next_major_version" value={rcReleaseNotesPreview?.next_major_version ?? "v7.0 Personal Production Workspace Foundation"} />
+                <InfoRow label="would_create_file" value={String(rcReleaseNotesPreview?.would_create_file ?? false)} />
+                <InfoRow label="would_generate_final_report" value={String(rcReleaseNotesPreview?.would_generate_final_report ?? false)} />
+                <InfoRow label="would_generate_legal_opinion" value={String(rcReleaseNotesPreview?.would_generate_legal_opinion ?? false)} />
+                <InfoRow label="would_include_raw_content" value={String(rcReleaseNotesPreview?.would_include_raw_content ?? false)} />
+                <InfoRow label="next_major_direction" value={rcReleaseNotesPreview?.next_major_direction ?? "Controlled personal production delivery validation before external client delivery."} />
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {(rcReleaseNotesPreview?.release_notes_preview?.sections ?? []).map((section) => (
+                  <span key={section.section_id} className="rounded-md border border-line bg-white px-3 py-2 text-xs text-muted">
+                    {section.title}: {String(section.included)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
             <h2 className="text-base font-semibold text-ink">Case List</h2>
             <div className="mt-4 grid gap-3">
               {cases.length ? (
@@ -149,7 +304,20 @@ export default function PersonalAlphaCaseOSPage() {
           <CardBody>
             <h2 className="text-base font-semibold text-ink">Status JSON</h2>
             <pre className="mt-4 max-h-80 overflow-auto rounded-md bg-slate-950 p-4 text-xs leading-5 text-slate-100">
-              {JSON.stringify({ status, cases }, null, 2)}
+              {JSON.stringify(
+                {
+                  status,
+                  cases,
+                  rc_status: rcStatus,
+                  rc_summary: rcSummary,
+                  rc_checklist: rcChecklist,
+                  rc_readiness: rcReadiness,
+                  rc_audit: rcAudit,
+                  rc_release_notes_preview: rcReleaseNotesPreview
+                },
+                null,
+                2
+              )}
             </pre>
           </CardBody>
         </Card>
@@ -174,6 +342,15 @@ function MiniMetric({ label, value }: { label: string; value: number }) {
     <div className="rounded-md border border-line bg-paper px-3 py-2">
       <div className="text-[11px] uppercase tracking-wide text-muted">{label}</div>
       <div className="mt-1 text-sm font-semibold text-ink">{value}</div>
+    </div>
+  );
+}
+
+function BooleanLine({ label, value }: { label: string; value: boolean }) {
+  return (
+    <div className="rounded-md border border-line bg-white px-3 py-2 text-xs">
+      <span className="text-muted">{label}: </span>
+      <span className="font-semibold text-ink">{String(value)}</span>
     </div>
   );
 }

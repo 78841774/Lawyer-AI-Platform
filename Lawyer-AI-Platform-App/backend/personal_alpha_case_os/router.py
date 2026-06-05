@@ -46,6 +46,15 @@ from personal_alpha_case_os.case_os_engine import (
     list_personal_alpha_case_os_export_packages,
     list_personal_alpha_case_os_cases,
 )
+from personal_alpha_case_os.release_candidate_engine import (
+    get_release_candidate_audit,
+    get_release_candidate_case_readiness,
+    get_release_candidate_checklist,
+    get_release_candidate_readiness,
+    get_release_candidate_status,
+    get_release_candidate_summary,
+    get_release_notes_preview,
+)
 from personal_alpha_case_os.schemas import PersonalAlphaCaseOSExportPackageCreateRequest
 
 router = APIRouter(prefix="/case-os", tags=["personal-alpha-case-os"])
@@ -64,6 +73,36 @@ def personal_alpha_case_os_cases() -> list[dict[str, Any]]:
 @router.get("/hardening/status")
 def personal_alpha_case_os_hardening_status() -> dict[str, Any]:
     return get_personal_alpha_case_os_hardening_status()
+
+
+@router.get("/release-candidate/status")
+def personal_alpha_case_os_release_candidate_status() -> dict[str, Any]:
+    return get_release_candidate_status()
+
+
+@router.get("/release-candidate/summary")
+def personal_alpha_case_os_release_candidate_summary() -> dict[str, Any]:
+    return get_release_candidate_summary()
+
+
+@router.get("/release-candidate/checklist")
+def personal_alpha_case_os_release_candidate_checklist() -> dict[str, Any]:
+    return get_release_candidate_checklist()
+
+
+@router.get("/release-candidate/readiness")
+def personal_alpha_case_os_release_candidate_readiness() -> dict[str, Any]:
+    return get_release_candidate_readiness()
+
+
+@router.get("/release-candidate/audit")
+def personal_alpha_case_os_release_candidate_audit() -> dict[str, Any]:
+    return get_release_candidate_audit()
+
+
+@router.get("/release-candidate/release-notes-preview")
+def personal_alpha_case_os_release_notes_preview() -> dict[str, Any]:
+    return get_release_notes_preview()
 
 
 @router.get("/{case_id}")
@@ -257,6 +296,11 @@ def personal_alpha_case_os_hardening_runtime_storage_check(case_id: str) -> dict
     return get_personal_alpha_case_os_hardening_runtime_storage_check(case_id)
 
 
+@router.get("/{case_id}/release-candidate/case-readiness")
+def personal_alpha_case_os_release_candidate_case_readiness(case_id: str) -> dict[str, Any]:
+    return get_release_candidate_case_readiness(case_id)
+
+
 @router.get("/{case_id}/stage-orchestration")
 def personal_alpha_case_os_stage_orchestration(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_stage_orchestration(case_id)
@@ -371,3 +415,8 @@ def personal_alpha_case_os_path_like_hardening_response_consistency(case_id: str
 @router.get("/{case_id:path}/hardening/runtime-storage-check")
 def personal_alpha_case_os_path_like_hardening_runtime_storage_check(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_hardening_runtime_storage_check(case_id)
+
+
+@router.get("/{case_id:path}/release-candidate/case-readiness")
+def personal_alpha_case_os_path_like_release_candidate_case_readiness(case_id: str) -> dict[str, Any]:
+    return get_release_candidate_case_readiness(case_id)
