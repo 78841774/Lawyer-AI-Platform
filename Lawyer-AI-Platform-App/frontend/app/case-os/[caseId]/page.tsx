@@ -17,6 +17,11 @@ import {
   PersonalAlphaCaseOSAuditTimelineSummary,
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
+  PersonalAlphaCaseOSFinalLockConsolidation,
+  PersonalAlphaCaseOSMetadataClosure,
+  PersonalAlphaCaseOSMetadataClosureBlockers,
+  PersonalAlphaCaseOSMetadataClosureChecklist,
+  PersonalAlphaCaseOSMetadataClosureExportPreview,
   PersonalAlphaCaseOSNextAction,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
@@ -34,6 +39,11 @@ import {
   getPersonalAlphaCaseOSAuditTimelineSummary,
   getPersonalAlphaCaseOSBlockers,
   getPersonalAlphaCaseOSCaseDetail,
+  getPersonalAlphaCaseOSFinalLockConsolidation,
+  getPersonalAlphaCaseOSMetadataClosure,
+  getPersonalAlphaCaseOSMetadataClosureBlockers,
+  getPersonalAlphaCaseOSMetadataClosureChecklist,
+  getPersonalAlphaCaseOSMetadataClosureExportPreview,
   getPersonalAlphaCaseOSNextAction,
   getPersonalAlphaCaseOSReviewState,
   getPersonalAlphaCaseOSReviewStateHistory,
@@ -110,6 +120,11 @@ export default function PersonalAlphaCaseOSDetailPage() {
   const [reviewStateTransitions, setReviewStateTransitions] = useState<PersonalAlphaCaseOSReviewStateTransitions | null>(null);
   const [reviewStateSummary, setReviewStateSummary] = useState<PersonalAlphaCaseOSReviewStateSummary | null>(null);
   const [transitionValidation, setTransitionValidation] = useState<PersonalAlphaCaseOSReviewStateTransitionValidation | null>(null);
+  const [finalLockConsolidation, setFinalLockConsolidation] = useState<PersonalAlphaCaseOSFinalLockConsolidation | null>(null);
+  const [metadataClosure, setMetadataClosure] = useState<PersonalAlphaCaseOSMetadataClosure | null>(null);
+  const [metadataClosureChecklist, setMetadataClosureChecklist] = useState<PersonalAlphaCaseOSMetadataClosureChecklist | null>(null);
+  const [metadataClosureBlockers, setMetadataClosureBlockers] = useState<PersonalAlphaCaseOSMetadataClosureBlockers | null>(null);
+  const [metadataClosureExportPreview, setMetadataClosureExportPreview] = useState<PersonalAlphaCaseOSMetadataClosureExportPreview | null>(null);
   const [transitionFromState, setTransitionFromState] = useState("final_lock_pending");
   const [transitionToState, setTransitionToState] = useState("final_lock_created");
   const [safetyResponse, setSafetyResponse] = useState<Record<string, unknown> | null>(null);
@@ -137,7 +152,12 @@ export default function PersonalAlphaCaseOSDetailPage() {
         nextReviewStateHistory,
         nextReviewStateTransitions,
         nextReviewStateSummary,
-        nextTransitionValidation
+        nextTransitionValidation,
+        nextFinalLockConsolidation,
+        nextMetadataClosure,
+        nextMetadataClosureChecklist,
+        nextMetadataClosureBlockers,
+        nextMetadataClosureExportPreview
       ] = await Promise.all([
         getPersonalAlphaCaseOSCaseDetail(caseId),
         getPersonalAlphaCaseOSAuditTimeline(caseId),
@@ -155,7 +175,12 @@ export default function PersonalAlphaCaseOSDetailPage() {
         getPersonalAlphaCaseOSReviewStateHistory(caseId),
         getPersonalAlphaCaseOSReviewStateTransitions(caseId),
         getPersonalAlphaCaseOSReviewStateSummary(caseId),
-        validatePersonalAlphaCaseOSReviewStateTransition(caseId, transitionFromState, transitionToState)
+        validatePersonalAlphaCaseOSReviewStateTransition(caseId, transitionFromState, transitionToState),
+        getPersonalAlphaCaseOSFinalLockConsolidation(caseId),
+        getPersonalAlphaCaseOSMetadataClosure(caseId),
+        getPersonalAlphaCaseOSMetadataClosureChecklist(caseId),
+        getPersonalAlphaCaseOSMetadataClosureBlockers(caseId),
+        getPersonalAlphaCaseOSMetadataClosureExportPreview(caseId)
       ]);
       setDetail(nextDetail);
       setTimeline(nextTimeline);
@@ -174,6 +199,11 @@ export default function PersonalAlphaCaseOSDetailPage() {
       setReviewStateTransitions(nextReviewStateTransitions);
       setReviewStateSummary(nextReviewStateSummary);
       setTransitionValidation(nextTransitionValidation);
+      setFinalLockConsolidation(nextFinalLockConsolidation);
+      setMetadataClosure(nextMetadataClosure);
+      setMetadataClosureChecklist(nextMetadataClosureChecklist);
+      setMetadataClosureBlockers(nextMetadataClosureBlockers);
+      setMetadataClosureExportPreview(nextMetadataClosureExportPreview);
     } catch {
       setError("Case OS detail 加载失败。若 case_id 不存在，后端会返回 safe not_found，不暴露本地路径或原文。");
     } finally {
@@ -345,6 +375,132 @@ export default function PersonalAlphaCaseOSDetailPage() {
               <InfoRow label="terminal" value={String(reviewStateSummary?.summary.terminal ?? false)} />
               <InfoRow label="blocked" value={String(reviewStateSummary?.summary.blocked ?? false)} />
             </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Final Lock Consolidation</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="consolidation_status" value={finalLockConsolidation?.consolidation_status ?? "-"} />
+              <InfoRow label="final_lock_created" value={String(finalLockConsolidation?.final_lock_created ?? false)} />
+              <InfoRow label="latest_lock_id" value={finalLockConsolidation?.latest_lock_id ?? "-"} />
+              <InfoRow label="latest_packet_id" value={finalLockConsolidation?.latest_packet_id ?? "-"} />
+              <InfoRow label="latest_lawyer_review_action" value={finalLockConsolidation?.latest_lawyer_review_action ?? "-"} />
+              <InfoRow label="review_state" value={finalLockConsolidation?.review_state ?? "-"} />
+              <InfoRow label="completed_metadata_review" value={String(finalLockConsolidation?.completed_metadata_review ?? false)} />
+              <InfoRow label="raw_content_included" value={String(finalLockConsolidation?.raw_content_included ?? false)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="lock_status" value={finalLockConsolidation?.final_lock_summary.lock_status ?? "-"} />
+              <InfoRow label="workspace_run_id" value={finalLockConsolidation?.linked_metadata.workspace_run_id ?? "-"} />
+              <InfoRow label="lawyer_review_action_id" value={finalLockConsolidation?.linked_metadata.lawyer_review_action_id ?? "-"} />
+              <InfoRow label="created_at" value={finalLockConsolidation?.final_lock_summary.created_at ?? "-"} />
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Metadata Closure Summary</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="closure_status" value={metadataClosure?.closure_status ?? "-"} />
+              <InfoRow label="closure_ready" value={String(metadataClosure?.closure_ready ?? false)} />
+              <InfoRow label="completed_metadata_review" value={String(metadataClosure?.completed_metadata_review ?? false)} />
+              <InfoRow label="terminal" value={String(metadataClosure?.terminal ?? false)} />
+              <InfoRow label="blocked" value={String(metadataClosure?.blocked ?? false)} />
+              <InfoRow label="next_action" value={metadataClosure?.next_action ?? "-"} />
+              <InfoRow label="target_route" value={metadataClosure?.target_route ?? "-"} />
+              <InfoRow label="final_report_generated" value={String(metadataClosure?.final_report_generated ?? false)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+              {Object.entries(metadataClosure?.closure_summary ?? {}).map(([key, value]) => (
+                <InfoRow key={key} label={key} value={String(value)} />
+              ))}
+            </div>
+            <ReasonList reasons={metadataClosure?.blocked_reasons ?? []} tone="danger" />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Metadata Closure Checklist</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="passed_count" value={String(metadataClosureChecklist?.passed_count ?? 0)} />
+              <InfoRow label="failed_count" value={String(metadataClosureChecklist?.failed_count ?? 0)} />
+              <InfoRow label="required_failed_count" value={String(metadataClosureChecklist?.required_failed_count ?? 0)} />
+              <InfoRow label="closure_ready" value={String(metadataClosureChecklist?.closure_ready ?? false)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(metadataClosureChecklist?.checklist ?? []).map((item) => (
+                <div key={item.check_id} className={`rounded-md border p-3 ${item.passed ? "border-emerald-200 bg-emerald-50" : "border-rose-200 bg-rose-50"}`}>
+                  <div className="text-sm font-semibold text-ink">{item.label}</div>
+                  <div className="mt-2 grid gap-1 text-xs text-muted">
+                    <span>check_id: {item.check_id}</span>
+                    <span>passed: {String(item.passed)}</span>
+                    <span>required: {String(item.required)}</span>
+                    <span>source: {item.source}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Closure Blockers</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="blocked" value={String(metadataClosureBlockers?.blocked ?? false)} />
+              <InfoRow label="required_blocker_count" value={String(metadataClosureBlockers?.required_blocker_count ?? 0)} />
+              <InfoRow label="raw_content_included" value={String(metadataClosureBlockers?.raw_content_included ?? false)} />
+              <InfoRow label="mock_or_redacted_only" value={String(metadataClosureBlockers?.mock_or_redacted_only ?? true)} />
+            </div>
+            <ReasonList reasons={metadataClosureBlockers?.blocked_reasons ?? []} tone="danger" />
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(metadataClosureBlockers?.closure_blockers ?? []).map((item) => (
+                <div key={`${item.stage_id}-${item.blocker_id}`} className="rounded-md border border-line bg-paper p-3">
+                  <div className="text-sm font-semibold text-ink">{item.blocker_id}</div>
+                  <div className="mt-2 grid gap-1 text-xs text-muted">
+                    <span>stage_id: {item.stage_id}</span>
+                    <span>blocked: {String(item.blocked)}</span>
+                    <span>reason: {item.reason ?? "-"}</span>
+                    <span>required_action: {item.required_action ?? "-"}</span>
+                    <span>target_route: {item.target_route ?? "-"}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Export Preview</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="export_type" value={metadataClosureExportPreview?.export_preview.export_type ?? "-"} />
+              <InfoRow label="can_export_metadata_preview" value={String(metadataClosureExportPreview?.can_export_metadata_preview ?? false)} />
+              <InfoRow label="would_create_file" value={String(metadataClosureExportPreview?.would_create_file ?? false)} />
+              <InfoRow label="would_include_raw_content" value={String(metadataClosureExportPreview?.would_include_raw_content ?? false)} />
+              <InfoRow label="raw_content_included" value={String(metadataClosureExportPreview?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(metadataClosureExportPreview?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(metadataClosureExportPreview?.final_report_generated ?? false)} />
+              <InfoRow label="sections" value={String(metadataClosureExportPreview?.export_preview.sections.length ?? 0)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(metadataClosureExportPreview?.export_preview.sections ?? []).map((section) => (
+                <div key={section.section_id} className="rounded-md border border-line bg-paper p-3">
+                  <div className="text-sm font-semibold text-ink">{section.title}</div>
+                  <div className="mt-2 grid gap-1 text-xs text-muted">
+                    <span>section_id: {section.section_id}</span>
+                    <span>included: {String(section.included)}</span>
+                    <span>item_count: {section.item_count}</span>
+                    <span>raw_content_included: {String(section.raw_content_included)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <ReasonList reasons={metadataClosureExportPreview?.warnings ?? []} />
           </CardBody>
         </Card>
 
@@ -724,6 +880,11 @@ export default function PersonalAlphaCaseOSDetailPage() {
         </Card>
 
         <div className="grid gap-4 xl:grid-cols-2">
+          <JsonPanel title="final_lock_consolidation" value={finalLockConsolidation} />
+          <JsonPanel title="metadata_closure" value={metadataClosure} />
+          <JsonPanel title="metadata_closure_checklist" value={metadataClosureChecklist} />
+          <JsonPanel title="metadata_closure_blockers" value={metadataClosureBlockers} />
+          <JsonPanel title="metadata_closure_export_preview" value={metadataClosureExportPreview} />
           <JsonPanel title="review_state" value={reviewState} />
           <JsonPanel title="review_state_summary" value={reviewStateSummary} />
           <JsonPanel title="review_state_history" value={reviewStateHistory} />

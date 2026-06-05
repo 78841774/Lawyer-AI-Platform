@@ -437,6 +437,143 @@ class PersonalAlphaCaseOSReviewStateSummary(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class PersonalAlphaCaseOSFinalLockSummary(BaseModel):
+    lock_id: str | None = None
+    packet_id: str | None = None
+    workspace_run_id: str | None = None
+    lock_status: str = "final_lock_pending"
+    locked_metadata_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    created_at: str | None = None
+
+
+class PersonalAlphaCaseOSLinkedMetadata(BaseModel):
+    workspace_run_id: str | None = None
+    packet_id: str | None = None
+    lawyer_review_action_id: str | None = None
+    lock_id: str | None = None
+
+
+class PersonalAlphaCaseOSFinalLockConsolidation(BaseModel):
+    case_id: str
+    consolidation_status: str = "final_lock_pending"
+    final_lock_created: bool = False
+    latest_lock_id: str | None = None
+    latest_packet_id: str | None = None
+    latest_lawyer_review_action: str | None = None
+    review_state: str = "blocked"
+    completed_metadata_review: bool = False
+    final_lock_summary: PersonalAlphaCaseOSFinalLockSummary
+    linked_metadata: PersonalAlphaCaseOSLinkedMetadata
+    safety_checklist: PersonalAlphaCaseOSSafetyChecklist
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSMetadataClosureSummary(BaseModel):
+    workspace_run_ready: bool = False
+    source_review_completed: bool = False
+    source_decision_completed: bool = False
+    final_readiness_ready: bool = False
+    final_gate_approved: bool = False
+    final_packet_created: bool = False
+    lawyer_review_approved: bool = False
+    final_lock_created: bool = False
+    audit_timeline_available: bool = False
+    redaction_check_passed: bool = False
+
+
+class PersonalAlphaCaseOSMetadataClosureChecklistItem(BaseModel):
+    check_id: str
+    label: str
+    passed: bool = False
+    required: bool = True
+    source: str
+    mock_or_redacted_only: bool = True
+
+
+class PersonalAlphaCaseOSMetadataClosureChecklist(BaseModel):
+    case_id: str
+    checklist: list[PersonalAlphaCaseOSMetadataClosureChecklistItem] = Field(default_factory=list)
+    passed_count: int = 0
+    failed_count: int = 0
+    required_failed_count: int = 0
+    closure_ready: bool = False
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSMetadataClosure(BaseModel):
+    case_id: str
+    closure_status: str = "blocked"
+    completed_metadata_review: bool = False
+    closure_ready: bool = False
+    review_state: str = "blocked"
+    terminal: bool = False
+    blocked: bool = True
+    blocked_reasons: list[str] = Field(default_factory=list)
+    closure_summary: PersonalAlphaCaseOSMetadataClosureSummary
+    next_action: str = "resolve_blockers"
+    target_route: str = "/case-os"
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSMetadataClosureBlocker(BaseModel):
+    blocker_id: str
+    stage_id: str
+    blocked: bool = False
+    reason: str | None = None
+    required_action: str | None = None
+    target_route: str | None = None
+    mock_or_redacted_only: bool = True
+
+
+class PersonalAlphaCaseOSMetadataClosureBlockers(BaseModel):
+    case_id: str
+    blocked: bool = False
+    blocked_reasons: list[str] = Field(default_factory=list)
+    closure_blockers: list[PersonalAlphaCaseOSMetadataClosureBlocker] = Field(default_factory=list)
+    required_blocker_count: int = 0
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSMetadataClosureExportSection(BaseModel):
+    section_id: str
+    title: str
+    included: bool = True
+    raw_content_included: bool = False
+    item_count: int = 0
+
+
+class PersonalAlphaCaseOSMetadataClosureExportPreviewPayload(BaseModel):
+    title: str = "Personal Alpha Metadata Closure Preview"
+    export_type: str = "metadata_only_preview"
+    sections: list[PersonalAlphaCaseOSMetadataClosureExportSection] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSMetadataClosureExportPreview(BaseModel):
+    case_id: str
+    export_preview: PersonalAlphaCaseOSMetadataClosureExportPreviewPayload
+    can_export_metadata_preview: bool = False
+    would_create_file: bool = False
+    would_include_raw_content: bool = False
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
 class PersonalAlphaCaseOSCaseDetail(BaseModel):
     case_id: str
     title: str

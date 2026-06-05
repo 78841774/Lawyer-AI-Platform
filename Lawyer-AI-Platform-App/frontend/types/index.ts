@@ -2837,6 +2837,141 @@ export type PersonalAlphaCaseOSReviewStateSummary = {
   warnings: string[];
 };
 
+export type PersonalAlphaCaseOSFinalLockSummary = {
+  lock_id: string | null;
+  packet_id: string | null;
+  workspace_run_id: string | null;
+  lock_status: string;
+  locked_metadata_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  created_at: string | null;
+};
+
+export type PersonalAlphaCaseOSLinkedMetadata = {
+  workspace_run_id: string | null;
+  packet_id: string | null;
+  lawyer_review_action_id: string | null;
+  lock_id: string | null;
+};
+
+export type PersonalAlphaCaseOSFinalLockConsolidation = {
+  case_id: string;
+  consolidation_status: string;
+  final_lock_created: boolean;
+  latest_lock_id: string | null;
+  latest_packet_id: string | null;
+  latest_lawyer_review_action: string | null;
+  review_state: string;
+  completed_metadata_review: boolean;
+  final_lock_summary: PersonalAlphaCaseOSFinalLockSummary;
+  linked_metadata: PersonalAlphaCaseOSLinkedMetadata;
+  safety_checklist: PersonalAlphaCaseOSSafetyChecklist;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSMetadataClosureSummary = {
+  workspace_run_ready: boolean;
+  source_review_completed: boolean;
+  source_decision_completed: boolean;
+  final_readiness_ready: boolean;
+  final_gate_approved: boolean;
+  final_packet_created: boolean;
+  lawyer_review_approved: boolean;
+  final_lock_created: boolean;
+  audit_timeline_available: boolean;
+  redaction_check_passed: boolean;
+};
+
+export type PersonalAlphaCaseOSMetadataClosureChecklistItem = {
+  check_id: string;
+  label: string;
+  passed: boolean;
+  required: boolean;
+  source: string;
+  mock_or_redacted_only: boolean;
+};
+
+export type PersonalAlphaCaseOSMetadataClosureChecklist = {
+  case_id: string;
+  checklist: PersonalAlphaCaseOSMetadataClosureChecklistItem[];
+  passed_count: number;
+  failed_count: number;
+  required_failed_count: number;
+  closure_ready: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSMetadataClosure = {
+  case_id: string;
+  closure_status: string;
+  completed_metadata_review: boolean;
+  closure_ready: boolean;
+  review_state: string;
+  terminal: boolean;
+  blocked: boolean;
+  blocked_reasons: string[];
+  closure_summary: PersonalAlphaCaseOSMetadataClosureSummary;
+  next_action: string;
+  target_route: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSMetadataClosureBlocker = {
+  blocker_id: string;
+  stage_id: string;
+  blocked: boolean;
+  reason: string | null;
+  required_action: string | null;
+  target_route: string | null;
+  mock_or_redacted_only: boolean;
+};
+
+export type PersonalAlphaCaseOSMetadataClosureBlockers = {
+  case_id: string;
+  blocked: boolean;
+  blocked_reasons: string[];
+  closure_blockers: PersonalAlphaCaseOSMetadataClosureBlocker[];
+  required_blocker_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSMetadataClosureExportSection = {
+  section_id: string;
+  title: string;
+  included: boolean;
+  raw_content_included: boolean;
+  item_count: number;
+};
+
+export type PersonalAlphaCaseOSMetadataClosureExportPreview = {
+  case_id: string;
+  export_preview: {
+    title: string;
+    export_type: string;
+    sections: PersonalAlphaCaseOSMetadataClosureExportSection[];
+  };
+  can_export_metadata_preview: boolean;
+  would_create_file: boolean;
+  would_include_raw_content: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
 export type PersonalAlphaCaseOSCaseDetail = {
   case_id: string;
   title: string;

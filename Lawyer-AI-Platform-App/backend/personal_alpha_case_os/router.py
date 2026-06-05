@@ -10,6 +10,11 @@ from personal_alpha_case_os.case_os_engine import (
     get_personal_alpha_case_os_audit_timeline,
     get_personal_alpha_case_os_blockers,
     get_personal_alpha_case_os_case_detail,
+    get_personal_alpha_case_os_final_lock_consolidation,
+    get_personal_alpha_case_os_metadata_closure,
+    get_personal_alpha_case_os_metadata_closure_blockers,
+    get_personal_alpha_case_os_metadata_closure_checklist,
+    get_personal_alpha_case_os_metadata_closure_export_preview,
     get_personal_alpha_case_os_next_action,
     get_personal_alpha_case_os_review_state,
     get_personal_alpha_case_os_review_state_history,
@@ -118,6 +123,31 @@ def personal_alpha_case_os_review_state_summary(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_review_state_summary(case_id)
 
 
+@router.get("/{case_id}/final-lock-consolidation")
+def personal_alpha_case_os_final_lock_consolidation(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_final_lock_consolidation(case_id)
+
+
+@router.get("/{case_id}/metadata-closure")
+def personal_alpha_case_os_metadata_closure(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_metadata_closure(case_id)
+
+
+@router.get("/{case_id}/metadata-closure/checklist")
+def personal_alpha_case_os_metadata_closure_checklist(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_metadata_closure_checklist(case_id)
+
+
+@router.get("/{case_id}/metadata-closure/blockers")
+def personal_alpha_case_os_metadata_closure_blockers(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_metadata_closure_blockers(case_id)
+
+
+@router.get("/{case_id}/metadata-closure/export-preview")
+def personal_alpha_case_os_metadata_closure_export_preview(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_metadata_closure_export_preview(case_id)
+
+
 @router.get("/{case_id}/stage-orchestration")
 def personal_alpha_case_os_stage_orchestration(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_stage_orchestration(case_id)
@@ -167,3 +197,13 @@ def personal_alpha_case_os_path_like_unified_audit_timeline(
 @router.get("/{case_id:path}/review-state")
 def personal_alpha_case_os_path_like_review_state(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_review_state(case_id)
+
+
+@router.get("/{case_id:path}/metadata-closure")
+def personal_alpha_case_os_path_like_metadata_closure(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_metadata_closure(case_id)
+
+
+@router.get("/{case_id:path}/final-lock-consolidation")
+def personal_alpha_case_os_path_like_final_lock_consolidation(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_final_lock_consolidation(case_id)

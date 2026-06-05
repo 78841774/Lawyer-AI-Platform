@@ -68,6 +68,11 @@ import type {
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
+  PersonalAlphaCaseOSFinalLockConsolidation,
+  PersonalAlphaCaseOSMetadataClosure,
+  PersonalAlphaCaseOSMetadataClosureBlockers,
+  PersonalAlphaCaseOSMetadataClosureChecklist,
+  PersonalAlphaCaseOSMetadataClosureExportPreview,
   PersonalAlphaCaseOSNextAction,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
@@ -238,6 +243,11 @@ export type {
   PersonalAlphaCaseOSBlockers,
   PersonalAlphaCaseOSCaseDetail,
   PersonalAlphaCaseOSCaseListItem,
+  PersonalAlphaCaseOSFinalLockConsolidation,
+  PersonalAlphaCaseOSMetadataClosure,
+  PersonalAlphaCaseOSMetadataClosureBlockers,
+  PersonalAlphaCaseOSMetadataClosureChecklist,
+  PersonalAlphaCaseOSMetadataClosureExportPreview,
   PersonalAlphaCaseOSNextAction,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
@@ -1052,6 +1062,16 @@ export const personalAlphaCaseOSApi = {
     ),
   getReviewStateSummary: (caseId: string) =>
     request<PersonalAlphaCaseOSReviewStateSummary>(`/case-os/${encodeURIComponent(caseId)}/review-state/summary`),
+  getFinalLockConsolidation: (caseId: string) =>
+    request<PersonalAlphaCaseOSFinalLockConsolidation>(`/case-os/${encodeURIComponent(caseId)}/final-lock-consolidation`),
+  getMetadataClosure: (caseId: string) =>
+    request<PersonalAlphaCaseOSMetadataClosure>(`/case-os/${encodeURIComponent(caseId)}/metadata-closure`),
+  getMetadataClosureChecklist: (caseId: string) =>
+    request<PersonalAlphaCaseOSMetadataClosureChecklist>(`/case-os/${encodeURIComponent(caseId)}/metadata-closure/checklist`),
+  getMetadataClosureBlockers: (caseId: string) =>
+    request<PersonalAlphaCaseOSMetadataClosureBlockers>(`/case-os/${encodeURIComponent(caseId)}/metadata-closure/blockers`),
+  getMetadataClosureExportPreview: (caseId: string) =>
+    request<PersonalAlphaCaseOSMetadataClosureExportPreview>(`/case-os/${encodeURIComponent(caseId)}/metadata-closure/export-preview`),
   getNextAction: (caseId: string) =>
     request<PersonalAlphaCaseOSNextAction>(`/case-os/${encodeURIComponent(caseId)}/next-action`),
   getStageOrchestration: (caseId: string) =>
@@ -1155,6 +1175,11 @@ export const getPersonalAlphaCaseOSReviewStateHistory = personalAlphaCaseOSApi.g
 export const getPersonalAlphaCaseOSReviewStateTransitions = personalAlphaCaseOSApi.getReviewStateTransitions;
 export const validatePersonalAlphaCaseOSReviewStateTransition = personalAlphaCaseOSApi.validateReviewStateTransition;
 export const getPersonalAlphaCaseOSReviewStateSummary = personalAlphaCaseOSApi.getReviewStateSummary;
+export const getPersonalAlphaCaseOSFinalLockConsolidation = personalAlphaCaseOSApi.getFinalLockConsolidation;
+export const getPersonalAlphaCaseOSMetadataClosure = personalAlphaCaseOSApi.getMetadataClosure;
+export const getPersonalAlphaCaseOSMetadataClosureChecklist = personalAlphaCaseOSApi.getMetadataClosureChecklist;
+export const getPersonalAlphaCaseOSMetadataClosureBlockers = personalAlphaCaseOSApi.getMetadataClosureBlockers;
+export const getPersonalAlphaCaseOSMetadataClosureExportPreview = personalAlphaCaseOSApi.getMetadataClosureExportPreview;
 export const getPersonalAlphaCaseOSNextAction = personalAlphaCaseOSApi.getNextAction;
 export const getPersonalAlphaCaseOSStageOrchestration = personalAlphaCaseOSApi.getStageOrchestration;
 export const getPersonalAlphaCaseOSStageTransitions = personalAlphaCaseOSApi.getStageTransitions;

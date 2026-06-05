@@ -4,6 +4,10 @@ from pathlib import Path
 from typing import Any
 
 from personal_alpha_case_os.audit_engine import build_case_os_audit_timeline
+from personal_alpha_case_os.final_lock_consolidation import build_final_lock_consolidation
+from personal_alpha_case_os.metadata_closure_checklist import build_metadata_closure_checklist
+from personal_alpha_case_os.metadata_closure_engine import build_metadata_closure, build_metadata_closure_blockers
+from personal_alpha_case_os.metadata_closure_export import build_metadata_closure_export_preview
 from personal_alpha_case_os.next_action_engine import build_next_action
 from personal_alpha_case_os.schemas import (
     PersonalAlphaCaseOSCaseDetail,
@@ -245,6 +249,51 @@ def get_personal_alpha_case_os_review_state_transition_validation(case_id: str, 
 def get_personal_alpha_case_os_review_state_summary(case_id: str) -> dict[str, Any]:
     context = _safe_audit_context(case_id)
     return build_review_state_summary(_safe_value(case_id), context)
+
+
+def get_personal_alpha_case_os_final_lock_consolidation(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    review_state = build_review_state(safe_case_id, context)
+    return build_final_lock_consolidation(safe_case_id, context, review_state)
+
+
+def get_personal_alpha_case_os_metadata_closure(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    review_state = build_review_state(safe_case_id, context)
+    audit_summary = build_unified_audit_summary(safe_case_id, context)
+    redaction_check = build_unified_redaction_check(safe_case_id, context)
+    checklist = build_metadata_closure_checklist(safe_case_id, context, audit_summary, redaction_check)
+    return build_metadata_closure(safe_case_id, context, review_state, audit_summary, redaction_check, checklist)
+
+
+def get_personal_alpha_case_os_metadata_closure_checklist(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    audit_summary = build_unified_audit_summary(safe_case_id, context)
+    redaction_check = build_unified_redaction_check(safe_case_id, context)
+    return build_metadata_closure_checklist(safe_case_id, context, audit_summary, redaction_check)
+
+
+def get_personal_alpha_case_os_metadata_closure_blockers(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    audit_summary = build_unified_audit_summary(safe_case_id, context)
+    redaction_check = build_unified_redaction_check(safe_case_id, context)
+    checklist = build_metadata_closure_checklist(safe_case_id, context, audit_summary, redaction_check)
+    return build_metadata_closure_blockers(safe_case_id, context, checklist)
+
+
+def get_personal_alpha_case_os_metadata_closure_export_preview(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    review_state = build_review_state(safe_case_id, context)
+    audit_summary = build_unified_audit_summary(safe_case_id, context)
+    redaction_check = build_unified_redaction_check(safe_case_id, context)
+    checklist = build_metadata_closure_checklist(safe_case_id, context, audit_summary, redaction_check)
+    closure = build_metadata_closure(safe_case_id, context, review_state, audit_summary, redaction_check, checklist)
+    return build_metadata_closure_export_preview(safe_case_id, context, closure, checklist, audit_summary)
 
 
 def _case_contexts() -> list[dict[str, Any]]:
