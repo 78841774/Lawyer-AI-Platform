@@ -3313,6 +3313,98 @@ export type PersonalAlphaCaseOSQualitySummary = {
   warnings: string[];
 };
 
+export type PersonalAlphaCaseOSHardeningStatus = {
+  enabled: boolean;
+  mode: string;
+  safe_response_enabled: boolean;
+  safe_not_found_enabled: boolean;
+  blocked_response_enabled: boolean;
+  redacted_response_enabled: boolean;
+  no_raw_content_guard_enabled: boolean;
+  runtime_storage_guard_enabled: boolean;
+  response_consistency_check_enabled: boolean;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  advisory_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSHardeningUnsafeItem = {
+  scope: string;
+  field_name: string;
+  reason: string;
+};
+
+export type PersonalAlphaCaseOSHardeningSafetyCheckDetail = {
+  passed: boolean;
+  unsafe_value_count: number;
+  path_like_value_count: number;
+  api_key_like_value_count: number;
+  raw_content_like_value_count: number;
+  checked_scopes: string[];
+};
+
+export type PersonalAlphaCaseOSHardeningSafetyCheck = {
+  case_id: string;
+  safety_check: PersonalAlphaCaseOSHardeningSafetyCheckDetail;
+  unsafe_items: PersonalAlphaCaseOSHardeningUnsafeItem[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSResponseConsistencyIssue = {
+  endpoint: string;
+  field_name: string;
+  reason: string;
+};
+
+export type PersonalAlphaCaseOSResponseConsistencyDetail = {
+  passed: boolean;
+  checked_endpoints: string[];
+  missing_required_field_count: number;
+  inconsistent_safety_flag_count: number;
+  required_fields: string[];
+};
+
+export type PersonalAlphaCaseOSResponseConsistency = {
+  case_id: string;
+  response_consistency: PersonalAlphaCaseOSResponseConsistencyDetail;
+  issues: PersonalAlphaCaseOSResponseConsistencyIssue[];
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSRuntimeStorageCheckDetail = {
+  passed: boolean;
+  storage_mode: string;
+  runtime_root_redacted: boolean;
+  absolute_path_returned: boolean;
+  tracked_path_write_enabled: boolean;
+  checked_paths: string[];
+};
+
+export type PersonalAlphaCaseOSRuntimeStorageCheck = {
+  case_id: string;
+  runtime_storage_check: PersonalAlphaCaseOSRuntimeStorageCheckDetail;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
 export type PersonalAlphaCaseOSCaseDetail = {
   case_id: string;
   title: string;

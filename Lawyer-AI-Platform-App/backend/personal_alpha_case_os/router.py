@@ -17,6 +17,10 @@ from personal_alpha_case_os.case_os_engine import (
     get_personal_alpha_case_os_export_package_status,
     get_personal_alpha_case_os_export_package_summary,
     get_personal_alpha_case_os_final_lock_consolidation,
+    get_personal_alpha_case_os_hardening_response_consistency,
+    get_personal_alpha_case_os_hardening_runtime_storage_check,
+    get_personal_alpha_case_os_hardening_safety_check,
+    get_personal_alpha_case_os_hardening_status,
     get_personal_alpha_case_os_metadata_closure,
     get_personal_alpha_case_os_metadata_closure_blockers,
     get_personal_alpha_case_os_metadata_closure_checklist,
@@ -55,6 +59,11 @@ def personal_alpha_case_os_status() -> dict[str, Any]:
 @router.get("")
 def personal_alpha_case_os_cases() -> list[dict[str, Any]]:
     return list_personal_alpha_case_os_cases()
+
+
+@router.get("/hardening/status")
+def personal_alpha_case_os_hardening_status() -> dict[str, Any]:
+    return get_personal_alpha_case_os_hardening_status()
 
 
 @router.get("/{case_id}")
@@ -233,6 +242,21 @@ def personal_alpha_case_os_quality_summary(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_quality_summary(case_id)
 
 
+@router.get("/{case_id}/hardening/safety-check")
+def personal_alpha_case_os_hardening_safety_check(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_hardening_safety_check(case_id)
+
+
+@router.get("/{case_id}/hardening/response-consistency")
+def personal_alpha_case_os_hardening_response_consistency(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_hardening_response_consistency(case_id)
+
+
+@router.get("/{case_id}/hardening/runtime-storage-check")
+def personal_alpha_case_os_hardening_runtime_storage_check(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_hardening_runtime_storage_check(case_id)
+
+
 @router.get("/{case_id}/stage-orchestration")
 def personal_alpha_case_os_stage_orchestration(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_stage_orchestration(case_id)
@@ -332,3 +356,18 @@ def personal_alpha_case_os_path_like_quality_report_preview(case_id: str) -> dic
 @router.get("/{case_id:path}/quality/summary")
 def personal_alpha_case_os_path_like_quality_summary(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_quality_summary(case_id)
+
+
+@router.get("/{case_id:path}/hardening/safety-check")
+def personal_alpha_case_os_path_like_hardening_safety_check(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_hardening_safety_check(case_id)
+
+
+@router.get("/{case_id:path}/hardening/response-consistency")
+def personal_alpha_case_os_path_like_hardening_response_consistency(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_hardening_response_consistency(case_id)
+
+
+@router.get("/{case_id:path}/hardening/runtime-storage-check")
+def personal_alpha_case_os_path_like_hardening_runtime_storage_check(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_hardening_runtime_storage_check(case_id)

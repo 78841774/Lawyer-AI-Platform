@@ -59,6 +59,7 @@ bash scripts/regression/check_case_os_quality_apis.sh
 - `check_case_os_status_apis.sh`: checks v5.0-v6.6 status endpoints.
 - `check_case_os_core_apis.sh`: checks Case OS core endpoints.
 - `check_case_os_quality_apis.sh`: checks v6.6 quality endpoints.
+- `check_case_os_hardening_apis.sh`: checks v6.8 hardening endpoints.
 - `check_metadata_only_responses.sh`: checks selected responses for path, secret, and raw-content leakage.
 - `check_safe_not_found.sh`: checks safe not_found responses.
 - `check_injected_path_inputs.sh`: checks encoded path-like case id handling.

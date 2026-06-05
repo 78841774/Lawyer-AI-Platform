@@ -3,10 +3,11 @@ from pathlib import Path
 from typing import Any
 
 from personal_alpha_case_os.export_package_safety import sanitize_export_token
+from personal_alpha_case_os.runtime_guard import ensure_runtime_path, get_runtime_root
 
 REPO_ROOT = Path("/Users/wazhen/Lawyer-AI-Platform")
-RUNTIME_EXPORT_PACKAGE_STORAGE_RELATIVE_PATH = "Lawyer-AI-Platform-App/backend/storage/runtime/personal_alpha_case_os/export_packages"
-STORAGE_DIR = REPO_ROOT / RUNTIME_EXPORT_PACKAGE_STORAGE_RELATIVE_PATH
+RUNTIME_EXPORT_PACKAGE_STORAGE_RELATIVE_PATH = "personal_alpha_case_os/export_packages"
+STORAGE_DIR = ensure_runtime_path(get_runtime_root() / RUNTIME_EXPORT_PACKAGE_STORAGE_RELATIVE_PATH)
 
 
 def store_export_package_record(record: dict[str, Any], content: dict[str, Any] | str) -> dict[str, Any]:

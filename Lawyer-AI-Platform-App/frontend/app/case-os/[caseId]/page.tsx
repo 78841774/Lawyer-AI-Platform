@@ -26,6 +26,7 @@ import {
   PersonalAlphaCaseOSExportPackageStatus,
   PersonalAlphaCaseOSExportPackageSummary,
   PersonalAlphaCaseOSFinalLockConsolidation,
+  PersonalAlphaCaseOSHardeningSafetyCheck,
   PersonalAlphaCaseOSMetadataClosure,
   PersonalAlphaCaseOSMetadataClosureBlockers,
   PersonalAlphaCaseOSMetadataClosureChecklist,
@@ -38,6 +39,7 @@ import {
   PersonalAlphaCaseOSQualityScore,
   PersonalAlphaCaseOSQualityStatus,
   PersonalAlphaCaseOSQualitySummary,
+  PersonalAlphaCaseOSResponseConsistency,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
   PersonalAlphaCaseOSReviewStateSummary,
@@ -46,6 +48,7 @@ import {
   PersonalAlphaCaseOSStageOrchestration,
   PersonalAlphaCaseOSStageState,
   PersonalAlphaCaseOSStageTransitions,
+  PersonalAlphaCaseOSRuntimeStorageCheck,
   PersonalAlphaCaseOSUnifiedAuditTimeline,
   getPersonalAlphaCaseOSActionEligibility,
   getPersonalAlphaCaseOSAuditTimeline,
@@ -61,6 +64,9 @@ import {
   getPersonalAlphaCaseOSExportPackageStatus,
   getPersonalAlphaCaseOSExportPackageSummary,
   getPersonalAlphaCaseOSFinalLockConsolidation,
+  getPersonalAlphaCaseOSHardeningResponseConsistency,
+  getPersonalAlphaCaseOSHardeningRuntimeStorageCheck,
+  getPersonalAlphaCaseOSHardeningSafetyCheck,
   getPersonalAlphaCaseOSMetadataClosure,
   getPersonalAlphaCaseOSMetadataClosureBlockers,
   getPersonalAlphaCaseOSMetadataClosureChecklist,
@@ -180,6 +186,9 @@ export default function PersonalAlphaCaseOSDetailPage() {
   const [qualityRecommendations, setQualityRecommendations] = useState<PersonalAlphaCaseOSQualityRecommendations | null>(null);
   const [qualityReportPreview, setQualityReportPreview] = useState<PersonalAlphaCaseOSQualityReportPreview | null>(null);
   const [qualitySummary, setQualitySummary] = useState<PersonalAlphaCaseOSQualitySummary | null>(null);
+  const [hardeningSafetyCheck, setHardeningSafetyCheck] = useState<PersonalAlphaCaseOSHardeningSafetyCheck | null>(null);
+  const [responseConsistency, setResponseConsistency] = useState<PersonalAlphaCaseOSResponseConsistency | null>(null);
+  const [runtimeStorageCheck, setRuntimeStorageCheck] = useState<PersonalAlphaCaseOSRuntimeStorageCheck | null>(null);
   const [exportPackageForm, setExportPackageForm] = useState<PersonalAlphaCaseOSExportPackageCreateRequest>(DEFAULT_EXPORT_PACKAGE_FORM);
   const [transitionFromState, setTransitionFromState] = useState("final_lock_pending");
   const [transitionToState, setTransitionToState] = useState("final_lock_created");
@@ -223,7 +232,10 @@ export default function PersonalAlphaCaseOSDetailPage() {
         nextQualityFindings,
         nextQualityRecommendations,
         nextQualityReportPreview,
-        nextQualitySummary
+        nextQualitySummary,
+        nextHardeningSafetyCheck,
+        nextResponseConsistency,
+        nextRuntimeStorageCheck
       ] = await Promise.all([
         getPersonalAlphaCaseOSCaseDetail(caseId),
         getPersonalAlphaCaseOSAuditTimeline(caseId),
@@ -256,7 +268,10 @@ export default function PersonalAlphaCaseOSDetailPage() {
         getPersonalAlphaCaseOSQualityFindings(caseId),
         getPersonalAlphaCaseOSQualityRecommendations(caseId),
         getPersonalAlphaCaseOSQualityReportPreview(caseId),
-        getPersonalAlphaCaseOSQualitySummary(caseId)
+        getPersonalAlphaCaseOSQualitySummary(caseId),
+        getPersonalAlphaCaseOSHardeningSafetyCheck(caseId),
+        getPersonalAlphaCaseOSHardeningResponseConsistency(caseId),
+        getPersonalAlphaCaseOSHardeningRuntimeStorageCheck(caseId)
       ]);
       setDetail(nextDetail);
       setTimeline(nextTimeline);
@@ -290,6 +305,9 @@ export default function PersonalAlphaCaseOSDetailPage() {
       setQualityRecommendations(nextQualityRecommendations);
       setQualityReportPreview(nextQualityReportPreview);
       setQualitySummary(nextQualitySummary);
+      setHardeningSafetyCheck(nextHardeningSafetyCheck);
+      setResponseConsistency(nextResponseConsistency);
+      setRuntimeStorageCheck(nextRuntimeStorageCheck);
     } catch {
       setError("Case OS detail 加载失败。若 case_id 不存在，后端会返回 safe not_found，不暴露本地路径或原文。");
     } finally {
@@ -837,6 +855,77 @@ export default function PersonalAlphaCaseOSDetailPage() {
               <InlineJsonBlock title="quality_summary.top_findings" value={qualitySummary?.summary.top_findings ?? []} />
               <InlineJsonBlock title="quality_summary.top_recommendations" value={qualitySummary?.summary.top_recommendations ?? []} />
             </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Hardening Safety Check</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="passed" value={String(hardeningSafetyCheck?.safety_check.passed ?? true)} />
+              <InfoRow label="unsafe_value_count" value={String(hardeningSafetyCheck?.safety_check.unsafe_value_count ?? 0)} />
+              <InfoRow label="path_like_value_count" value={String(hardeningSafetyCheck?.safety_check.path_like_value_count ?? 0)} />
+              <InfoRow label="api_key_like_value_count" value={String(hardeningSafetyCheck?.safety_check.api_key_like_value_count ?? 0)} />
+              <InfoRow label="raw_content_like_value_count" value={String(hardeningSafetyCheck?.safety_check.raw_content_like_value_count ?? 0)} />
+              <InfoRow label="raw_content_included" value={String(hardeningSafetyCheck?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(hardeningSafetyCheck?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(hardeningSafetyCheck?.final_report_generated ?? false)} />
+            </div>
+            <LabelList label="checked_scopes" values={hardeningSafetyCheck?.safety_check.checked_scopes ?? []} />
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(hardeningSafetyCheck?.unsafe_items ?? []).map((item) => (
+                <div key={`${item.scope}-${item.field_name}-${item.reason}`} className="rounded-md border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">
+                  <div>scope: {item.scope}</div>
+                  <div>field_name: {item.field_name}</div>
+                  <div>reason: {item.reason}</div>
+                </div>
+              ))}
+            </div>
+            <ReasonList reasons={hardeningSafetyCheck?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Response Consistency</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="passed" value={String(responseConsistency?.response_consistency.passed ?? true)} />
+              <InfoRow label="missing_required_field_count" value={String(responseConsistency?.response_consistency.missing_required_field_count ?? 0)} />
+              <InfoRow label="inconsistent_safety_flag_count" value={String(responseConsistency?.response_consistency.inconsistent_safety_flag_count ?? 0)} />
+              <InfoRow label="raw_content_included" value={String(responseConsistency?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(responseConsistency?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(responseConsistency?.final_report_generated ?? false)} />
+            </div>
+            <LabelList label="checked_endpoints" values={responseConsistency?.response_consistency.checked_endpoints ?? []} />
+            <LabelList label="required_fields" values={responseConsistency?.response_consistency.required_fields ?? []} />
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(responseConsistency?.issues ?? []).map((item) => (
+                <div key={`${item.endpoint}-${item.field_name}-${item.reason}`} className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+                  <div>endpoint: {item.endpoint}</div>
+                  <div>field_name: {item.field_name}</div>
+                  <div>reason: {item.reason}</div>
+                </div>
+              ))}
+            </div>
+            <ReasonList reasons={responseConsistency?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Runtime Storage Check</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="passed" value={String(runtimeStorageCheck?.runtime_storage_check.passed ?? true)} />
+              <InfoRow label="storage_mode" value={runtimeStorageCheck?.runtime_storage_check.storage_mode ?? "-"} />
+              <InfoRow label="runtime_root_redacted" value={String(runtimeStorageCheck?.runtime_storage_check.runtime_root_redacted ?? true)} />
+              <InfoRow label="absolute_path_returned" value={String(runtimeStorageCheck?.runtime_storage_check.absolute_path_returned ?? false)} />
+              <InfoRow label="tracked_path_write_enabled" value={String(runtimeStorageCheck?.runtime_storage_check.tracked_path_write_enabled ?? false)} />
+              <InfoRow label="raw_content_included" value={String(runtimeStorageCheck?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(runtimeStorageCheck?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(runtimeStorageCheck?.final_report_generated ?? false)} />
+            </div>
+            <LabelList label="checked_paths" values={runtimeStorageCheck?.runtime_storage_check.checked_paths ?? []} />
+            <ReasonList reasons={runtimeStorageCheck?.warnings ?? []} />
           </CardBody>
         </Card>
 
@@ -1410,6 +1499,9 @@ export default function PersonalAlphaCaseOSDetailPage() {
           <JsonPanel title="quality_recommendations" value={qualityRecommendations} />
           <JsonPanel title="quality_report_preview" value={qualityReportPreview} />
           <JsonPanel title="quality_summary" value={qualitySummary} />
+          <JsonPanel title="hardening_safety_check" value={hardeningSafetyCheck} />
+          <JsonPanel title="response_consistency" value={responseConsistency} />
+          <JsonPanel title="runtime_storage_check" value={runtimeStorageCheck} />
           <JsonPanel title="final_lock_consolidation" value={finalLockConsolidation} />
           <JsonPanel title="metadata_closure" value={metadataClosure} />
           <JsonPanel title="metadata_closure_checklist" value={metadataClosureChecklist} />

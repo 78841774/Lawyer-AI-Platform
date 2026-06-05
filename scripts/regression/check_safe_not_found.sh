@@ -9,6 +9,7 @@ endpoints=(
   "/case-os/not_exist_case"
   "/case-os/not_exist_case/quality/status"
   "/case-os/not_exist_case/quality/summary"
+  "/case-os/not_exist_case/hardening/safety-check"
   "/case-os/not_exist_case/metadata-closure"
   "/case-os/not_exist_case/export-packages/status"
 )

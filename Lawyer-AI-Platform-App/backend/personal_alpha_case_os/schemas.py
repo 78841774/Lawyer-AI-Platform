@@ -919,6 +919,98 @@ class PersonalAlphaCaseOSQualitySummary(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class PersonalAlphaCaseOSHardeningStatus(BaseModel):
+    enabled: bool = True
+    mode: str = "local_only_personal_alpha_case_os_hardening"
+    safe_response_enabled: bool = True
+    safe_not_found_enabled: bool = True
+    blocked_response_enabled: bool = True
+    redacted_response_enabled: bool = True
+    no_raw_content_guard_enabled: bool = True
+    runtime_storage_guard_enabled: bool = True
+    response_consistency_check_enabled: bool = True
+    production_enabled: bool = False
+    mock_first_enabled: bool = True
+    controlled_first_enabled: bool = True
+    metadata_only: bool = True
+    redacted_only: bool = True
+    advisory_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSHardeningUnsafeItem(BaseModel):
+    scope: str
+    field_name: str
+    reason: str
+
+
+class PersonalAlphaCaseOSHardeningSafetyCheckDetail(BaseModel):
+    passed: bool = True
+    unsafe_value_count: int = 0
+    path_like_value_count: int = 0
+    api_key_like_value_count: int = 0
+    raw_content_like_value_count: int = 0
+    checked_scopes: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSHardeningSafetyCheck(BaseModel):
+    case_id: str
+    safety_check: PersonalAlphaCaseOSHardeningSafetyCheckDetail
+    unsafe_items: list[PersonalAlphaCaseOSHardeningUnsafeItem] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSResponseConsistencyIssue(BaseModel):
+    endpoint: str
+    field_name: str
+    reason: str
+
+
+class PersonalAlphaCaseOSResponseConsistencyDetail(BaseModel):
+    passed: bool = True
+    checked_endpoints: list[str] = Field(default_factory=list)
+    missing_required_field_count: int = 0
+    inconsistent_safety_flag_count: int = 0
+    required_fields: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSResponseConsistency(BaseModel):
+    case_id: str
+    response_consistency: PersonalAlphaCaseOSResponseConsistencyDetail
+    issues: list[PersonalAlphaCaseOSResponseConsistencyIssue] = Field(default_factory=list)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSRuntimeStorageCheckDetail(BaseModel):
+    passed: bool = True
+    storage_mode: str = "ignored_runtime_storage"
+    runtime_root_redacted: bool = True
+    absolute_path_returned: bool = False
+    tracked_path_write_enabled: bool = False
+    checked_paths: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSRuntimeStorageCheck(BaseModel):
+    case_id: str
+    runtime_storage_check: PersonalAlphaCaseOSRuntimeStorageCheckDetail
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
 class PersonalAlphaCaseOSCaseDetail(BaseModel):
     case_id: str
     title: str

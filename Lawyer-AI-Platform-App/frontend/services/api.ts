@@ -77,6 +77,8 @@ import type {
   PersonalAlphaCaseOSExportPackageStatus,
   PersonalAlphaCaseOSExportPackageSummary,
   PersonalAlphaCaseOSFinalLockConsolidation,
+  PersonalAlphaCaseOSHardeningSafetyCheck,
+  PersonalAlphaCaseOSHardeningStatus,
   PersonalAlphaCaseOSMetadataClosure,
   PersonalAlphaCaseOSMetadataClosureBlockers,
   PersonalAlphaCaseOSMetadataClosureChecklist,
@@ -89,6 +91,7 @@ import type {
   PersonalAlphaCaseOSQualityScore,
   PersonalAlphaCaseOSQualityStatus,
   PersonalAlphaCaseOSQualitySummary,
+  PersonalAlphaCaseOSResponseConsistency,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
   PersonalAlphaCaseOSReviewStateSummary,
@@ -99,6 +102,7 @@ import type {
   PersonalAlphaCaseOSStageState,
   PersonalAlphaCaseOSStageTransitions,
   PersonalAlphaCaseOSStatus,
+  PersonalAlphaCaseOSRuntimeStorageCheck,
   PersonalAlphaCaseOSUnifiedAuditTimeline,
   PersonalAlphaDashboardAuditTimeline,
   PersonalAlphaDashboardSourceTraceSummary,
@@ -267,6 +271,8 @@ export type {
   PersonalAlphaCaseOSExportPackageStatus,
   PersonalAlphaCaseOSExportPackageSummary,
   PersonalAlphaCaseOSFinalLockConsolidation,
+  PersonalAlphaCaseOSHardeningSafetyCheck,
+  PersonalAlphaCaseOSHardeningStatus,
   PersonalAlphaCaseOSMetadataClosure,
   PersonalAlphaCaseOSMetadataClosureBlockers,
   PersonalAlphaCaseOSMetadataClosureChecklist,
@@ -279,6 +285,7 @@ export type {
   PersonalAlphaCaseOSQualityScore,
   PersonalAlphaCaseOSQualityStatus,
   PersonalAlphaCaseOSQualitySummary,
+  PersonalAlphaCaseOSResponseConsistency,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
   PersonalAlphaCaseOSReviewStateSummary,
@@ -289,6 +296,7 @@ export type {
   PersonalAlphaCaseOSStageState,
   PersonalAlphaCaseOSStageTransitions,
   PersonalAlphaCaseOSStatus,
+  PersonalAlphaCaseOSRuntimeStorageCheck,
   PersonalAlphaCaseOSUnifiedAuditTimeline,
   PersonalAlphaDashboardAuditTimeline,
   PersonalAlphaDashboardSourceTraceSummary,
@@ -1065,6 +1073,7 @@ export const personalAlphaFinalLockApi = {
 
 export const personalAlphaCaseOSApi = {
   getStatus: () => request<PersonalAlphaCaseOSStatus>("/case-os/status"),
+  getHardeningStatus: () => request<PersonalAlphaCaseOSHardeningStatus>("/case-os/hardening/status"),
   listCases: () => request<PersonalAlphaCaseOSCaseListItem[]>("/case-os"),
   getCaseDetail: (caseId: string) =>
     request<PersonalAlphaCaseOSCaseDetail>(`/case-os/${encodeURIComponent(caseId)}`),
@@ -1130,6 +1139,12 @@ export const personalAlphaCaseOSApi = {
     request<PersonalAlphaCaseOSQualityReportPreview>(`/case-os/${encodeURIComponent(caseId)}/quality/report-preview`),
   getQualitySummary: (caseId: string) =>
     request<PersonalAlphaCaseOSQualitySummary>(`/case-os/${encodeURIComponent(caseId)}/quality/summary`),
+  getHardeningSafetyCheck: (caseId: string) =>
+    request<PersonalAlphaCaseOSHardeningSafetyCheck>(`/case-os/${encodeURIComponent(caseId)}/hardening/safety-check`),
+  getHardeningResponseConsistency: (caseId: string) =>
+    request<PersonalAlphaCaseOSResponseConsistency>(`/case-os/${encodeURIComponent(caseId)}/hardening/response-consistency`),
+  getHardeningRuntimeStorageCheck: (caseId: string) =>
+    request<PersonalAlphaCaseOSRuntimeStorageCheck>(`/case-os/${encodeURIComponent(caseId)}/hardening/runtime-storage-check`),
   getNextAction: (caseId: string) =>
     request<PersonalAlphaCaseOSNextAction>(`/case-os/${encodeURIComponent(caseId)}/next-action`),
   getStageOrchestration: (caseId: string) =>
@@ -1221,6 +1236,7 @@ export const listPersonalAlphaFinalLocks = personalAlphaFinalLockApi.listLocks;
 export const getPersonalAlphaFinalLock = personalAlphaFinalLockApi.getLock;
 export const listPersonalAlphaFinalLocksByPacket = personalAlphaFinalLockApi.listPacketLocks;
 export const getPersonalAlphaCaseOSStatus = personalAlphaCaseOSApi.getStatus;
+export const getPersonalAlphaCaseOSHardeningStatus = personalAlphaCaseOSApi.getHardeningStatus;
 export const listPersonalAlphaCaseOSCases = personalAlphaCaseOSApi.listCases;
 export const getPersonalAlphaCaseOSCaseDetail = personalAlphaCaseOSApi.getCaseDetail;
 export const getPersonalAlphaCaseOSAuditTimeline = personalAlphaCaseOSApi.getAuditTimeline;
@@ -1252,6 +1268,9 @@ export const getPersonalAlphaCaseOSQualityFindings = personalAlphaCaseOSApi.getQ
 export const getPersonalAlphaCaseOSQualityRecommendations = personalAlphaCaseOSApi.getQualityRecommendations;
 export const getPersonalAlphaCaseOSQualityReportPreview = personalAlphaCaseOSApi.getQualityReportPreview;
 export const getPersonalAlphaCaseOSQualitySummary = personalAlphaCaseOSApi.getQualitySummary;
+export const getPersonalAlphaCaseOSHardeningSafetyCheck = personalAlphaCaseOSApi.getHardeningSafetyCheck;
+export const getPersonalAlphaCaseOSHardeningResponseConsistency = personalAlphaCaseOSApi.getHardeningResponseConsistency;
+export const getPersonalAlphaCaseOSHardeningRuntimeStorageCheck = personalAlphaCaseOSApi.getHardeningRuntimeStorageCheck;
 export const getPersonalAlphaCaseOSNextAction = personalAlphaCaseOSApi.getNextAction;
 export const getPersonalAlphaCaseOSStageOrchestration = personalAlphaCaseOSApi.getStageOrchestration;
 export const getPersonalAlphaCaseOSStageTransitions = personalAlphaCaseOSApi.getStageTransitions;

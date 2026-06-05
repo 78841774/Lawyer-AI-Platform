@@ -15,6 +15,7 @@ checks=(
   "check_case_os_status_apis.sh"
   "check_case_os_core_apis.sh"
   "check_case_os_quality_apis.sh"
+  "check_case_os_hardening_apis.sh"
   "check_metadata_only_responses.sh"
   "check_safe_not_found.sh"
   "check_injected_path_inputs.sh"

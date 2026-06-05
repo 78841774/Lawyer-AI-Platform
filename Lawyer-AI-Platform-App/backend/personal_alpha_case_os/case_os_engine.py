@@ -23,11 +23,24 @@ from personal_alpha_case_os.quality_findings_engine import build_quality_finding
 from personal_alpha_case_os.quality_recommendations import build_quality_recommendations
 from personal_alpha_case_os.quality_report_preview import build_quality_report_preview, build_quality_summary
 from personal_alpha_case_os.quality_score_engine import build_quality_score
+from personal_alpha_case_os.response_consistency import check_response_consistency, normalize_response_metadata
+from personal_alpha_case_os.runtime_guard import RUNTIME_STORAGE_MODE, assert_runtime_storage_ignored
+from personal_alpha_case_os.safety_guard import scan_scoped_payloads
+from personal_alpha_case_os.safety_response import build_blocked_response, build_safe_not_found_response
 from personal_alpha_case_os.schemas import (
     PersonalAlphaCaseOSCaseDetail,
     PersonalAlphaCaseOSCaseListItem,
     PersonalAlphaCaseOSExportPackageCreateRequest,
+    PersonalAlphaCaseOSHardeningSafetyCheck,
+    PersonalAlphaCaseOSHardeningSafetyCheckDetail,
+    PersonalAlphaCaseOSHardeningStatus,
+    PersonalAlphaCaseOSHardeningUnsafeItem,
     PersonalAlphaCaseOSProfile,
+    PersonalAlphaCaseOSResponseConsistency,
+    PersonalAlphaCaseOSResponseConsistencyDetail,
+    PersonalAlphaCaseOSResponseConsistencyIssue,
+    PersonalAlphaCaseOSRuntimeStorageCheck,
+    PersonalAlphaCaseOSRuntimeStorageCheckDetail,
     PersonalAlphaCaseOSSafetyChecklist,
     PersonalAlphaCaseOSStatus,
 )
@@ -104,6 +117,15 @@ def get_personal_alpha_case_os_status() -> dict[str, Any]:
             "No final legal opinion is generated.",
             "No final report body is generated.",
             "No real provider is called.",
+        ],
+    ).model_dump()
+
+
+def get_personal_alpha_case_os_hardening_status() -> dict[str, Any]:
+    return PersonalAlphaCaseOSHardeningStatus(
+        warnings=[
+            "v6.8 hardening unifies safe responses and metadata guards.",
+            "No workflow actions are executed.",
         ],
     ).model_dump()
 
@@ -389,6 +411,90 @@ def get_personal_alpha_case_os_quality_summary(case_id: str) -> dict[str, Any]:
     return bundle["quality_summary"]
 
 
+def get_personal_alpha_case_os_hardening_safety_check(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    payloads = _hardening_payloads(case_id)
+    scoped = {
+        "case_id": safe_case_id,
+        "case_os_metadata": payloads["case_os_metadata"],
+        "quality_summary": payloads["quality_summary"],
+        "metadata_closure": payloads["metadata_closure"],
+        "export_package_status": payloads["export_package_status"],
+    }
+    scan = scan_scoped_payloads(scoped)
+    checked_scopes = list(scoped.keys())
+    return PersonalAlphaCaseOSHardeningSafetyCheck(
+        case_id=safe_case_id,
+        safety_check=PersonalAlphaCaseOSHardeningSafetyCheckDetail(
+            passed=bool(scan.get("passed", False)),
+            unsafe_value_count=int(scan.get("unsafe_value_count", 0) or 0),
+            path_like_value_count=int(scan.get("path_like_value_count", 0) or 0),
+            api_key_like_value_count=int(scan.get("api_key_like_value_count", 0) or 0),
+            raw_content_like_value_count=int(scan.get("raw_content_like_value_count", 0) or 0),
+            checked_scopes=checked_scopes,
+        ),
+        unsafe_items=[PersonalAlphaCaseOSHardeningUnsafeItem(**item) for item in scan.get("unsafe_items", [])],
+        warnings=[] if scan.get("passed", False) else ["Unsafe metadata values were detected and redacted from details."],
+    ).model_dump()
+
+
+def get_personal_alpha_case_os_hardening_response_consistency(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    payloads = _hardening_payloads(case_id)
+    endpoint_payloads = {
+        f"/case-os/{safe_case_id}": normalize_response_metadata(payloads["case_os_metadata"]),
+        f"/case-os/{safe_case_id}/quality/summary": normalize_response_metadata(payloads["quality_summary"]),
+        f"/case-os/{safe_case_id}/metadata-closure": normalize_response_metadata(payloads["metadata_closure"]),
+        f"/case-os/{safe_case_id}/export-packages/status": normalize_response_metadata(payloads["export_package_status"]),
+    }
+    consistency = check_response_consistency(endpoint_payloads)
+    return PersonalAlphaCaseOSResponseConsistency(
+        case_id=safe_case_id,
+        response_consistency=PersonalAlphaCaseOSResponseConsistencyDetail(
+            passed=bool(consistency.get("passed", False)),
+            checked_endpoints=[str(item) for item in consistency.get("checked_endpoints", [])],
+            missing_required_field_count=int(consistency.get("missing_required_field_count", 0) or 0),
+            inconsistent_safety_flag_count=int(consistency.get("inconsistent_safety_flag_count", 0) or 0),
+            required_fields=[str(item) for item in consistency.get("required_fields", [])],
+        ),
+        issues=[PersonalAlphaCaseOSResponseConsistencyIssue(**item) for item in consistency.get("issues", [])],
+        warnings=[] if consistency.get("passed", False) else ["Response consistency issues were detected."],
+    ).model_dump()
+
+
+def get_personal_alpha_case_os_hardening_runtime_storage_check(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    checked_paths = [
+        "personal_alpha_case_os/export_packages",
+        "personal_alpha_final_lock",
+        "personal_alpha_workspace/audit",
+    ]
+    passed = all(assert_runtime_storage_ignored(path) for path in checked_paths)
+    return PersonalAlphaCaseOSRuntimeStorageCheck(
+        case_id=safe_case_id,
+        runtime_storage_check=PersonalAlphaCaseOSRuntimeStorageCheckDetail(
+            passed=passed,
+            storage_mode=RUNTIME_STORAGE_MODE,
+            runtime_root_redacted=True,
+            absolute_path_returned=False,
+            tracked_path_write_enabled=False,
+            checked_paths=checked_paths,
+        ),
+        warnings=[] if passed else ["Runtime storage guard detected a non-runtime path."],
+    ).model_dump()
+
+
+def _hardening_payloads(case_id: str) -> dict[str, dict[str, Any]]:
+    safe_case_id = _safe_value(case_id)
+    return {
+        "case_os_metadata": get_personal_alpha_case_os_case_detail(case_id),
+        "quality_summary": get_personal_alpha_case_os_quality_summary(case_id),
+        "metadata_closure": get_personal_alpha_case_os_metadata_closure(case_id),
+        "export_package_status": get_personal_alpha_case_os_export_package_status(case_id),
+        "safe_case_id": {"case_id": safe_case_id},
+    }
+
+
 def _quality_bundle(case_id: str) -> dict[str, Any]:
     safe_case_id = _safe_value(case_id)
     context = _safe_audit_context(case_id)
@@ -511,7 +617,7 @@ def _safe_audit_context(case_id: str) -> dict[str, Any]:
 
 def _blocked_next_action(case_id: str, reason: str) -> dict[str, Any]:
     target_route = f"/case-os/{case_id}" if case_id else "/case-os"
-    return {
+    payload = {
         "case_id": case_id,
         "current_stage": "blocked",
         "next_action": "resolve_blockers",
@@ -524,6 +630,13 @@ def _blocked_next_action(case_id: str, reason: str) -> dict[str, Any]:
         "raw_content_included": False,
         "warnings": [reason],
     }
+    payload.update(build_blocked_response(reason="unsafe_input" if not case_id else "blocked", case_id=case_id, warnings=[reason]))
+    payload["current_stage"] = "blocked"
+    payload["next_action_label"] = "Resolve Blockers"
+    payload["target_route"] = target_route
+    payload["target_id"] = None
+    payload["blocked_reasons"] = [reason]
+    return payload
 
 
 def _load_workspace_records() -> list[dict[str, Any]]:
@@ -739,7 +852,7 @@ def _context_updated_at(context: dict[str, Any]) -> str:
 
 
 def _not_found(case_id: str) -> dict[str, Any]:
-    return PersonalAlphaCaseOSCaseDetail(
+    payload = PersonalAlphaCaseOSCaseDetail(
         case_id=_safe_value(case_id),
         title="Case OS case not found",
         workspace_id="",
@@ -758,6 +871,16 @@ def _not_found(case_id: str) -> dict[str, Any]:
         final_report_generated=False,
         warnings=["Case not found."],
     ).model_dump()
+    payload.update(build_safe_not_found_response(case_id=case_id, resource_type="case", message="Case not found."))
+    payload["title"] = "Case OS case not found"
+    payload["workspace_id"] = ""
+    payload["current_stage"] = "blocked"
+    payload["profile"] = {}
+    payload["workspace_runs"] = []
+    payload["stage_summary"] = {}
+    payload["audit_timeline"] = []
+    payload["safety_checklist"] = PersonalAlphaCaseOSSafetyChecklist().model_dump()
+    return payload
 
 
 def _looks_unsafe(value: str) -> bool:
