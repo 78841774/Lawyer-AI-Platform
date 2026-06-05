@@ -3141,6 +3141,178 @@ export type PersonalAlphaCaseOSExportPackageSection = {
   raw_content_included: boolean;
 };
 
+export type PersonalAlphaCaseOSQualityStatus = {
+  case_id: string;
+  enabled: boolean;
+  mode: string;
+  quality_check_available: boolean;
+  quality_result_is_advisory: boolean;
+  production_enabled: boolean;
+  mock_first_enabled: boolean;
+  controlled_first_enabled: boolean;
+  metadata_only: boolean;
+  redacted_only: boolean;
+  advisory_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSQualityChecklistItem = {
+  check_id: string;
+  category: string;
+  label: string;
+  passed: boolean;
+  required: boolean;
+  severity: string;
+  source: string;
+  target_route: string;
+  finding_code: string | null;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+};
+
+export type PersonalAlphaCaseOSQualityChecklist = {
+  case_id: string;
+  checklist: PersonalAlphaCaseOSQualityChecklistItem[];
+  passed_count: number;
+  failed_count: number;
+  required_failed_count: number;
+  critical_failed_count: number;
+  warning_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSQualityScoreDetail = {
+  quality_score: number;
+  quality_grade: string;
+  max_score: number;
+  passed_count: number;
+  failed_count: number;
+  required_failed_count: number;
+  critical_failed_count: number;
+  high_failed_count: number;
+  medium_failed_count: number;
+  low_failed_count: number;
+  blocking_issue_count: number;
+  advisory_warning_count: number;
+  ready_for_personal_alpha_review: boolean;
+};
+
+export type PersonalAlphaCaseOSQualityScore = {
+  case_id: string;
+  score: PersonalAlphaCaseOSQualityScoreDetail;
+  score_logic: Record<string, number>;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSQualityFinding = {
+  finding_id: string;
+  finding_code: string;
+  category: string;
+  severity: string;
+  title: string;
+  description: string;
+  blocking: boolean;
+  target_route: string;
+  recommended_action: string;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+};
+
+export type PersonalAlphaCaseOSQualityFindings = {
+  case_id: string;
+  findings: PersonalAlphaCaseOSQualityFinding[];
+  finding_count: number;
+  blocking_finding_count: number;
+  critical_finding_count: number;
+  high_finding_count: number;
+  medium_finding_count: number;
+  low_finding_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSQualityRecommendation = {
+  recommendation_id: string;
+  priority: string;
+  action: string;
+  label: string;
+  target_route: string;
+  reason: string;
+  would_execute_action: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+};
+
+export type PersonalAlphaCaseOSQualityRecommendations = {
+  case_id: string;
+  recommendations: PersonalAlphaCaseOSQualityRecommendation[];
+  recommendation_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSQualityReportSection = {
+  section_id: string;
+  title: string;
+  included: boolean;
+  raw_content_included: boolean;
+  item_count: number;
+};
+
+export type PersonalAlphaCaseOSQualityReportPreview = {
+  case_id: string;
+  report_preview: {
+    title: string;
+    report_type: string;
+    sections: PersonalAlphaCaseOSQualityReportSection[];
+  };
+  would_create_file: boolean;
+  would_generate_final_report: boolean;
+  would_generate_legal_opinion: boolean;
+  would_include_raw_content: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAlphaCaseOSQualitySummaryDetail = {
+  quality_score: number;
+  quality_grade: string;
+  ready_for_personal_alpha_review: boolean;
+  required_failed_count: number;
+  critical_failed_count: number;
+  blocking_finding_count: number;
+  advisory_warning_count: number;
+  top_findings: Record<string, unknown>[];
+  top_recommendations: Record<string, unknown>[];
+  metadata_closure_ready: boolean;
+  export_package_available: boolean;
+  redaction_check_passed: boolean;
+};
+
+export type PersonalAlphaCaseOSQualitySummary = {
+  case_id: string;
+  summary: PersonalAlphaCaseOSQualitySummaryDetail;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
 export type PersonalAlphaCaseOSCaseDetail = {
   case_id: string;
   title: string;

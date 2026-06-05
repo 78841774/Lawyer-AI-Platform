@@ -22,6 +22,13 @@ from personal_alpha_case_os.case_os_engine import (
     get_personal_alpha_case_os_metadata_closure_checklist,
     get_personal_alpha_case_os_metadata_closure_export_preview,
     get_personal_alpha_case_os_next_action,
+    get_personal_alpha_case_os_quality_checklist,
+    get_personal_alpha_case_os_quality_findings,
+    get_personal_alpha_case_os_quality_recommendations,
+    get_personal_alpha_case_os_quality_report_preview,
+    get_personal_alpha_case_os_quality_score,
+    get_personal_alpha_case_os_quality_status,
+    get_personal_alpha_case_os_quality_summary,
     get_personal_alpha_case_os_review_state,
     get_personal_alpha_case_os_review_state_history,
     get_personal_alpha_case_os_review_state_summary,
@@ -191,6 +198,41 @@ def personal_alpha_case_os_export_package_safety_check(case_id: str, package_id:
     return get_personal_alpha_case_os_export_package_safety_check(case_id, package_id)
 
 
+@router.get("/{case_id}/quality/status")
+def personal_alpha_case_os_quality_status(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_status(case_id)
+
+
+@router.get("/{case_id}/quality/checklist")
+def personal_alpha_case_os_quality_checklist(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_checklist(case_id)
+
+
+@router.get("/{case_id}/quality/score")
+def personal_alpha_case_os_quality_score(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_score(case_id)
+
+
+@router.get("/{case_id}/quality/findings")
+def personal_alpha_case_os_quality_findings(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_findings(case_id)
+
+
+@router.get("/{case_id}/quality/recommendations")
+def personal_alpha_case_os_quality_recommendations(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_recommendations(case_id)
+
+
+@router.get("/{case_id}/quality/report-preview")
+def personal_alpha_case_os_quality_report_preview(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_report_preview(case_id)
+
+
+@router.get("/{case_id}/quality/summary")
+def personal_alpha_case_os_quality_summary(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_summary(case_id)
+
+
 @router.get("/{case_id}/stage-orchestration")
 def personal_alpha_case_os_stage_orchestration(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_stage_orchestration(case_id)
@@ -255,3 +297,38 @@ def personal_alpha_case_os_path_like_final_lock_consolidation(case_id: str) -> d
 @router.get("/{case_id:path}/export-packages/status")
 def personal_alpha_case_os_path_like_export_package_status(case_id: str) -> dict[str, Any]:
     return get_personal_alpha_case_os_export_package_status(case_id)
+
+
+@router.get("/{case_id:path}/quality/status")
+def personal_alpha_case_os_path_like_quality_status(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_status(case_id)
+
+
+@router.get("/{case_id:path}/quality/checklist")
+def personal_alpha_case_os_path_like_quality_checklist(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_checklist(case_id)
+
+
+@router.get("/{case_id:path}/quality/score")
+def personal_alpha_case_os_path_like_quality_score(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_score(case_id)
+
+
+@router.get("/{case_id:path}/quality/findings")
+def personal_alpha_case_os_path_like_quality_findings(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_findings(case_id)
+
+
+@router.get("/{case_id:path}/quality/recommendations")
+def personal_alpha_case_os_path_like_quality_recommendations(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_recommendations(case_id)
+
+
+@router.get("/{case_id:path}/quality/report-preview")
+def personal_alpha_case_os_path_like_quality_report_preview(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_report_preview(case_id)
+
+
+@router.get("/{case_id:path}/quality/summary")
+def personal_alpha_case_os_path_like_quality_summary(case_id: str) -> dict[str, Any]:
+    return get_personal_alpha_case_os_quality_summary(case_id)

@@ -18,6 +18,11 @@ from personal_alpha_case_os.metadata_closure_checklist import build_metadata_clo
 from personal_alpha_case_os.metadata_closure_engine import build_metadata_closure, build_metadata_closure_blockers
 from personal_alpha_case_os.metadata_closure_export import build_metadata_closure_export_preview
 from personal_alpha_case_os.next_action_engine import build_next_action
+from personal_alpha_case_os.quality_checklist_engine import build_quality_checklist, build_quality_status
+from personal_alpha_case_os.quality_findings_engine import build_quality_findings
+from personal_alpha_case_os.quality_recommendations import build_quality_recommendations
+from personal_alpha_case_os.quality_report_preview import build_quality_report_preview, build_quality_summary
+from personal_alpha_case_os.quality_score_engine import build_quality_score
 from personal_alpha_case_os.schemas import (
     PersonalAlphaCaseOSCaseDetail,
     PersonalAlphaCaseOSCaseListItem,
@@ -346,6 +351,87 @@ def get_personal_alpha_case_os_export_package_summary(case_id: str) -> dict[str,
     safe_case_id = _safe_value(case_id)
     context = _safe_audit_context(case_id)
     return get_export_package_summary(safe_case_id, context)
+
+
+def get_personal_alpha_case_os_quality_status(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    return build_quality_status(safe_case_id, context)
+
+
+def get_personal_alpha_case_os_quality_checklist(case_id: str) -> dict[str, Any]:
+    bundle = _quality_bundle(case_id)
+    return bundle["quality_checklist"]
+
+
+def get_personal_alpha_case_os_quality_score(case_id: str) -> dict[str, Any]:
+    bundle = _quality_bundle(case_id)
+    return bundle["quality_score"]
+
+
+def get_personal_alpha_case_os_quality_findings(case_id: str) -> dict[str, Any]:
+    bundle = _quality_bundle(case_id)
+    return bundle["quality_findings"]
+
+
+def get_personal_alpha_case_os_quality_recommendations(case_id: str) -> dict[str, Any]:
+    bundle = _quality_bundle(case_id)
+    return bundle["quality_recommendations"]
+
+
+def get_personal_alpha_case_os_quality_report_preview(case_id: str) -> dict[str, Any]:
+    bundle = _quality_bundle(case_id)
+    return bundle["quality_report_preview"]
+
+
+def get_personal_alpha_case_os_quality_summary(case_id: str) -> dict[str, Any]:
+    bundle = _quality_bundle(case_id)
+    return bundle["quality_summary"]
+
+
+def _quality_bundle(case_id: str) -> dict[str, Any]:
+    safe_case_id = _safe_value(case_id)
+    context = _safe_audit_context(case_id)
+    next_action = build_next_action(safe_case_id, context)
+    review_state = build_review_state(safe_case_id, context)
+    audit_summary = build_unified_audit_summary(safe_case_id, context)
+    redaction_check = build_unified_redaction_check(safe_case_id, context)
+    metadata_checklist = build_metadata_closure_checklist(safe_case_id, context, audit_summary, redaction_check)
+    metadata_closure = build_metadata_closure(safe_case_id, context, review_state, audit_summary, redaction_check, metadata_checklist)
+    blockers = build_blockers(safe_case_id, context, next_action)
+    export_summary = get_export_package_summary(safe_case_id, context)
+    quality_context = {
+        "context": context,
+        "review_state": review_state,
+        "audit_summary": audit_summary,
+        "redaction_check": redaction_check,
+        "metadata_closure_checklist": metadata_checklist,
+        "metadata_closure": metadata_closure,
+        "blockers": blockers,
+        "export_package_summary": export_summary,
+    }
+    checklist = build_quality_checklist(safe_case_id, quality_context)
+    findings = build_quality_findings(safe_case_id, checklist)
+    score = build_quality_score(safe_case_id, checklist, findings)
+    recommendations = build_quality_recommendations(safe_case_id, findings)
+    report_preview = build_quality_report_preview(safe_case_id, checklist, findings, recommendations)
+    summary = build_quality_summary(
+        safe_case_id,
+        score,
+        findings,
+        recommendations,
+        metadata_closure,
+        export_summary,
+        redaction_check,
+    )
+    return {
+        "quality_checklist": checklist,
+        "quality_score": score,
+        "quality_findings": findings,
+        "quality_recommendations": recommendations,
+        "quality_report_preview": report_preview,
+        "quality_summary": summary,
+    }
 
 
 def _case_contexts() -> list[dict[str, Any]]:

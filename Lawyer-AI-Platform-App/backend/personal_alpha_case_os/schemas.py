@@ -745,6 +745,180 @@ class PersonalAlphaCaseOSExportPackageSection(BaseModel):
     raw_content_included: bool = False
 
 
+class PersonalAlphaCaseOSQualityStatus(BaseModel):
+    case_id: str
+    enabled: bool = True
+    mode: str = "local_only_personal_alpha_case_os_quality_checklist"
+    quality_check_available: bool = True
+    quality_result_is_advisory: bool = True
+    production_enabled: bool = False
+    mock_first_enabled: bool = True
+    controlled_first_enabled: bool = True
+    metadata_only: bool = True
+    redacted_only: bool = True
+    advisory_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSQualityChecklistItem(BaseModel):
+    check_id: str
+    category: str
+    label: str
+    passed: bool = False
+    required: bool = True
+    severity: str = "medium"
+    source: str
+    target_route: str
+    finding_code: str | None = None
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+
+
+class PersonalAlphaCaseOSQualityChecklist(BaseModel):
+    case_id: str
+    checklist: list[PersonalAlphaCaseOSQualityChecklistItem] = Field(default_factory=list)
+    passed_count: int = 0
+    failed_count: int = 0
+    required_failed_count: int = 0
+    critical_failed_count: int = 0
+    warning_count: int = 0
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSQualityScoreDetail(BaseModel):
+    quality_score: int = 0
+    quality_grade: str = "F"
+    max_score: int = 100
+    passed_count: int = 0
+    failed_count: int = 0
+    required_failed_count: int = 0
+    critical_failed_count: int = 0
+    high_failed_count: int = 0
+    medium_failed_count: int = 0
+    low_failed_count: int = 0
+    blocking_issue_count: int = 0
+    advisory_warning_count: int = 0
+    ready_for_personal_alpha_review: bool = False
+
+
+class PersonalAlphaCaseOSQualityScore(BaseModel):
+    case_id: str
+    score: PersonalAlphaCaseOSQualityScoreDetail
+    score_logic: dict[str, int] = Field(default_factory=dict)
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSQualityFinding(BaseModel):
+    finding_id: str
+    finding_code: str
+    category: str
+    severity: str
+    title: str
+    description: str
+    blocking: bool = False
+    target_route: str
+    recommended_action: str
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+
+
+class PersonalAlphaCaseOSQualityFindings(BaseModel):
+    case_id: str
+    findings: list[PersonalAlphaCaseOSQualityFinding] = Field(default_factory=list)
+    finding_count: int = 0
+    blocking_finding_count: int = 0
+    critical_finding_count: int = 0
+    high_finding_count: int = 0
+    medium_finding_count: int = 0
+    low_finding_count: int = 0
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSQualityRecommendation(BaseModel):
+    recommendation_id: str
+    priority: str
+    action: str
+    label: str
+    target_route: str
+    reason: str
+    would_execute_action: bool = False
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+
+
+class PersonalAlphaCaseOSQualityRecommendations(BaseModel):
+    case_id: str
+    recommendations: list[PersonalAlphaCaseOSQualityRecommendation] = Field(default_factory=list)
+    recommendation_count: int = 0
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSQualityReportSection(BaseModel):
+    section_id: str
+    title: str
+    included: bool = True
+    raw_content_included: bool = False
+    item_count: int = 0
+
+
+class PersonalAlphaCaseOSQualityReportPreviewPayload(BaseModel):
+    title: str = "Personal Alpha Case OS Quality Report Preview"
+    report_type: str = "metadata_only_quality_preview"
+    sections: list[PersonalAlphaCaseOSQualityReportSection] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSQualityReportPreview(BaseModel):
+    case_id: str
+    report_preview: PersonalAlphaCaseOSQualityReportPreviewPayload
+    would_create_file: bool = False
+    would_generate_final_report: bool = False
+    would_generate_legal_opinion: bool = False
+    would_include_raw_content: bool = False
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAlphaCaseOSQualitySummaryDetail(BaseModel):
+    quality_score: int = 0
+    quality_grade: str = "F"
+    ready_for_personal_alpha_review: bool = False
+    required_failed_count: int = 0
+    critical_failed_count: int = 0
+    blocking_finding_count: int = 0
+    advisory_warning_count: int = 0
+    top_findings: list[dict[str, Any]] = Field(default_factory=list)
+    top_recommendations: list[dict[str, Any]] = Field(default_factory=list)
+    metadata_closure_ready: bool = False
+    export_package_available: bool = False
+    redaction_check_passed: bool = False
+
+
+class PersonalAlphaCaseOSQualitySummary(BaseModel):
+    case_id: str
+    summary: PersonalAlphaCaseOSQualitySummaryDetail
+    mock_or_redacted_only: bool = True
+    raw_content_included: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
 class PersonalAlphaCaseOSCaseDetail(BaseModel):
     case_id: str
     title: str

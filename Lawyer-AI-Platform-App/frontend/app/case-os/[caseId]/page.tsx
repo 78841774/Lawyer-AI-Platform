@@ -31,6 +31,13 @@ import {
   PersonalAlphaCaseOSMetadataClosureChecklist,
   PersonalAlphaCaseOSMetadataClosureExportPreview,
   PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSQualityChecklist,
+  PersonalAlphaCaseOSQualityFindings,
+  PersonalAlphaCaseOSQualityRecommendations,
+  PersonalAlphaCaseOSQualityReportPreview,
+  PersonalAlphaCaseOSQualityScore,
+  PersonalAlphaCaseOSQualityStatus,
+  PersonalAlphaCaseOSQualitySummary,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
   PersonalAlphaCaseOSReviewStateSummary,
@@ -59,6 +66,13 @@ import {
   getPersonalAlphaCaseOSMetadataClosureChecklist,
   getPersonalAlphaCaseOSMetadataClosureExportPreview,
   getPersonalAlphaCaseOSNextAction,
+  getPersonalAlphaCaseOSQualityChecklist,
+  getPersonalAlphaCaseOSQualityFindings,
+  getPersonalAlphaCaseOSQualityRecommendations,
+  getPersonalAlphaCaseOSQualityReportPreview,
+  getPersonalAlphaCaseOSQualityScore,
+  getPersonalAlphaCaseOSQualityStatus,
+  getPersonalAlphaCaseOSQualitySummary,
   getPersonalAlphaCaseOSReviewState,
   getPersonalAlphaCaseOSReviewStateHistory,
   getPersonalAlphaCaseOSReviewStateSummary,
@@ -159,6 +173,13 @@ export default function PersonalAlphaCaseOSDetailPage() {
   const [exportPackageContent, setExportPackageContent] = useState<PersonalAlphaCaseOSExportPackageContent | null>(null);
   const [exportPackageSafetyCheck, setExportPackageSafetyCheck] = useState<PersonalAlphaCaseOSExportPackageSafetyCheck | null>(null);
   const [exportPackageCreateResult, setExportPackageCreateResult] = useState<PersonalAlphaCaseOSExportPackageCreateResult | null>(null);
+  const [qualityStatus, setQualityStatus] = useState<PersonalAlphaCaseOSQualityStatus | null>(null);
+  const [qualityChecklist, setQualityChecklist] = useState<PersonalAlphaCaseOSQualityChecklist | null>(null);
+  const [qualityScore, setQualityScore] = useState<PersonalAlphaCaseOSQualityScore | null>(null);
+  const [qualityFindings, setQualityFindings] = useState<PersonalAlphaCaseOSQualityFindings | null>(null);
+  const [qualityRecommendations, setQualityRecommendations] = useState<PersonalAlphaCaseOSQualityRecommendations | null>(null);
+  const [qualityReportPreview, setQualityReportPreview] = useState<PersonalAlphaCaseOSQualityReportPreview | null>(null);
+  const [qualitySummary, setQualitySummary] = useState<PersonalAlphaCaseOSQualitySummary | null>(null);
   const [exportPackageForm, setExportPackageForm] = useState<PersonalAlphaCaseOSExportPackageCreateRequest>(DEFAULT_EXPORT_PACKAGE_FORM);
   const [transitionFromState, setTransitionFromState] = useState("final_lock_pending");
   const [transitionToState, setTransitionToState] = useState("final_lock_created");
@@ -195,7 +216,14 @@ export default function PersonalAlphaCaseOSDetailPage() {
         nextMetadataClosureExportPreview,
         nextExportPackageStatus,
         nextExportPackageSummary,
-        nextExportPackageList
+        nextExportPackageList,
+        nextQualityStatus,
+        nextQualityChecklist,
+        nextQualityScore,
+        nextQualityFindings,
+        nextQualityRecommendations,
+        nextQualityReportPreview,
+        nextQualitySummary
       ] = await Promise.all([
         getPersonalAlphaCaseOSCaseDetail(caseId),
         getPersonalAlphaCaseOSAuditTimeline(caseId),
@@ -221,7 +249,14 @@ export default function PersonalAlphaCaseOSDetailPage() {
         getPersonalAlphaCaseOSMetadataClosureExportPreview(caseId),
         getPersonalAlphaCaseOSExportPackageStatus(caseId),
         getPersonalAlphaCaseOSExportPackageSummary(caseId),
-        listPersonalAlphaCaseOSExportPackages(caseId)
+        listPersonalAlphaCaseOSExportPackages(caseId),
+        getPersonalAlphaCaseOSQualityStatus(caseId),
+        getPersonalAlphaCaseOSQualityChecklist(caseId),
+        getPersonalAlphaCaseOSQualityScore(caseId),
+        getPersonalAlphaCaseOSQualityFindings(caseId),
+        getPersonalAlphaCaseOSQualityRecommendations(caseId),
+        getPersonalAlphaCaseOSQualityReportPreview(caseId),
+        getPersonalAlphaCaseOSQualitySummary(caseId)
       ]);
       setDetail(nextDetail);
       setTimeline(nextTimeline);
@@ -248,6 +283,13 @@ export default function PersonalAlphaCaseOSDetailPage() {
       setExportPackageStatus(nextExportPackageStatus);
       setExportPackageSummary(nextExportPackageSummary);
       setExportPackageList(nextExportPackageList);
+      setQualityStatus(nextQualityStatus);
+      setQualityChecklist(nextQualityChecklist);
+      setQualityScore(nextQualityScore);
+      setQualityFindings(nextQualityFindings);
+      setQualityRecommendations(nextQualityRecommendations);
+      setQualityReportPreview(nextQualityReportPreview);
+      setQualitySummary(nextQualitySummary);
     } catch {
       setError("Case OS detail 加载失败。若 case_id 不存在，后端会返回 safe not_found，不暴露本地路径或原文。");
     } finally {
@@ -619,6 +661,182 @@ export default function PersonalAlphaCaseOSDetailPage() {
               ))}
             </div>
             <ReasonList reasons={metadataClosureExportPreview?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Quality Status</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="enabled" value={String(qualityStatus?.enabled ?? true)} />
+              <InfoRow label="quality_check_available" value={String(qualityStatus?.quality_check_available ?? false)} />
+              <InfoRow label="quality_result_is_advisory" value={String(qualityStatus?.quality_result_is_advisory ?? true)} />
+              <InfoRow label="metadata_only" value={String(qualityStatus?.metadata_only ?? true)} />
+              <InfoRow label="redacted_only" value={String(qualityStatus?.redacted_only ?? true)} />
+              <InfoRow label="advisory_only" value={String(qualityStatus?.advisory_only ?? true)} />
+              <InfoRow label="raw_content_included" value={String(qualityStatus?.raw_content_included ?? false)} />
+              <InfoRow label="final_report_generated" value={String(qualityStatus?.final_report_generated ?? false)} />
+            </div>
+            <ReasonList reasons={qualityStatus?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Quality Score</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="quality_score" value={String(qualityScore?.score.quality_score ?? 0)} />
+              <InfoRow label="quality_grade" value={qualityScore?.score.quality_grade ?? "-"} />
+              <InfoRow label="ready_for_personal_alpha_review" value={String(qualityScore?.score.ready_for_personal_alpha_review ?? false)} />
+              <InfoRow label="required_failed_count" value={String(qualityScore?.score.required_failed_count ?? 0)} />
+              <InfoRow label="critical_failed_count" value={String(qualityScore?.score.critical_failed_count ?? 0)} />
+              <InfoRow label="blocking_issue_count" value={String(qualityScore?.score.blocking_issue_count ?? 0)} />
+              <InfoRow label="advisory_warning_count" value={String(qualityScore?.score.advisory_warning_count ?? 0)} />
+              <InfoRow label="raw_content_included" value={String(qualityScore?.raw_content_included ?? false)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+              {Object.entries(qualityScore?.score_logic ?? {}).map(([key, value]) => (
+                <InfoRow key={key} label={key} value={String(value)} />
+              ))}
+            </div>
+            <ReasonList reasons={qualityScore?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Quality Checklist</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+              <InfoRow label="passed_count" value={String(qualityChecklist?.passed_count ?? 0)} />
+              <InfoRow label="failed_count" value={String(qualityChecklist?.failed_count ?? 0)} />
+              <InfoRow label="required_failed_count" value={String(qualityChecklist?.required_failed_count ?? 0)} />
+              <InfoRow label="critical_failed_count" value={String(qualityChecklist?.critical_failed_count ?? 0)} />
+              <InfoRow label="warning_count" value={String(qualityChecklist?.warning_count ?? 0)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(qualityChecklist?.checklist ?? []).map((item) => (
+                <div key={item.check_id} className={`rounded-md border p-3 ${item.passed ? "border-emerald-200 bg-emerald-50" : "border-rose-200 bg-rose-50"}`}>
+                  <div className="text-sm font-semibold text-ink">{item.label}</div>
+                  <div className="mt-2 grid gap-1 text-xs text-muted">
+                    <span>check_id: {item.check_id}</span>
+                    <span>category: {item.category}</span>
+                    <span>passed: {String(item.passed)}</span>
+                    <span>required: {String(item.required)}</span>
+                    <span>severity: {item.severity}</span>
+                    <span>source: {item.source}</span>
+                    <span>target_route: {item.target_route}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Quality Findings</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="finding_count" value={String(qualityFindings?.finding_count ?? 0)} />
+              <InfoRow label="blocking_finding_count" value={String(qualityFindings?.blocking_finding_count ?? 0)} />
+              <InfoRow label="critical_finding_count" value={String(qualityFindings?.critical_finding_count ?? 0)} />
+              <InfoRow label="high_finding_count" value={String(qualityFindings?.high_finding_count ?? 0)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(qualityFindings?.findings ?? []).map((finding) => (
+                <div key={finding.finding_id} className={`rounded-md border p-4 ${finding.blocking ? "border-rose-200 bg-rose-50" : "border-line bg-white"}`}>
+                  <div className="text-sm font-semibold text-ink">{finding.title}</div>
+                  <div className="mt-1 text-xs text-muted">{finding.description}</div>
+                  <div className="mt-3 grid gap-1 text-xs text-muted">
+                    <span>finding_code: {finding.finding_code}</span>
+                    <span>category: {finding.category}</span>
+                    <span>severity: {finding.severity}</span>
+                    <span>blocking: {String(finding.blocking)}</span>
+                    <span>recommended_action: {finding.recommended_action}</span>
+                    <span>target_route: {finding.target_route}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <ReasonList reasons={qualityFindings?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Quality Recommendations</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="recommendation_count" value={String(qualityRecommendations?.recommendation_count ?? 0)} />
+              <InfoRow label="would_execute_action" value="false" />
+              <InfoRow label="raw_content_included" value={String(qualityRecommendations?.raw_content_included ?? false)} />
+              <InfoRow label="mock_or_redacted_only" value={String(qualityRecommendations?.mock_or_redacted_only ?? true)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(qualityRecommendations?.recommendations ?? []).map((item) => (
+                <div key={item.recommendation_id} className="rounded-md border border-line bg-white p-4">
+                  <div className="text-sm font-semibold text-ink">{item.label}</div>
+                  <div className="mt-1 text-xs text-muted">{item.reason}</div>
+                  <div className="mt-3 grid gap-1 text-xs text-muted">
+                    <span>priority: {item.priority}</span>
+                    <span>action: {item.action}</span>
+                    <span>target_route: {item.target_route}</span>
+                    <span>would_execute_action: {String(item.would_execute_action)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <ReasonList reasons={qualityRecommendations?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Quality Report Preview</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="report_type" value={qualityReportPreview?.report_preview.report_type ?? "-"} />
+              <InfoRow label="would_create_file" value={String(qualityReportPreview?.would_create_file ?? false)} />
+              <InfoRow label="would_generate_final_report" value={String(qualityReportPreview?.would_generate_final_report ?? false)} />
+              <InfoRow label="would_generate_legal_opinion" value={String(qualityReportPreview?.would_generate_legal_opinion ?? false)} />
+              <InfoRow label="would_include_raw_content" value={String(qualityReportPreview?.would_include_raw_content ?? false)} />
+              <InfoRow label="raw_content_included" value={String(qualityReportPreview?.raw_content_included ?? false)} />
+              <InfoRow label="final_legal_opinion_generated" value={String(qualityReportPreview?.final_legal_opinion_generated ?? false)} />
+              <InfoRow label="final_report_generated" value={String(qualityReportPreview?.final_report_generated ?? false)} />
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {(qualityReportPreview?.report_preview.sections ?? []).map((section) => (
+                <div key={section.section_id} className="rounded-md border border-line bg-paper p-3">
+                  <div className="text-sm font-semibold text-ink">{section.title}</div>
+                  <div className="mt-2 grid gap-1 text-xs text-muted">
+                    <span>section_id: {section.section_id}</span>
+                    <span>included: {String(section.included)}</span>
+                    <span>item_count: {section.item_count}</span>
+                    <span>raw_content_included: {String(section.raw_content_included)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <ReasonList reasons={qualityReportPreview?.warnings ?? []} />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardBody>
+            <h2 className="text-base font-semibold text-ink">Quality Summary</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <InfoRow label="quality_score" value={String(qualitySummary?.summary.quality_score ?? 0)} />
+              <InfoRow label="quality_grade" value={qualitySummary?.summary.quality_grade ?? "-"} />
+              <InfoRow label="ready_for_personal_alpha_review" value={String(qualitySummary?.summary.ready_for_personal_alpha_review ?? false)} />
+              <InfoRow label="required_failed_count" value={String(qualitySummary?.summary.required_failed_count ?? 0)} />
+              <InfoRow label="critical_failed_count" value={String(qualitySummary?.summary.critical_failed_count ?? 0)} />
+              <InfoRow label="blocking_finding_count" value={String(qualitySummary?.summary.blocking_finding_count ?? 0)} />
+              <InfoRow label="metadata_closure_ready" value={String(qualitySummary?.summary.metadata_closure_ready ?? false)} />
+              <InfoRow label="export_package_available" value={String(qualitySummary?.summary.export_package_available ?? false)} />
+              <InfoRow label="redaction_check_passed" value={String(qualitySummary?.summary.redaction_check_passed ?? false)} />
+              <InfoRow label="raw_content_included" value={String(qualitySummary?.raw_content_included ?? false)} />
+            </div>
+            <div className="mt-4 grid gap-4 xl:grid-cols-2">
+              <InlineJsonBlock title="quality_summary.top_findings" value={qualitySummary?.summary.top_findings ?? []} />
+              <InlineJsonBlock title="quality_summary.top_recommendations" value={qualitySummary?.summary.top_recommendations ?? []} />
+            </div>
           </CardBody>
         </Card>
 
@@ -1185,6 +1403,13 @@ export default function PersonalAlphaCaseOSDetailPage() {
         </Card>
 
         <div className="grid gap-4 xl:grid-cols-2">
+          <JsonPanel title="quality_status" value={qualityStatus} />
+          <JsonPanel title="quality_checklist" value={qualityChecklist} />
+          <JsonPanel title="quality_score" value={qualityScore} />
+          <JsonPanel title="quality_findings" value={qualityFindings} />
+          <JsonPanel title="quality_recommendations" value={qualityRecommendations} />
+          <JsonPanel title="quality_report_preview" value={qualityReportPreview} />
+          <JsonPanel title="quality_summary" value={qualitySummary} />
           <JsonPanel title="final_lock_consolidation" value={finalLockConsolidation} />
           <JsonPanel title="metadata_closure" value={metadataClosure} />
           <JsonPanel title="metadata_closure_checklist" value={metadataClosureChecklist} />
@@ -1313,6 +1538,17 @@ function JsonPanel({ title, value }: { title: string; value: unknown }) {
         </pre>
       </CardBody>
     </Card>
+  );
+}
+
+function InlineJsonBlock({ title, value }: { title: string; value: unknown }) {
+  return (
+    <div className="rounded-md border border-line bg-paper p-3">
+      <h3 className="text-sm font-semibold text-ink">{title}</h3>
+      <pre className="mt-3 max-h-64 overflow-auto rounded-md bg-slate-950 p-3 text-xs leading-5 text-slate-100">
+        {JSON.stringify(value, null, 2)}
+      </pre>
+    </div>
   );
 }
 

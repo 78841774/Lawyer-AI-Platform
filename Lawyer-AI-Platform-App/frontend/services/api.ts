@@ -82,6 +82,13 @@ import type {
   PersonalAlphaCaseOSMetadataClosureChecklist,
   PersonalAlphaCaseOSMetadataClosureExportPreview,
   PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSQualityChecklist,
+  PersonalAlphaCaseOSQualityFindings,
+  PersonalAlphaCaseOSQualityRecommendations,
+  PersonalAlphaCaseOSQualityReportPreview,
+  PersonalAlphaCaseOSQualityScore,
+  PersonalAlphaCaseOSQualityStatus,
+  PersonalAlphaCaseOSQualitySummary,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
   PersonalAlphaCaseOSReviewStateSummary,
@@ -265,6 +272,13 @@ export type {
   PersonalAlphaCaseOSMetadataClosureChecklist,
   PersonalAlphaCaseOSMetadataClosureExportPreview,
   PersonalAlphaCaseOSNextAction,
+  PersonalAlphaCaseOSQualityChecklist,
+  PersonalAlphaCaseOSQualityFindings,
+  PersonalAlphaCaseOSQualityRecommendations,
+  PersonalAlphaCaseOSQualityReportPreview,
+  PersonalAlphaCaseOSQualityScore,
+  PersonalAlphaCaseOSQualityStatus,
+  PersonalAlphaCaseOSQualitySummary,
   PersonalAlphaCaseOSReviewState,
   PersonalAlphaCaseOSReviewStateHistory,
   PersonalAlphaCaseOSReviewStateSummary,
@@ -1102,6 +1116,20 @@ export const personalAlphaCaseOSApi = {
     request<PersonalAlphaCaseOSExportPackageSafetyCheck>(`/case-os/${encodeURIComponent(caseId)}/export-packages/${encodeURIComponent(packageId)}/safety-check`),
   getExportPackageSummary: (caseId: string) =>
     request<PersonalAlphaCaseOSExportPackageSummary>(`/case-os/${encodeURIComponent(caseId)}/export-packages/summary`),
+  getQualityStatus: (caseId: string) =>
+    request<PersonalAlphaCaseOSQualityStatus>(`/case-os/${encodeURIComponent(caseId)}/quality/status`),
+  getQualityChecklist: (caseId: string) =>
+    request<PersonalAlphaCaseOSQualityChecklist>(`/case-os/${encodeURIComponent(caseId)}/quality/checklist`),
+  getQualityScore: (caseId: string) =>
+    request<PersonalAlphaCaseOSQualityScore>(`/case-os/${encodeURIComponent(caseId)}/quality/score`),
+  getQualityFindings: (caseId: string) =>
+    request<PersonalAlphaCaseOSQualityFindings>(`/case-os/${encodeURIComponent(caseId)}/quality/findings`),
+  getQualityRecommendations: (caseId: string) =>
+    request<PersonalAlphaCaseOSQualityRecommendations>(`/case-os/${encodeURIComponent(caseId)}/quality/recommendations`),
+  getQualityReportPreview: (caseId: string) =>
+    request<PersonalAlphaCaseOSQualityReportPreview>(`/case-os/${encodeURIComponent(caseId)}/quality/report-preview`),
+  getQualitySummary: (caseId: string) =>
+    request<PersonalAlphaCaseOSQualitySummary>(`/case-os/${encodeURIComponent(caseId)}/quality/summary`),
   getNextAction: (caseId: string) =>
     request<PersonalAlphaCaseOSNextAction>(`/case-os/${encodeURIComponent(caseId)}/next-action`),
   getStageOrchestration: (caseId: string) =>
@@ -1217,6 +1245,13 @@ export const getPersonalAlphaCaseOSExportPackage = personalAlphaCaseOSApi.getExp
 export const getPersonalAlphaCaseOSExportPackageContent = personalAlphaCaseOSApi.getExportPackageContent;
 export const getPersonalAlphaCaseOSExportPackageSafetyCheck = personalAlphaCaseOSApi.getExportPackageSafetyCheck;
 export const getPersonalAlphaCaseOSExportPackageSummary = personalAlphaCaseOSApi.getExportPackageSummary;
+export const getPersonalAlphaCaseOSQualityStatus = personalAlphaCaseOSApi.getQualityStatus;
+export const getPersonalAlphaCaseOSQualityChecklist = personalAlphaCaseOSApi.getQualityChecklist;
+export const getPersonalAlphaCaseOSQualityScore = personalAlphaCaseOSApi.getQualityScore;
+export const getPersonalAlphaCaseOSQualityFindings = personalAlphaCaseOSApi.getQualityFindings;
+export const getPersonalAlphaCaseOSQualityRecommendations = personalAlphaCaseOSApi.getQualityRecommendations;
+export const getPersonalAlphaCaseOSQualityReportPreview = personalAlphaCaseOSApi.getQualityReportPreview;
+export const getPersonalAlphaCaseOSQualitySummary = personalAlphaCaseOSApi.getQualitySummary;
 export const getPersonalAlphaCaseOSNextAction = personalAlphaCaseOSApi.getNextAction;
 export const getPersonalAlphaCaseOSStageOrchestration = personalAlphaCaseOSApi.getStageOrchestration;
 export const getPersonalAlphaCaseOSStageTransitions = personalAlphaCaseOSApi.getStageTransitions;
