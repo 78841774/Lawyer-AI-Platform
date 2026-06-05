@@ -15,7 +15,8 @@ AIHome.law / Lawyer-AI-Platform is currently focused on personal production vali
 - v7.5 Real Case Production Workflow is complete in commit `75ca460` and tag `v7.5-personal-production-workflow-stack`.
 - v7.6 Personal Delivery Packet is complete in commit `3461e28` and tag `v7.6-personal-delivery-packet`.
 - v7.7 Personal Production Pilot & Showcase Pack is complete in commit `761dbb4` and tag `v7.7-personal-production-showcase-pack`.
-- v7.8 UI Polish & Showcase Hardening is implemented in the current worktree for local validation; it has not been committed, tagged, or released.
+- v7.8 UI Polish & Showcase Hardening is complete in commit `b7ce642` and tag `v7.8-ui-polish-showcase-hardening`.
+- v7.9 Personal Production Demo Script & Screenshot Pack is implemented in the current worktree for local validation; it has not been committed, tagged, or released.
 
 ## Direction
 
@@ -37,9 +38,11 @@ Team workspace features and external client delivery versions are deferred.
 - Legal & Enterprise Intelligence Gateway, Experience Package Skill Studio, and Real Case Production Workflow are complete as the v7.3-v7.5 Personal Production Workflow Stack.
 - Personal Delivery Packet is complete for v7.6.
 - Personal Production Pilot & Showcase Pack is complete for v7.7.
-- UI Polish & Showcase Hardening is in local v7.8 validation and release-preparation scope.
+- UI Polish & Showcase Hardening is complete for v7.8.
+- Personal Production Demo Script & Screenshot Pack is in local v7.9 validation and release-preparation scope.
 - Real provider calls remain disabled.
 - External delivery remains disabled.
 - Personal Delivery Packet v7.6 remains mock-first, metadata-only, draft-only, lawyer-review-required, final-lock-required, and source-trace-required.
 - Personal Production Pilot & Showcase Pack v7.7 remains mock-first, metadata-only, synthetic-demo-only, draft-only, lawyer-review-required, final-lock-required, and source-trace-required.
 - UI Polish & Showcase Hardening v7.8 does not add a new backend runtime. It unifies Personal Production navigation, Trust / Safety panels, Developer Diagnostics, Chinese UI copy, and screenshot / recording readiness across the v7.x page matrix.
+- Personal Production Demo Script & Screenshot Pack v7.9 does not add a new backend runtime. It packages demo scripts, screenshot routes, recording guidance, one-pager copy, pitch deck outline, README display copy, visual brief, and promotional safety checks.

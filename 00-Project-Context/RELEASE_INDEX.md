@@ -11,7 +11,8 @@
 - v7.5 commit: `75ca460`
 - v7.6 commit: `3461e28`
 - v7.7 commit: `761dbb4`
-- v7.8 commit: pending
+- v7.8 commit: `b7ce642`
+- v7.9 commit: pending
 
 ## Known Tags
 
@@ -43,4 +44,5 @@
 - `v7.5-personal-production-workflow-stack`: detected
 - `v7.6-personal-delivery-packet`: detected
 - `v7.7-personal-production-showcase-pack`: detected
-- `v7.8-ui-polish-showcase-hardening`: pending
+- `v7.8-ui-polish-showcase-hardening`: detected
+- `v7.9-personal-production-demo-script-screenshot-pack`: pending

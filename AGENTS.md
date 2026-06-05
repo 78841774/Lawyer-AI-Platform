@@ -59,11 +59,13 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: v7.8 UI Polish & Showcase Hardening validation / release pending. Do not commit, tag, or push v7.8 until the user explicitly confirms commit/release handling.
+Next Task: v7.9 Personal Production Demo Script & Screenshot Pack validation / release pending. Do not commit, tag, or push v7.9 until the user explicitly confirms commit/release handling.
 
-## v7.8 UI Polish Notes
+## v7.9 Demo Pack Notes
 
 - Keep the `个人生产` AppShell group as the primary route for v7.x showcase work.
 - Keep Developer Diagnostics folded by default.
 - Use shared Personal Production UI components for safety badges, Trust / Safety panels, steppers, status cards, and diagnostics where practical.
 - Keep frontend display copy Chinese by default while allowing API field names and diagnostics JSON to remain English.
+- Keep demo and promotional material mock-first, metadata-only, lawyer-review-required, source-trace-required, and provider-gated.
+- Do not describe mock samples as real cases or imply automatic external delivery.

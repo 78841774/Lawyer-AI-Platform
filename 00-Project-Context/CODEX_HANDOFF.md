@@ -29,8 +29,8 @@ Each version commit should include code, tests, docs, changelog, and project con
 
 ## Current Handoff
 
-- Stable baseline: `v7.7-personal-production-showcase-pack` at commit `761dbb4`.
-- Active local worktree scope: v7.8 UI Polish & Showcase Hardening.
-- v7.8 must remain mock-first, metadata-only, draft-only, lawyer-review-required, final-lock-required, source-trace-required, and provider-gated.
-- v7.8 does not introduce a new backend runtime or any live provider mode.
-- Do not commit, tag, or push v7.8 until validation is complete and the user explicitly approves commit and release work.
+- Stable baseline: `v7.8-ui-polish-showcase-hardening` at commit `b7ce642`.
+- Active local worktree scope: v7.9 Personal Production Demo Script & Screenshot Pack.
+- v7.9 must remain mock-first, metadata-only, draft-only, lawyer-review-required, final-lock-required, source-trace-required, and provider-gated.
+- v7.9 does not introduce a new backend runtime, live provider mode, real final document generation, email sending, or external delivery.
+- Do not commit, tag, or push v7.9 until validation is complete and the user explicitly approves commit and release work.

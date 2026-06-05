@@ -10,8 +10,9 @@
 - v7.5 Real Case Production Workflow completed as part of tag `v7.5-personal-production-workflow-stack`.
 - v7.6 Personal Delivery Packet completed.
 - v7.7 Personal Production Pilot & Showcase Pack completed and tagged.
-- v7.8 UI Polish & Showcase Hardening implemented in the current worktree for validation; release pending.
-- v7.9 Personal Production Demo Script & Screenshot Pack is the next suggested step after v7.8 validation and release handling.
+- v7.8 UI Polish & Showcase Hardening completed and tagged.
+- v7.9 Personal Production Demo Script & Screenshot Pack implemented in the current worktree for validation; release pending.
+- v7.10 Public README & Landing Page Polish is the next suggested v7.x polish step if the user wants more public-facing material.
 
 ## Later
 
@@ -20,4 +21,4 @@
 
 ## Current Priority
 
-Current priority is v7.8 UI Polish & Showcase Hardening local validation and release preparation. Personal production validation and showcase readiness come before team edition and external client delivery.
+Current priority is v7.9 Personal Production Demo Script & Screenshot Pack local validation and release preparation. Personal production validation and showcase readiness come before team edition and external client delivery.

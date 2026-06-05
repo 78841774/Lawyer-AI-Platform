@@ -67,6 +67,13 @@ scan_roots=(
   "AGENTS.md"
 )
 
+scan_files=()
+while IFS= read -r file; do
+  scan_files+=("${file}")
+done < <(rg --files "${scan_roots[@]}" | rg '(\.md$|\.tsx$|\.ts$|\.py$|\.sh$|README$|README\.md$)')
+tmp_forbidden="$(mktemp)"
+trap 'rm -f "${tmp_forbidden}"' EXIT
+
 for phrase in \
   "自动胜诉" \
   "替代律师" \
@@ -79,7 +86,16 @@ for phrase in \
   "智能判案" \
   "包赢" \
   "无需律师"; do
-  if rg -n --fixed-strings "${phrase}" "${scan_roots[@]}" >/tmp/personal_ui_polish_forbidden.txt; then
+  : > "${tmp_forbidden}"
+  for file in "${scan_files[@]}"; do
+    awk -v phrase="${phrase}" '
+      /^## 禁用表达清单/ { in_forbidden=1 }
+      /^## / && !/^## 禁用表达清单/ { in_forbidden=0 }
+      index($0, phrase) && !in_forbidden { print FILENAME ":" FNR ":" $0 }
+    ' "${file}" >> "${tmp_forbidden}"
+  done
+  if [ -s "${tmp_forbidden}" ]; then
+    cat "${tmp_forbidden}" >&2
     fail "forbidden UI phrase found: ${phrase}"
   fi
 done

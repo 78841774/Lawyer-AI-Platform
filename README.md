@@ -49,3 +49,9 @@
 新增生产化基础改造：后端支持 `APP_ENV`、环境变量驱动的 `DATABASE_URL`、本地 SQLite 默认模式、PostgreSQL Docker Compose 模式和 Alembic 基础结构。
 
 当前阶段仍不包含用户登录和正式云部署，真实生产环境应使用 Alembic migration、外部密钥管理、日志监控和备份恢复流程。
+
+## AIHome.law Personal Production Pilot
+
+AIHome.law Personal Production Pilot 是一个 mock-first、controlled runtime 的律师个人生产验证骨架。它把 AI 草稿、材料处理、法律与企业信息 mock 核验、Experience Package、受控案件生产、交付包草案、Source Trace、Lawyer Review 和 Final Lock 组织成可演示流程。当前阶段仅展示 metadata，不生成最终法律意见，不生成最终报告，也不自动对外交付。
+
+AIHome.law Personal Production Pilot is a mock-first, controlled-runtime workflow for validating personal legal production flows. It connects AI draft assistance, material processing, legal and enterprise mock intelligence, experience packages, controlled case production, delivery packet drafts, Source Trace, Lawyer Review, and Final Lock into a showcase-ready process. The current stage is metadata-only and does not generate final legal opinions, final reports, or automatic external delivery.

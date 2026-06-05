@@ -26,6 +26,7 @@ checks=(
   "check_personal_delivery_packet_apis.sh"
   "check_personal_showcase_pack_apis.sh"
   "check_personal_ui_polish.sh"
+  "check_personal_demo_pack_docs.sh"
   "check_metadata_only_responses.sh"
   "check_safe_not_found.sh"
   "check_injected_path_inputs.sh"
