@@ -2,7 +2,7 @@
 
 ## Purpose
 
-v6.7 turns the v5.0-v6.6 manual verification flow into local regression scripts. The suite checks backend compilation, frontend build, Personal Alpha status APIs, Case OS core APIs, Case OS quality APIs, v6.8 hardening APIs, v6.9 release candidate APIs, v7.0 personal production APIs, metadata-only response safety, safe not_found behavior, injected/path-like input handling, git safety, runtime ignore rules, docs completeness, and tracked sensitive files.
+v6.7 turns the v5.0-v6.6 manual verification flow into local regression scripts. The suite checks backend compilation, frontend build, Personal Alpha status APIs, Case OS core APIs, Case OS quality APIs, v6.8 hardening APIs, v6.9 release candidate APIs, v7.0 personal production APIs, v7.1 AI Gateway APIs, metadata-only response safety, safe not_found behavior, injected/path-like input handling, git safety, runtime ignore rules, docs completeness, and tracked sensitive files.
 
 The suite is local-only, mock-first, controlled-first, metadata-only, and redacted-only. It does not call real providers, generate legal opinions, generate final reports, create PDF/DOCX files, or commit runtime files.
 
@@ -62,6 +62,7 @@ bash scripts/regression/check_case_os_quality_apis.sh
 - `check_case_os_hardening_apis.sh`: checks v6.8 hardening endpoints.
 - `check_case_os_release_candidate_apis.sh`: checks v6.9 release candidate endpoints and Personal Production next-step metadata.
 - `check_personal_production_apis.sh`: checks v7.0 Personal Production Runtime & Showcase endpoints.
+- `check_personal_ai_gateway_apis.sh`: checks v7.1 Personal AI Gateway status, providers, prompt templates, prompt preview, mock run, audit, token usage, and safety metadata.
 - `check_metadata_only_responses.sh`: checks selected responses for path, secret, and raw-content leakage.
 - `check_safe_not_found.sh`: checks safe not_found responses.
 - `check_injected_path_inputs.sh`: checks encoded path-like case id handling.

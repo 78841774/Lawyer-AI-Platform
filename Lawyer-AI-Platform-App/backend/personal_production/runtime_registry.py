@@ -2,25 +2,37 @@ from personal_production.schemas import PersonalProductionRuntimeItem, PersonalP
 
 
 RUNTIME_DEFINITIONS = [
-    ("ai_model_runtime", "AI Model Runtime", "ai"),
-    ("ocr_runtime", "OCR Runtime", "ocr"),
-    ("legal_search_runtime", "Legal Search Runtime", "legal_search"),
-    ("skill_training_runtime", "Skill Training Runtime", "skill_training"),
-    ("delivery_runtime", "Delivery Runtime", "delivery"),
-    ("regression_runtime", "Regression Runtime", "regression"),
-    ("safety_runtime", "Safety Runtime", "safety"),
+    {
+        "runtime_id": "ai_model_runtime",
+        "label": "AI Model Runtime",
+        "category": "ai",
+        "target_route": "/personal-ai-gateway",
+        "gateway_registered": True,
+        "warnings": ["AI Gateway registered in v7.1. Live provider calls remain disabled."],
+    },
+    {"runtime_id": "ocr_runtime", "label": "OCR Runtime", "category": "ocr"},
+    {"runtime_id": "legal_search_runtime", "label": "Legal Search Runtime", "category": "legal_search"},
+    {"runtime_id": "skill_training_runtime", "label": "Skill Training Runtime", "category": "skill_training"},
+    {"runtime_id": "delivery_runtime", "label": "Delivery Runtime", "category": "delivery"},
+    {"runtime_id": "regression_runtime", "label": "Regression Runtime", "category": "regression", "warnings": []},
+    {"runtime_id": "safety_runtime", "label": "Safety Runtime", "category": "safety", "warnings": []},
 ]
 
 
 def build_runtime_registry() -> dict:
     runtimes = [
         PersonalProductionRuntimeItem(
-            runtime_id=runtime_id,
-            label=label,
-            category=category,
-            warnings=[] if category in {"regression", "safety"} else ["Runtime is registered for controlled foundation use; live mode is disabled in v7.0."],
+            runtime_id=definition["runtime_id"],
+            label=definition["label"],
+            category=definition["category"],
+            target_route=definition.get("target_route", "/personal-production"),
+            gateway_registered=bool(definition.get("gateway_registered", False)),
+            warnings=definition.get(
+                "warnings",
+                ["Runtime is registered for controlled foundation use; live mode is disabled in v7.1."],
+            ),
         )
-        for runtime_id, label, category in RUNTIME_DEFINITIONS
+        for definition in RUNTIME_DEFINITIONS
     ]
     return PersonalProductionRuntimeRegistry(
         runtimes=runtimes,

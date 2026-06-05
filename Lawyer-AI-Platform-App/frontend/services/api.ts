@@ -161,6 +161,20 @@ import type {
   PersonalAlphaWorkspaceRunRecord,
   PersonalAlphaWorkspaceRunResult,
   PersonalAlphaWorkspaceStatus,
+  PersonalAIAuditTimeline,
+  PersonalAIGatewayStatus,
+  PersonalAIMockRunRequest,
+  PersonalAIMockRunResult,
+  PersonalAIProvider,
+  PersonalAIProviderList,
+  PersonalAIPromptRenderPreviewRequest,
+  PersonalAIPromptRenderPreviewResult,
+  PersonalAIPromptTemplate,
+  PersonalAIPromptTemplateList,
+  PersonalAIRunList,
+  PersonalAIRunRecord,
+  PersonalAISafetyStatus,
+  PersonalAITokenUsageSummary,
   PersonalProductionConsoleSummary,
   PersonalProductionMode,
   PersonalProductionProviderCapabilities,
@@ -370,6 +384,20 @@ export type {
   PersonalAlphaWorkspaceRunRecord,
   PersonalAlphaWorkspaceRunResult,
   PersonalAlphaWorkspaceStatus,
+  PersonalAIAuditTimeline,
+  PersonalAIGatewayStatus,
+  PersonalAIMockRunRequest,
+  PersonalAIMockRunResult,
+  PersonalAIProvider,
+  PersonalAIProviderList,
+  PersonalAIPromptRenderPreviewRequest,
+  PersonalAIPromptRenderPreviewResult,
+  PersonalAIPromptTemplate,
+  PersonalAIPromptTemplateList,
+  PersonalAIRunList,
+  PersonalAIRunRecord,
+  PersonalAISafetyStatus,
+  PersonalAITokenUsageSummary,
   PersonalProductionConsoleSummary,
   PersonalProductionMode,
   PersonalProductionProviderCapabilities,
@@ -1215,6 +1243,26 @@ export const personalProductionApi = {
   getConsoleSummary: () => request<PersonalProductionConsoleSummary>("/personal-production/console-summary")
 };
 
+export const personalAIGatewayApi = {
+  getStatus: () => request<PersonalAIGatewayStatus>("/personal-ai-gateway/status"),
+  getProviders: () => request<PersonalAIProviderList>("/personal-ai-gateway/providers"),
+  getProvider: (providerId: string) =>
+    request<PersonalAIProvider>(`/personal-ai-gateway/providers/${encodeURIComponent(providerId)}`),
+  getPromptTemplates: () => request<PersonalAIPromptTemplateList>("/personal-ai-gateway/prompt-templates"),
+  getPromptTemplate: (templateId: string) =>
+    request<PersonalAIPromptTemplate>(`/personal-ai-gateway/prompt-templates/${encodeURIComponent(templateId)}`),
+  renderPromptPreview: (payload: PersonalAIPromptRenderPreviewRequest) =>
+    postJson<PersonalAIPromptRenderPreviewResult>("/personal-ai-gateway/prompt-render-preview", payload),
+  createMockRun: (payload: PersonalAIMockRunRequest) =>
+    postJson<PersonalAIMockRunResult>("/personal-ai-gateway/runs/mock", payload),
+  listRuns: () => request<PersonalAIRunList>("/personal-ai-gateway/runs"),
+  getRun: (aiRunId: string) =>
+    request<PersonalAIRunRecord>(`/personal-ai-gateway/runs/${encodeURIComponent(aiRunId)}`),
+  getAudit: () => request<PersonalAIAuditTimeline>("/personal-ai-gateway/audit"),
+  getTokenUsageSummary: () => request<PersonalAITokenUsageSummary>("/personal-ai-gateway/token-usage/summary"),
+  getSafety: () => request<PersonalAISafetyStatus>("/personal-ai-gateway/safety")
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -1342,6 +1390,18 @@ export const getPersonalProductionProviderCapabilities = personalProductionApi.g
 export const getPersonalProductionReadiness = personalProductionApi.getReadiness;
 export const getPersonalProductionSafety = personalProductionApi.getSafety;
 export const getPersonalProductionConsoleSummary = personalProductionApi.getConsoleSummary;
+export const getPersonalAIGatewayStatus = personalAIGatewayApi.getStatus;
+export const getPersonalAIProviders = personalAIGatewayApi.getProviders;
+export const getPersonalAIProvider = personalAIGatewayApi.getProvider;
+export const getPersonalAIPromptTemplates = personalAIGatewayApi.getPromptTemplates;
+export const getPersonalAIPromptTemplate = personalAIGatewayApi.getPromptTemplate;
+export const renderPersonalAIPromptPreview = personalAIGatewayApi.renderPromptPreview;
+export const createPersonalAIMockRun = personalAIGatewayApi.createMockRun;
+export const listPersonalAIRuns = personalAIGatewayApi.listRuns;
+export const getPersonalAIRun = personalAIGatewayApi.getRun;
+export const getPersonalAIAudit = personalAIGatewayApi.getAudit;
+export const getPersonalAITokenUsageSummary = personalAIGatewayApi.getTokenUsageSummary;
+export const getPersonalAISafety = personalAIGatewayApi.getSafety;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

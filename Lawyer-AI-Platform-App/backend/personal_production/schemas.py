@@ -12,6 +12,7 @@ class PersonalProductionStatus(BaseModel):
     team_workspace_enabled: bool = False
     real_provider_call_enabled: bool = False
     ai_runtime_registered: bool = True
+    ai_gateway_registered: bool = True
     ocr_runtime_registered: bool = True
     legal_search_runtime_registered: bool = True
     skill_training_runtime_registered: bool = True
@@ -72,6 +73,7 @@ class PersonalProductionRuntimeItem(BaseModel):
     controlled_available: bool = True
     production_ready: bool = False
     provider_configured: bool = False
+    gateway_registered: bool = False
     manual_approval_required: bool = True
     lawyer_review_required: bool = True
     status: str = "registered_not_live"
@@ -104,6 +106,8 @@ class PersonalProductionProviderCapability(BaseModel):
     api_key_visible: bool = False
     status: str = "placeholder_not_configured"
     next_action: str
+    target_route: str = "/personal-production"
+    gateway_registered: bool = False
 
 
 class PersonalProductionProviderCapabilities(BaseModel):
@@ -124,7 +128,7 @@ class PersonalProductionReadiness(BaseModel):
     showcase_ready: bool = True
     readiness: dict[str, bool] = Field(default_factory=dict)
     missing_requirements: list[str] = Field(default_factory=list)
-    next_action: str = "configure_ai_provider_gateway_in_v7_1"
+    next_action: str = "continue_to_v7_2_controlled_material_parsing_and_paddleocr_runtime"
     mock_or_redacted_only: bool = True
     raw_content_included: bool = False
     final_legal_opinion_generated: bool = False

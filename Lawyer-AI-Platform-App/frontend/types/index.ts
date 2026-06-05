@@ -3570,6 +3570,7 @@ export type PersonalProductionStatus = {
   team_workspace_enabled: boolean;
   real_provider_call_enabled: boolean;
   ai_runtime_registered: boolean;
+  ai_gateway_registered: boolean;
   ocr_runtime_registered: boolean;
   legal_search_runtime_registered: boolean;
   skill_training_runtime_registered: boolean;
@@ -3630,6 +3631,7 @@ export type PersonalProductionRuntimeItem = {
   controlled_available: boolean;
   production_ready: boolean;
   provider_configured: boolean;
+  gateway_registered: boolean;
   manual_approval_required: boolean;
   lawyer_review_required: boolean;
   status: string;
@@ -3662,6 +3664,8 @@ export type PersonalProductionProviderCapability = {
   api_key_visible: boolean;
   status: string;
   next_action: string;
+  target_route: string;
+  gateway_registered: boolean;
 };
 
 export type PersonalProductionProviderCapabilities = {
@@ -3710,6 +3714,246 @@ export type PersonalProductionConsoleSummary = {
   next_steps: string[];
   runtime_summary: Record<string, number>;
   trust_summary: Record<string, boolean>;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAIGatewayStatus = {
+  enabled: boolean;
+  mode: string;
+  version: string;
+  mock_first_enabled: boolean;
+  controlled_live_supported: boolean;
+  live_provider_call_enabled: boolean;
+  provider_gateway_enabled: boolean;
+  prompt_registry_enabled: boolean;
+  prompt_render_preview_enabled: boolean;
+  mock_ai_run_enabled: boolean;
+  manual_approval_required: boolean;
+  lawyer_review_required: boolean;
+  draft_only: boolean;
+  source_trace_required: boolean;
+  external_delivery_enabled: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  raw_content_included: boolean;
+  warnings: string[];
+};
+
+export type PersonalAIProvider = {
+  provider_id: string;
+  label: string;
+  category: string;
+  configured: boolean;
+  live_enabled: boolean;
+  mock_supported: boolean;
+  controlled_live_supported: boolean;
+  requires_api_key: boolean;
+  api_key_present: boolean;
+  api_key_visible: boolean;
+  status: string;
+  target_route: string;
+  warnings: string[];
+};
+
+export type PersonalAIProviderList = {
+  providers: PersonalAIProvider[];
+  provider_count: number;
+  configured_provider_count: number;
+  live_provider_count: number;
+  provider_secrets_visible: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAIPromptTemplate = {
+  template_id: string;
+  name: string;
+  purpose: string;
+  case_type: string;
+  input_schema: Record<string, unknown>;
+  output_schema: Record<string, unknown>;
+  draft_only: boolean;
+  requires_lawyer_review: boolean;
+  source_trace_required: boolean;
+  allowed_provider_categories: string[];
+  version: string;
+  enabled: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAIPromptTemplateList = {
+  templates: PersonalAIPromptTemplate[];
+  template_count: number;
+  enabled_template_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAIPromptRenderPreviewRequest = {
+  template_id: string;
+  case_id?: string | null;
+  variables: Record<string, unknown>;
+  manual_review_confirmed: boolean;
+  mock_data_only_confirmation: boolean;
+  no_raw_content_confirmation: boolean;
+};
+
+export type PersonalAIPromptRenderPreviewResult = {
+  template_id: string;
+  case_id?: string | null;
+  status: string;
+  rendered_prompt_preview: string;
+  would_call_provider: boolean;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  requires_lawyer_review: boolean;
+  draft_only: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  blocked_reasons: string[];
+  warnings: string[];
+};
+
+export type PersonalAITokenUsage = {
+  estimated_input_tokens: number;
+  estimated_output_tokens: number;
+  estimated_total_tokens: number;
+  actual_input_tokens: number | null;
+  actual_output_tokens: number | null;
+  actual_total_tokens: number | null;
+  live_usage_available: boolean;
+};
+
+export type PersonalAIDraftOutput = {
+  title: string;
+  content: string;
+  draft_only: boolean;
+  requires_lawyer_review: boolean;
+  source_trace_required: boolean;
+};
+
+export type PersonalAIMockRunRequest = {
+  provider_id: string;
+  template_id: string;
+  case_id?: string | null;
+  manual_approval_confirmed: boolean;
+  lawyer_review_required_confirmation: boolean;
+  draft_only_confirmation: boolean;
+  source_trace_required_confirmation: boolean;
+  no_final_legal_opinion_confirmation: boolean;
+  no_final_report_generation_confirmation: boolean;
+};
+
+export type PersonalAIMockRunResult = {
+  ai_run_id?: string | null;
+  provider_id: string;
+  template_id: string;
+  case_id?: string | null;
+  mode: string;
+  status: string;
+  would_call_provider: boolean;
+  live_call_executed: boolean;
+  draft_output?: PersonalAIDraftOutput | null;
+  token_usage: PersonalAITokenUsage;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  blocked_reasons: string[];
+  warnings: string[];
+};
+
+export type PersonalAIRunRecord = {
+  ai_run_id: string;
+  provider_id: string;
+  template_id: string;
+  case_id?: string | null;
+  purpose: string;
+  mode: string;
+  status: string;
+  would_call_provider: boolean;
+  live_call_executed: boolean;
+  manual_approval_confirmed: boolean;
+  draft_only: boolean;
+  requires_lawyer_review: boolean;
+  source_trace_required: boolean;
+  token_usage: PersonalAITokenUsage;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  created_at: string;
+  warnings: string[];
+};
+
+export type PersonalAIRunList = {
+  runs: PersonalAIRunRecord[];
+  run_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAIAuditEvent = {
+  ai_run_id: string;
+  provider_id: string;
+  template_id: string;
+  case_id?: string | null;
+  purpose: string;
+  mode: string;
+  would_call_provider: boolean;
+  live_call_executed: boolean;
+  manual_approval_confirmed: boolean;
+  draft_only: boolean;
+  requires_lawyer_review: boolean;
+  token_usage_estimate: Record<string, number>;
+  created_at: string;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+};
+
+export type PersonalAIAuditTimeline = {
+  events: PersonalAIAuditEvent[];
+  event_count: number;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAITokenUsageSummary = {
+  run_count: number;
+  estimated_total_tokens: number;
+  actual_total_tokens: number | null;
+  live_usage_available: boolean;
+  provider_usage_breakdown: Record<string, number>;
+  template_usage_breakdown: Record<string, number>;
+  mock_or_redacted_only: boolean;
+  raw_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalAISafetyStatus = {
+  safety: Record<string, boolean>;
+  all_safety_checks_passed: boolean;
   mock_or_redacted_only: boolean;
   raw_content_included: boolean;
   final_legal_opinion_generated: boolean;
