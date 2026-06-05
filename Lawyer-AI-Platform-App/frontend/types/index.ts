@@ -4296,6 +4296,364 @@ export type PersonalMaterialSafetyStatus = {
   warnings: string[];
 };
 
+export type PersonalIntelligenceStatus = {
+  enabled: boolean;
+  mode: string;
+  version: string;
+  mock_first_enabled: boolean;
+  provider_gated: boolean;
+  legal_search_runtime_enabled: boolean;
+  enterprise_intelligence_runtime_enabled: boolean;
+  source_trace_enabled: boolean;
+  confirmation_queue_enabled: boolean;
+  live_provider_call_enabled: boolean;
+  requires_lawyer_confirmation: boolean;
+  source_trace_required: boolean;
+  raw_external_content_included: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalIntelligenceProvider = {
+  provider_id: string;
+  label: string;
+  display_name: string;
+  category: string;
+  provider_type: string;
+  capabilities: string[];
+  enabled: boolean;
+  configured: boolean;
+  live_enabled: boolean;
+  mock_available: boolean;
+  provider_gated: boolean;
+  api_key_required_for_live: boolean;
+  api_key_present: boolean;
+  api_key_visible: boolean;
+  live_call_executed: boolean;
+  status: string;
+  target_version: string;
+  target_route: string;
+  warnings: string[];
+};
+
+export type PersonalIntelligenceProviderList = {
+  providers: PersonalIntelligenceProvider[];
+  provider_count: number;
+  configured_provider_count: number;
+  live_provider_count: number;
+  provider_secrets_visible: boolean;
+  mock_metadata_only: boolean;
+  raw_external_content_included: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalLegalSearchMockRequest = {
+  case_id: string;
+  query: string;
+  search_scope: string;
+  jurisdiction: string;
+  legal_area: string;
+  provider_id: string;
+  explicit_mock_confirmation: boolean;
+  explicit_no_live_call_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+};
+
+export type PersonalEnterpriseQueryMockRequest = {
+  case_id: string;
+  company_name: string;
+  unified_social_credit_code?: string | null;
+  query_scope: string;
+  provider_id: string;
+  explicit_mock_confirmation: boolean;
+  explicit_no_live_call_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+};
+
+export type PersonalIntelligenceSourceTrace = {
+  source_trace_id: string;
+  source_type: string;
+  provider_id: string;
+  external_source_label: string;
+  source_category: string;
+  query_id: string;
+  citation_status: string;
+  lawyer_confirmed: boolean;
+  mock_or_placeholder_only: boolean;
+  raw_content_stored: boolean;
+  raw_content_returned: boolean;
+  live_call_executed: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  created_at: string;
+  updated_at?: string | null;
+};
+
+export type PersonalIntelligenceSourceTraceList = {
+  source_traces: PersonalIntelligenceSourceTrace[];
+  source_trace_count: number;
+  pending_confirmation_count: number;
+  mock_metadata_only: boolean;
+  raw_external_content_included: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalLegalSearchResult = {
+  legal_search_id: string;
+  case_id: string;
+  provider_id: string;
+  query_summary: string;
+  search_scope: string;
+  jurisdiction: string;
+  legal_area: string;
+  result_count: number;
+  mock_results: Record<string, string | number | boolean>[];
+  citation_candidates: Record<string, string | boolean>[];
+  source_trace_ids: string[];
+  requires_lawyer_confirmation: boolean;
+  source_trace_required: boolean;
+  live_call_executed: boolean;
+  raw_external_content_included: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  safety_flags: Record<string, boolean>;
+  created_at: string;
+  warnings: string[];
+};
+
+export type PersonalLegalSearchList = {
+  legal_search: PersonalLegalSearchResult[];
+  result_count: number;
+  mock_metadata_only: boolean;
+  raw_external_content_included: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalEnterpriseQueryResult = {
+  enterprise_query_id: string;
+  case_id: string;
+  provider_id: string;
+  company_match_summary: string;
+  risk_signal_summary: string;
+  query_scope: string;
+  mock_results: Record<string, string | number | boolean>[];
+  source_trace_ids: string[];
+  requires_lawyer_confirmation: boolean;
+  source_trace_required: boolean;
+  live_call_executed: boolean;
+  raw_external_content_included: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  safety_flags: Record<string, boolean>;
+  created_at: string;
+  warnings: string[];
+};
+
+export type PersonalEnterpriseQueryList = {
+  enterprise_query: PersonalEnterpriseQueryResult[];
+  result_count: number;
+  mock_metadata_only: boolean;
+  raw_external_content_included: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalIntelligenceConfirmationActionRequest = {
+  action: string;
+  reviewer_id: string;
+  reviewer_note?: string | null;
+  explicit_lawyer_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+};
+
+export type PersonalIntelligenceConfirmationActionResult = {
+  source_trace_id: string;
+  action: string;
+  reviewer_id: string;
+  status: string;
+  citation_status: string;
+  lawyer_confirmed: boolean;
+  live_call_executed: boolean;
+  raw_content_returned: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalIntelligenceAuditEvent = {
+  audit_id: string;
+  action: string;
+  actor: string;
+  provider_id: string;
+  query_id: string;
+  source_trace_id?: string | null;
+  timestamp: string;
+  safety_flags: Record<string, boolean>;
+  no_live_call: boolean;
+  no_raw_external_content: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+};
+
+export type PersonalIntelligenceAuditTimeline = {
+  events: PersonalIntelligenceAuditEvent[];
+  event_count: number;
+  mock_metadata_only: boolean;
+  raw_external_content_included: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalIntelligenceSafetyStatus = {
+  safety_checklist: string[];
+  safety_flags: Record<string, boolean>;
+  all_safety_checks_passed: boolean;
+  mock_metadata_only: boolean;
+  raw_external_content_included: boolean;
+  used_in_ai_prompt: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  warnings: string[];
+};
+
+export type PersonalSkillStudioStatus = Record<string, unknown>;
+export type PersonalSkillStudioRuntime = Record<string, unknown> & { runtime_id: string; display_name: string; runtime_type: string };
+export type PersonalSkillStudioRuntimeList = Record<string, unknown> & { runtimes: PersonalSkillStudioRuntime[] };
+export type ExperiencePackageMockRequest = {
+  case_id: string;
+  source_trace_ids: string[];
+  review_result_ids?: string[];
+  package_title: string;
+  legal_area: string;
+  case_cause: string;
+  jurisdiction: string;
+  explicit_mock_confirmation: boolean;
+  explicit_source_trace_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+  explicit_no_auto_publish_confirmation: boolean;
+};
+export type SkillCandidateMockRequest = {
+  experience_package_id: string;
+  skill_title: string;
+  skill_type: string;
+  target_legal_area: string;
+  target_case_cause: string;
+  explicit_mock_confirmation: boolean;
+  explicit_lawyer_review_confirmation: boolean;
+  explicit_no_auto_publish_confirmation: boolean;
+};
+export type TestCaseMockRequest = {
+  skill_candidate_id: string;
+  test_case_title: string;
+  scenario_type: string;
+  explicit_mock_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+};
+export type EvaluationMockRequest = {
+  skill_candidate_id: string;
+  test_case_ids: string[];
+  evaluation_scope: string;
+  explicit_mock_confirmation: boolean;
+  explicit_manual_review_confirmation: boolean;
+  explicit_no_auto_publish_confirmation: boolean;
+};
+export type PromotionActionRequest = {
+  action: string;
+  reviewer_id: string;
+  reviewer_note?: string | null;
+  explicit_manual_confirmation: boolean;
+  explicit_no_auto_publish_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+};
+export type ExperiencePackageDraft = Record<string, unknown> & { experience_package_id: string; package_title: string; source_trace_ids: string[] };
+export type ExperiencePackageDraftList = Record<string, unknown> & { experience_packages: ExperiencePackageDraft[] };
+export type SkillCandidateDraft = Record<string, unknown> & { skill_candidate_id: string; skill_title: string; candidate_status: string };
+export type SkillCandidateDraftList = Record<string, unknown> & { skill_candidates: SkillCandidateDraft[] };
+export type SkillTestCaseDraft = Record<string, unknown> & { test_case_id: string; test_case_title: string };
+export type SkillTestCaseDraftList = Record<string, unknown> & { test_cases: SkillTestCaseDraft[] };
+export type SkillEvaluationDraft = Record<string, unknown> & { evaluation_id: string; recommendation: string };
+export type SkillEvaluationDraftList = Record<string, unknown> & { evaluations: SkillEvaluationDraft[] };
+export type PromotionActionResult = Record<string, unknown> & { skill_candidate_id: string; action: string; candidate_status: string };
+export type SkillStudioSourceTrace = Record<string, unknown> & { source_trace_id: string; source_type: string; source_label: string };
+export type SkillStudioSourceTraceList = Record<string, unknown> & { source_traces: SkillStudioSourceTrace[] };
+export type SkillStudioAuditTimeline = Record<string, unknown>;
+export type SkillStudioSafetyStatus = Record<string, unknown> & { safety_checklist: string[] };
+
+export type PersonalCaseProductionStatus = Record<string, unknown>;
+export type WorkflowStage = Record<string, unknown> & { stage_id: string; display_name: string; stage_type: string };
+export type WorkflowStageList = Record<string, unknown> & { workflow_stages: WorkflowStage[] };
+export type ProductionCaseMockRequest = {
+  case_id: string;
+  production_title: string;
+  case_type: string;
+  client_alias: string;
+  jurisdiction: string;
+  legal_area: string;
+  desensitization_status: string;
+  explicit_mock_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+  explicit_no_external_delivery_confirmation: boolean;
+};
+export type WorkflowRunMockRequest = {
+  production_case_id: string;
+  workflow_scope: string;
+  selected_stage_ids: string[];
+  explicit_mock_confirmation: boolean;
+  explicit_lawyer_review_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+  explicit_no_external_delivery_confirmation: boolean;
+};
+export type StageRunMockRequest = {
+  workflow_run_id: string;
+  stage_id: string;
+  linked_runtime_object_ids?: string[];
+  stage_note?: string | null;
+  explicit_mock_confirmation: boolean;
+  explicit_no_live_provider_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+};
+export type ReviewGateActionRequest = {
+  action: string;
+  reviewer_id: string;
+  reviewer_note?: string | null;
+  explicit_lawyer_confirmation: boolean;
+  explicit_no_final_opinion_confirmation: boolean;
+  explicit_no_external_delivery_confirmation: boolean;
+};
+export type ProductionCaseRecord = Record<string, unknown> & { production_case_id: string; production_title: string; production_status: string };
+export type ProductionCaseList = Record<string, unknown> & { production_cases: ProductionCaseRecord[] };
+export type WorkflowRunRecord = Record<string, unknown> & { workflow_run_id: string; selected_stage_ids: string[] };
+export type WorkflowRunList = Record<string, unknown> & { workflow_runs: WorkflowRunRecord[] };
+export type StageRunRecord = Record<string, unknown> & { stage_run_id: string; stage_id: string };
+export type StageRunList = Record<string, unknown> & { stage_runs: StageRunRecord[] };
+export type ProductionReadiness = Record<string, unknown> & { production_case_id: string; readiness_status: string };
+export type ProductionReadinessList = Record<string, unknown> & { readiness: ProductionReadiness[] };
+export type ReviewGateActionResult = Record<string, unknown> & { production_case_id: string; action: string; production_status: string };
+export type CaseProductionSourceTrace = Record<string, unknown> & { source_trace_id: string; source_type: string; source_label: string };
+export type CaseProductionSourceTraceList = Record<string, unknown> & { source_traces: CaseProductionSourceTrace[] };
+export type CaseProductionAuditTimeline = Record<string, unknown>;
+export type CaseProductionSafetyStatus = Record<string, unknown> & { safety_checklist: string[] };
+
 export type Skill = {
   skill_id: string;
   case_id?: string | null;

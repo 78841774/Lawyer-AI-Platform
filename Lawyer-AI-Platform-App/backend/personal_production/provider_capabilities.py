@@ -12,9 +12,12 @@ PROVIDER_DEFINITIONS = [
     ("docling_file_parser_provider", "Docling File Parser", "file_parser", "material_runtime_registered_mock_first", "/personal-material-runtime", True),
     ("paddleocr_provider", "PaddleOCR / Baidu AI Studio", "ocr", "material_runtime_registered_mock_first", "/personal-material-runtime", True),
     ("ocr_provider", "OCR Provider", "ocr", "paddleocr_placeholder_registered_in_v7_2", "/personal-material-runtime", True),
-    ("legal_search_provider", "Legal Search Provider", "legal_search", "configure_legal_search_gateway_in_v7_3", "/personal-production", False),
-    ("case_law_provider", "Case Law API Provider", "legal_search", "configure_case_law_gateway_in_v7_3", "/personal-production", False),
-    ("skill_training_provider", "Skill Training Provider", "skill_training", "configure_skill_studio_in_v7_4", "/personal-production", False),
+    ("kuaicha365_lawskills_provider", "快查 365 LawSkills", "legal_search", "personal_intelligence_gateway_registered_mock_first", "/personal-intelligence", True),
+    ("tianyancha_ai_provider", "天眼查 AI", "enterprise_intelligence", "personal_intelligence_gateway_registered_mock_first", "/personal-intelligence", True),
+    ("qichacha_provider_placeholder", "企查查 Placeholder", "enterprise_intelligence", "reserved_optional_provider_placeholder", "/personal-intelligence", True),
+    ("pkulaw_provider_placeholder", "北大法宝 Placeholder", "legal_search", "reserved_optional_provider_placeholder", "/personal-intelligence", True),
+    ("national_law_database_provider_placeholder", "国家法律法规数据库 Placeholder", "legal_search", "reserved_optional_provider_placeholder", "/personal-intelligence", True),
+    ("skill_training_provider", "Skill Training Provider", "skill_training", "skill_studio_registered_mock_first", "/personal-skill-studio", True),
 ]
 
 
@@ -35,5 +38,5 @@ def build_provider_capabilities() -> dict:
         provider_count=len(providers),
         configured_provider_count=sum(1 for provider in providers if provider.configured),
         live_provider_count=sum(1 for provider in providers if provider.live_enabled),
-        warnings=["AI and Material/OCR gateways are registered for mock-first use. No provider secrets are read or displayed."],
+        warnings=["AI、材料/OCR、法律与企业信息网关均为 mock-first。未读取或显示 provider secrets。"],
     ).model_dump()

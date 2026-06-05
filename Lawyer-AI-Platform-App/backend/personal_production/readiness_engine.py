@@ -28,6 +28,11 @@ def build_personal_production_readiness() -> dict:
         "ocr_runtime_registered": _runtime_registered(runtime_registry, "ocr_runtime"),
         "ocr_runtime_gateway_registered": _runtime_gateway_registered(runtime_registry, "ocr_runtime"),
         "legal_search_runtime_registered": _runtime_registered(runtime_registry, "legal_search_runtime"),
+        "legal_intelligence_gateway_registered": _runtime_gateway_registered(runtime_registry, "legal_search_runtime"),
+        "enterprise_intelligence_runtime_registered": _runtime_registered(runtime_registry, "enterprise_intelligence_runtime"),
+        "enterprise_intelligence_gateway_registered": _runtime_gateway_registered(runtime_registry, "enterprise_intelligence_runtime"),
+        "skill_studio_gateway_registered": _runtime_gateway_registered(runtime_registry, "experience_package_studio_runtime"),
+        "case_production_gateway_registered": _runtime_gateway_registered(runtime_registry, "case_production_runtime"),
         "skill_training_runtime_registered": _runtime_registered(runtime_registry, "skill_training_runtime"),
         "delivery_runtime_registered": _runtime_registered(runtime_registry, "delivery_runtime"),
         "lawyer_review_required": bool(mode.get("lawyer_review_required", False)),
@@ -66,8 +71,10 @@ def build_console_summary() -> dict:
         next_steps=[
             "v7.1 AI Provider Gateway & Prompt Runtime completed",
             "v7.2 Controlled Material Parsing & PaddleOCR Runtime completed",
-            "v7.3 Legal Search API Gateway",
-            "v7.4 Experience Package Skill Studio",
+            "v7.3 Legal & Enterprise Intelligence Gateway implemented; validation and release pending",
+            "v7.4 Experience Package Skill Studio implemented; validation and release pending",
+            "v7.5 Real Case Production Workflow implemented; validation and release pending",
+            "v7.6 Personal Delivery Packet not started",
         ],
         runtime_summary={
             "registered_runtime_count": int(runtime_registry.get("registered_runtime_count", 0)),
@@ -82,6 +89,10 @@ def build_console_summary() -> dict:
             "ai_gateway_registered": bool(readiness.get("readiness", {}).get("ai_gateway_registered", False)),
             "material_runtime_registered": bool(readiness.get("readiness", {}).get("material_runtime_gateway_registered", False)),
             "ocr_runtime_registered": bool(readiness.get("readiness", {}).get("ocr_runtime_gateway_registered", False)),
+            "legal_intelligence_gateway_registered": bool(readiness.get("readiness", {}).get("legal_intelligence_gateway_registered", False)),
+            "enterprise_intelligence_gateway_registered": bool(readiness.get("readiness", {}).get("enterprise_intelligence_gateway_registered", False)),
+            "skill_studio_gateway_registered": bool(readiness.get("readiness", {}).get("skill_studio_gateway_registered", False)),
+            "case_production_gateway_registered": bool(readiness.get("readiness", {}).get("case_production_gateway_registered", False)),
         },
     ).model_dump()
 

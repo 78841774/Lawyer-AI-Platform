@@ -16,7 +16,10 @@ class PersonalProductionStatus(BaseModel):
     material_parsing_runtime_registered: bool = True
     ocr_runtime_registered: bool = True
     legal_search_runtime_registered: bool = True
+    enterprise_intelligence_runtime_registered: bool = True
     skill_training_runtime_registered: bool = True
+    skill_studio_runtime_registered: bool = True
+    case_production_runtime_registered: bool = True
     delivery_runtime_registered: bool = True
     mock_first_enabled: bool = True
     controlled_first_enabled: bool = True
@@ -129,7 +132,7 @@ class PersonalProductionReadiness(BaseModel):
     showcase_ready: bool = True
     readiness: dict[str, bool] = Field(default_factory=dict)
     missing_requirements: list[str] = Field(default_factory=list)
-    next_action: str = "continue_to_v7_3_legal_enterprise_intelligence_gateway"
+    next_action: str = "validate_v7_5_real_case_production_workflow"
     mock_or_redacted_only: bool = True
     raw_content_included: bool = False
     final_legal_opinion_generated: bool = False

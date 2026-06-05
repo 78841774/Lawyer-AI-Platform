@@ -26,7 +26,7 @@ const workflowSteps = [
   "Materials",
   "OCR",
   "Fact Extraction",
-  "Legal Search",
+  "法律检索与企业信息核验",
   "Draft Analysis",
   "Lawyer Review",
   "Delivery Packet"
@@ -103,7 +103,10 @@ export default function PersonalProductionPage() {
       { label: "Personal Production Mode", value: Boolean(readiness?.readiness.personal_production_mode_defined) },
       { label: "AI Gateway", value: Boolean(readiness?.readiness.ai_gateway_registered) },
       { label: "Material Runtime", value: Boolean(readiness?.readiness.material_runtime_gateway_registered) },
-      { label: "PaddleOCR-ready", value: Boolean(readiness?.readiness.ocr_runtime_gateway_registered) }
+      { label: "PaddleOCR-ready", value: Boolean(readiness?.readiness.ocr_runtime_gateway_registered) },
+      { label: "法律与企业信息网关", value: Boolean(readiness?.readiness.legal_intelligence_gateway_registered && readiness?.readiness.enterprise_intelligence_gateway_registered) },
+      { label: "经验包与技能工作室", value: Boolean(readiness?.readiness.skill_studio_gateway_registered) },
+      { label: "真实案件生产工作流", value: Boolean(readiness?.readiness.case_production_gateway_registered) }
     ],
     [readiness]
   );
@@ -151,7 +154,7 @@ export default function PersonalProductionPage() {
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-7">
+        <section className="grid gap-4 md:grid-cols-10">
           {readinessCards.map((card) => (
             <ReadinessCard key={card.label} label={card.label} ready={card.value} />
           ))}
@@ -213,12 +216,13 @@ export default function PersonalProductionPage() {
               {(consoleSummary?.next_steps ?? [
                 "v7.1 AI Provider Gateway & Prompt Runtime",
                 "v7.2 Controlled Material Parsing & PaddleOCR Runtime",
-                "v7.3 Legal Search API Gateway",
-                "v7.4 Experience Package Skill Studio"
+                "v7.3 Legal & Enterprise Intelligence Gateway",
+                "v7.4 Experience Package Skill Studio",
+                "v7.5 Real Case Production Workflow"
               ]).map((step) => (
                 <div key={step} className="rounded-md border border-line bg-white px-4 py-3 text-sm font-medium text-ink">
                   {step}
-                  {step.includes("v7.2") ? <span className="ml-2 text-xs text-emerald-700">current stage</span> : null}
+                  {step.includes("v7.5") ? <span className="ml-2 text-xs text-emerald-700">current stage</span> : null}
                 </div>
               ))}
             </div>
@@ -298,7 +302,7 @@ function ReadinessCard({ label, ready }: { label: string; ready: boolean }) {
 }
 
 function RuntimeCard({ runtime }: { runtime: { label: string; category: string; status: string; live_enabled: boolean; controlled_available: boolean; production_ready: boolean; gateway_registered?: boolean; target_route?: string } }) {
-  const gatewayRuntime = ["ai", "ocr", "material_parser"].includes(runtime.category);
+  const gatewayRuntime = ["ai", "ocr", "material_parser", "legal_search", "enterprise_intelligence", "skill_studio", "case_production"].includes(runtime.category);
   return (
     <div className="rounded-md border border-line bg-white p-4">
       <div className="flex items-start justify-between gap-3">
@@ -315,6 +319,10 @@ function RuntimeCard({ runtime }: { runtime: { label: string; category: string; 
         {gatewayRuntime ? <span>gateway_registered: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "ocr" ? <span>PaddleOCR-ready: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "material_parser" ? <span>MinerU / Docling placeholder: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "legal_search" ? <span>快查 365 LawSkills placeholder: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "enterprise_intelligence" ? <span>天眼查 AI placeholder: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "skill_studio" ? <span>Skill Studio draft-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "case_production" ? <span>Case Production controlled: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {gatewayRuntime ? <span>target_route: {runtime.target_route}</span> : null}
       </div>
     </div>
@@ -322,7 +330,7 @@ function RuntimeCard({ runtime }: { runtime: { label: string; category: string; 
 }
 
 function CapabilityCard({ provider }: { provider: { label: string; category: string; configured: boolean; live_enabled: boolean; api_key_visible: boolean; next_action: string; gateway_registered?: boolean; target_route?: string } }) {
-  const gatewayProvider = ["ai_model", "ocr", "file_parser"].includes(provider.category);
+  const gatewayProvider = ["ai_model", "ocr", "file_parser", "legal_search", "enterprise_intelligence", "skill_studio", "case_production"].includes(provider.category);
   return (
     <div className="rounded-md border border-line bg-white p-4">
       <div className="flex items-start justify-between gap-3">

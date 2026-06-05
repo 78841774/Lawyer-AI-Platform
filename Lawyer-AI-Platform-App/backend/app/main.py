@@ -45,8 +45,11 @@ from personal_alpha.router import router as personal_alpha_router
 from personal_alpha_source_review.router import router as personal_alpha_source_review_router
 from personal_alpha_workspace.router import router as personal_alpha_workspace_router
 from personal_ai_gateway.router import router as personal_ai_gateway_router
+from personal_case_production.router import router as personal_case_production_router
+from personal_intelligence_gateway.router import router as personal_intelligence_gateway_router
 from personal_material_runtime.router import router as personal_material_runtime_router
 from personal_production.router import router as personal_production_router
+from personal_skill_studio.router import router as personal_skill_studio_router
 from source_refs.router import router as source_refs_router
 from versioned_skill_training_runs.router import router as versioned_skill_training_runs_router
 
@@ -109,6 +112,9 @@ app.include_router(personal_alpha_case_os_router)
 app.include_router(personal_production_router)
 app.include_router(personal_ai_gateway_router)
 app.include_router(personal_material_runtime_router)
+app.include_router(personal_intelligence_gateway_router)
+app.include_router(personal_skill_studio_router)
+app.include_router(personal_case_production_router)
 app.include_router(controlled_material_router)
 app.include_router(controlled_ocr_router)
 app.include_router(controlled_legal_search_router)

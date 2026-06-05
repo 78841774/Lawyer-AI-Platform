@@ -185,6 +185,62 @@ import type {
   PersonalMaterialRuntimeStatus,
   PersonalMaterialSafetyStatus,
   PersonalMaterialSourceTraceList,
+  PersonalEnterpriseQueryList,
+  PersonalEnterpriseQueryMockRequest,
+  PersonalEnterpriseQueryResult,
+  PersonalIntelligenceAuditTimeline,
+  PersonalIntelligenceConfirmationActionRequest,
+  PersonalIntelligenceConfirmationActionResult,
+  PersonalIntelligenceProvider,
+  PersonalIntelligenceProviderList,
+  PersonalIntelligenceSafetyStatus,
+  PersonalIntelligenceSourceTrace,
+  PersonalIntelligenceSourceTraceList,
+  PersonalIntelligenceStatus,
+  PersonalLegalSearchList,
+  PersonalLegalSearchMockRequest,
+  PersonalLegalSearchResult,
+  CaseProductionAuditTimeline,
+  CaseProductionSafetyStatus,
+  CaseProductionSourceTrace,
+  CaseProductionSourceTraceList,
+  EvaluationMockRequest,
+  ExperiencePackageDraft,
+  ExperiencePackageDraftList,
+  ExperiencePackageMockRequest,
+  PersonalCaseProductionStatus,
+  PersonalSkillStudioRuntime,
+  PersonalSkillStudioRuntimeList,
+  PersonalSkillStudioStatus,
+  ProductionCaseList,
+  ProductionCaseMockRequest,
+  ProductionCaseRecord,
+  ProductionReadiness,
+  ProductionReadinessList,
+  PromotionActionRequest,
+  PromotionActionResult,
+  ReviewGateActionRequest,
+  ReviewGateActionResult,
+  SkillCandidateDraft,
+  SkillCandidateDraftList,
+  SkillCandidateMockRequest,
+  SkillEvaluationDraft,
+  SkillEvaluationDraftList,
+  SkillStudioAuditTimeline,
+  SkillStudioSafetyStatus,
+  SkillStudioSourceTrace,
+  SkillStudioSourceTraceList,
+  SkillTestCaseDraft,
+  SkillTestCaseDraftList,
+  StageRunList,
+  StageRunMockRequest,
+  StageRunRecord,
+  TestCaseMockRequest,
+  WorkflowRunList,
+  WorkflowRunMockRequest,
+  WorkflowRunRecord,
+  WorkflowStage,
+  WorkflowStageList,
   PersonalOCRJobList,
   PersonalOCRJobRecord,
   PersonalOCRJobRequest,
@@ -426,6 +482,62 @@ export type {
   PersonalMaterialRuntimeStatus,
   PersonalMaterialSafetyStatus,
   PersonalMaterialSourceTraceList,
+  PersonalEnterpriseQueryList,
+  PersonalEnterpriseQueryMockRequest,
+  PersonalEnterpriseQueryResult,
+  PersonalIntelligenceAuditTimeline,
+  PersonalIntelligenceConfirmationActionRequest,
+  PersonalIntelligenceConfirmationActionResult,
+  PersonalIntelligenceProvider,
+  PersonalIntelligenceProviderList,
+  PersonalIntelligenceSafetyStatus,
+  PersonalIntelligenceSourceTrace,
+  PersonalIntelligenceSourceTraceList,
+  PersonalIntelligenceStatus,
+  PersonalLegalSearchList,
+  PersonalLegalSearchMockRequest,
+  PersonalLegalSearchResult,
+  CaseProductionAuditTimeline,
+  CaseProductionSafetyStatus,
+  CaseProductionSourceTrace,
+  CaseProductionSourceTraceList,
+  EvaluationMockRequest,
+  ExperiencePackageDraft,
+  ExperiencePackageDraftList,
+  ExperiencePackageMockRequest,
+  PersonalCaseProductionStatus,
+  PersonalSkillStudioRuntime,
+  PersonalSkillStudioRuntimeList,
+  PersonalSkillStudioStatus,
+  ProductionCaseList,
+  ProductionCaseMockRequest,
+  ProductionCaseRecord,
+  ProductionReadiness,
+  ProductionReadinessList,
+  PromotionActionRequest,
+  PromotionActionResult,
+  ReviewGateActionRequest,
+  ReviewGateActionResult,
+  SkillCandidateDraft,
+  SkillCandidateDraftList,
+  SkillCandidateMockRequest,
+  SkillEvaluationDraft,
+  SkillEvaluationDraftList,
+  SkillStudioAuditTimeline,
+  SkillStudioSafetyStatus,
+  SkillStudioSourceTrace,
+  SkillStudioSourceTraceList,
+  SkillTestCaseDraft,
+  SkillTestCaseDraftList,
+  StageRunList,
+  StageRunMockRequest,
+  StageRunRecord,
+  TestCaseMockRequest,
+  WorkflowRunList,
+  WorkflowRunMockRequest,
+  WorkflowRunRecord,
+  WorkflowStage,
+  WorkflowStageList,
   PersonalOCRJobList,
   PersonalOCRJobRecord,
   PersonalOCRJobRequest,
@@ -1327,6 +1439,87 @@ export const personalMaterialRuntimeApi = {
   getSafety: () => request<PersonalMaterialSafetyStatus>("/personal-material-runtime/safety")
 };
 
+export const personalIntelligenceApi = {
+  getStatus: () => request<PersonalIntelligenceStatus>("/personal-intelligence/status"),
+  getProviders: () => request<PersonalIntelligenceProviderList>("/personal-intelligence/providers"),
+  getProvider: (providerId: string) =>
+    request<PersonalIntelligenceProvider>(`/personal-intelligence/providers/${encodeURIComponent(providerId)}`),
+  createMockLegalSearch: (payload: PersonalLegalSearchMockRequest) =>
+    postJson<PersonalLegalSearchResult>("/personal-intelligence/legal-search/mock", payload),
+  listLegalSearch: () => request<PersonalLegalSearchList>("/personal-intelligence/legal-search"),
+  getLegalSearch: (legalSearchId: string) =>
+    request<PersonalLegalSearchResult>(`/personal-intelligence/legal-search/${encodeURIComponent(legalSearchId)}`),
+  createMockEnterpriseQuery: (payload: PersonalEnterpriseQueryMockRequest) =>
+    postJson<PersonalEnterpriseQueryResult>("/personal-intelligence/enterprise-query/mock", payload),
+  listEnterpriseQuery: () => request<PersonalEnterpriseQueryList>("/personal-intelligence/enterprise-query"),
+  getEnterpriseQuery: (enterpriseQueryId: string) =>
+    request<PersonalEnterpriseQueryResult>(`/personal-intelligence/enterprise-query/${encodeURIComponent(enterpriseQueryId)}`),
+  listSourceTraces: () => request<PersonalIntelligenceSourceTraceList>("/personal-intelligence/source-traces"),
+  getSourceTrace: (sourceTraceId: string) =>
+    request<PersonalIntelligenceSourceTrace>(`/personal-intelligence/source-traces/${encodeURIComponent(sourceTraceId)}`),
+  getConfirmationQueue: () => request<PersonalIntelligenceSourceTraceList>("/personal-intelligence/confirmation-queue"),
+  submitConfirmationAction: (sourceTraceId: string, payload: PersonalIntelligenceConfirmationActionRequest) =>
+    postJson<PersonalIntelligenceConfirmationActionResult>(
+      `/personal-intelligence/confirmation-queue/${encodeURIComponent(sourceTraceId)}/actions`,
+      payload
+    ),
+  getAudit: () => request<PersonalIntelligenceAuditTimeline>("/personal-intelligence/audit"),
+  getSafety: () => request<PersonalIntelligenceSafetyStatus>("/personal-intelligence/safety")
+};
+
+export const personalSkillStudioApi = {
+  getStatus: () => request<PersonalSkillStudioStatus>("/personal-skill-studio/status"),
+  listRuntimes: () => request<PersonalSkillStudioRuntimeList>("/personal-skill-studio/runtimes"),
+  getRuntime: (runtimeId: string) =>
+    request<PersonalSkillStudioRuntime>(`/personal-skill-studio/runtimes/${encodeURIComponent(runtimeId)}`),
+  createExperiencePackage: (payload: ExperiencePackageMockRequest) =>
+    postJson<ExperiencePackageDraft>("/personal-skill-studio/experience-packages/mock", payload),
+  listExperiencePackages: () => request<ExperiencePackageDraftList>("/personal-skill-studio/experience-packages"),
+  getExperiencePackage: (id: string) => request<ExperiencePackageDraft>(`/personal-skill-studio/experience-packages/${encodeURIComponent(id)}`),
+  createSkillCandidate: (payload: SkillCandidateMockRequest) =>
+    postJson<SkillCandidateDraft>("/personal-skill-studio/skill-candidates/mock", payload),
+  listSkillCandidates: () => request<SkillCandidateDraftList>("/personal-skill-studio/skill-candidates"),
+  getSkillCandidate: (id: string) => request<SkillCandidateDraft>(`/personal-skill-studio/skill-candidates/${encodeURIComponent(id)}`),
+  createTestCase: (payload: TestCaseMockRequest) => postJson<SkillTestCaseDraft>("/personal-skill-studio/test-cases/mock", payload),
+  listTestCases: () => request<SkillTestCaseDraftList>("/personal-skill-studio/test-cases"),
+  getTestCase: (id: string) => request<SkillTestCaseDraft>(`/personal-skill-studio/test-cases/${encodeURIComponent(id)}`),
+  createEvaluation: (payload: EvaluationMockRequest) => postJson<SkillEvaluationDraft>("/personal-skill-studio/evaluations/mock", payload),
+  listEvaluations: () => request<SkillEvaluationDraftList>("/personal-skill-studio/evaluations"),
+  getEvaluation: (id: string) => request<SkillEvaluationDraft>(`/personal-skill-studio/evaluations/${encodeURIComponent(id)}`),
+  getPromotionQueue: () => request<SkillCandidateDraftList>("/personal-skill-studio/promotion-queue"),
+  submitPromotionAction: (skillCandidateId: string, payload: PromotionActionRequest) =>
+    postJson<PromotionActionResult>(`/personal-skill-studio/promotion-queue/${encodeURIComponent(skillCandidateId)}/actions`, payload),
+  listSourceTraces: () => request<SkillStudioSourceTraceList>("/personal-skill-studio/source-traces"),
+  getSourceTrace: (id: string) => request<SkillStudioSourceTrace>(`/personal-skill-studio/source-traces/${encodeURIComponent(id)}`),
+  getAudit: () => request<SkillStudioAuditTimeline>("/personal-skill-studio/audit"),
+  getSafety: () => request<SkillStudioSafetyStatus>("/personal-skill-studio/safety")
+};
+
+export const personalCaseProductionApi = {
+  getStatus: () => request<PersonalCaseProductionStatus>("/personal-case-production/status"),
+  listWorkflowStages: () => request<WorkflowStageList>("/personal-case-production/workflow-stages"),
+  getWorkflowStage: (stageId: string) =>
+    request<WorkflowStage>(`/personal-case-production/workflow-stages/${encodeURIComponent(stageId)}`),
+  createProductionCase: (payload: ProductionCaseMockRequest) => postJson<ProductionCaseRecord>("/personal-case-production/cases/mock", payload),
+  listProductionCases: () => request<ProductionCaseList>("/personal-case-production/cases"),
+  getProductionCase: (id: string) => request<ProductionCaseRecord>(`/personal-case-production/cases/${encodeURIComponent(id)}`),
+  createWorkflowRun: (payload: WorkflowRunMockRequest) => postJson<WorkflowRunRecord>("/personal-case-production/workflow-runs/mock", payload),
+  listWorkflowRuns: () => request<WorkflowRunList>("/personal-case-production/workflow-runs"),
+  getWorkflowRun: (id: string) => request<WorkflowRunRecord>(`/personal-case-production/workflow-runs/${encodeURIComponent(id)}`),
+  createStageRun: (payload: StageRunMockRequest) => postJson<StageRunRecord>("/personal-case-production/stage-runs/mock", payload),
+  listStageRuns: () => request<StageRunList>("/personal-case-production/stage-runs"),
+  getStageRun: (id: string) => request<StageRunRecord>(`/personal-case-production/stage-runs/${encodeURIComponent(id)}`),
+  listReadiness: () => request<ProductionReadinessList>("/personal-case-production/readiness"),
+  getReadiness: (id: string) => request<ProductionReadiness>(`/personal-case-production/readiness/${encodeURIComponent(id)}`),
+  getReviewGates: () => request<ProductionCaseList>("/personal-case-production/review-gates"),
+  submitReviewGateAction: (productionCaseId: string, payload: ReviewGateActionRequest) =>
+    postJson<ReviewGateActionResult>(`/personal-case-production/review-gates/${encodeURIComponent(productionCaseId)}/actions`, payload),
+  listSourceTraces: () => request<CaseProductionSourceTraceList>("/personal-case-production/source-traces"),
+  getSourceTrace: (id: string) => request<CaseProductionSourceTrace>(`/personal-case-production/source-traces/${encodeURIComponent(id)}`),
+  getAudit: () => request<CaseProductionAuditTimeline>("/personal-case-production/audit"),
+  getSafety: () => request<CaseProductionSafetyStatus>("/personal-case-production/safety")
+};
+
 // Future resource groups: experiencePackageApi, auditApi, settingsApi.
 
 export const getHealth = runtimeApi.health;
@@ -1481,6 +1674,51 @@ export const submitPersonalOCRReviewAction = personalMaterialRuntimeApi.submitOC
 export const getPersonalMaterialSourceTraces = personalMaterialRuntimeApi.getSourceTraces;
 export const getPersonalMaterialAudit = personalMaterialRuntimeApi.getAudit;
 export const getPersonalMaterialSafety = personalMaterialRuntimeApi.getSafety;
+export const getPersonalIntelligenceStatus = personalIntelligenceApi.getStatus;
+export const getPersonalIntelligenceProviders = personalIntelligenceApi.getProviders;
+export const getPersonalIntelligenceProvider = personalIntelligenceApi.getProvider;
+export const createPersonalLegalSearchMock = personalIntelligenceApi.createMockLegalSearch;
+export const listPersonalLegalSearch = personalIntelligenceApi.listLegalSearch;
+export const getPersonalLegalSearch = personalIntelligenceApi.getLegalSearch;
+export const createPersonalEnterpriseQueryMock = personalIntelligenceApi.createMockEnterpriseQuery;
+export const listPersonalEnterpriseQuery = personalIntelligenceApi.listEnterpriseQuery;
+export const getPersonalEnterpriseQuery = personalIntelligenceApi.getEnterpriseQuery;
+export const listPersonalIntelligenceSourceTraces = personalIntelligenceApi.listSourceTraces;
+export const getPersonalIntelligenceSourceTrace = personalIntelligenceApi.getSourceTrace;
+export const getPersonalIntelligenceConfirmationQueue = personalIntelligenceApi.getConfirmationQueue;
+export const submitPersonalIntelligenceConfirmationAction = personalIntelligenceApi.submitConfirmationAction;
+export const getPersonalIntelligenceAudit = personalIntelligenceApi.getAudit;
+export const getPersonalIntelligenceSafety = personalIntelligenceApi.getSafety;
+export const getPersonalSkillStudioStatus = personalSkillStudioApi.getStatus;
+export const listPersonalSkillStudioRuntimes = personalSkillStudioApi.listRuntimes;
+export const createPersonalExperiencePackage = personalSkillStudioApi.createExperiencePackage;
+export const listPersonalExperiencePackages = personalSkillStudioApi.listExperiencePackages;
+export const createPersonalSkillCandidate = personalSkillStudioApi.createSkillCandidate;
+export const listPersonalSkillCandidates = personalSkillStudioApi.listSkillCandidates;
+export const createPersonalSkillTestCase = personalSkillStudioApi.createTestCase;
+export const listPersonalSkillTestCases = personalSkillStudioApi.listTestCases;
+export const createPersonalSkillEvaluation = personalSkillStudioApi.createEvaluation;
+export const listPersonalSkillEvaluations = personalSkillStudioApi.listEvaluations;
+export const getPersonalSkillStudioPromotionQueue = personalSkillStudioApi.getPromotionQueue;
+export const submitPersonalSkillStudioPromotionAction = personalSkillStudioApi.submitPromotionAction;
+export const listPersonalSkillStudioSourceTraces = personalSkillStudioApi.listSourceTraces;
+export const getPersonalSkillStudioAudit = personalSkillStudioApi.getAudit;
+export const getPersonalSkillStudioSafety = personalSkillStudioApi.getSafety;
+export const getPersonalCaseProductionStatus = personalCaseProductionApi.getStatus;
+export const listPersonalCaseProductionWorkflowStages = personalCaseProductionApi.listWorkflowStages;
+export const createPersonalProductionCase = personalCaseProductionApi.createProductionCase;
+export const listPersonalProductionCases = personalCaseProductionApi.listProductionCases;
+export const createPersonalWorkflowRun = personalCaseProductionApi.createWorkflowRun;
+export const listPersonalWorkflowRuns = personalCaseProductionApi.listWorkflowRuns;
+export const createPersonalStageRun = personalCaseProductionApi.createStageRun;
+export const listPersonalStageRuns = personalCaseProductionApi.listStageRuns;
+export const listPersonalCaseProductionReadiness = personalCaseProductionApi.listReadiness;
+export const getPersonalCaseProductionReadiness = personalCaseProductionApi.getReadiness;
+export const getPersonalCaseProductionReviewGates = personalCaseProductionApi.getReviewGates;
+export const submitPersonalCaseProductionReviewGateAction = personalCaseProductionApi.submitReviewGateAction;
+export const listPersonalCaseProductionSourceTraces = personalCaseProductionApi.listSourceTraces;
+export const getPersonalCaseProductionAudit = personalCaseProductionApi.getAudit;
+export const getPersonalCaseProductionSafety = personalCaseProductionApi.getSafety;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

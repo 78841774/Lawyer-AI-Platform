@@ -59,4 +59,4 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: v7.3 Legal & Enterprise Intelligence Gateway.
+Next Task: v7.3-v7.5 validation and release preparation. Do not start v7.6 until validation passes and the user explicitly starts Personal Delivery Packet work.

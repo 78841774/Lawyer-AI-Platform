@@ -36,6 +36,9 @@ fi
   personal_alpha_case_os \
   personal_production \
   personal_ai_gateway \
-  personal_material_runtime
+  personal_material_runtime \
+  personal_intelligence_gateway \
+  personal_skill_studio \
+  personal_case_production
 
 pass "backend compileall"
