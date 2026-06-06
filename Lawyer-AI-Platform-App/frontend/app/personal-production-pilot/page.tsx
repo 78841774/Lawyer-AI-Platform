@@ -618,6 +618,18 @@ export default function PersonalProductionPilotPage() {
           </div>
         </Panel>
 
+        <Panel title="v7.34 案件分析反馈到经验改进候选">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Mapper" value="ready" detail="feedback / risk to candidate" tone="info" />
+            <StatusCard label="Diff" value="summary only" detail="不自动应用" tone="warning" />
+            <StatusCard label="Training" value="false" detail="v7.35 gate later" tone="safe" />
+            <StatusCard label="Package Mutation" value="false" detail="不替换 runtime package" tone="safe" />
+          </div>
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            Pilot 只提示 v7.34 受控转换层已纳入个人生产链路；实际候选生成、readiness 与 diff 查看请在训练产物加载器中完成。候选不自动训练、不发布 Skill、不生成最终法律意见或正式报告。
+          </div>
+        </Panel>
+
         <ShowcaseStepper
           columns="lg:grid-cols-4"
           steps={(data.workflow?.steps ?? []).map((step: any) => ({

@@ -69,6 +69,31 @@ import {
   getPersonalCaseAnalysisOutputSourceTrace,
   getPersonalCaseAnalysisRuntimeOutput,
   getPersonalV733CaseAnalysisWorkbenchStatus,
+  getPersonalV734CaseAnalysisImprovementStatus,
+  getPersonalCaseAnalysisImprovementStatus,
+  buildPersonalCaseAnalysisImprovementCandidates,
+  listPersonalCaseAnalysisImprovementCandidates,
+  getPersonalCaseAnalysisImprovementCandidate,
+  getPersonalCaseAnalysisImprovementCandidateReadiness,
+  markPersonalCaseAnalysisImprovementCandidateReady,
+  archivePersonalCaseAnalysisImprovementCandidate,
+  listPersonalCaseAnalysisOutputToExperienceTraces,
+  buildPersonalCaseAnalysisImprovementDiff,
+  listPersonalCaseAnalysisImprovementDiffs,
+  getPersonalCaseAnalysisImprovementCandidateAudit,
+  getPersonalCaseAnalysisImprovementCandidateSourceTrace,
+  getPersonalTrainingDatasetStatus,
+  buildPersonalTrainingDataset,
+  listPersonalTrainingDatasetExamples,
+  getPersonalTrainingDatasetGateReport,
+  getPersonalCodexTrainingDryRunStatus,
+  runPersonalCodexTrainingDryRun,
+  listPersonalCodexTrainingDryRunLogs,
+  getPersonalCodexTrainingDryRunGateReport,
+  startPersonalCodexInternalTrainingRun,
+  getPersonalCodexInternalTrainingStatus,
+  listPersonalCodexInternalTrainingLogs,
+  getPersonalCodexInternalTrainingGateReport,
   listPersonalCaseAnalysisOutputFeedback,
   listPersonalCaseAnalysisOutputRiskEvents,
   listPersonalCaseAnalysisWorkbenchViews,
@@ -121,6 +146,7 @@ import type {
   PracticeLoadReviewEditRequest,
   PracticeLoadReviewSaveRequest,
   CaseAnalysisRuntimeOutput,
+  CaseAnalysisImprovementCandidate,
   ExperienceCandidateBuildRequest,
   ExperienceCandidateReviewRequest,
   LegalRetrievalJobRequest,
@@ -169,6 +195,25 @@ export default function PersonalTrainingArtifactsPage() {
   const [caseWorkbenchArtifacts, setCaseWorkbenchArtifacts] = useState<Record<string, any>>({});
   const [selectedWorkbenchOutputId, setSelectedWorkbenchOutputId] = useState("");
   const [workbenchFilter, setWorkbenchFilter] = useState({ group: "all", type: "all", risk: "all", status: "all", feedback: "all", keyword: "" });
+  const [caseImprovementArtifacts, setCaseImprovementArtifacts] = useState<Record<string, any>>({});
+  const [selectedImprovementCandidateId, setSelectedImprovementCandidateId] = useState("");
+  const [trainingDatasetResult, setTrainingDatasetResult] = useState<Record<string, any> | null>(null);
+  const [trainingDatasetArtifacts, setTrainingDatasetArtifacts] = useState<Record<string, any>>({});
+  const [trainingDryRunResult, setTrainingDryRunResult] = useState<Record<string, any> | null>(null);
+  const [trainingDryRunArtifacts, setTrainingDryRunArtifacts] = useState<Record<string, any>>({});
+  const [internalTrainingResult, setInternalTrainingResult] = useState<Record<string, any> | null>(null);
+  const [internalTrainingArtifacts, setInternalTrainingArtifacts] = useState<Record<string, any>>({});
+  const [improvementFilter, setImprovementFilter] = useState({
+    candidateType: "all",
+    changeType: "all",
+    severity: "all",
+    readiness: "all",
+    outputGroup: "all",
+    outputType: "all",
+    packageId: "all",
+    feedbackType: "all",
+    riskType: "all"
+  });
   const [pathText, setPathText] = useState(defaultRequest.case_cause_path.join(" / "));
   const [evidenceText, setEvidenceText] = useState(defaultRequest.evidence_types.join(" / "));
 
@@ -224,7 +269,21 @@ export default function PersonalTrainingArtifactsPage() {
         experienceLifecycles,
         v733Status,
         caseWorkbenchStatus,
-        caseWorkbenchViews
+        caseWorkbenchViews,
+        v734Status,
+        caseImprovementStatus,
+        caseImprovementCandidates,
+        caseImprovementTraces,
+        caseImprovementDiffs,
+        trainingDatasetStatus,
+        trainingDatasetExamples,
+        trainingDatasetGateReport,
+        trainingDryRunStatus,
+        trainingDryRunLogs,
+        trainingDryRunGateReport,
+        internalTrainingStatus,
+        internalTrainingLogs,
+        internalTrainingGateReport
       ] = await Promise.all([
         getPersonalTrainingArtifactStatus(),
         getPersonalTrainingArtifactScheme(),
@@ -263,7 +322,21 @@ export default function PersonalTrainingArtifactsPage() {
         listPersonalExperienceLifecycles(),
         getPersonalV733CaseAnalysisWorkbenchStatus(),
         getPersonalCaseAnalysisWorkbenchStatus(),
-        listPersonalCaseAnalysisWorkbenchViews()
+        listPersonalCaseAnalysisWorkbenchViews(),
+        getPersonalV734CaseAnalysisImprovementStatus(),
+        getPersonalCaseAnalysisImprovementStatus(),
+        listPersonalCaseAnalysisImprovementCandidates(),
+        listPersonalCaseAnalysisOutputToExperienceTraces(),
+        listPersonalCaseAnalysisImprovementDiffs(),
+        getPersonalTrainingDatasetStatus(),
+        listPersonalTrainingDatasetExamples(),
+        getPersonalTrainingDatasetGateReport(),
+        getPersonalCodexTrainingDryRunStatus(),
+        listPersonalCodexTrainingDryRunLogs(),
+        getPersonalCodexTrainingDryRunGateReport(),
+        getPersonalCodexInternalTrainingStatus(),
+        listPersonalCodexInternalTrainingLogs(),
+        getPersonalCodexInternalTrainingGateReport()
       ]);
       setData({
         status,
@@ -303,7 +376,21 @@ export default function PersonalTrainingArtifactsPage() {
         experienceLifecycles,
         v733Status,
         caseWorkbenchStatus,
-        caseWorkbenchViews
+        caseWorkbenchViews,
+        v734Status,
+        caseImprovementStatus,
+        caseImprovementCandidates,
+        caseImprovementTraces,
+        caseImprovementDiffs,
+        trainingDatasetStatus,
+        trainingDatasetExamples,
+        trainingDatasetGateReport,
+        trainingDryRunStatus,
+        trainingDryRunLogs,
+        trainingDryRunGateReport,
+        internalTrainingStatus,
+        internalTrainingLogs,
+        internalTrainingGateReport
       });
       const lifecycleId = experienceLifecycles.lifecycles?.[0]?.lifecycle_id;
       if (lifecycleId) {
@@ -312,6 +399,10 @@ export default function PersonalTrainingArtifactsPage() {
       const viewId = caseWorkbenchViews.views?.[0]?.view_id;
       if (viewId) {
         await refreshCaseWorkbench(viewId);
+      }
+      const candidateId = caseImprovementCandidates.candidates?.[0]?.candidate_id;
+      if (candidateId) {
+        await refreshCaseImprovementCandidate(candidateId);
       }
     } catch {
       setError("训练产物加载器 API 暂不可用。页面保持安全 fallback，不读取案件原文、不调用 provider、不展示密钥值。");
@@ -847,6 +938,98 @@ export default function PersonalTrainingArtifactsPage() {
     await loadArtifacts();
   }
 
+  async function refreshCaseImprovementCandidate(candidateId?: string) {
+    const id = candidateId ?? selectedImprovementCandidateId ?? data.caseImprovementCandidates?.candidates?.[0]?.candidate_id;
+    if (!id) return;
+    const [candidate, readiness, audit, sourceTrace] = await Promise.all([
+      getPersonalCaseAnalysisImprovementCandidate(id),
+      getPersonalCaseAnalysisImprovementCandidateReadiness(id),
+      getPersonalCaseAnalysisImprovementCandidateAudit(id),
+      getPersonalCaseAnalysisImprovementCandidateSourceTrace(id)
+    ]);
+    setSelectedImprovementCandidateId(candidate.candidate_id);
+    setCaseImprovementArtifacts((current) => ({ ...current, candidate, readiness, audit, sourceTrace }));
+  }
+
+  async function buildCaseImprovementCandidates() {
+    const candidates = await buildPersonalCaseAnalysisImprovementCandidates();
+    const [status, traces, diffs] = await Promise.all([
+      getPersonalCaseAnalysisImprovementStatus(),
+      listPersonalCaseAnalysisOutputToExperienceTraces(),
+      listPersonalCaseAnalysisImprovementDiffs()
+    ]);
+    setData((current) => ({ ...current, caseImprovementStatus: status, v734Status: status, caseImprovementCandidates: candidates, caseImprovementTraces: traces, caseImprovementDiffs: diffs }));
+    const candidateId = candidates.candidates?.[0]?.candidate_id;
+    if (candidateId) {
+      await refreshCaseImprovementCandidate(candidateId);
+    }
+  }
+
+  async function selectImprovementCandidate(candidateId: string) {
+    await refreshCaseImprovementCandidate(candidateId);
+  }
+
+  async function markImprovementCandidateReady() {
+    const candidateId = selectedImprovementCandidateId;
+    if (!candidateId) return;
+    await markPersonalCaseAnalysisImprovementCandidateReady(candidateId);
+    const candidates = await listPersonalCaseAnalysisImprovementCandidates();
+    setData((current) => ({ ...current, caseImprovementCandidates: candidates }));
+    await refreshCaseImprovementCandidate(candidateId);
+  }
+
+  async function archiveImprovementCandidate() {
+    const candidateId = selectedImprovementCandidateId;
+    if (!candidateId) return;
+    await archivePersonalCaseAnalysisImprovementCandidate(candidateId);
+    const candidates = await listPersonalCaseAnalysisImprovementCandidates();
+    setData((current) => ({ ...current, caseImprovementCandidates: candidates }));
+    await refreshCaseImprovementCandidate(candidateId);
+  }
+
+  async function buildCaseImprovementDiff() {
+    const diff = await buildPersonalCaseAnalysisImprovementDiff();
+    const diffs = await listPersonalCaseAnalysisImprovementDiffs();
+    setCaseImprovementArtifacts((current) => ({ ...current, diff }));
+    setData((current) => ({ ...current, caseImprovementDiffs: diffs }));
+  }
+
+  async function buildTrainingDatasetManifest() {
+    const manifest = await buildPersonalTrainingDataset();
+    const [status, examples, gateReport] = await Promise.all([
+      getPersonalTrainingDatasetStatus(),
+      listPersonalTrainingDatasetExamples(),
+      getPersonalTrainingDatasetGateReport()
+    ]);
+    setTrainingDatasetResult(manifest);
+    setTrainingDatasetArtifacts({ examples, gateReport });
+    setData((current) => ({ ...current, trainingDatasetStatus: status, trainingDatasetExamples: examples, trainingDatasetGateReport: gateReport }));
+  }
+
+  async function runTrainingDryRun() {
+    const result = await runPersonalCodexTrainingDryRun();
+    const [status, logs, gateReport] = await Promise.all([
+      getPersonalCodexTrainingDryRunStatus(),
+      listPersonalCodexTrainingDryRunLogs(),
+      getPersonalCodexTrainingDryRunGateReport()
+    ]);
+    setTrainingDryRunResult(result);
+    setTrainingDryRunArtifacts({ logs, gateReport });
+    setData((current) => ({ ...current, trainingDryRunStatus: status, trainingDryRunLogs: logs, trainingDryRunGateReport: gateReport }));
+  }
+
+  async function startInternalTrainingRun() {
+    const result = await startPersonalCodexInternalTrainingRun();
+    const [status, logs, gateReport] = await Promise.all([
+      getPersonalCodexInternalTrainingStatus(),
+      listPersonalCodexInternalTrainingLogs(),
+      getPersonalCodexInternalTrainingGateReport()
+    ]);
+    setInternalTrainingResult(result);
+    setInternalTrainingArtifacts({ logs, gateReport });
+    setData((current) => ({ ...current, internalTrainingStatus: status, internalTrainingLogs: logs, internalTrainingGateReport: gateReport }));
+  }
+
   const taxonomyNodes = (data.taxonomy?.nodes ?? []) as CaseCauseNode[];
   const lifecycle = experienceLifecycleArtifacts.lifecycle ?? data.experienceLifecycles?.lifecycles?.[0];
   const lifecycleEvents = (experienceLifecycleArtifacts.state?.stage_events ?? lifecycle?.stage_events ?? []) as Record<string, any>[];
@@ -869,6 +1052,42 @@ export default function PersonalTrainingArtifactsPage() {
       (!keyword || String(output.output_summary_redacted ?? "").toLowerCase().includes(keyword) || String(output.output_title ?? "").toLowerCase().includes(keyword))
     );
   });
+  const improvementCandidates = (data.caseImprovementCandidates?.candidates ?? []) as CaseAnalysisImprovementCandidate[];
+  const improvementTraces = data.caseImprovementTraces?.output_traces ?? [];
+  const improvementDiffs = data.caseImprovementDiffs?.diffs ?? [];
+  const selectedImprovementCandidate = caseImprovementArtifacts.candidate ?? improvementCandidates[0];
+  const selectedImprovementTrace = improvementTraces.find((trace: any) => trace.output_id === selectedImprovementCandidate?.source_output_id);
+  const latestImprovementDiff = caseImprovementArtifacts.diff ?? improvementDiffs[0];
+  const datasetManifest = trainingDatasetResult ?? data.trainingDatasetStatus;
+  const datasetExamples = trainingDatasetArtifacts.examples?.examples ?? data.trainingDatasetExamples?.examples ?? trainingDatasetResult?.examples ?? [];
+  const datasetGateReport = trainingDatasetArtifacts.gateReport ?? data.trainingDatasetGateReport;
+  const dryRunStatus = data.trainingDryRunStatus;
+  const dryRunLogs = trainingDryRunArtifacts.logs?.logs ?? data.trainingDryRunLogs?.logs ?? trainingDryRunResult?.logs ?? [];
+  const dryRunGateReport = trainingDryRunArtifacts.gateReport ?? data.trainingDryRunGateReport;
+  const internalTrainingStatus = data.internalTrainingStatus;
+  const internalTrainingLogs = internalTrainingArtifacts.logs?.logs ?? data.internalTrainingLogs?.logs ?? internalTrainingResult?.logs ?? [];
+  const internalTrainingGateReport = internalTrainingArtifacts.gateReport ?? data.internalTrainingGateReport;
+  const internalTrainingMetrics = internalTrainingResult?.metrics ?? internalTrainingGateReport?.metrics_summary;
+  const candidateTypes = unique(improvementCandidates.map((candidate) => candidate.candidate_type));
+  const changeTypes = unique(improvementCandidates.map((candidate) => candidate.proposed_change_type));
+  const candidateSeverities = unique(improvementCandidates.map((candidate) => candidate.candidate_severity));
+  const readinessStatuses = unique(improvementCandidates.map((candidate) => candidate.readiness_status));
+  const improvementOutputGroups = unique(improvementCandidates.map((candidate) => candidate.source_output_group));
+  const improvementOutputTypes = unique(improvementCandidates.map((candidate) => candidate.source_output_type));
+  const improvementPackageIds = unique(improvementCandidates.map((candidate) => candidate.source_package_id));
+  const feedbackTypes = unique(improvementCandidates.flatMap((candidate) => candidate.source_feedback_types ?? []));
+  const riskTypes = unique(improvementCandidates.flatMap((candidate) => candidate.source_risk_types ?? []));
+  const filteredImprovementCandidates = improvementCandidates.filter((candidate) => (
+    (improvementFilter.candidateType === "all" || candidate.candidate_type === improvementFilter.candidateType) &&
+    (improvementFilter.changeType === "all" || candidate.proposed_change_type === improvementFilter.changeType) &&
+    (improvementFilter.severity === "all" || candidate.candidate_severity === improvementFilter.severity) &&
+    (improvementFilter.readiness === "all" || candidate.readiness_status === improvementFilter.readiness) &&
+    (improvementFilter.outputGroup === "all" || candidate.source_output_group === improvementFilter.outputGroup) &&
+    (improvementFilter.outputType === "all" || candidate.source_output_type === improvementFilter.outputType) &&
+    (improvementFilter.packageId === "all" || candidate.source_package_id === improvementFilter.packageId) &&
+    (improvementFilter.feedbackType === "all" || (candidate.source_feedback_types ?? []).includes(improvementFilter.feedbackType)) &&
+    (improvementFilter.riskType === "all" || (candidate.source_risk_types ?? []).includes(improvementFilter.riskType))
+  ));
 
   return (
     <AppShell>
@@ -1436,6 +1655,246 @@ export default function PersonalTrainingArtifactsPage() {
           </div>
         </Panel>
 
+        <Panel title="v7.34 Case Analysis Output Feedback to Experience Improvement Candidate / 经验改进候选转换层">
+          <div className="grid gap-4 md:grid-cols-6">
+            <StatusCard label="Candidates" value={data.caseImprovementStatus?.candidate_count ?? data.v734Status?.candidate_count ?? improvementCandidates.length} detail="metadata only" tone="info" />
+            <StatusCard label="Ready" value={data.caseImprovementStatus?.ready_for_training_dataset_build_count ?? 0} detail="v7.35 gate later" tone="safe" />
+            <StatusCard label="Traces" value={data.caseImprovementStatus?.trace_count ?? improvementTraces.length} detail="output-to-experience" tone="info" />
+            <StatusCard label="Diffs" value={data.caseImprovementStatus?.diff_count ?? improvementDiffs.length} detail="summary only" tone="warning" />
+            <StatusCard label="Feedback" value={data.caseImprovementStatus?.feedback_count ?? 0} detail="source retained" tone="warning" />
+            <StatusCard label="Risk" value={data.caseImprovementStatus?.risk_event_count ?? 0} detail="source retained" tone="warning" />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void buildCaseImprovementCandidates()}>
+              生成改进候选 metadata
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void buildCaseImprovementDiff()}>
+              生成 diff summary
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void loadArtifacts()}>
+              刷新 v7.34
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-3 rounded-md border border-line bg-slate-50 p-3 md:grid-cols-5">
+            <Select label="candidate_type" value={improvementFilter.candidateType} onChange={(value) => setImprovementFilter((current) => ({ ...current, candidateType: value }))} options={["all", ...candidateTypes]} />
+            <Select label="proposed_change" value={improvementFilter.changeType} onChange={(value) => setImprovementFilter((current) => ({ ...current, changeType: value }))} options={["all", ...changeTypes]} />
+            <Select label="severity" value={improvementFilter.severity} onChange={(value) => setImprovementFilter((current) => ({ ...current, severity: value }))} options={["all", ...candidateSeverities]} />
+            <Select label="readiness" value={improvementFilter.readiness} onChange={(value) => setImprovementFilter((current) => ({ ...current, readiness: value }))} options={["all", ...readinessStatuses]} />
+            <Select label="output_group" value={improvementFilter.outputGroup} onChange={(value) => setImprovementFilter((current) => ({ ...current, outputGroup: value }))} options={["all", ...improvementOutputGroups]} />
+            <Select label="output_type" value={improvementFilter.outputType} onChange={(value) => setImprovementFilter((current) => ({ ...current, outputType: value }))} options={["all", ...improvementOutputTypes]} />
+            <Select label="package_id" value={improvementFilter.packageId} onChange={(value) => setImprovementFilter((current) => ({ ...current, packageId: value }))} options={["all", ...improvementPackageIds]} />
+            <Select label="feedback_type" value={improvementFilter.feedbackType} onChange={(value) => setImprovementFilter((current) => ({ ...current, feedbackType: value }))} options={["all", ...feedbackTypes]} />
+            <Select label="risk_type" value={improvementFilter.riskType} onChange={(value) => setImprovementFilter((current) => ({ ...current, riskType: value }))} options={["all", ...riskTypes]} />
+          </div>
+
+          <div className="mt-4 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+            <div className="grid gap-3">
+              {filteredImprovementCandidates.length ? filteredImprovementCandidates.map((candidate) => (
+                <button
+                  key={candidate.candidate_id}
+                  type="button"
+                  className={`rounded-md border p-3 text-left transition ${selectedImprovementCandidate?.candidate_id === candidate.candidate_id ? "border-cyan-400 bg-cyan-50" : "border-line bg-slate-50 hover:border-slate-300"}`}
+                  onClick={() => void selectImprovementCandidate(candidate.candidate_id)}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-semibold text-ink">{candidate.candidate_title}</div>
+                      <div className="mt-1 text-xs text-muted">{candidate.source_output_group} · {candidate.source_output_type}</div>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      <span className="rounded-md border border-line bg-white px-2 py-1 text-xs text-muted">{candidate.candidate_severity}</span>
+                      <span className="rounded-md border border-line bg-white px-2 py-1 text-xs text-muted">{candidate.readiness_status}</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs leading-5 text-muted">{candidate.candidate_summary}</div>
+                  <div className="mt-2 text-xs text-muted">
+                    output={candidate.source_output_id} · feedback={candidate.source_feedback_ids.length} · risk={candidate.source_risk_event_ids.length} · change={candidate.proposed_change_type}
+                  </div>
+                </button>
+              )) : (
+                <div className="rounded-md border border-dashed border-line bg-slate-50 p-4 text-sm text-muted">
+                  暂无改进候选。请先在 v7.33 输出中提交反馈或风险事件，再点击“生成改进候选 metadata”。
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-md border border-line bg-white p-4">
+              <div className="text-sm font-semibold text-ink">{selectedImprovementCandidate?.candidate_title ?? "选择一个改进候选"}</div>
+              <div className="mt-1 text-xs text-muted">{selectedImprovementCandidate?.candidate_type ?? "candidate detail panel"}</div>
+              <div className="mt-4 rounded-md bg-slate-50 p-3 text-xs leading-5 text-muted">
+                {selectedImprovementCandidate?.candidate_reason ?? "详情面板只展示后端返回的候选 metadata。"}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void markImprovementCandidateReady()}>
+                  标记 ready
+                </button>
+                <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void archiveImprovementCandidate()}>
+                  归档候选
+                </button>
+              </div>
+              <div className="mt-4 grid gap-3">
+                <Info title="Source Output" items={[
+                  `output_id=${selectedImprovementCandidate?.source_output_id ?? "pending"}`,
+                  `title=${selectedImprovementCandidate?.source_output_title ?? "pending"}`,
+                  `summary=${selectedImprovementCandidate?.source_output_summary_redacted ?? "metadata only"}`
+                ]} />
+                <Info title="Feedback / Risk Sources" items={[
+                  `feedback_ids=${joinList(selectedImprovementCandidate?.source_feedback_ids)}`,
+                  `risk_event_ids=${joinList(selectedImprovementCandidate?.source_risk_event_ids)}`,
+                  `feedback_types=${joinList(selectedImprovementCandidate?.source_feedback_types)}`,
+                  `risk_types=${joinList(selectedImprovementCandidate?.source_risk_types)}`
+                ]} />
+                <Info title="Proposed Change" items={[
+                  `target=${selectedImprovementCandidate?.target_object_type ?? "pending"}`,
+                  `experience_card=${selectedImprovementCandidate?.affected_experience_card_id ?? "pending"}`,
+                  `usage_boundary=${selectedImprovementCandidate?.affected_usage_boundary ?? "review_later"}`,
+                  `risk_warning=${selectedImprovementCandidate?.affected_risk_warning ?? "review_later"}`,
+                  selectedImprovementCandidate?.proposed_change_summary ?? "No change applied"
+                ]} />
+                <Info title="Readiness / Trace" items={[
+                  `readiness=${caseImprovementArtifacts.readiness?.status ?? selectedImprovementCandidate?.readiness_status ?? "pending"}`,
+                  `passed=${caseImprovementArtifacts.readiness?.passed_checks?.length ?? 0}`,
+                  `failed=${caseImprovementArtifacts.readiness?.failed_checks?.length ?? 0}`,
+                  `trace_status=${selectedImprovementTrace?.trace_status ?? "pending"}`,
+                  `audit_events=${caseImprovementArtifacts.audit?.event_count ?? 0}`,
+                  ...(caseImprovementArtifacts.sourceTrace?.trace_summary ?? []).slice(0, 2)
+                ]} />
+                <Info title="Diff Summary" items={[
+                  `diff_id=${latestImprovementDiff?.diff_id ?? "pending"}`,
+                  `candidate_count=${latestImprovementDiff?.candidate_ids?.length ?? 0}`,
+                  `readiness=${latestImprovementDiff?.readiness_status ?? "pending"}`,
+                  latestImprovementDiff?.diff_summary ?? "Diff 仅在点击生成后展示。"
+                ]} />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            v7.34 只把案件分析产出反馈与风险事件转换为经验改进候选 metadata；不修改已加载 package、不修改 lawyer-approved package、不修改 output schema、不自动训练、不替换 runtime package、不发布 Skill。下一阶段 v7.35 才会在人工核对后进入 Training Dataset Builder & Training Gate。
+          </div>
+        </Panel>
+
+        <Panel title="v7.35 Training Dataset Builder & Training Gate / 训练数据集与 Gate">
+          <div className="grid gap-4 md:grid-cols-5">
+            <StatusCard label="Ready Candidates" value={data.trainingDatasetStatus?.ready_candidate_count ?? data.caseImprovementStatus?.ready_for_training_dataset_build_count ?? 0} detail="v7.34 input only" tone="safe" />
+            <StatusCard label="Dataset" value={trainingDatasetResult?.dataset_id ?? data.trainingDatasetStatus?.latest_dataset_id ?? "not_built"} detail={trainingDatasetResult?.dataset_status ?? data.trainingDatasetStatus?.status ?? "status"} tone="info" />
+            <StatusCard label="Examples" value={trainingDatasetResult?.example_count ?? data.trainingDatasetStatus?.example_count ?? datasetExamples.length} detail="abstract metadata" tone="info" />
+            <StatusCard label="Gate" value={datasetGateReport?.gate_status ?? data.trainingDatasetStatus?.latest_gate_status ?? "not_built"} detail="reference only" tone="warning" />
+            <StatusCard label="Blocks" value={datasetGateReport?.blocks_next_stage ?? false} detail="no auto training" tone="safe" />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void buildTrainingDatasetManifest()}>
+              生成 dataset manifest
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void loadArtifacts()}>
+              刷新 v7.35
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <Info title="Dataset Manifest" items={[
+              `dataset_id=${trainingDatasetResult?.dataset_id ?? data.trainingDatasetStatus?.latest_dataset_id ?? "pending"}`,
+              `candidate_count=${trainingDatasetResult?.candidate_count ?? 0}`,
+              `example_count=${trainingDatasetResult?.example_count ?? data.trainingDatasetExamples?.example_count ?? 0}`,
+              `task_plan=${trainingDatasetResult?.task_plan?.task_plan_status ?? "planned_metadata_only"}`
+            ]} />
+            <Info title="Example Summary" items={(datasetExamples.length ? datasetExamples.slice(0, 4).map((item: any) => `${item.example_id}: ${item.source_output_group}/${item.source_output_type}`) : ["暂无 examples；请先标记 v7.34 candidate ready 后生成 dataset。"])} />
+            <Info title="Training Gate" items={[
+              `gate_status=${datasetGateReport?.gate_status ?? "not_built"}`,
+              `passed=${datasetGateReport?.passed_checks?.length ?? 0}`,
+              `failed=${datasetGateReport?.failed_checks?.length ?? 0}`,
+              datasetGateReport?.gate_summary ?? "Gate report 仅作参考，不阻塞、不触发训练。"
+            ]} />
+          </div>
+
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            v7.35 只从 ready_for_training_dataset_build 候选生成 dataset manifest、examples、task plan 与 reference-only training gate；不修改 loaded package / lawyer-approved package，不调用 provider，不读取 key value，不触发真实训练，不发布 Skill。
+          </div>
+        </Panel>
+
+        <Panel title="v7.36 Codex Skill Training Dry Run / 内部训练模拟">
+          <div className="grid gap-4 md:grid-cols-5">
+            <StatusCard label="Dry Run" value={trainingDryRunResult?.run_status ?? dryRunStatus?.latest_run_status ?? "not_run"} detail={trainingDryRunResult?.run_id ?? dryRunStatus?.latest_run_id ?? "pending"} tone="info" />
+            <StatusCard label="Gate" value={dryRunGateReport?.gate_status ?? dryRunStatus?.latest_gate_status ?? "not_run"} detail="reference only" tone="warning" />
+            <StatusCard label="Logs" value={dryRunLogs.length || dryRunStatus?.log_count || 0} detail="audit safe" tone="info" />
+            <StatusCard label="Examples" value={trainingDryRunResult?.example_count ?? 0} detail="loaded metadata" tone="safe" />
+            <StatusCard label="Provider" value={trainingDryRunResult?.provider_call_executed ?? false} detail="not called" tone="safe" />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void runTrainingDryRun()}>
+              执行 internal dry-run
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void loadArtifacts()}>
+              刷新 v7.36
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <Info title="Dry Run Summary" items={[
+              `run_id=${trainingDryRunResult?.run_id ?? dryRunStatus?.latest_run_id ?? "pending"}`,
+              `dataset=${trainingDryRunResult?.dataset_id ?? "pending"}`,
+              `candidate_count=${trainingDryRunResult?.candidate_ids?.length ?? 0}`,
+              `metadata_refs=${trainingDryRunResult?.loaded_metadata_refs?.length ?? 0}`
+            ]} />
+            <Info title="Logs" items={(dryRunLogs.length ? dryRunLogs.slice(0, 6).map((item: any) => `${item.step_name}: ${item.step_status}`) : ["暂无 dry-run log。"])} />
+            <Info title="Dry Run Gate" items={[
+              `gate_status=${dryRunGateReport?.gate_status ?? "not_run"}`,
+              `passed=${dryRunGateReport?.passed_checks?.length ?? 0}`,
+              `failed=${dryRunGateReport?.failed_checks?.length ?? 0}`,
+              dryRunGateReport?.gate_summary ?? "Dry-run gate 只检查内部模拟边界。"
+            ]} />
+          </div>
+
+          <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
+            v7.36 只做 Codex Skill 内部训练模拟：加载 experience package、skill output schema、output-to-experience trace 的 metadata 引用，记录 log / audit / source trace，不访问 provider、不读取 key value、不写入或替换 runtime package、不触发真实训练、不发布 Skill。
+          </div>
+        </Panel>
+
+        <Panel title="v7.37 Codex Skill Internal Training Run / 内部训练运行">
+          <div className="grid gap-4 md:grid-cols-5">
+            <StatusCard label="Training Run" value={internalTrainingResult?.run_status ?? internalTrainingStatus?.latest_run_status ?? "not_started"} detail={internalTrainingResult?.run_id ?? internalTrainingStatus?.latest_run_id ?? "pending"} tone="info" />
+            <StatusCard label="Metrics" value={internalTrainingResult?.metrics?.metrics_id ?? internalTrainingStatus?.latest_metrics_id ?? "pending"} detail="metadata only" tone="safe" />
+            <StatusCard label="Gate" value={internalTrainingGateReport?.gate_status ?? internalTrainingStatus?.latest_gate_status ?? "not_started"} detail="reference only" tone="warning" />
+            <StatusCard label="Logs" value={internalTrainingLogs.length || internalTrainingStatus?.log_count || 0} detail="dry-run comparable" tone="info" />
+            <StatusCard label="Skill Publish" value={internalTrainingResult?.skill_published ?? false} detail="forbidden" tone="safe" />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void startInternalTrainingRun()}>
+              启动 internal training run
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void loadArtifacts()}>
+              刷新 v7.37
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <Info title="Metrics Overview" items={[
+              `candidate_count=${internalTrainingMetrics?.candidate_count ?? 0}`,
+              `example_count=${internalTrainingMetrics?.example_count ?? 0}`,
+              `log_alignment=${internalTrainingMetrics?.log_alignment_score ?? 0}`,
+              `metadata_safety=${internalTrainingMetrics?.metadata_safety_score ?? 0}`,
+              `gate_pass_rate=${internalTrainingMetrics?.gate_pass_rate ?? 0}`
+            ]} />
+            <Info title="Training Logs" items={(internalTrainingLogs.length ? internalTrainingLogs.slice(0, 6).map((item: any) => `${item.step_name}: ${item.step_status}`) : ["暂无 internal training log。"])} />
+            <Info title="Gate Report" items={[
+              `gate_status=${internalTrainingGateReport?.gate_status ?? "not_started"}`,
+              `dryrun_compare=${internalTrainingGateReport?.dryrun_log_comparison_status ?? "pending"}`,
+              `passed=${internalTrainingGateReport?.passed_checks?.length ?? 0}`,
+              `failed=${internalTrainingGateReport?.failed_checks?.length ?? 0}`,
+              internalTrainingGateReport?.gate_summary ?? "Internal training gate 只展示参考状态。"
+            ]} />
+          </div>
+
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            v7.37 启动的是 owner-only internal training run metadata：可记录 internal/local CPU/GPU 模式的 metrics、log、audit 与 source trace；不调用外部 provider、不读取 key value、不替换 runtime package、不发布 Skill、不生成正式法律意见/报告/文件/邮件/公开链接。
+          </div>
+        </Panel>
+
         <Panel title="Training Scheme / 训练方案">
           <div className="grid gap-4 lg:grid-cols-3">
             <Info title="目标 Skill" items={data.scheme?.target_skill_ids ?? []} />
@@ -1577,7 +2036,7 @@ export default function PersonalTrainingArtifactsPage() {
           note="v7.30-v7.31e 只处理合成或脱敏 metadata；不读取真实案件原文、不读取密钥、不调用 provider、不训练未结案件、不自动发布 Skill。"
           items={data.safety?.safety_checklist ?? []}
         />
-        <DiagnosticsPanel data={{ matchResult, dryRun, trainingTaskResult, trainingPackageResult, practiceLoadResult, experienceLifecycleArtifacts, caseWorkbenchArtifacts, ...data }} />
+        <DiagnosticsPanel data={{ matchResult, dryRun, trainingTaskResult, trainingPackageResult, practiceLoadResult, experienceLifecycleArtifacts, caseWorkbenchArtifacts, caseImprovementArtifacts, trainingDatasetResult, trainingDatasetArtifacts, trainingDryRunResult, trainingDryRunArtifacts, internalTrainingResult, internalTrainingArtifacts, ...data }} />
       </div>
     </AppShell>
   );
@@ -1623,6 +2082,10 @@ function Select({ label, value, onChange, options }: { label: string; value: str
 
 function splitTokens(value: string) {
   return value.split("/").map((item) => item.trim()).filter(Boolean);
+}
+
+function unique(values: Array<string | null | undefined>) {
+  return Array.from(new Set(values.filter((value): value is string => Boolean(value))));
 }
 
 function joinList(value: unknown) {

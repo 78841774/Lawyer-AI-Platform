@@ -31,12 +31,40 @@ from personal_skill_studio.training_artifacts.case_analysis_workbench_runtime im
     submit_output_feedback,
     submit_output_risk_event,
 )
+from personal_skill_studio.training_artifacts.case_analysis_improvement_candidate_registry import (
+    archive_case_analysis_improvement_candidate,
+    build_case_analysis_improvement_candidates,
+    build_case_analysis_improvement_diff,
+    build_v734_status,
+    get_case_analysis_improvement_candidate,
+    get_case_analysis_improvement_candidate_audit,
+    get_case_analysis_improvement_candidate_readiness,
+    get_case_analysis_improvement_candidate_source_trace,
+    get_case_analysis_improvement_diff,
+    get_case_analysis_output_to_experience_trace,
+    list_case_analysis_improvement_candidates,
+    list_case_analysis_improvement_diffs,
+    list_case_analysis_output_to_experience_traces,
+    mark_case_analysis_improvement_candidate_ready,
+)
 from personal_skill_studio.training_artifacts.codex_skill_draft_registry import (
     create_draft,
     get_draft,
     get_draft_audit,
     list_drafts,
     review_draft,
+)
+from personal_skill_studio.training_artifacts.codex_training_dryrun_registry import (
+    get_codex_training_dryrun_gate_report,
+    get_codex_training_dryrun_status,
+    list_codex_training_dryrun_logs,
+    run_codex_training_dryrun,
+)
+from personal_skill_studio.training_artifacts.codex_training_run_registry import (
+    get_codex_internal_training_gate_report,
+    get_codex_internal_training_status,
+    list_codex_internal_training_logs,
+    start_codex_internal_training_run,
 )
 from personal_skill_studio.training_artifacts.experience_candidate_registry import (
     build_candidates,
@@ -159,7 +187,11 @@ from personal_skill_studio.training_artifacts.schemas import (
     ArtifactListResponse,
     CaseCauseMatchRequest,
     CaseAnalysisOutputFeedbackRequest,
+    CaseAnalysisImprovementActionRequest,
+    CaseAnalysisImprovementBuildRequest,
     CaseAnalysisOutputRiskEventRequest,
+    CodexTrainingDryRunRequest,
+    CodexTrainingRunStartRequest,
     CodexSkillDraftBuildRequest,
     CodexSkillDraftReviewRequest,
     CodexTrainingRunRequest,
@@ -190,6 +222,7 @@ from personal_skill_studio.training_artifacts.schemas import (
     SkillExperienceBindingRequest,
     SkillExperienceImportRequest,
     TrainingArtifactStatus,
+    TrainingDatasetBuildRequest,
     TrainingTaskBuildRequest,
     TrainingIntakeReviewActionRequest,
 )
@@ -225,6 +258,12 @@ from personal_skill_studio.training_artifacts.training_package_registry import (
     get_experience_package_source_trace_record,
     list_experience_package_records,
     list_training_task_records,
+)
+from personal_skill_studio.training_artifacts.training_dataset_builder import (
+    build_training_dataset,
+    get_training_dataset_status,
+    get_training_gate_report,
+    list_training_dataset_examples,
 )
 from personal_skill_studio.training_artifacts.training_run_engine import (
     build_training_run_audit,
@@ -1100,6 +1139,153 @@ def case_analysis_workbench_output_source_trace(output_id: str) -> dict[str, Any
 @router.get("/v7-33/status")
 def v733_status() -> dict[str, Any]:
     return build_v733_workbench_status()
+
+
+@router.get("/case-analysis-improvement/status")
+def case_analysis_improvement_status() -> dict[str, Any]:
+    return build_v734_status()
+
+
+@router.post("/case-analysis-improvement/candidates/build")
+async def case_analysis_improvement_candidates_build(request: Request) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = CaseAnalysisImprovementBuildRequest(**payload)
+    return build_case_analysis_improvement_candidates(action)
+
+
+@router.get("/case-analysis-improvement/candidates")
+def case_analysis_improvement_candidates() -> dict[str, Any]:
+    return list_case_analysis_improvement_candidates()
+
+
+@router.get("/case-analysis-improvement/candidates/{candidate_id}")
+def case_analysis_improvement_candidate_detail(candidate_id: str) -> dict[str, Any]:
+    return _ensure(get_case_analysis_improvement_candidate(candidate_id))
+
+
+@router.get("/case-analysis-improvement/candidates/{candidate_id}/readiness")
+def case_analysis_improvement_candidate_readiness(candidate_id: str) -> dict[str, Any]:
+    return _ensure(get_case_analysis_improvement_candidate_readiness(candidate_id))
+
+
+@router.post("/case-analysis-improvement/candidates/{candidate_id}/mark-ready")
+async def case_analysis_improvement_candidate_mark_ready(candidate_id: str, request: Request) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = CaseAnalysisImprovementActionRequest(**payload)
+    return _ensure(mark_case_analysis_improvement_candidate_ready(candidate_id, action))
+
+
+@router.post("/case-analysis-improvement/candidates/{candidate_id}/archive")
+async def case_analysis_improvement_candidate_archive(candidate_id: str, request: Request) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = CaseAnalysisImprovementActionRequest(**payload)
+    return _ensure(archive_case_analysis_improvement_candidate(candidate_id, action))
+
+
+@router.get("/case-analysis-improvement/output-traces")
+def case_analysis_improvement_output_traces() -> dict[str, Any]:
+    return list_case_analysis_output_to_experience_traces()
+
+
+@router.get("/case-analysis-improvement/output-traces/{trace_id}")
+def case_analysis_improvement_output_trace_detail(trace_id: str) -> dict[str, Any]:
+    return _ensure(get_case_analysis_output_to_experience_trace(trace_id))
+
+
+@router.post("/case-analysis-improvement/diff/build")
+def case_analysis_improvement_diff_build() -> dict[str, Any]:
+    return build_case_analysis_improvement_diff()
+
+
+@router.get("/case-analysis-improvement/diffs")
+def case_analysis_improvement_diffs() -> dict[str, Any]:
+    return list_case_analysis_improvement_diffs()
+
+
+@router.get("/case-analysis-improvement/diffs/{diff_id}")
+def case_analysis_improvement_diff_detail(diff_id: str) -> dict[str, Any]:
+    return _ensure(get_case_analysis_improvement_diff(diff_id))
+
+
+@router.get("/case-analysis-improvement/candidates/{candidate_id}/audit")
+def case_analysis_improvement_candidate_audit(candidate_id: str) -> dict[str, Any]:
+    return _ensure(get_case_analysis_improvement_candidate_audit(candidate_id))
+
+
+@router.get("/case-analysis-improvement/candidates/{candidate_id}/source-trace")
+def case_analysis_improvement_candidate_source_trace(candidate_id: str) -> dict[str, Any]:
+    return _ensure(get_case_analysis_improvement_candidate_source_trace(candidate_id))
+
+
+@router.get("/v7-34/status")
+def v734_status() -> dict[str, Any]:
+    return build_v734_status()
+
+
+@router.get("/training-dataset/status")
+def training_dataset_status() -> dict[str, Any]:
+    return get_training_dataset_status()
+
+
+@router.post("/training-dataset/build")
+async def training_dataset_build(request: Request) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = TrainingDatasetBuildRequest(**payload)
+    return build_training_dataset(action)
+
+
+@router.get("/training-dataset/examples")
+def training_dataset_examples() -> dict[str, Any]:
+    return list_training_dataset_examples()
+
+
+@router.get("/training-dataset/gate-report")
+def training_dataset_gate_report() -> dict[str, Any]:
+    return get_training_gate_report()
+
+
+@router.get("/training-dryrun/status")
+def training_dryrun_status() -> dict[str, Any]:
+    return get_codex_training_dryrun_status()
+
+
+@router.post("/training-dryrun/run")
+async def training_dryrun_run(request: Request) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = CodexTrainingDryRunRequest(**payload)
+    return run_codex_training_dryrun(action)
+
+
+@router.get("/training-dryrun/logs")
+def training_dryrun_logs() -> dict[str, Any]:
+    return list_codex_training_dryrun_logs()
+
+
+@router.get("/training-dryrun/gate-report")
+def training_dryrun_gate_report() -> dict[str, Any]:
+    return get_codex_training_dryrun_gate_report()
+
+
+@router.post("/training-run/start")
+async def training_run_start(request: Request) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = CodexTrainingRunStartRequest(**payload)
+    return start_codex_internal_training_run(action)
+
+
+@router.get("/training-run/status")
+def training_run_status() -> dict[str, Any]:
+    return get_codex_internal_training_status()
+
+
+@router.get("/training-run/logs")
+def training_run_logs() -> dict[str, Any]:
+    return list_codex_internal_training_logs()
+
+
+@router.get("/training-run/gate-report")
+def training_run_gate_report() -> dict[str, Any]:
+    return get_codex_internal_training_gate_report()
 
 
 async def _safe_request_payload(request: Request) -> dict[str, Any]:

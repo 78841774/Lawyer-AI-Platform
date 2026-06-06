@@ -36,17 +36,21 @@
 - v7.30 commit: pending (local uncommitted large-stage worktree)
 - v7.31 commit: pending (local uncommitted large-stage worktree)
 - v7.31a commit: `86a0246`
-- v7.31b commit: pending (local worktree)
-- v7.31c commit: pending (local worktree)
-- v7.31d commit: pending (local worktree)
-- v7.31e commit: pending (local worktree)
-- v7.31f commit: pending (local worktree)
-- v7.31g commit: pending (local worktree)
-- v7.31h commit: pending (local worktree)
-- v7.31i commit: pending (local worktree)
-- v7.31j commit: pending (local worktree)
-- v7.32 commit: pending (local worktree)
-- v7.33 commit: pending (local worktree)
+- v7.31b commit: `e22281f`
+- v7.31c commit: `e22281f`
+- v7.31d commit: `01259cf`
+- v7.31e commit: `01259cf`
+- v7.31f commit: `01259cf`
+- v7.31g commit: `01259cf`
+- v7.31h commit: `01259cf`
+- v7.31i commit: `01259cf`
+- v7.31j commit: `01259cf`
+- v7.32 commit: `01259cf`
+- v7.33 commit: `01259cf`
+- v7.34 commit: see tag `v7.37`
+- v7.35 commit: see tag `v7.37`
+- v7.36 commit: see tag `v7.37`
+- v7.37 commit: see tag `v7.37`
 
 ## Known Tags
 
@@ -113,6 +117,10 @@
 - `v7.31j-next-experience-package-rebuild`: pending
 - `v7.32-experience-lifecycle-consolidation`: pending
 - `v7.33-case-analysis-skill-output-schema-workbench`: pending
+- `v7.34-case-analysis-output-feedback-improvement-candidate`: pending
+- `v7.35`: detected
+- `v7.36`: detected
+- `v7.37`: detected
 - `v7.17-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.19-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.20-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
@@ -125,6 +133,6 @@
 
 - Latest released baseline: v7.24 Personal Practical Production Workbench at commit `b4e4bca` and tag `v7.24-personal-practical-production-workbench`.
 - v7.25-v7.31a are complete at commit `86a0246` and tag `v7.31a`.
-- v7.31b-v7.33 are current local work and remain uncommitted.
-- Do not infer or fabricate commits, tags, pushes, or releases for v7.31b-v7.33.
-- Release remains pending until unified validation, final review, and explicit user-approved release handling.
+- v7.31b-v7.33 are complete through commits `e22281f` and `01259cf`; v7.32 and v7.33 tags are detected.
+- v7.34-v7.37 are complete at the `v7.37` tag target; v7.35, v7.36, and v7.37 tags are detected.
+- Further release handling beyond commit/tag/push remains pending until explicit user instruction.

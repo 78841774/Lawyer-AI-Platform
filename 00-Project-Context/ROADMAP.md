@@ -21,18 +21,13 @@
 - v7.30 Codex Training Scheme & Multi-Level Case-Cause Artifact Loader is complete in the current uncommitted worktree.
 - v7.31 Execute Codex Training on Closed Case Samples is complete in the current uncommitted worktree.
 - v7.31a Real Closed-Case Training Intake & Redaction Pipeline is complete at commit `86a0246` and tag `v7.31a`.
-- v7.31b Raw Work-Product Controlled Processing Experience Pipeline is complete in the current local worktree.
-- v7.31c Skill Experience Pool & Codex Skill Draft Builder is complete in the current local worktree.
-- v7.31d Skill Package Versioning & System Validation Gate is complete in the current local worktree.
-- v7.31e Internal Training / Experience Package Builder is complete in the current local worktree.
-- v7.31f Practice Runtime Load Review Gate is complete in the current local worktree.
-- v7.31g Practice Runtime Controlled Loading & Monitoring is complete in the current local worktree.
-- v7.31h Practice Runtime Output Observation & Lawyer Feedback Loop is complete in the current local worktree.
-- v7.31i Practice Feedback Candidate Pack & Next Experience Package Iteration is complete in the current local worktree.
-- v7.31j Feedback Candidate Pack to Next Experience Package Rebuild is complete in the current local worktree.
-- v7.32 Experience Lifecycle Consolidation is complete in the current local worktree.
-- v7.33 Case Analysis Skill Output Schema Driven Workbench Integration is complete in the current local worktree.
-- v7.34 Case Analysis Output Feedback to Experience Improvement Loop is the next recommended local sub-stage after user confirmation.
+- v7.31b Raw Work-Product Controlled Processing Experience Pipeline is complete at commit `e22281f`.
+- v7.31c Skill Experience Pool & Codex Skill Draft Builder is complete at commit `e22281f`.
+- v7.31d Skill Package Versioning & System Validation Gate through v7.33 Case Analysis Skill Output Schema Driven Workbench Integration are complete at commit `01259cf`.
+- v7.34 Case Analysis Output Feedback to Experience Improvement Candidate is complete at the `v7.37` tag target.
+- v7.35 Training Dataset Builder & Training Gate is complete at the `v7.37` tag target and tag `v7.35`.
+- v7.36 Codex Skill Training Dry Run is complete at the `v7.37` tag target and tag `v7.36`.
+- v7.37 Codex Skill Internal Training Run is complete at the `v7.37` tag target and tag `v7.37`.
 
 ## v7.25-v7.29 Practical Trial And Provider Alignment Cadence
 
@@ -70,6 +65,14 @@ v7.32 consolidates the experience lifecycle across v7.31b-v7.31j through state, 
 
 v7.33 integrates the Case Analysis Skill Output Schema Driven Workbench. Backend schema defines fact extraction and legal analysis output groups; the frontend renders backend `output_groups` and does not hardcode output names, counts, or groups.
 
+v7.34 maps v7.33 case-analysis output feedback, risk event, audit, and source trace metadata into experience improvement candidate metadata, output-to-experience traces, diff summaries, and readiness reports. It does not mutate loaded packages, lawyer-approved packages, output schemas, runtime packages, Skills, or training artifacts.
+
+v7.35 builds Training Dataset Manifest metadata, abstracted Training Examples, Training Task Plan metadata, and a reference-only Training Gate Report from v7.34 candidates marked `ready_for_training_dataset_build`.
+
+v7.36 runs a Codex Skill Training Dry Run simulation over v7.35 dataset and gate artifacts, with safe logs, audit, source trace, and gate summary metadata only.
+
+v7.37 starts a controlled Codex Skill Internal Training Run metadata flow, records metrics, logs, dry-run comparison, audit, source trace, and gate report metadata, and keeps any generated run artifacts internal and metadata-only.
+
 ## Product Design Cadence
 
 UI / Showcase / promotional / Demo / Landing / screenshot / recording work must use a Product Design closed loop. Product Design ideation or prototype brief is planning only until the chosen direction is implemented in React / TypeScript / Tailwind, produces a visible UI change, and is browser-validated when the environment permits.
@@ -81,4 +84,4 @@ UI / Showcase / promotional / Demo / Landing / screenshot / recording work must 
 
 ## Current Priority
 
-Current execution priority is complete through v7.33. The next recommended personal-version sub-stage is v7.34 Case Analysis Output Feedback to Experience Improvement Loop. Do not repeat v7.27-v7.33 implementations. Do not start Team Workspace or External Client Delivery before the user explicitly approves that direction.
+Current execution priority is complete through v7.37 at the `v7.37` tag target. The next recommended action is an explicitly scoped next personal-version sub-stage. Do not repeat v7.27-v7.37 implementations. Do not start Team Workspace or External Client Delivery before the user explicitly approves that direction.

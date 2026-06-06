@@ -28,6 +28,13 @@ EXPERIENCE_LIFECYCLES_DIR = RUNTIME_ROOT / "v732_experience_lifecycles"
 CASE_ANALYSIS_WORKBENCH_VIEWS_DIR = RUNTIME_ROOT / "v733_case_analysis_workbench_views"
 CASE_ANALYSIS_OUTPUT_FEEDBACK_DIR = RUNTIME_ROOT / "v733_case_analysis_output_feedback"
 CASE_ANALYSIS_OUTPUT_RISK_EVENTS_DIR = RUNTIME_ROOT / "v733_case_analysis_output_risk_events"
+CASE_ANALYSIS_IMPROVEMENT_CANDIDATES_DIR = RUNTIME_ROOT / "v734_case_analysis_improvement_candidates"
+CASE_ANALYSIS_IMPROVEMENT_TRACES_DIR = RUNTIME_ROOT / "v734_case_analysis_improvement_traces"
+CASE_ANALYSIS_IMPROVEMENT_DIFFS_DIR = RUNTIME_ROOT / "v734_case_analysis_improvement_diffs"
+TRAINING_DATASETS_DIR = RUNTIME_ROOT / "v735_training_datasets"
+TRAINING_GATE_REPORTS_DIR = RUNTIME_ROOT / "v735_training_gate_reports"
+CODEX_TRAINING_DRYRUNS_DIR = RUNTIME_ROOT / "v736_codex_training_dryruns"
+CODEX_INTERNAL_TRAINING_RUNS_DIR = RUNTIME_ROOT / "v737_codex_internal_training_runs"
 
 
 def write_payload(directory: Path, record_id: str, payload: dict) -> None:

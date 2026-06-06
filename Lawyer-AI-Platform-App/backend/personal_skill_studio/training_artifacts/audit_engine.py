@@ -139,3 +139,31 @@ def build_case_analysis_workbench_audit_summary() -> dict:
         **v733_safety_flags(),
         "warnings": ["Case analysis workbench audit records are metadata-only and schema-driven."],
     }
+
+
+def build_case_analysis_improvement_audit_summary() -> dict:
+    from personal_skill_studio.training_artifacts.case_analysis_improvement_candidate_registry import (
+        list_case_analysis_improvement_candidates,
+    )
+    from personal_skill_studio.training_artifacts.case_analysis_improvement_safety_engine import v734_safety_flags
+
+    candidates = list_case_analysis_improvement_candidates().get("candidates", [])
+    events = [
+        {
+            "event_id": f"{candidate.get('candidate_id')}_improvement_mapped",
+            "action": "case_analysis_feedback_mapped_to_improvement_candidate",
+            "object_type": "case_analysis_improvement_candidate",
+            "object_id": candidate.get("candidate_id"),
+            "metadata_only": True,
+            "training_triggered": False,
+            "loaded_package_mutated": False,
+        }
+        for candidate in candidates
+    ]
+    return {
+        "events": events,
+        "event_count": len(events),
+        "candidate_count": len(candidates),
+        **v734_safety_flags(),
+        "warnings": ["Case analysis improvement audit records are metadata-only and do not mutate packages."],
+    }

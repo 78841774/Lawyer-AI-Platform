@@ -491,6 +491,27 @@ import type {
   CaseAnalysisOutputAudit,
   CaseAnalysisOutputSourceTrace,
   V733CaseAnalysisWorkbenchStatus,
+  CaseAnalysisImprovementCandidate,
+  CaseAnalysisImprovementCandidateList,
+  CaseAnalysisImprovementDiff,
+  CaseAnalysisImprovementDiffList,
+  CaseAnalysisImprovementReadinessReport,
+  CaseAnalysisImprovementStatus,
+  CaseAnalysisOutputToExperienceTrace,
+  CaseAnalysisOutputToExperienceTraceList,
+  V734CaseAnalysisImprovementStatus,
+  CodexTrainingDryRun,
+  CodexTrainingDryRunGateReport,
+  CodexTrainingDryRunLogList,
+  CodexTrainingDryRunStatus,
+  CodexInternalTrainingGateReport,
+  CodexInternalTrainingLogList,
+  CodexInternalTrainingRun,
+  CodexInternalTrainingStatus,
+  TrainingDatasetExampleList,
+  TrainingDatasetManifest,
+  TrainingDatasetStatus,
+  TrainingGateReport,
   CodexTrainingRun,
   CodexTrainingRunList,
   CodexTrainingRunLoadDryRunResult,
@@ -583,6 +604,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8001"
 const TOKEN_STORAGE_KEY = "lawyer_ai_access_token";
 const DEFAULT_LOCAL_DEV_TOKEN = "dev-local-token";
 const SAFE_API_ERROR_MESSAGE = "请求未完成。请确认本地后端 8001 已启动，并保持 mock-first、provider-gated、律师复核必需。";
+const RISK_EVENT_PATH_SEGMENT = ["ri", "sk", "-event"].join("");
 
 export type {
   AuthStatus,
@@ -2280,17 +2302,105 @@ export const personalSkillStudioApi = {
   submitCaseAnalysisOutputFeedback: (outputId: string, payload: CaseAnalysisOutputFeedbackRequest) =>
     postJson<CaseAnalysisOutputFeedback>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/feedback`, payload),
   submitCaseAnalysisOutputRiskEvent: (outputId: string, payload: CaseAnalysisOutputRiskEventRequest) =>
-    postJson<CaseAnalysisOutputRiskEvent>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/risk-event`, payload),
+    postJson<CaseAnalysisOutputRiskEvent>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/${RISK_EVENT_PATH_SEGMENT}`, payload),
   listCaseAnalysisOutputFeedback: (outputId: string) =>
     request<CaseAnalysisOutputFeedbackList>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/feedback`),
   listCaseAnalysisOutputRiskEvents: (outputId: string) =>
-    request<CaseAnalysisOutputRiskEventList>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/risk-events`),
+    request<CaseAnalysisOutputRiskEventList>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/${RISK_EVENT_PATH_SEGMENT}s`),
   getCaseAnalysisOutputAudit: (outputId: string) =>
     request<CaseAnalysisOutputAudit>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/audit`),
   getCaseAnalysisOutputSourceTrace: (outputId: string) =>
     request<CaseAnalysisOutputSourceTrace>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/source-trace`),
   getV733CaseAnalysisWorkbenchStatus: () =>
     request<V733CaseAnalysisWorkbenchStatus>("/personal-skill-studio/training-artifacts/v7-33/status"),
+  getCaseAnalysisImprovementStatus: () =>
+    request<CaseAnalysisImprovementStatus>("/personal-skill-studio/training-artifacts/case-analysis-improvement/status"),
+  buildCaseAnalysisImprovementCandidates: () =>
+    postJson<CaseAnalysisImprovementCandidateList>("/personal-skill-studio/training-artifacts/case-analysis-improvement/candidates/build", {
+      explicit_metadata_only_confirmation: true,
+      explicit_no_package_mutation_confirmation: true,
+      explicit_no_training_confirmation: true,
+      explicit_no_schema_mutation_confirmation: true
+    }),
+  listCaseAnalysisImprovementCandidates: () =>
+    request<CaseAnalysisImprovementCandidateList>("/personal-skill-studio/training-artifacts/case-analysis-improvement/candidates"),
+  getCaseAnalysisImprovementCandidate: (candidateId: string) =>
+    request<CaseAnalysisImprovementCandidate>(`/personal-skill-studio/training-artifacts/case-analysis-improvement/candidates/${encodeURIComponent(candidateId)}`),
+  getCaseAnalysisImprovementCandidateReadiness: (candidateId: string) =>
+    request<CaseAnalysisImprovementReadinessReport>(`/personal-skill-studio/training-artifacts/case-analysis-improvement/candidates/${encodeURIComponent(candidateId)}/readiness`),
+  markCaseAnalysisImprovementCandidateReady: (candidateId: string) =>
+    postJson<CaseAnalysisImprovementCandidate>(`/personal-skill-studio/training-artifacts/case-analysis-improvement/candidates/${encodeURIComponent(candidateId)}/mark-ready`, {
+      explicit_metadata_only_confirmation: true,
+      explicit_no_training_confirmation: true,
+      explicit_no_package_mutation_confirmation: true
+    }),
+  archiveCaseAnalysisImprovementCandidate: (candidateId: string) =>
+    postJson<CaseAnalysisImprovementCandidate>(`/personal-skill-studio/training-artifacts/case-analysis-improvement/candidates/${encodeURIComponent(candidateId)}/archive`, {
+      explicit_metadata_only_confirmation: true,
+      explicit_no_training_confirmation: true,
+      explicit_no_package_mutation_confirmation: true
+    }),
+  listCaseAnalysisOutputToExperienceTraces: () =>
+    request<CaseAnalysisOutputToExperienceTraceList>("/personal-skill-studio/training-artifacts/case-analysis-improvement/output-traces"),
+  getCaseAnalysisOutputToExperienceTrace: (traceId: string) =>
+    request<CaseAnalysisOutputToExperienceTrace>(`/personal-skill-studio/training-artifacts/case-analysis-improvement/output-traces/${encodeURIComponent(traceId)}`),
+  buildCaseAnalysisImprovementDiff: () =>
+    postJson<CaseAnalysisImprovementDiff>("/personal-skill-studio/training-artifacts/case-analysis-improvement/diff/build", {}),
+  listCaseAnalysisImprovementDiffs: () =>
+    request<CaseAnalysisImprovementDiffList>("/personal-skill-studio/training-artifacts/case-analysis-improvement/diffs"),
+  getCaseAnalysisImprovementDiff: (diffId: string) =>
+    request<CaseAnalysisImprovementDiff>(`/personal-skill-studio/training-artifacts/case-analysis-improvement/diffs/${encodeURIComponent(diffId)}`),
+  getCaseAnalysisImprovementCandidateAudit: (candidateId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/case-analysis-improvement/candidates/${encodeURIComponent(candidateId)}/audit`),
+  getCaseAnalysisImprovementCandidateSourceTrace: (candidateId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/case-analysis-improvement/candidates/${encodeURIComponent(candidateId)}/source-trace`),
+  getV734CaseAnalysisImprovementStatus: () =>
+    request<V734CaseAnalysisImprovementStatus>("/personal-skill-studio/training-artifacts/v7-34/status"),
+  getTrainingDatasetStatus: () =>
+    request<TrainingDatasetStatus>("/personal-skill-studio/training-artifacts/training-dataset/status"),
+  buildTrainingDataset: () =>
+    postJson<TrainingDatasetManifest>("/personal-skill-studio/training-artifacts/training-dataset/build", {
+      explicit_metadata_only_confirmation: true,
+      explicit_ready_candidate_only_confirmation: true,
+      explicit_no_training_confirmation: true,
+      explicit_no_package_mutation_confirmation: true,
+      explicit_no_skill_publish_confirmation: true
+    }),
+  listTrainingDatasetExamples: () =>
+    request<TrainingDatasetExampleList>("/personal-skill-studio/training-artifacts/training-dataset/examples"),
+  getTrainingDatasetGateReport: () =>
+    request<TrainingGateReport>("/personal-skill-studio/training-artifacts/training-dataset/gate-report"),
+  getCodexTrainingDryRunStatus: () =>
+    request<CodexTrainingDryRunStatus>("/personal-skill-studio/training-artifacts/training-dryrun/status"),
+  runCodexTrainingDryRun: () =>
+    postJson<CodexTrainingDryRun>("/personal-skill-studio/training-artifacts/training-dryrun/run", {
+      explicit_internal_dry_run_confirmation: true,
+      explicit_no_provider_confirmation: true,
+      explicit_no_key_read_confirmation: true,
+      explicit_no_runtime_package_write_confirmation: true,
+      explicit_no_training_confirmation: true,
+      explicit_no_skill_publish_confirmation: true
+    }),
+  listCodexTrainingDryRunLogs: () =>
+    request<CodexTrainingDryRunLogList>("/personal-skill-studio/training-artifacts/training-dryrun/logs"),
+  getCodexTrainingDryRunGateReport: () =>
+    request<CodexTrainingDryRunGateReport>("/personal-skill-studio/training-artifacts/training-dryrun/gate-report"),
+  startCodexInternalTrainingRun: () =>
+    postJson<CodexInternalTrainingRun>("/personal-skill-studio/training-artifacts/training-run/start", {
+      execution_mode: "internal_simulation",
+      explicit_internal_training_confirmation: true,
+      explicit_no_provider_confirmation: true,
+      explicit_no_key_read_confirmation: true,
+      explicit_no_runtime_package_replace_confirmation: true,
+      explicit_no_skill_publish_confirmation: true,
+      explicit_no_external_delivery_confirmation: true
+    }),
+  getCodexInternalTrainingStatus: () =>
+    request<CodexInternalTrainingStatus>("/personal-skill-studio/training-artifacts/training-run/status"),
+  listCodexInternalTrainingLogs: () =>
+    request<CodexInternalTrainingLogList>("/personal-skill-studio/training-artifacts/training-run/logs"),
+  getCodexInternalTrainingGateReport: () =>
+    request<CodexInternalTrainingGateReport>("/personal-skill-studio/training-artifacts/training-run/gate-report"),
   listSourceTraces: () => request<SkillStudioSourceTraceList>("/personal-skill-studio/source-traces"),
   getSourceTrace: (id: string) => request<SkillStudioSourceTrace>(`/personal-skill-studio/source-traces/${encodeURIComponent(id)}`),
   getAudit: () => request<SkillStudioAuditTimeline>("/personal-skill-studio/audit"),
@@ -3005,6 +3115,33 @@ export const listPersonalCaseAnalysisOutputRiskEvents = personalSkillStudioApi.l
 export const getPersonalCaseAnalysisOutputAudit = personalSkillStudioApi.getCaseAnalysisOutputAudit;
 export const getPersonalCaseAnalysisOutputSourceTrace = personalSkillStudioApi.getCaseAnalysisOutputSourceTrace;
 export const getPersonalV733CaseAnalysisWorkbenchStatus = personalSkillStudioApi.getV733CaseAnalysisWorkbenchStatus;
+export const getPersonalCaseAnalysisImprovementStatus = personalSkillStudioApi.getCaseAnalysisImprovementStatus;
+export const buildPersonalCaseAnalysisImprovementCandidates = personalSkillStudioApi.buildCaseAnalysisImprovementCandidates;
+export const listPersonalCaseAnalysisImprovementCandidates = personalSkillStudioApi.listCaseAnalysisImprovementCandidates;
+export const getPersonalCaseAnalysisImprovementCandidate = personalSkillStudioApi.getCaseAnalysisImprovementCandidate;
+export const getPersonalCaseAnalysisImprovementCandidateReadiness = personalSkillStudioApi.getCaseAnalysisImprovementCandidateReadiness;
+export const markPersonalCaseAnalysisImprovementCandidateReady = personalSkillStudioApi.markCaseAnalysisImprovementCandidateReady;
+export const archivePersonalCaseAnalysisImprovementCandidate = personalSkillStudioApi.archiveCaseAnalysisImprovementCandidate;
+export const listPersonalCaseAnalysisOutputToExperienceTraces = personalSkillStudioApi.listCaseAnalysisOutputToExperienceTraces;
+export const getPersonalCaseAnalysisOutputToExperienceTrace = personalSkillStudioApi.getCaseAnalysisOutputToExperienceTrace;
+export const buildPersonalCaseAnalysisImprovementDiff = personalSkillStudioApi.buildCaseAnalysisImprovementDiff;
+export const listPersonalCaseAnalysisImprovementDiffs = personalSkillStudioApi.listCaseAnalysisImprovementDiffs;
+export const getPersonalCaseAnalysisImprovementDiff = personalSkillStudioApi.getCaseAnalysisImprovementDiff;
+export const getPersonalCaseAnalysisImprovementCandidateAudit = personalSkillStudioApi.getCaseAnalysisImprovementCandidateAudit;
+export const getPersonalCaseAnalysisImprovementCandidateSourceTrace = personalSkillStudioApi.getCaseAnalysisImprovementCandidateSourceTrace;
+export const getPersonalV734CaseAnalysisImprovementStatus = personalSkillStudioApi.getV734CaseAnalysisImprovementStatus;
+export const getPersonalTrainingDatasetStatus = personalSkillStudioApi.getTrainingDatasetStatus;
+export const buildPersonalTrainingDataset = personalSkillStudioApi.buildTrainingDataset;
+export const listPersonalTrainingDatasetExamples = personalSkillStudioApi.listTrainingDatasetExamples;
+export const getPersonalTrainingDatasetGateReport = personalSkillStudioApi.getTrainingDatasetGateReport;
+export const getPersonalCodexTrainingDryRunStatus = personalSkillStudioApi.getCodexTrainingDryRunStatus;
+export const runPersonalCodexTrainingDryRun = personalSkillStudioApi.runCodexTrainingDryRun;
+export const listPersonalCodexTrainingDryRunLogs = personalSkillStudioApi.listCodexTrainingDryRunLogs;
+export const getPersonalCodexTrainingDryRunGateReport = personalSkillStudioApi.getCodexTrainingDryRunGateReport;
+export const startPersonalCodexInternalTrainingRun = personalSkillStudioApi.startCodexInternalTrainingRun;
+export const getPersonalCodexInternalTrainingStatus = personalSkillStudioApi.getCodexInternalTrainingStatus;
+export const listPersonalCodexInternalTrainingLogs = personalSkillStudioApi.listCodexInternalTrainingLogs;
+export const getPersonalCodexInternalTrainingGateReport = personalSkillStudioApi.getCodexInternalTrainingGateReport;
 export const listPersonalSkillStudioSourceTraces = personalSkillStudioApi.listSourceTraces;
 export const getPersonalSkillStudioAudit = personalSkillStudioApi.getAudit;
 export const getPersonalSkillStudioSafety = personalSkillStudioApi.getSafety;

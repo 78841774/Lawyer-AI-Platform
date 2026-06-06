@@ -26,18 +26,21 @@ AIHome.law / Lawyer-AI-Platform is currently focused on personal production vali
 - v7.30 Codex Training Scheme & Multi-Level Case-Cause Artifact Loader is complete in the current uncommitted worktree.
 - v7.31 Execute Codex Training on Closed Case Samples is complete in the current uncommitted worktree.
 - v7.31a Real Closed-Case Training Intake & Redaction Pipeline is complete at commit `86a0246` and tag `v7.31a`.
-- v7.31b Raw Work-Product Controlled Processing Experience Pipeline is complete in the current local worktree.
-- v7.31c Skill Experience Pool & Codex Skill Draft Builder is complete in the current local worktree.
-- v7.31d Skill Package Versioning & System Validation Gate is complete in the current local worktree.
-- v7.31e Internal Training / Experience Package Builder is complete in the current local worktree.
-- v7.31f Practice Runtime Load Review Gate is complete in the current local worktree.
-- v7.31g Practice Runtime Controlled Loading & Monitoring is complete in the current local worktree.
-- v7.31h Practice Runtime Output Observation & Lawyer Feedback Loop is complete in the current local worktree.
-- v7.31i Practice Feedback Candidate Pack & Next Experience Package Iteration is complete in the current local worktree.
-- v7.31j Feedback Candidate Pack to Next Experience Package Rebuild is complete in the current local worktree.
-- v7.32 Experience Lifecycle Consolidation is complete in the current local worktree.
-- v7.33 Case Analysis Skill Output Schema Driven Workbench Integration is complete in the current local worktree.
-- v7.31b-v7.33 remain local work and have not been committed, tagged, pushed, or released.
+- v7.31b Raw Work-Product Controlled Processing Experience Pipeline is complete at commit `e22281f`.
+- v7.31c Skill Experience Pool & Codex Skill Draft Builder is complete at commit `e22281f`.
+- v7.31d Skill Package Versioning & System Validation Gate is complete at commit `01259cf`.
+- v7.31e Internal Training / Experience Package Builder is complete at commit `01259cf`.
+- v7.31f Practice Runtime Load Review Gate is complete at commit `01259cf`.
+- v7.31g Practice Runtime Controlled Loading & Monitoring is complete at commit `01259cf`.
+- v7.31h Practice Runtime Output Observation & Lawyer Feedback Loop is complete at commit `01259cf`.
+- v7.31i Practice Feedback Candidate Pack & Next Experience Package Iteration is complete at commit `01259cf`.
+- v7.31j Feedback Candidate Pack to Next Experience Package Rebuild is complete at commit `01259cf`.
+- v7.32 Experience Lifecycle Consolidation is complete at commit `01259cf` and tag `v7.32`.
+- v7.33 Case Analysis Skill Output Schema Driven Workbench Integration is complete at commit `01259cf` and tag `v7.33`.
+- v7.34 Case Analysis Output Feedback to Experience Improvement Candidate is complete at the `v7.37` tag target.
+- v7.35 Training Dataset Builder & Training Gate is complete at the `v7.37` tag target and tag `v7.35`.
+- v7.36 Codex Skill Training Dry Run is complete at the `v7.37` tag target and tag `v7.36`.
+- v7.37 Codex Skill Internal Training Run is complete at the `v7.37` tag target and tag `v7.37`.
 
 ## Direction
 
@@ -111,7 +114,11 @@ Team workspace features and external client delivery versions are deferred.
 - Feedback Candidate Pack to Next Experience Package Rebuild v7.31j rebuilds next package draft metadata only from v7.31i ready candidate packs. `pending_practice_load_review` remains a review preparation state and does not load the draft into practice runtime.
 - Experience Lifecycle Consolidation v7.32 consolidates v7.31b-v7.31j lifecycle metadata into lifecycle state, graph, audit timeline, source trace, integrity, and safety views. Recompute is view-level only and does not mutate packages, Skills, runtime policy, or training artifacts.
 - Case Analysis Skill Output Schema Driven Workbench v7.33 adds backend-driven case-analysis output schema, runtime output registry, workbench view, feedback, risk event, audit, source trace, safety metadata, frontend schema rendering, and regression checks. The frontend renders backend `output_groups` only and does not hardcode output names, counts, or groups.
+- Case Analysis Output Feedback to Experience Improvement Candidate v7.34 maps v7.33 output feedback, risk event, audit, and source trace metadata into controlled experience improvement candidate metadata, output-to-experience trace metadata, diff summaries, and readiness reports for later v7.35 use. It does not mutate loaded packages, lawyer-approved packages, output schema, runtime packages, Skills, or training artifacts.
+- Training Dataset Builder & Training Gate v7.35 builds metadata-only dataset manifests, abstracted training examples, task plans, and reference-only gate reports from v7.34 candidates marked `ready_for_training_dataset_build`. It loads experience package, Skill output schema, and output-to-experience trace metadata without mutating runtime packages or Skills.
+- Codex Skill Training Dry Run v7.36 executes an internal dry-run simulation over v7.35 dataset / gate artifacts, recording safe logs, audit, source trace, and gate summary metadata. It does not call providers, read key values, replace runtime packages, trigger real training, or publish Skills.
+- Codex Skill Internal Training Run v7.37 starts a controlled internal training run metadata record, produces metrics, logs, dry-run comparison, audit, source trace, and gate report artifacts, and keeps generated training outputs inside the internal workspace as metadata-only records. It does not perform external provider training, expose raw content, replace runtime packages, or publish Skills.
 
 ## Current Next Step
 
-Current requested sub-stage is complete through v7.33. The next recommended sub-stage is v7.34 Case Analysis Output Feedback to Experience Improvement Loop, after user confirmation. Do not start Team Workspace or External Client Delivery before the user explicitly confirms that direction.
+Current requested sub-stages are complete through v7.37 at the `v7.37` tag target. The next recommended step is an explicitly scoped next personal-version sub-stage. Do not start Team Workspace or External Client Delivery before the user explicitly confirms that direction.

@@ -23,6 +23,12 @@ Before starting a new Codex session, read these files:
 - Keep AI output draft-only unless a target version explicitly changes it.
 - Run the regression suite before committing.
 
+## Current Local Stage
+
+v7.31b-v7.33 are complete through commits `e22281f` and `01259cf`. v7.34-v7.37 are complete at the `v7.37` tag target; v7.35 adds Training Dataset Builder & Training Gate metadata, v7.36 adds Codex Skill Training Dry Run metadata, and v7.37 adds Codex Skill Internal Training Run metadata.
+
+Do not repeat these implementations. Do not commit, tag, push, or release future work unless the user explicitly confirms release handling.
+
 ## Codex Surgical Handoff Rules
 
 Codex must use the following rules when continuing this project.
@@ -266,7 +272,7 @@ Each version commit should include code, tests, docs, changelog, and project con
 ## Current Handoff
 
 - Stable baseline: `v7.24-personal-practical-production-workbench` at commit `b4e4bca`.
-- Active local worktree scope: v7.25-v7.33 are implemented locally and awaiting user-confirmed continuation, validation, or release handling. Future Codex work must treat v7.27-v7.33 as implemented facts, not planned next tasks.
+- Active local worktree scope: v7.25-v7.34 are implemented locally and awaiting user-confirmed continuation, validation, or release handling. Future Codex work must treat v7.27-v7.34 as implemented facts, not planned next tasks.
 - v7.10-v7.11 must remain mock-first, metadata-only, draft-only, lawyer-review-required, final-lock-required, source-trace-required, and provider-gated.
 - v7.10-v7.11 do not introduce Team Workspace, multi-user collaboration, external client delivery, live provider mode, Skill Training runtime, Controlled Case Analysis runtime, real final document generation, email sending, or external delivery.
 - The planned cadence is one continuous v7.10-v7.24 large stage: Personal Live Intelligence & Controlled Case Analysis. Run basic checks at each sub-stage and defer full Codex Security audit to the final large-stage audit.
@@ -304,12 +310,14 @@ Each version commit should include code, tests, docs, changelog, and project con
 - v7.31j adds Next Experience Package Rebuild metadata. It rebuilds next package drafts from v7.31i ready candidate packs, generates lawyer review view, manifest, validation, audit, and source trace metadata, and does not load drafts into practice runtime.
 - v7.32 adds Experience Lifecycle Consolidation metadata. It consolidates v7.31b-v7.31j state, graph, audit timeline, source trace view, integrity check, and safety summary metadata. Recompute is view-level only.
 - v7.33 adds Case Analysis Skill Output Schema Driven Workbench metadata. It defines backend output schema, runtime output registry, workbench view, feedback, risk event, audit, source trace, safety metadata, and a frontend panel that renders backend `output_groups` only.
+- v7.34 adds Case Analysis Output Feedback to Experience Improvement Candidate metadata. It maps v7.33 output feedback, risk event, audit, and source trace metadata into improvement candidates, output-to-experience traces, diff summaries, readiness reports, audit, source trace, frontend panel, and regression. It does not mutate loaded packages, lawyer-approved packages, output schema, runtime packages, Skills, or training artifacts.
+- v7.35 adds Training Dataset Builder & Training Gate metadata. It builds dataset manifests, abstracted training examples, task plans, reference-only gate reports, audit, source trace, frontend panels, and regression from v7.34 candidates marked `ready_for_training_dataset_build`.
+- v7.36 adds Codex Skill Training Dry Run metadata. It runs internal simulation only, records safe logs, audit, source trace, gate summary, frontend panels, and regression without provider calls or real training.
+- v7.37 adds Codex Skill Internal Training Run metadata. It records internal training run status, metrics, logs, dry-run comparison, audit, source trace, gate report, frontend panels, and regression without external provider training, runtime package replacement, or Skill publishing.
 
 ## Next Handoff Step
 
-Continue to v7.34 Case Analysis Output Feedback to Experience Improvement Loop only after user confirmation, or run v7.31b-v7.33 validation / release preparation only after explicit user confirmation. Do not treat v7.27 as the next task. Do not repeat the v7.27 OCR / Document, v7.28 unified live dashboard, v7.29 Legal / Enterprise gateway, v7.30 loader, v7.31 closed-case training run, v7.31a intake/redaction, v7.31b experience candidate pipeline, v7.31c experience pool/draft builder, v7.31d package versioning, v7.31e internal training package, v7.31f practice load review, v7.31g controlled loading, v7.31h feedback, v7.31i candidate pack, v7.31j next package rebuild, v7.32 lifecycle, or v7.33 schema workbench implementations. Do not start Team Workspace or External Client Delivery until the user explicitly confirms the next development direction.
-
-v7.34 should convert v7.33 feedback/risk/audit/source-trace metadata into controlled improvement-loop candidate metadata only. It must not automatically update Skills, mutate loaded packages, trigger training, publish Skills, call providers, generate final legal opinions, generate formal reports, create public links, send email, or trigger external delivery.
+Continue only to an explicitly scoped next personal-version sub-stage. Do not treat v7.27 or v7.35 as the next task. Do not repeat the v7.27 OCR / Document, v7.28 unified live dashboard, v7.29 Legal / Enterprise gateway, v7.30 loader, v7.31 closed-case training run, v7.31a intake/redaction, v7.31b experience candidate pipeline, v7.31c experience pool/draft builder, v7.31d package versioning, v7.31e internal training package, v7.31f practice load review, v7.31g controlled loading, v7.31h feedback, v7.31i candidate pack, v7.31j next package rebuild, v7.32 lifecycle, v7.33 schema workbench, v7.34 improvement candidate, v7.35 dataset builder, v7.36 dry-run, or v7.37 internal training run implementations. Do not start Team Workspace or External Client Delivery until the user explicitly confirms the next development direction.
 
 ## Product Design Handoff Rule
 

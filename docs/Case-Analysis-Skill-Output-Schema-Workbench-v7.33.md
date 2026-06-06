@@ -43,6 +43,10 @@ Both titles and output definitions are returned by backend schema and rendered a
 
 v7.33 is practical workbench integration, not training and not provider execution.
 
+## v7.34 Follow-up
+
+v7.34 now consumes v7.33 output feedback, risk event, audit, and source trace metadata to build controlled experience improvement candidates. This follow-up remains metadata-only and does not mutate loaded packages, lawyer-approved packages, output schema metadata, runtime packages, Skills, training artifacts, or delivery state.
+
 It does not read unredacted lawyer work product, raw case material, OCR text, local paths, key values, or provider raw responses. It does not modify loaded packages, auto-generate next packages, update Skills, trigger training, publish Skills, create final legal opinions, generate formal reports, create real PDF / DOCX files, create public links, send email, or trigger external delivery.
 
 Feedback and risk events are metadata-only records for lawyer review and later controlled improvement loops.

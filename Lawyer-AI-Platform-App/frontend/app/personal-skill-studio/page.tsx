@@ -201,6 +201,16 @@ export default function PersonalSkillStudioPage() {
             </a>
           </div>
         </Panel>
+        <Panel title="v7.34 案件分析反馈到经验改进候选">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card title="Output Feedback Mapper" lines={["读取 v7.33 output feedback", "生成 improvement candidate", "不自动修改 package"]} />
+            <Card title="Candidate Diff" lines={["diff summary only", "不修改 output schema", "不替换 runtime package"]} />
+            <Card title="Readiness" lines={["ready_for_training_dataset_build", "v7.35 gate later", "不自动训练"]} />
+            <a className="rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white" href="/personal-skill-studio/training-artifacts">
+              打开 v7.34 改进候选
+            </a>
+          </div>
+        </Panel>
         <section className="grid gap-4 md:grid-cols-6">
           {["工作室状态", "经验包草案", "技能候选草案", "测试用例", "评估记录", "发布门禁"].map((label) => <StatusCard key={label} label={label} />)}
         </section>

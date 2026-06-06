@@ -2874,3 +2874,553 @@ class V733CaseAnalysisWorkbenchStatus(V733SafetyBase):
     feedback_count: int = 0
     risk_event_count: int = 0
     warnings: list[str] = Field(default_factory=list)
+
+
+class V734SafetyBase(V733SafetyBase):
+    improvement_candidate_only: bool = True
+    redacted_abstracted_metadata_only: bool = True
+    output_feedback_input_only: bool = True
+    risk_event_input_only: bool = True
+    loaded_package_auto_mutated: bool = False
+    lawyer_approved_package_auto_mutated: bool = False
+    output_schema_auto_mutated: bool = False
+    runtime_package_auto_replaced: bool = False
+    training_dataset_auto_built: bool = False
+    training_gate_required: bool = True
+    package_disable_auto_executed: bool = False
+    package_rollback_auto_executed: bool = False
+
+
+class CaseAnalysisImprovementBuildRequest(BaseModel):
+    explicit_metadata_only_confirmation: bool = True
+    explicit_no_package_mutation_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+    explicit_no_schema_mutation_confirmation: bool = True
+
+
+class CaseAnalysisImprovementActionRequest(BaseModel):
+    actor_id: str = "owner_lawyer"
+    action_reason: str = "metadata status update only"
+    explicit_metadata_only_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+    explicit_no_package_mutation_confirmation: bool = True
+
+
+class CaseAnalysisOutputToExperienceTrace(V734SafetyBase):
+    trace_id: str
+    output_id: str
+    output_group: str
+    output_type: str
+    runtime_load_id: str
+    package_id: str
+    package_version: str
+    experience_package_id: str
+    experience_card_ids: list[str] = Field(default_factory=list)
+    skill_schema_id: str
+    skill_schema_version: str
+    usage_event_id: str | None = None
+    audit_id: str
+    source_trace_id: str
+    trace_status: str = "complete"
+    missing_trace_warnings: list[str] = Field(default_factory=list)
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisOutputToExperienceTraceList(V734SafetyBase):
+    output_traces: list[CaseAnalysisOutputToExperienceTrace] = Field(default_factory=list)
+    trace_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisImprovementCandidate(V734SafetyBase):
+    candidate_id: str
+    source_output_id: str
+    source_output_group: str
+    source_output_type: str
+    source_output_title: str
+    source_output_order: int
+    source_output_summary_redacted: str
+    source_case_analysis_view_id: str
+    source_runtime_load_id: str
+    source_usage_event_id: str | None = None
+    source_package_id: str
+    source_package_version: str
+    source_experience_card_ids: list[str] = Field(default_factory=list)
+    source_feedback_ids: list[str] = Field(default_factory=list)
+    source_risk_event_ids: list[str] = Field(default_factory=list)
+    source_audit_ids: list[str] = Field(default_factory=list)
+    source_trace_ids: list[str] = Field(default_factory=list)
+    source_feedback_types: list[str] = Field(default_factory=list)
+    source_risk_types: list[str] = Field(default_factory=list)
+    candidate_type: str
+    candidate_status: str = "mapped"
+    candidate_severity: str = "medium"
+    candidate_title: str
+    candidate_summary: str
+    candidate_reason: str
+    proposed_change_type: str
+    proposed_change_summary: str
+    target_object_type: str
+    target_object_id: str
+    affected_output_schema_group: str
+    affected_output_schema_type: str
+    affected_usage_boundary: str
+    affected_risk_warning: str
+    affected_experience_card_id: str | None = None
+    training_relevance: str = "requires_dataset_gate"
+    practice_relevance: str = "practice_improvement_candidate"
+    safety_flags: dict[str, bool] = Field(default_factory=dict)
+    blocked_reason: str | None = None
+    readiness_status: str = "ready_for_candidate_pack"
+    created_at: str
+    updated_at: str
+    audit_id: str
+    source_trace_id: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisImprovementCandidateList(V734SafetyBase):
+    candidates: list[CaseAnalysisImprovementCandidate] = Field(default_factory=list)
+    candidate_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisImprovementReadinessReport(V734SafetyBase):
+    readiness_report_id: str
+    candidate_id: str
+    status: str
+    passed_checks: list[str] = Field(default_factory=list)
+    failed_checks: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    blocked_reason: str | None = None
+    recommended_next_action: str
+    created_at: str
+    audit_id: str
+
+
+class CaseAnalysisImprovementDiff(V734SafetyBase):
+    diff_id: str
+    candidate_ids: list[str] = Field(default_factory=list)
+    source_package_id: str
+    source_package_version: str
+    target_next_package_version_hint: str
+    added_cards_count: int = 0
+    revised_cards_count: int = 0
+    deleted_cards_count: int = 0
+    boundary_changes_count: int = 0
+    risk_warning_changes_count: int = 0
+    schema_metadata_changes_count: int = 0
+    training_update_recommendations_count: int = 0
+    disable_recommendations_count: int = 0
+    rollback_recommendations_count: int = 0
+    diff_summary: str
+    risk_summary: str
+    readiness_status: str
+    audit_id: str
+    source_trace_id: str
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisImprovementDiffList(V734SafetyBase):
+    diffs: list[CaseAnalysisImprovementDiff] = Field(default_factory=list)
+    diff_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisImprovementAudit(V734SafetyBase):
+    candidate_id: str
+    audit_id: str
+    events: list[dict[str, str]] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisImprovementSourceTrace(V734SafetyBase):
+    candidate_id: str
+    source_trace_id: str
+    source_output_id: str
+    source_feedback_ids: list[str] = Field(default_factory=list)
+    source_risk_event_ids: list[str] = Field(default_factory=list)
+    source_audit_ids: list[str] = Field(default_factory=list)
+    source_trace_ids: list[str] = Field(default_factory=list)
+    trace_status: str = "candidate_trace_ready"
+    trace_summary: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V734CaseAnalysisImprovementStatus(V734SafetyBase):
+    version: str = "v7.34"
+    status: str = "case_analysis_improvement_candidate_ready"
+    feedback_to_improvement_mapper_ready: bool = True
+    candidate_registry_ready: bool = True
+    output_to_experience_trace_ready: bool = True
+    diff_engine_ready: bool = True
+    readiness_engine_ready: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    candidate_count: int = 0
+    ready_for_training_dataset_build_count: int = 0
+    trace_count: int = 0
+    diff_count: int = 0
+    feedback_count: int = 0
+    risk_event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V735TrainingDatasetSafetyBase(V734SafetyBase):
+    training_dataset_manifest_generated: bool = True
+    training_examples_generated: bool = True
+    training_task_plan_generated: bool = True
+    training_gate_report_generated: bool = True
+    gate_reference_only: bool = True
+    quality_reference_only: bool = True
+    blocks_next_stage: bool = False
+    ready_candidate_only: bool = True
+    candidate_audit_checked: bool = True
+    source_trace_checked: bool = True
+    sensitive_metadata_scan_required: bool = True
+    sensitive_metadata_scan_passed: bool = True
+    experience_package_loaded_as_metadata: bool = True
+    skill_output_schema_loaded_as_metadata: bool = True
+    output_to_experience_trace_loaded_as_metadata: bool = True
+    loaded_package_auto_mutated: bool = False
+    lawyer_approved_package_auto_mutated: bool = False
+    runtime_package_auto_replaced: bool = False
+    formal_training_set_written: bool = False
+    real_training_triggered: bool = False
+    real_training_output_generated: bool = False
+    skill_updated: bool = False
+
+
+class TrainingDatasetBuildRequest(BaseModel):
+    actor_id: str = "owner_lawyer"
+    explicit_metadata_only_confirmation: bool = True
+    explicit_ready_candidate_only_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+    explicit_no_package_mutation_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class TrainingDatasetExample(V735TrainingDatasetSafetyBase):
+    example_id: str
+    candidate_id: str
+    source_output_id: str
+    source_output_group: str
+    source_output_type: str
+    source_package_id: str
+    source_package_version: str
+    source_experience_card_ids: list[str] = Field(default_factory=list)
+    source_feedback_ids: list[str] = Field(default_factory=list)
+    source_risk_event_ids: list[str] = Field(default_factory=list)
+    source_audit_ids: list[str] = Field(default_factory=list)
+    source_trace_ids: list[str] = Field(default_factory=list)
+    output_trace_id: str | None = None
+    output_trace_status: str = "pending"
+    skill_schema_id: str
+    skill_schema_version: str
+    training_input_summary: str
+    training_target_summary: str
+    training_task_type: str
+    gate_input_status: str
+    metadata_safety_status: str
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingTaskPlan(V735TrainingDatasetSafetyBase):
+    task_plan_id: str
+    dataset_id: str
+    task_plan_status: str = "planned_metadata_only"
+    target_skill_ids: list[str] = Field(default_factory=list)
+    source_package_ids: list[str] = Field(default_factory=list)
+    source_candidate_ids: list[str] = Field(default_factory=list)
+    example_count: int = 0
+    planned_steps: list[str] = Field(default_factory=list)
+    blocked_actions: list[str] = Field(default_factory=list)
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingDatasetManifest(V735TrainingDatasetSafetyBase):
+    dataset_id: str
+    dataset_version: str = "v7.35"
+    dataset_status: str
+    source_candidate_ids: list[str] = Field(default_factory=list)
+    source_package_ids: list[str] = Field(default_factory=list)
+    source_skill_ids: list[str] = Field(default_factory=list)
+    source_output_ids: list[str] = Field(default_factory=list)
+    source_trace_ids: list[str] = Field(default_factory=list)
+    source_audit_ids: list[str] = Field(default_factory=list)
+    candidate_count: int = 0
+    example_count: int = 0
+    examples: list[TrainingDatasetExample] = Field(default_factory=list)
+    task_plan: TrainingTaskPlan
+    audit_id: str
+    source_trace_id: str
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingDatasetManifestList(V735TrainingDatasetSafetyBase):
+    manifests: list[TrainingDatasetManifest] = Field(default_factory=list)
+    manifest_count: int = 0
+    latest_dataset_id: str | None = None
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingDatasetExampleList(V735TrainingDatasetSafetyBase):
+    dataset_id: str | None = None
+    examples: list[TrainingDatasetExample] = Field(default_factory=list)
+    example_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingGateReport(V735TrainingDatasetSafetyBase):
+    gate_report_id: str
+    dataset_id: str | None = None
+    gate_status: str
+    candidate_count: int = 0
+    example_count: int = 0
+    passed_checks: list[str] = Field(default_factory=list)
+    failed_checks: list[str] = Field(default_factory=list)
+    gate_summary: str
+    candidate_metadata_safe: bool = True
+    audit_source_trace_safe: bool = True
+    provider_boundary_safe: bool = True
+    package_mutation_safe: bool = True
+    training_boundary_safe: bool = True
+    recommended_next_action: str
+    created_at: str
+    audit_id: str
+    source_trace_id: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V735TrainingDatasetStatus(V735TrainingDatasetSafetyBase):
+    version: str = "v7.35"
+    status: str = "training_dataset_builder_ready"
+    dataset_builder_ready: bool = True
+    training_gate_ready: bool = True
+    ready_candidate_count: int = 0
+    dataset_manifest_count: int = 0
+    latest_dataset_id: str | None = None
+    latest_gate_status: str = "not_built"
+    example_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V736CodexTrainingDryRunSafetyBase(V735TrainingDatasetSafetyBase):
+    codex_skill_dry_run: bool = True
+    internal_training_simulation_only: bool = True
+    provider_access_attempted: bool = False
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    runtime_package_written: bool = False
+    runtime_package_replaced: bool = False
+    loaded_package_auto_mutated: bool = False
+    lawyer_approved_package_auto_mutated: bool = False
+    real_training_triggered: bool = False
+    real_training_output_generated: bool = False
+    skill_published: bool = False
+
+
+class CodexTrainingDryRunRequest(BaseModel):
+    actor_id: str = "owner_lawyer"
+    explicit_internal_dry_run_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_key_read_confirmation: bool = True
+    explicit_no_runtime_package_write_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class CodexTrainingDryRunLogEntry(V736CodexTrainingDryRunSafetyBase):
+    log_id: str
+    run_id: str
+    step_name: str
+    step_status: str
+    message: str
+    candidate_ids: list[str] = Field(default_factory=list)
+    dataset_id: str | None = None
+    gate_report_id: str | None = None
+    loaded_metadata_refs: list[dict[str, str]] = Field(default_factory=list)
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexTrainingDryRun(V736CodexTrainingDryRunSafetyBase):
+    run_id: str
+    run_status: str
+    dataset_id: str | None = None
+    gate_report_id: str | None = None
+    candidate_ids: list[str] = Field(default_factory=list)
+    example_count: int = 0
+    training_gate_status: str
+    loaded_metadata_refs: list[dict[str, str]] = Field(default_factory=list)
+    logs: list[CodexTrainingDryRunLogEntry] = Field(default_factory=list)
+    audit_id: str
+    source_trace_id: str
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexTrainingDryRunLogList(V736CodexTrainingDryRunSafetyBase):
+    logs: list[CodexTrainingDryRunLogEntry] = Field(default_factory=list)
+    log_count: int = 0
+    latest_run_id: str | None = None
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexTrainingDryRunGateReport(V736CodexTrainingDryRunSafetyBase):
+    gate_report_id: str
+    run_id: str | None = None
+    dataset_gate_report_id: str | None = None
+    gate_status: str
+    passed_checks: list[str] = Field(default_factory=list)
+    failed_checks: list[str] = Field(default_factory=list)
+    gate_summary: str
+    provider_boundary_safe: bool = True
+    key_boundary_safe: bool = True
+    runtime_package_boundary_safe: bool = True
+    training_boundary_safe: bool = True
+    publication_boundary_safe: bool = True
+    created_at: str
+    audit_id: str
+    source_trace_id: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V736CodexTrainingDryRunStatus(V736CodexTrainingDryRunSafetyBase):
+    version: str = "v7.36"
+    status: str = "codex_training_dryrun_ready"
+    dryrun_engine_ready: bool = True
+    dryrun_count: int = 0
+    latest_run_id: str | None = None
+    latest_run_status: str = "not_run"
+    latest_gate_status: str = "not_run"
+    log_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V737CodexTrainingRunSafetyBase(V736CodexTrainingDryRunSafetyBase):
+    codex_skill_internal_training_run: bool = True
+    internal_training_workspace_only: bool = True
+    local_cpu_gpu_mode_allowed: bool = True
+    internal_model_metadata_generated: bool = True
+    training_metrics_generated: bool = True
+    dryrun_log_compared: bool = True
+    external_provider_training_triggered: bool = False
+    provider_access_attempted: bool = False
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    runtime_package_written: bool = False
+    runtime_package_replaced: bool = False
+    loaded_package_auto_mutated: bool = False
+    lawyer_approved_package_auto_mutated: bool = False
+    formal_training_set_written: bool = False
+    real_training_output_exported: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+
+
+class CodexTrainingRunStartRequest(BaseModel):
+    actor_id: str = "owner_lawyer"
+    execution_mode: str = "internal_simulation"
+    explicit_internal_training_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_key_read_confirmation: bool = True
+    explicit_no_runtime_package_replace_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+    explicit_no_external_delivery_confirmation: bool = True
+
+
+class CodexInternalTrainingMetrics(V737CodexTrainingRunSafetyBase):
+    metrics_id: str
+    run_id: str
+    dataset_id: str | None = None
+    dryrun_id: str | None = None
+    candidate_count: int = 0
+    example_count: int = 0
+    log_alignment_score: float = 1.0
+    metadata_safety_score: float = 1.0
+    gate_pass_rate: float = 1.0
+    provider_call_count: int = 0
+    key_read_count: int = 0
+    runtime_package_mutation_count: int = 0
+    skill_publish_count: int = 0
+    internal_model_artifact_id: str
+    internal_model_artifact_status: str = "metadata_recorded_only"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexInternalTrainingLogEntry(V737CodexTrainingRunSafetyBase):
+    log_id: str
+    run_id: str
+    step_name: str
+    step_status: str
+    message: str
+    dryrun_log_ref: str | None = None
+    dataset_id: str | None = None
+    candidate_ids: list[str] = Field(default_factory=list)
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexInternalTrainingRun(V737CodexTrainingRunSafetyBase):
+    run_id: str
+    run_status: str
+    execution_mode: str = "internal_simulation"
+    dataset_id: str | None = None
+    dryrun_id: str | None = None
+    gate_report_id: str | None = None
+    candidate_ids: list[str] = Field(default_factory=list)
+    example_count: int = 0
+    metrics: CodexInternalTrainingMetrics
+    logs: list[CodexInternalTrainingLogEntry] = Field(default_factory=list)
+    audit_id: str
+    source_trace_id: str
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexInternalTrainingLogList(V737CodexTrainingRunSafetyBase):
+    logs: list[CodexInternalTrainingLogEntry] = Field(default_factory=list)
+    log_count: int = 0
+    latest_run_id: str | None = None
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexInternalTrainingGateReport(V737CodexTrainingRunSafetyBase):
+    gate_report_id: str
+    run_id: str | None = None
+    gate_status: str
+    passed_checks: list[str] = Field(default_factory=list)
+    failed_checks: list[str] = Field(default_factory=list)
+    metrics_summary: dict[str, float | int | str] = Field(default_factory=dict)
+    gate_summary: str
+    dryrun_log_comparison_status: str
+    provider_boundary_safe: bool = True
+    key_boundary_safe: bool = True
+    runtime_package_boundary_safe: bool = True
+    publication_boundary_safe: bool = True
+    audit_source_trace_safe: bool = True
+    created_at: str
+    audit_id: str
+    source_trace_id: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V737CodexInternalTrainingStatus(V737CodexTrainingRunSafetyBase):
+    version: str = "v7.37"
+    status: str = "codex_internal_training_run_ready"
+    training_run_engine_ready: bool = True
+    training_run_count: int = 0
+    latest_run_id: str | None = None
+    latest_run_status: str = "not_started"
+    latest_gate_status: str = "not_started"
+    latest_metrics_id: str | None = None
+    log_count: int = 0
+    warnings: list[str] = Field(default_factory=list)

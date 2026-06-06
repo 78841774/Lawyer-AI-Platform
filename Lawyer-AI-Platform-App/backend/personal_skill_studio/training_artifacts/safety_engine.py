@@ -137,3 +137,87 @@ def build_case_analysis_workbench_safety() -> dict:
         **v733_safety_flags(),
         "warnings": ["v7.33 case-analysis workbench safety is schema-driven metadata only."],
     }
+
+
+def build_case_analysis_improvement_safety() -> dict:
+    from personal_skill_studio.training_artifacts.case_analysis_improvement_candidate_registry import build_v734_status
+    from personal_skill_studio.training_artifacts.case_analysis_improvement_safety_engine import v734_safety_flags
+
+    status = build_v734_status()
+    return {
+        "safety_checklist": [
+            "仅把 v7.33 输出反馈与风险事件转换为经验改进候选 metadata",
+            "候选不自动修改已加载 experience package",
+            "候选不自动修改 lawyer-approved package 或 CaseAnalysisSkillOutputSchema",
+            "候选不自动触发训练、替换 runtime package、发布 Skill 或对外交付",
+            "后续训练数据集构建必须经过 v7.35 dataset builder 与 training gate",
+        ],
+        "candidate_count": status.get("candidate_count", 0),
+        "ready_for_training_dataset_build_count": status.get("ready_for_training_dataset_build_count", 0),
+        "all_safety_checks_passed": True,
+        **v734_safety_flags(),
+        "warnings": ["v7.34 case-analysis improvement safety is candidate metadata only."],
+    }
+
+
+def build_training_dataset_safety() -> dict:
+    from personal_skill_studio.training_artifacts.training_dataset_builder import get_training_dataset_status
+    from personal_skill_studio.training_artifacts.training_dataset_safety_engine import v735_safety_flags
+
+    status = get_training_dataset_status()
+    return {
+        "safety_checklist": [
+            "仅从 ready_for_training_dataset_build 的 v7.34 候选生成 dataset metadata",
+            "Training examples 是抽象输入/目标 metadata，不是 provider prompt",
+            "Training gate 仅作为 reference report，不触发训练或发布 Skill",
+            "不修改 loaded package、lawyer-approved package、runtime package 或 output schema",
+            "不调用 provider、不读取 key value、不写正式训练集、不对外交付",
+        ],
+        "ready_candidate_count": status.get("ready_candidate_count", 0),
+        "dataset_manifest_count": status.get("dataset_manifest_count", 0),
+        "all_safety_checks_passed": True,
+        **v735_safety_flags(),
+        "warnings": ["v7.35 training dataset safety is metadata-only and gate-reference-only."],
+    }
+
+
+def build_codex_training_dryrun_safety() -> dict:
+    from personal_skill_studio.training_artifacts.codex_training_dryrun_registry import get_codex_training_dryrun_status
+    from personal_skill_studio.training_artifacts.codex_training_dryrun_safety_engine import v736_safety_flags
+
+    status = get_codex_training_dryrun_status()
+    return {
+        "safety_checklist": [
+            "仅执行 Codex Skill internal dry run 模拟",
+            "Dry run 只加载 dataset、experience package、schema、trace 的 metadata 引用",
+            "不调用 provider、不读取 key value、不写入或替换 runtime package",
+            "不触发真实训练、不发布 Skill、不生成最终法律意见或正式报告",
+            "所有 log、audit、source trace 均为可追溯但脱敏 metadata",
+        ],
+        "dryrun_count": status.get("dryrun_count", 0),
+        "log_count": status.get("log_count", 0),
+        "all_safety_checks_passed": True,
+        **v736_safety_flags(),
+        "warnings": ["v7.36 dry run safety is internal simulation metadata only."],
+    }
+
+
+def build_codex_internal_training_run_safety() -> dict:
+    from personal_skill_studio.training_artifacts.codex_training_run_registry import get_codex_internal_training_status
+    from personal_skill_studio.training_artifacts.codex_training_run_safety_engine import v737_safety_flags
+
+    status = get_codex_internal_training_status()
+    return {
+        "safety_checklist": [
+            "仅启动 Codex Skill internal training run metadata",
+            "训练运行可模拟 internal/local CPU/GPU 模式，但不调用外部 provider",
+            "metrics 与 model artifact 只记录 metadata，不返回本地路径或 checkpoint",
+            "不读取 key value、不替换 runtime package、不发布 Skill",
+            "训练 log、audit、source trace 均为脱敏可追溯 metadata",
+        ],
+        "training_run_count": status.get("training_run_count", 0),
+        "log_count": status.get("log_count", 0),
+        "all_safety_checks_passed": True,
+        **v737_safety_flags(),
+        "warnings": ["v7.37 internal training run safety is owner-only metadata only."],
+    }

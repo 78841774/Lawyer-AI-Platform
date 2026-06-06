@@ -52,6 +52,7 @@ const workflowSteps = [
   "Skill Package 版本化封装与系统校验",
   "Internal Training / Experience Package Builder",
   "Practice Runtime Load Review Gate",
+  "案件分析反馈到经验改进候选",
   "受控案件分析",
   "实战 Pilot 与本人下载",
   "Pilot Dashboard 增强",
@@ -653,6 +654,14 @@ export default function PersonalProductionPage() {
             <MetricTile label="runtime_loading_deferred" value={String(providerCapabilities?.practice_runtime_loading_deferred_to_v731g ?? true)} />
             <MetricTile label="external_delivery" value="false" />
           </div>
+        </section>
+
+        <section className="rounded-md border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.34 Case Analysis Improvement Candidate</div>
+          <h2 className="mt-2 text-lg font-semibold">案件分析产出反馈到经验改进候选 metadata</h2>
+          <p className="mt-2 text-sm leading-6">
+            v7.34 将 v7.33 案件分析 output feedback、risk event、audit 与 source trace 映射为经验改进候选、readiness 与 diff summary。候选只供后续 v7.35 dataset builder 与 training gate 使用，不修改已加载 package、不自动训练、不替换 runtime package、不发布 Skill。
+          </p>
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">

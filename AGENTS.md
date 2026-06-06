@@ -59,7 +59,7 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: v7.34 Case Analysis Output Feedback to Experience Improvement Loop after v7.33 Case Analysis Skill Output Schema Driven Workbench Integration. Do not continue provider gateway stacking; v7.27 OCR / Document Provider Live Connection, v7.28 Unified Personal Live Connection Dashboard, v7.29 Legal / Enterprise API Live Connection, v7.30 Codex Training Scheme & Artifact Loader, v7.31 Execute Codex Training on Closed Case Samples, v7.31a Real Closed-Case Training Intake & Redaction Pipeline, v7.31b, v7.31c, v7.31d, v7.31e, v7.31f, v7.31g, v7.31h, v7.31i, v7.31j, v7.32, and v7.33 already exist in the current local worktree. Do not commit, tag, push, or release until the user explicitly approves release handling.
+Next Task: an explicitly scoped next personal-version sub-stage. Do not continue provider gateway stacking; v7.27 OCR / Document Provider Live Connection, v7.28 Unified Personal Live Connection Dashboard, v7.29 Legal / Enterprise API Live Connection, v7.30 Codex Training Scheme & Artifact Loader, v7.31 Execute Codex Training on Closed Case Samples, v7.31a Real Closed-Case Training Intake & Redaction Pipeline, v7.31b, v7.31c, v7.31d, v7.31e, v7.31f, v7.31g, v7.31h, v7.31i, v7.31j, v7.32, v7.33, v7.34, v7.35, v7.36, and v7.37 already exist in the current branch history. Do not commit, tag, push, or release future work until the user explicitly approves release handling.
 
 ## Codex Surgical Development Rules
 
@@ -420,7 +420,7 @@ Every Codex task must end with a concise report containing:
 - Lifecycle recompute is view-level only and must not mutate source packages, loaded packages, lawyer-approved packages, next package drafts, runtime policy, Skills, or training artifacts.
 - v7.32 must not read raw materials, OCR text, provider responses, local paths, or API keys.
 - v7.32 must not call providers, trigger real training, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
-- The next planned sub-stage is v7.33 Case Analysis Skill Output Schema Driven Workbench Integration.
+- v7.33 Case Analysis Skill Output Schema Driven Workbench Integration already exists in the current local worktree.
 
 ## v7.33 Case Analysis Skill Output Schema Driven Workbench Notes
 
@@ -429,7 +429,35 @@ Every Codex task must end with a concise report containing:
 - Feedback, risk events, audit, and source trace records are metadata-only and must not mutate packages, runtime policy, Skills, training artifacts, or delivery state.
 - v7.33 must not process unredacted lawyer work product, raw case material, OCR text, provider raw responses, local paths, or key values.
 - v7.33 must not call providers, trigger training, publish Skills, auto-generate next packages, generate final legal opinions, generate formal reports, create real PDF/DOCX files, create public links, send email, or trigger external delivery.
-- The next recommended sub-stage is v7.34 Case Analysis Output Feedback to Experience Improvement Loop.
+- v7.34 Case Analysis Output Feedback to Experience Improvement Candidate already exists in the current local worktree.
+
+## v7.34 Case Analysis Output Feedback to Experience Improvement Candidate Notes
+
+- v7.34 maps v7.33 case-analysis output feedback, risk event, audit, and source trace metadata into experience improvement candidate metadata.
+- v7.34 adds output-to-experience trace metadata, improvement diff summaries, readiness reports, audit, source trace, frontend panel, and regression checks.
+- v7.34 candidates are preparation metadata for later v7.35 Training Dataset Builder & Training Gate only.
+- v7.34 must not mutate loaded packages, lawyer-approved packages, CaseAnalysisSkillOutputSchema, runtime policy, Skills, training artifacts, or delivery state.
+- v7.34 must not call providers, read key values, trigger training, replace runtime packages, publish Skills, generate final legal opinions, generate formal reports, create real PDF/DOCX files, create public links, send email, or trigger external delivery.
+
+## v7.35 Training Dataset Builder & Training Gate Notes
+
+- v7.35 builds Training Dataset Manifest, abstracted Training Examples, Training Task Plan, and reference-only Training Gate Report metadata from v7.34 candidates marked `ready_for_training_dataset_build`.
+- Dataset examples must remain metadata-only, redacted / abstracted, source-traced, audited, and owner-only.
+- Gate output must keep `gate_reference_only=true` and `blocks_next_stage=false`.
+- v7.35 must not call providers, read key values, use open cases automatically, mutate loaded packages, mutate lawyer-approved packages, update Skills, publish Skills, trigger real training, generate final legal opinions, generate formal reports, create real files, public links, email, or external delivery.
+
+## v7.36 Codex Skill Training Dry Run Notes
+
+- v7.36 runs a Codex Skill Training Dry Run simulation over v7.35 dataset and gate metadata.
+- Dry-run logs, audit, source trace, candidate metadata, and gate summary must remain safe metadata only.
+- v7.36 must not call providers, read key values, access external training services, replace runtime packages, mutate loaded packages, mutate lawyer-approved packages, update Skills, publish Skills, generate final legal opinions, generate formal reports, create real files, public links, email, or external delivery.
+
+## v7.37 Codex Skill Internal Training Run Notes
+
+- v7.37 starts a controlled Codex Skill Internal Training Run metadata flow after v7.35 dataset generation and v7.36 dry-run validation.
+- Internal training run metrics, logs, dry-run comparison, audit, source trace, and gate reports must remain inside the internal training workspace as metadata-only records.
+- v7.37 must not call external providers, read key values, expose raw content, expose local paths, replace runtime packages, mutate loaded packages, mutate lawyer-approved packages, update Skills, publish Skills, generate final legal opinions, generate formal reports, create PDF/DOCX files, public links, email, or external delivery.
+- The next recommended action is user-confirmed release handling or an explicitly scoped next personal-version sub-stage.
 
 ## Product Design Closed Loop
 
