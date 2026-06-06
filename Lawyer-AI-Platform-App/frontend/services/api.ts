@@ -186,8 +186,14 @@ import type {
   PersonalMaterialAuditTimeline,
   PersonalMaterialLiveAuditTimeline,
   PersonalMaterialLiveGatewayStatus,
+  PersonalMaterialLiveGateList,
+  PersonalMaterialLiveGateMockRequest,
+  PersonalMaterialLiveGateStatus,
+  PersonalMaterialLiveHealthDryRun,
   PersonalMaterialLiveProviderConfig,
   PersonalMaterialLiveProviderConfigList,
+  PersonalMaterialLiveProviderReadiness,
+  PersonalMaterialLiveProviderReadinessList,
   PersonalMaterialLiveReviewActionRequest,
   PersonalMaterialLiveReviewActionResult,
   PersonalMaterialLiveReviewQueue,
@@ -195,6 +201,7 @@ import type {
   PersonalMaterialLiveRunRecord,
   PersonalMaterialLiveRunRequest,
   PersonalMaterialLiveSafetyStatus,
+  PersonalMaterialLiveSecretBoundary,
   PersonalMaterialLiveSourceTraceList,
   PersonalMaterialParseJobList,
   PersonalMaterialParseJobRecord,
@@ -248,6 +255,54 @@ import type {
   OwnerOutputSafetyStatus,
   OwnerOutputSourceTraceList,
   OwnerOutputStatus,
+  IssueLogItem,
+  IssueLogList,
+  IssueLogMockRequest,
+  OptimizationBacklogItem,
+  OptimizationBacklogList,
+  OptimizationBacklogMockRequest,
+  QualityReview,
+  SafetyConfirmation,
+  StageObservation,
+  StageObservationList,
+  StageObservationMockRequest,
+  TrialAuditTimeline,
+  TrialChecklist,
+  TrialReadinessStatus,
+  TrialSafetyStatus,
+  TrialSession,
+  TrialSessionList,
+  TrialSessionMockRequest,
+  CategorySummaryList,
+  LiveGateList,
+  LiveGateMockRequest,
+  LiveGateStatus,
+  LiveConnectionAuditTimeline,
+  LiveConnectionHealthDryRun,
+  LiveConnectionLiveGate,
+  LiveConnectionProvider,
+  LiveConnectionProviderList,
+  LiveConnectionRunList,
+  LiveConnectionRunRecord,
+  LiveConnectionRunRequest,
+  LiveConnectionRuntimeList,
+  LiveConnectionSafetyStatus,
+  LiveConnectionSecretBoundary,
+  LiveConnectionStatus,
+  LiveConnectionUsagePolicy,
+  LegalEnterpriseCategorySummaryList,
+  LegalEnterpriseGenericResponse,
+  LegalEnterpriseProvider,
+  LegalEnterpriseProviderList,
+  LegalEnterpriseStatus,
+  ProviderAuditTimeline,
+  ProviderHealthDryRun,
+  ProviderList,
+  ProviderMetadata,
+  ProviderSafetyStatus,
+  ProviderStatus,
+  SecretBoundaryStatus,
+  UsagePolicy,
   PilotAuditTimeline,
   PilotOutputList,
   PilotOutputMockRequest,
@@ -355,6 +410,30 @@ import type {
   SkillStudioSafetyStatus,
   SkillStudioSourceTrace,
   SkillStudioSourceTraceList,
+  TrainingArtifactCaseCauseMatchRequest,
+  TrainingArtifactCaseCauseMatchResult,
+  TrainingArtifactLoadDryRun,
+  TrainingArtifactLoadDryRunList,
+  TrainingArtifactLoadDryRunRequest,
+  TrainingArtifactManifestList,
+  TrainingArtifactSafetyStatus,
+  TrainingArtifactSkillContext,
+  TrainingArtifactSkillContextList,
+  TrainingArtifactStatus,
+  CodexTrainingRun,
+  CodexTrainingRunList,
+  CodexTrainingRunLoadDryRunResult,
+  CodexTrainingRunRequest,
+  CaseCauseClassification,
+  CodexTrainingScheme,
+  CaseCauseNode,
+  CaseCauseTaxonomyManifest,
+  RealClosedCaseIntakeStatus,
+  RealClosedCaseTrainingIntakeList,
+  RealClosedCaseTrainingIntakeRecord,
+  RealClosedCaseTrainingIntakeRequest,
+  RedactionReport,
+  TrainingSampleSegment,
   SkillTestCaseDraft,
   SkillTestCaseDraftList,
   SourceBundleList,
@@ -621,8 +700,14 @@ export type {
   PersonalMaterialAuditTimeline,
   PersonalMaterialLiveAuditTimeline,
   PersonalMaterialLiveGatewayStatus,
+  PersonalMaterialLiveGateList,
+  PersonalMaterialLiveGateMockRequest,
+  PersonalMaterialLiveGateStatus,
+  PersonalMaterialLiveHealthDryRun,
   PersonalMaterialLiveProviderConfig,
   PersonalMaterialLiveProviderConfigList,
+  PersonalMaterialLiveProviderReadiness,
+  PersonalMaterialLiveProviderReadinessList,
   PersonalMaterialLiveReviewActionRequest,
   PersonalMaterialLiveReviewActionResult,
   PersonalMaterialLiveReviewQueue,
@@ -630,6 +715,7 @@ export type {
   PersonalMaterialLiveRunRecord,
   PersonalMaterialLiveRunRequest,
   PersonalMaterialLiveSafetyStatus,
+  PersonalMaterialLiveSecretBoundary,
   PersonalMaterialLiveSourceTraceList,
   PersonalMaterialParseJobList,
   PersonalMaterialParseJobRecord,
@@ -640,6 +726,24 @@ export type {
   PersonalMaterialRuntimeStatus,
   PersonalMaterialSafetyStatus,
   PersonalMaterialSourceTraceList,
+  LiveConnectionAuditTimeline,
+  LiveConnectionHealthDryRun,
+  LiveConnectionLiveGate,
+  LiveConnectionProvider,
+  LiveConnectionProviderList,
+  LiveConnectionRunList,
+  LiveConnectionRunRecord,
+  LiveConnectionRunRequest,
+  LiveConnectionRuntimeList,
+  LiveConnectionSafetyStatus,
+  LiveConnectionSecretBoundary,
+  LiveConnectionStatus,
+  LiveConnectionUsagePolicy,
+  LegalEnterpriseCategorySummaryList,
+  LegalEnterpriseGenericResponse,
+  LegalEnterpriseProvider,
+  LegalEnterpriseProviderList,
+  LegalEnterpriseStatus,
   PersonalEnterpriseQueryList,
   PersonalEnterpriseQueryMockRequest,
   PersonalEnterpriseQueryResult,
@@ -722,6 +826,30 @@ export type {
   SkillStudioSafetyStatus,
   SkillStudioSourceTrace,
   SkillStudioSourceTraceList,
+  TrainingArtifactCaseCauseMatchRequest,
+  TrainingArtifactCaseCauseMatchResult,
+  TrainingArtifactLoadDryRun,
+  TrainingArtifactLoadDryRunList,
+  TrainingArtifactLoadDryRunRequest,
+  TrainingArtifactManifestList,
+  TrainingArtifactSafetyStatus,
+  TrainingArtifactSkillContext,
+  TrainingArtifactSkillContextList,
+  TrainingArtifactStatus,
+  CodexTrainingRun,
+  CodexTrainingRunList,
+  CodexTrainingRunLoadDryRunResult,
+  CodexTrainingRunRequest,
+  CaseCauseClassification,
+  CodexTrainingScheme,
+  CaseCauseNode,
+  CaseCauseTaxonomyManifest,
+  RealClosedCaseIntakeStatus,
+  RealClosedCaseTrainingIntakeList,
+  RealClosedCaseTrainingIntakeRecord,
+  RealClosedCaseTrainingIntakeRequest,
+  RedactionReport,
+  TrainingSampleSegment,
   SkillTestCaseDraft,
   SkillTestCaseDraftList,
   SourceBundleList,
@@ -1658,9 +1786,22 @@ export const personalMaterialRuntimeApi = {
   getAudit: () => request<PersonalMaterialAuditTimeline>("/personal-material-runtime/audit"),
   getSafety: () => request<PersonalMaterialSafetyStatus>("/personal-material-runtime/safety"),
   getLiveStatus: () => request<PersonalMaterialLiveGatewayStatus>("/personal-material-runtime/live/status"),
-  getLiveProviders: () => request<PersonalMaterialLiveProviderConfigList>("/personal-material-runtime/live/providers"),
+  getLiveProviders: () => request<PersonalMaterialLiveProviderReadinessList>("/personal-material-runtime/live/providers"),
   getLiveProvider: (providerId: string) =>
-    request<PersonalMaterialLiveProviderConfig>(`/personal-material-runtime/live/providers/${encodeURIComponent(providerId)}`),
+    request<PersonalMaterialLiveProviderReadiness>(`/personal-material-runtime/live/providers/${encodeURIComponent(providerId)}`),
+  getLiveSecretBoundary: (providerId: string) =>
+    request<PersonalMaterialLiveSecretBoundary>(
+      `/personal-material-runtime/live/providers/${encodeURIComponent(providerId)}/secret-boundary`
+    ),
+  getLiveGate: (providerId: string) =>
+    request<PersonalMaterialLiveGateStatus>(`/personal-material-runtime/live/providers/${encodeURIComponent(providerId)}/live-gate`),
+  getLiveHealthDryRun: (providerId: string) =>
+    request<PersonalMaterialLiveHealthDryRun>(
+      `/personal-material-runtime/live/providers/${encodeURIComponent(providerId)}/health/dry-run`
+    ),
+  createLiveGateMock: (payload: PersonalMaterialLiveGateMockRequest) =>
+    postJson<PersonalMaterialLiveGateStatus>("/personal-material-runtime/live-gates/mock", payload),
+  listLiveGates: () => request<PersonalMaterialLiveGateList>("/personal-material-runtime/live-gates"),
   createDocumentLiveDryRun: (payload: PersonalMaterialLiveRunRequest) =>
     postJson<PersonalMaterialLiveRunRecord>("/personal-material-runtime/live/document/dry-run", payload),
   createDocumentLiveRun: (payload: PersonalMaterialLiveRunRequest) =>
@@ -1789,6 +1930,91 @@ export const personalSkillStudioApi = {
   getFinalDraftOwnerDownload: (downloadId: string) =>
     request<SkillStudioFinalOwnerDownload>(`/personal-skill-studio/final-draft-downloads/${encodeURIComponent(downloadId)}`),
   getFinalDraftSafety: () => request<SkillStudioSafetyStatus>("/personal-skill-studio/final-drafts-safety"),
+  getTrainingArtifactStatus: () => request<TrainingArtifactStatus>("/personal-skill-studio/training-artifacts/status"),
+  getTrainingArtifactScheme: () => request<CodexTrainingScheme>("/personal-skill-studio/training-artifacts/scheme"),
+  getTrainingArtifactCaseCauseTaxonomy: () =>
+    request<CaseCauseTaxonomyManifest>("/personal-skill-studio/training-artifacts/case-cause-taxonomy"),
+  getTrainingArtifactCaseCauseNode: (caseCauseId: string) =>
+    request<CaseCauseNode>(`/personal-skill-studio/training-artifacts/case-cause-taxonomy/${encodeURIComponent(caseCauseId)}`),
+  listTrainingArtifactPackages: () => request<TrainingArtifactManifestList>("/personal-skill-studio/training-artifacts/packages"),
+  getTrainingArtifactPackage: (packageId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/packages/${encodeURIComponent(packageId)}`),
+  listTrainingArtifactSkills: () => request<TrainingArtifactManifestList>("/personal-skill-studio/training-artifacts/skills"),
+  getTrainingArtifactSkill: (skillId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/skills/${encodeURIComponent(skillId)}`),
+  listTrainingArtifactEvaluations: () => request<TrainingArtifactManifestList>("/personal-skill-studio/training-artifacts/evaluations"),
+  listTrainingArtifactGates: () => request<TrainingArtifactManifestList>("/personal-skill-studio/training-artifacts/gates"),
+  listTrainingArtifactTestCases: () => request<TrainingArtifactManifestList>("/personal-skill-studio/training-artifacts/test-cases"),
+  listTrainingArtifactLoadingManifests: () =>
+    request<TrainingArtifactManifestList>("/personal-skill-studio/training-artifacts/loading-manifests"),
+  matchTrainingArtifactCaseCause: (payload: TrainingArtifactCaseCauseMatchRequest) =>
+    postJson<TrainingArtifactCaseCauseMatchResult>("/personal-skill-studio/training-artifacts/case-cause-match/mock", payload),
+  createTrainingArtifactLoadDryRun: (payload: TrainingArtifactLoadDryRunRequest) =>
+    postJson<TrainingArtifactLoadDryRun>("/personal-skill-studio/training-artifacts/load-dry-run/mock", payload),
+  listTrainingArtifactLoadDryRuns: () => request<TrainingArtifactLoadDryRunList>("/personal-skill-studio/training-artifacts/load-dry-runs"),
+  getTrainingArtifactLoadDryRun: (runId: string) =>
+    request<TrainingArtifactLoadDryRun>(`/personal-skill-studio/training-artifacts/load-dry-runs/${encodeURIComponent(runId)}`),
+  listTrainingArtifactSkillContexts: () =>
+    request<TrainingArtifactSkillContextList>("/personal-skill-studio/training-artifacts/skill-contexts"),
+  getTrainingArtifactSkillContext: (skillContextId: string) =>
+    request<TrainingArtifactSkillContext>(`/personal-skill-studio/training-artifacts/skill-contexts/${encodeURIComponent(skillContextId)}`),
+  getTrainingArtifactAudit: () => request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/audit"),
+  getTrainingArtifactSafety: () => request<TrainingArtifactSafetyStatus>("/personal-skill-studio/training-artifacts/safety"),
+  listCodexTrainingRuns: () => request<CodexTrainingRunList>("/personal-skill-studio/training-artifacts/training-runs"),
+  createCodexTrainingRun: (payload: CodexTrainingRunRequest) =>
+    postJson<CodexTrainingRun>("/personal-skill-studio/training-artifacts/training-runs/mock", payload),
+  getCodexTrainingRun: (runId: string) =>
+    request<CodexTrainingRun>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}`),
+  getCodexTrainingRunSummary: (runId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/summary`),
+  getCodexTrainingRunCaseCausePackages: (runId: string) =>
+    request<TrainingArtifactManifestList>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/case-cause-packages`),
+  getCodexTrainingRunGeneratedSkills: (runId: string) =>
+    request<TrainingArtifactManifestList>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/generated-skills`),
+  getCodexTrainingRunEvaluations: (runId: string) =>
+    request<TrainingArtifactManifestList>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/evaluations`),
+  getCodexTrainingRunGates: (runId: string) =>
+    request<TrainingArtifactManifestList>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/gates`),
+  getCodexTrainingRunTestCases: (runId: string) =>
+    request<TrainingArtifactManifestList>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/test-cases`),
+  getCodexTrainingRunLoadingManifest: (runId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/loading-manifest`),
+  createCodexTrainingRunLoadDryRun: (runId: string) =>
+    postJson<CodexTrainingRunLoadDryRunResult>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/load-dry-run/mock`, {}),
+  getCodexTrainingRunAudit: (runId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/audit`),
+  getCodexTrainingRunSafety: (runId: string) =>
+    request<TrainingArtifactSafetyStatus>(`/personal-skill-studio/training-artifacts/training-runs/${encodeURIComponent(runId)}/safety`),
+  getRealClosedCaseIntakeStatus: () =>
+    request<RealClosedCaseIntakeStatus>("/personal-skill-studio/training-artifacts/real-closed-case-intake/status"),
+  createRealClosedCaseIntake: (payload: RealClosedCaseTrainingIntakeRequest) =>
+    postJson<RealClosedCaseTrainingIntakeRecord>("/personal-skill-studio/training-artifacts/real-closed-case-intake/mock", payload),
+  listRealClosedCaseIntakes: () =>
+    request<RealClosedCaseTrainingIntakeList>("/personal-skill-studio/training-artifacts/real-closed-case-intakes"),
+  getRealClosedCaseIntake: (intakeId: string) =>
+    request<RealClosedCaseTrainingIntakeRecord>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}`),
+  getRealClosedCaseRedactionReport: (intakeId: string) =>
+    request<RedactionReport>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/redaction-report`),
+  createRealClosedCaseRedaction: (intakeId: string) =>
+    postJson<RedactionReport>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/redaction/mock`, {}),
+  getRealClosedCaseClassification: (intakeId: string) =>
+    request<CaseCauseClassification>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/case-cause-classification`),
+  createRealClosedCaseClassification: (intakeId: string) =>
+    postJson<CaseCauseClassification>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/case-cause-classification/mock`, {}),
+  getRealClosedCaseSegments: (intakeId: string) =>
+    request<Record<string, unknown> & { segments: TrainingSampleSegment[] }>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/segments`),
+  createRealClosedCaseSegments: (intakeId: string) =>
+    postJson<Record<string, unknown> & { segments: TrainingSampleSegment[] }>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/segments/mock`, {}),
+  getRealClosedCaseReviewQueue: (intakeId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/review-queue`),
+  submitRealClosedCaseReviewAction: (intakeId: string, reviewItemId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/review-queue/${encodeURIComponent(reviewItemId)}/actions/mock`, payload),
+  getRealClosedCaseSourceTraces: (intakeId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/source-traces`),
+  getRealClosedCaseAudit: (intakeId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/audit`),
+  getRealClosedCaseSafety: (intakeId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/safety`),
   listSourceTraces: () => request<SkillStudioSourceTraceList>("/personal-skill-studio/source-traces"),
   getSourceTrace: (id: string) => request<SkillStudioSourceTrace>(`/personal-skill-studio/source-traces/${encodeURIComponent(id)}`),
   getAudit: () => request<SkillStudioAuditTimeline>("/personal-skill-studio/audit"),
@@ -1968,6 +2194,118 @@ export const personalOwnerOutputCenterApi = {
     request<OwnerOutputDownloadRecord>(`/personal-owner-output-center/downloads/${encodeURIComponent(downloadId)}`),
   getAudit: () => request<OwnerOutputAuditTimeline>("/personal-owner-output-center/audit"),
   getSafety: () => request<OwnerOutputSafetyStatus>("/personal-owner-output-center/safety")
+};
+
+export const personalTrialReadinessApi = {
+  getStatus: () => request<TrialReadinessStatus>("/personal-trial-readiness/status"),
+  getChecklist: () => request<TrialChecklist>("/personal-trial-readiness/checklist"),
+  getSafety: () => request<TrialSafetyStatus>("/personal-trial-readiness/safety"),
+  createTrial: (payload: TrialSessionMockRequest) => postJson<TrialSession>("/personal-trial-readiness/trials/mock", payload),
+  listTrials: () => request<TrialSessionList>("/personal-trial-readiness/trials"),
+  getTrial: (trialId: string) => request<TrialSession>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}`),
+  getTrialChecklist: (trialId: string) => request<TrialChecklist>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/checklist`),
+  createTrialChecklist: (trialId: string) => postJson<TrialChecklist>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/checklist/mock`),
+  listObservations: (trialId: string) => request<StageObservationList>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/observations`),
+  createObservation: (trialId: string, payload: StageObservationMockRequest) =>
+    postJson<StageObservation>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/observations/mock`, payload),
+  listTrialIssues: (trialId: string) => request<IssueLogList>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/issues`),
+  createIssue: (trialId: string, payload: IssueLogMockRequest) =>
+    postJson<IssueLogItem>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/issues/mock`, payload),
+  listIssues: () => request<IssueLogList>("/personal-trial-readiness/issues"),
+  getIssue: (issueId: string) => request<IssueLogItem>(`/personal-trial-readiness/issues/${encodeURIComponent(issueId)}`),
+  getQuality: (trialId: string) => request<QualityReview>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/quality`),
+  createQuality: (trialId: string) => postJson<QualityReview>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/quality/mock`),
+  getSafetyConfirmation: (trialId: string) =>
+    request<SafetyConfirmation>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/safety-confirmation`),
+  createSafetyConfirmation: (trialId: string) =>
+    postJson<SafetyConfirmation>(`/personal-trial-readiness/trials/${encodeURIComponent(trialId)}/safety-confirmation/mock`),
+  listOptimizationBacklog: () => request<OptimizationBacklogList>("/personal-trial-readiness/optimization-backlog"),
+  createOptimizationBacklog: (payload: OptimizationBacklogMockRequest) =>
+    postJson<OptimizationBacklogItem>("/personal-trial-readiness/optimization-backlog/mock", payload),
+  getAudit: () => request<TrialAuditTimeline>("/personal-trial-readiness/audit")
+};
+
+export const personalProviderReadinessApi = {
+  getStatus: () => request<ProviderStatus>("/personal-provider-readiness/status"),
+  listProviders: () => request<ProviderList>("/personal-provider-readiness/providers"),
+  getProvider: (providerId: string) =>
+    request<ProviderMetadata>(`/personal-provider-readiness/providers/${encodeURIComponent(providerId)}`),
+  getSecretBoundary: (providerId: string) =>
+    request<SecretBoundaryStatus>(`/personal-provider-readiness/providers/${encodeURIComponent(providerId)}/secret-boundary`),
+  getLiveGate: (providerId: string) =>
+    request<LiveGateStatus>(`/personal-provider-readiness/providers/${encodeURIComponent(providerId)}/live-gate`),
+  getUsagePolicy: (providerId: string) =>
+    request<UsagePolicy>(`/personal-provider-readiness/providers/${encodeURIComponent(providerId)}/usage-policy`),
+  getHealthDryRun: (providerId: string) =>
+    request<ProviderHealthDryRun>(`/personal-provider-readiness/providers/${encodeURIComponent(providerId)}/health/dry-run`),
+  listCategories: () => request<CategorySummaryList>("/personal-provider-readiness/categories"),
+  listCategoryProviders: (category: string) =>
+    request<ProviderList>(`/personal-provider-readiness/categories/${encodeURIComponent(category)}/providers`),
+  createLiveGateMock: (payload: LiveGateMockRequest) =>
+    postJson<LiveGateStatus>("/personal-provider-readiness/live-gates/mock", payload),
+  listLiveGates: () => request<LiveGateList>("/personal-provider-readiness/live-gates"),
+  getAudit: () => request<ProviderAuditTimeline>("/personal-provider-readiness/audit"),
+  getSafety: () => request<ProviderSafetyStatus>("/personal-provider-readiness/safety")
+};
+
+export const personalLiveConnectionApi = {
+  getStatus: () => request<LiveConnectionStatus>("/personal-live-connection/status"),
+  listRuntimes: () => request<LiveConnectionRuntimeList>("/personal-live-connection/runtimes"),
+  listProviders: () => request<LiveConnectionProviderList>("/personal-live-connection/providers"),
+  getProvider: (providerId: string) =>
+    request<LiveConnectionProvider>(`/personal-live-connection/providers/${encodeURIComponent(providerId)}`),
+  getSecretBoundary: (providerId: string) =>
+    request<LiveConnectionSecretBoundary>(`/personal-live-connection/providers/${encodeURIComponent(providerId)}/secret-boundary`),
+  getLiveGate: (providerId: string) =>
+    request<LiveConnectionLiveGate>(`/personal-live-connection/providers/${encodeURIComponent(providerId)}/live-gate`),
+  getUsagePolicy: (providerId: string) =>
+    request<LiveConnectionUsagePolicy>(`/personal-live-connection/providers/${encodeURIComponent(providerId)}/usage-policy`),
+  getHealthDryRun: (providerId: string) =>
+    request<LiveConnectionHealthDryRun>(`/personal-live-connection/providers/${encodeURIComponent(providerId)}/health/dry-run`),
+  createDryRun: (payload: LiveConnectionRunRequest) =>
+    postJson<LiveConnectionRunRecord>("/personal-live-connection/runs/dry-run", payload),
+  createRun: (payload: LiveConnectionRunRequest) => postJson<LiveConnectionRunRecord>("/personal-live-connection/runs", payload),
+  listRuns: () => request<LiveConnectionRunList>("/personal-live-connection/runs"),
+  getRun: (runId: string) => request<LiveConnectionRunRecord>(`/personal-live-connection/runs/${encodeURIComponent(runId)}`),
+  getAudit: () => request<LiveConnectionAuditTimeline>("/personal-live-connection/audit"),
+  getSafety: () => request<LiveConnectionSafetyStatus>("/personal-live-connection/safety")
+};
+
+export const personalLegalEnterpriseApi = {
+  getStatus: () => request<LegalEnterpriseStatus>("/personal-legal-enterprise/status"),
+  listProviders: () => request<LegalEnterpriseProviderList>("/personal-legal-enterprise/providers"),
+  getProvider: (providerId: string) =>
+    request<LegalEnterpriseProvider>(`/personal-legal-enterprise/providers/${encodeURIComponent(providerId)}`),
+  getSecretBoundary: (providerId: string) =>
+    request<LegalEnterpriseGenericResponse>(`/personal-legal-enterprise/providers/${encodeURIComponent(providerId)}/secret-boundary`),
+  getLiveGate: (providerId: string) =>
+    request<LegalEnterpriseGenericResponse>(`/personal-legal-enterprise/providers/${encodeURIComponent(providerId)}/live-gate`),
+  getUsagePolicy: (providerId: string) =>
+    request<LegalEnterpriseGenericResponse>(`/personal-legal-enterprise/providers/${encodeURIComponent(providerId)}/usage-policy`),
+  getHealthDryRun: (providerId: string) =>
+    request<LegalEnterpriseGenericResponse>(`/personal-legal-enterprise/providers/${encodeURIComponent(providerId)}/health/dry-run`),
+  listCategories: () => request<LegalEnterpriseCategorySummaryList>("/personal-legal-enterprise/categories"),
+  listCategoryProviders: (category: string) =>
+    request<LegalEnterpriseProviderList>(`/personal-legal-enterprise/categories/${encodeURIComponent(category)}/providers`),
+  createLiveGateMock: (payload: Record<string, unknown>) =>
+    postJson<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/live-gates/mock", payload),
+  listLiveGates: () => request<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/live-gates"),
+  createLegalSearchDryRun: (payload: Record<string, unknown>) =>
+    postJson<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/legal-search/dry-run", payload),
+  createLegalSearchRun: (payload: Record<string, unknown>) =>
+    postJson<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/legal-search/runs", payload),
+  listLegalSearchRuns: () => request<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/legal-search/runs"),
+  createEnterpriseLookupDryRun: (payload: Record<string, unknown>) =>
+    postJson<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/enterprise-lookup/dry-run", payload),
+  createEnterpriseLookupRun: (payload: Record<string, unknown>) =>
+    postJson<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/enterprise-lookup/runs", payload),
+  listEnterpriseLookupRuns: () => request<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/enterprise-lookup/runs"),
+  getReviewQueue: () => request<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/review-queue"),
+  submitReviewAction: (reviewItemId: string, payload: Record<string, unknown>) =>
+    postJson<LegalEnterpriseGenericResponse>(`/personal-legal-enterprise/review-queue/${encodeURIComponent(reviewItemId)}/actions/mock`, payload),
+  getSourceTraces: () => request<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/source-traces"),
+  getAudit: () => request<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/audit"),
+  getSafety: () => request<LegalEnterpriseGenericResponse>("/personal-legal-enterprise/safety")
 };
 
 export const personalDeliveryPacketApi = {
@@ -2188,6 +2526,11 @@ export const getPersonalMaterialSafety = personalMaterialRuntimeApi.getSafety;
 export const getPersonalMaterialLiveStatus = personalMaterialRuntimeApi.getLiveStatus;
 export const getPersonalMaterialLiveProviders = personalMaterialRuntimeApi.getLiveProviders;
 export const getPersonalMaterialLiveProvider = personalMaterialRuntimeApi.getLiveProvider;
+export const getPersonalMaterialLiveSecretBoundary = personalMaterialRuntimeApi.getLiveSecretBoundary;
+export const getPersonalMaterialLiveGate = personalMaterialRuntimeApi.getLiveGate;
+export const getPersonalMaterialLiveHealthDryRun = personalMaterialRuntimeApi.getLiveHealthDryRun;
+export const createPersonalMaterialLiveGateMock = personalMaterialRuntimeApi.createLiveGateMock;
+export const listPersonalMaterialLiveGates = personalMaterialRuntimeApi.listLiveGates;
 export const createPersonalMaterialDocumentLiveDryRun = personalMaterialRuntimeApi.createDocumentLiveDryRun;
 export const createPersonalMaterialDocumentLiveRun = personalMaterialRuntimeApi.createDocumentLiveRun;
 export const listPersonalMaterialDocumentLiveRuns = personalMaterialRuntimeApi.listDocumentLiveRuns;
@@ -2260,6 +2603,54 @@ export const createPersonalSkillFinalDraftOwnerDownload = personalSkillStudioApi
 export const listPersonalSkillFinalDraftOwnerDownloads = personalSkillStudioApi.listFinalDraftOwnerDownloads;
 export const getPersonalSkillFinalDraftOwnerDownload = personalSkillStudioApi.getFinalDraftOwnerDownload;
 export const getPersonalSkillFinalDraftSafety = personalSkillStudioApi.getFinalDraftSafety;
+export const getPersonalTrainingArtifactStatus = personalSkillStudioApi.getTrainingArtifactStatus;
+export const getPersonalTrainingArtifactScheme = personalSkillStudioApi.getTrainingArtifactScheme;
+export const getPersonalTrainingArtifactCaseCauseTaxonomy = personalSkillStudioApi.getTrainingArtifactCaseCauseTaxonomy;
+export const getPersonalTrainingArtifactCaseCauseNode = personalSkillStudioApi.getTrainingArtifactCaseCauseNode;
+export const listPersonalTrainingArtifactPackages = personalSkillStudioApi.listTrainingArtifactPackages;
+export const getPersonalTrainingArtifactPackage = personalSkillStudioApi.getTrainingArtifactPackage;
+export const listPersonalTrainingArtifactSkills = personalSkillStudioApi.listTrainingArtifactSkills;
+export const getPersonalTrainingArtifactSkill = personalSkillStudioApi.getTrainingArtifactSkill;
+export const listPersonalTrainingArtifactEvaluations = personalSkillStudioApi.listTrainingArtifactEvaluations;
+export const listPersonalTrainingArtifactGates = personalSkillStudioApi.listTrainingArtifactGates;
+export const listPersonalTrainingArtifactTestCases = personalSkillStudioApi.listTrainingArtifactTestCases;
+export const listPersonalTrainingArtifactLoadingManifests = personalSkillStudioApi.listTrainingArtifactLoadingManifests;
+export const matchPersonalTrainingArtifactCaseCause = personalSkillStudioApi.matchTrainingArtifactCaseCause;
+export const createPersonalTrainingArtifactLoadDryRun = personalSkillStudioApi.createTrainingArtifactLoadDryRun;
+export const listPersonalTrainingArtifactLoadDryRuns = personalSkillStudioApi.listTrainingArtifactLoadDryRuns;
+export const getPersonalTrainingArtifactLoadDryRun = personalSkillStudioApi.getTrainingArtifactLoadDryRun;
+export const listPersonalTrainingArtifactSkillContexts = personalSkillStudioApi.listTrainingArtifactSkillContexts;
+export const getPersonalTrainingArtifactSkillContext = personalSkillStudioApi.getTrainingArtifactSkillContext;
+export const getPersonalTrainingArtifactAudit = personalSkillStudioApi.getTrainingArtifactAudit;
+export const getPersonalTrainingArtifactSafety = personalSkillStudioApi.getTrainingArtifactSafety;
+export const listPersonalCodexTrainingRuns = personalSkillStudioApi.listCodexTrainingRuns;
+export const createPersonalCodexTrainingRun = personalSkillStudioApi.createCodexTrainingRun;
+export const getPersonalCodexTrainingRun = personalSkillStudioApi.getCodexTrainingRun;
+export const getPersonalCodexTrainingRunSummary = personalSkillStudioApi.getCodexTrainingRunSummary;
+export const getPersonalCodexTrainingRunCaseCausePackages = personalSkillStudioApi.getCodexTrainingRunCaseCausePackages;
+export const getPersonalCodexTrainingRunGeneratedSkills = personalSkillStudioApi.getCodexTrainingRunGeneratedSkills;
+export const getPersonalCodexTrainingRunEvaluations = personalSkillStudioApi.getCodexTrainingRunEvaluations;
+export const getPersonalCodexTrainingRunGates = personalSkillStudioApi.getCodexTrainingRunGates;
+export const getPersonalCodexTrainingRunTestCases = personalSkillStudioApi.getCodexTrainingRunTestCases;
+export const getPersonalCodexTrainingRunLoadingManifest = personalSkillStudioApi.getCodexTrainingRunLoadingManifest;
+export const createPersonalCodexTrainingRunLoadDryRun = personalSkillStudioApi.createCodexTrainingRunLoadDryRun;
+export const getPersonalCodexTrainingRunAudit = personalSkillStudioApi.getCodexTrainingRunAudit;
+export const getPersonalCodexTrainingRunSafety = personalSkillStudioApi.getCodexTrainingRunSafety;
+export const getPersonalRealClosedCaseIntakeStatus = personalSkillStudioApi.getRealClosedCaseIntakeStatus;
+export const createPersonalRealClosedCaseIntake = personalSkillStudioApi.createRealClosedCaseIntake;
+export const listPersonalRealClosedCaseIntakes = personalSkillStudioApi.listRealClosedCaseIntakes;
+export const getPersonalRealClosedCaseIntake = personalSkillStudioApi.getRealClosedCaseIntake;
+export const getPersonalRealClosedCaseRedactionReport = personalSkillStudioApi.getRealClosedCaseRedactionReport;
+export const createPersonalRealClosedCaseRedaction = personalSkillStudioApi.createRealClosedCaseRedaction;
+export const getPersonalRealClosedCaseClassification = personalSkillStudioApi.getRealClosedCaseClassification;
+export const createPersonalRealClosedCaseClassification = personalSkillStudioApi.createRealClosedCaseClassification;
+export const getPersonalRealClosedCaseSegments = personalSkillStudioApi.getRealClosedCaseSegments;
+export const createPersonalRealClosedCaseSegments = personalSkillStudioApi.createRealClosedCaseSegments;
+export const getPersonalRealClosedCaseReviewQueue = personalSkillStudioApi.getRealClosedCaseReviewQueue;
+export const submitPersonalRealClosedCaseReviewAction = personalSkillStudioApi.submitRealClosedCaseReviewAction;
+export const getPersonalRealClosedCaseSourceTraces = personalSkillStudioApi.getRealClosedCaseSourceTraces;
+export const getPersonalRealClosedCaseAudit = personalSkillStudioApi.getRealClosedCaseAudit;
+export const getPersonalRealClosedCaseSafety = personalSkillStudioApi.getRealClosedCaseSafety;
 export const listPersonalSkillStudioSourceTraces = personalSkillStudioApi.listSourceTraces;
 export const getPersonalSkillStudioAudit = personalSkillStudioApi.getAudit;
 export const getPersonalSkillStudioSafety = personalSkillStudioApi.getSafety;
@@ -2375,6 +2766,76 @@ export const listPersonalOwnerOutputCenterDownloads = personalOwnerOutputCenterA
 export const getPersonalOwnerOutputCenterDownload = personalOwnerOutputCenterApi.getDownload;
 export const getPersonalOwnerOutputCenterAudit = personalOwnerOutputCenterApi.getAudit;
 export const getPersonalOwnerOutputCenterSafety = personalOwnerOutputCenterApi.getSafety;
+export const getPersonalTrialReadinessStatus = personalTrialReadinessApi.getStatus;
+export const getPersonalTrialReadinessChecklist = personalTrialReadinessApi.getChecklist;
+export const getPersonalTrialReadinessSafety = personalTrialReadinessApi.getSafety;
+export const createPersonalTrialReadinessTrial = personalTrialReadinessApi.createTrial;
+export const listPersonalTrialReadinessTrials = personalTrialReadinessApi.listTrials;
+export const getPersonalTrialReadinessTrial = personalTrialReadinessApi.getTrial;
+export const getPersonalTrialReadinessTrialChecklist = personalTrialReadinessApi.getTrialChecklist;
+export const createPersonalTrialReadinessTrialChecklist = personalTrialReadinessApi.createTrialChecklist;
+export const listPersonalTrialReadinessObservations = personalTrialReadinessApi.listObservations;
+export const createPersonalTrialReadinessObservation = personalTrialReadinessApi.createObservation;
+export const listPersonalTrialReadinessTrialIssues = personalTrialReadinessApi.listTrialIssues;
+export const createPersonalTrialReadinessIssue = personalTrialReadinessApi.createIssue;
+export const listPersonalTrialReadinessIssues = personalTrialReadinessApi.listIssues;
+export const getPersonalTrialReadinessIssue = personalTrialReadinessApi.getIssue;
+export const getPersonalTrialReadinessQuality = personalTrialReadinessApi.getQuality;
+export const createPersonalTrialReadinessQuality = personalTrialReadinessApi.createQuality;
+export const getPersonalTrialReadinessSafetyConfirmation = personalTrialReadinessApi.getSafetyConfirmation;
+export const createPersonalTrialReadinessSafetyConfirmation = personalTrialReadinessApi.createSafetyConfirmation;
+export const listPersonalTrialReadinessOptimizationBacklog = personalTrialReadinessApi.listOptimizationBacklog;
+export const createPersonalTrialReadinessOptimizationBacklog = personalTrialReadinessApi.createOptimizationBacklog;
+export const getPersonalTrialReadinessAudit = personalTrialReadinessApi.getAudit;
+export const getPersonalProviderReadinessStatus = personalProviderReadinessApi.getStatus;
+export const listPersonalProviderReadinessProviders = personalProviderReadinessApi.listProviders;
+export const getPersonalProviderReadinessProvider = personalProviderReadinessApi.getProvider;
+export const getPersonalProviderReadinessSecretBoundary = personalProviderReadinessApi.getSecretBoundary;
+export const getPersonalProviderReadinessLiveGate = personalProviderReadinessApi.getLiveGate;
+export const getPersonalProviderReadinessUsagePolicy = personalProviderReadinessApi.getUsagePolicy;
+export const getPersonalProviderReadinessHealthDryRun = personalProviderReadinessApi.getHealthDryRun;
+export const listPersonalProviderReadinessCategories = personalProviderReadinessApi.listCategories;
+export const listPersonalProviderReadinessCategoryProviders = personalProviderReadinessApi.listCategoryProviders;
+export const createPersonalProviderReadinessLiveGateMock = personalProviderReadinessApi.createLiveGateMock;
+export const listPersonalProviderReadinessLiveGates = personalProviderReadinessApi.listLiveGates;
+export const getPersonalProviderReadinessAudit = personalProviderReadinessApi.getAudit;
+export const getPersonalProviderReadinessSafety = personalProviderReadinessApi.getSafety;
+export const getPersonalLiveConnectionStatus = personalLiveConnectionApi.getStatus;
+export const listPersonalLiveConnectionRuntimes = personalLiveConnectionApi.listRuntimes;
+export const listPersonalLiveConnectionProviders = personalLiveConnectionApi.listProviders;
+export const getPersonalLiveConnectionProvider = personalLiveConnectionApi.getProvider;
+export const getPersonalLiveConnectionSecretBoundary = personalLiveConnectionApi.getSecretBoundary;
+export const getPersonalLiveConnectionLiveGate = personalLiveConnectionApi.getLiveGate;
+export const getPersonalLiveConnectionUsagePolicy = personalLiveConnectionApi.getUsagePolicy;
+export const getPersonalLiveConnectionHealthDryRun = personalLiveConnectionApi.getHealthDryRun;
+export const createPersonalLiveConnectionDryRun = personalLiveConnectionApi.createDryRun;
+export const createPersonalLiveConnectionRun = personalLiveConnectionApi.createRun;
+export const listPersonalLiveConnectionRuns = personalLiveConnectionApi.listRuns;
+export const getPersonalLiveConnectionRun = personalLiveConnectionApi.getRun;
+export const getPersonalLiveConnectionAudit = personalLiveConnectionApi.getAudit;
+export const getPersonalLiveConnectionSafety = personalLiveConnectionApi.getSafety;
+export const getPersonalLegalEnterpriseStatus = personalLegalEnterpriseApi.getStatus;
+export const listPersonalLegalEnterpriseProviders = personalLegalEnterpriseApi.listProviders;
+export const getPersonalLegalEnterpriseProvider = personalLegalEnterpriseApi.getProvider;
+export const getPersonalLegalEnterpriseSecretBoundary = personalLegalEnterpriseApi.getSecretBoundary;
+export const getPersonalLegalEnterpriseLiveGate = personalLegalEnterpriseApi.getLiveGate;
+export const getPersonalLegalEnterpriseUsagePolicy = personalLegalEnterpriseApi.getUsagePolicy;
+export const getPersonalLegalEnterpriseHealthDryRun = personalLegalEnterpriseApi.getHealthDryRun;
+export const listPersonalLegalEnterpriseCategories = personalLegalEnterpriseApi.listCategories;
+export const listPersonalLegalEnterpriseCategoryProviders = personalLegalEnterpriseApi.listCategoryProviders;
+export const createPersonalLegalEnterpriseLiveGateMock = personalLegalEnterpriseApi.createLiveGateMock;
+export const listPersonalLegalEnterpriseLiveGates = personalLegalEnterpriseApi.listLiveGates;
+export const createPersonalLegalSearchDryRun = personalLegalEnterpriseApi.createLegalSearchDryRun;
+export const createPersonalLegalSearchRun = personalLegalEnterpriseApi.createLegalSearchRun;
+export const listPersonalLegalSearchRuns = personalLegalEnterpriseApi.listLegalSearchRuns;
+export const createPersonalEnterpriseLookupDryRun = personalLegalEnterpriseApi.createEnterpriseLookupDryRun;
+export const createPersonalEnterpriseLookupRun = personalLegalEnterpriseApi.createEnterpriseLookupRun;
+export const listPersonalEnterpriseLookupRuns = personalLegalEnterpriseApi.listEnterpriseLookupRuns;
+export const getPersonalLegalEnterpriseReviewQueue = personalLegalEnterpriseApi.getReviewQueue;
+export const submitPersonalLegalEnterpriseReviewAction = personalLegalEnterpriseApi.submitReviewAction;
+export const getPersonalLegalEnterpriseSourceTraces = personalLegalEnterpriseApi.getSourceTraces;
+export const getPersonalLegalEnterpriseAudit = personalLegalEnterpriseApi.getAudit;
+export const getPersonalLegalEnterpriseSafety = personalLegalEnterpriseApi.getSafety;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

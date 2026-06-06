@@ -59,7 +59,7 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: run unified v7.10-v7.24 validation, final security audit, and release preparation only after the user explicitly confirms large-stage release handling, or continue to a later personal-version sub-stage only after explicit user instruction. Do not commit, tag, push, or release until then.
+Next Task: v7.31b Codex Training on Real Closed Cases. Do not continue provider gateway stacking; v7.27 OCR / Document Provider Live Connection, v7.28 Unified Personal Live Connection Dashboard, v7.29 Legal / Enterprise API Live Connection, v7.30 Codex Training Scheme & Artifact Loader, v7.31 Execute Codex Training on Closed Case Samples, and v7.31a Real Closed-Case Training Intake & Redaction Pipeline already exist in the current local uncommitted large-stage worktree. Do not commit, tag, push, or release until the user explicitly approves release handling.
 
 ## Codex Surgical Development Rules
 
@@ -274,6 +274,80 @@ Every Codex task must end with a concise report containing:
 - Stepper final stages must state: 不会触发真实导出/最终报告/最终法律意见。
 - UI copy must not visibly expose local paths, key values, raw material, real customer/case/judgment/enterprise information, or secret values.
 - v7.24 must not add backend business logic, provider calls, final legal opinions, final reports, real PDF/DOCX files, email, public links, Skill publishing, or external delivery.
+
+## v7.25 Personal Practical Case Trial Readiness Notes
+
+- v7.25 adds `/personal-trial-readiness` as the 个人版实战试运行准备 workbench.
+- Trial sessions, checklist, stage observations, issue logs, quality reviews, safety confirmations, optimization backlog, audit, and safety outputs must remain owner-only, metadata-only, draft-only, and reference-only.
+- Issue logs and quality reviews are optimization input only; keep `blocks_trial=false`, `gate_reference_only=true`, and `blocks_next_stage=false`.
+- v7.25 must not read real case raw content, call providers, read API keys, train on open cases, write training sets, update Skills, publish Skills, generate final legal opinions, generate final reports, create real PDF/DOCX files, create public links, send email, or trigger external delivery.
+- The next personal-version sub-stage is v7.26 Provider Live Readiness & Secret Boundary.
+
+## v7.26 Provider Live Readiness & Secret Boundary Notes
+
+- v7.26 adds `/personal-provider-readiness` as the 真实接口接入准备 page and `personal_provider_readiness` backend runtime.
+- This stage is readiness-only: provider registry, secret boundary, live gate, usage / cost metadata, dry-run health, audit, and safety metadata.
+- Secret boundary may show environment variable names and `key_loaded=true/false`, but must never read, return, mask, slice, log, or expose key values.
+- Keep `global_live_enabled=false`, `provider_live_enabled=false`, `dry_run=true`, `live_call_allowed=false`, and `live_call_executed=false`.
+- v7.26 must not call providers, upload materials, read real case materials, train, run practical case analysis, generate final legal opinions, generate formal reports, create real PDF/DOCX files, create public links, send email, or trigger external delivery.
+
+## v7.27 OCR / Document Provider Live Connection Notes
+
+- v7.27 adds OCR / 文档接口受控接入 through `personal_material_runtime.live_gateway` and `/personal-material-runtime/live/*`.
+- It provides OCR / Document provider dry-run, live gate, secret boundary, dry-run health, review, source trace, audit, and safety metadata.
+- It intentionally extends the existing material runtime; no independent OCR route is required by the current implementation.
+- Do not repeat this implementation in later tasks.
+
+## v7.28 Unified Personal Live Connection Dashboard Notes
+
+- v7.28 adds `/personal-live-connection` as the 个人生产统一受控接口接入总控台 through `personal_live_connection`.
+- It unifies AI / OCR / Document / Legal / Enterprise provider readiness, secret boundary, live gate, usage / cost, health, audit, and safety metadata.
+- It is not a standalone AI Provider Live Connection. AI Provider is one provider category in the unified dashboard.
+- Do not repeat this implementation in later tasks.
+
+## v7.29 Legal / Enterprise API Live Connection Notes
+
+- v7.29 adds `/personal-legal-enterprise` as 法律检索与企业信息 API 受控接入 through `personal_legal_enterprise_gateway`.
+- It provides legal search / enterprise lookup dry-runs, live gate, secret boundary, review queue, source trace, audit, and safety metadata.
+- Legal search results enter source trace and lawyer review metadata only; enterprise lookup results do not become final fact findings automatically.
+- Do not repeat this implementation in later tasks.
+
+## v7.30 Codex Training Scheme & Artifact Loader Notes
+
+- v7.30 adds `/personal-skill-studio/training-artifacts` as Codex 训练方案、多层级案由经验包与训练产物加载器.
+- Codex training is not model-parameter fine-tuning.
+- Codex training means producing and loading experience package metadata, Skill metadata, evaluations, gates, and test cases.
+- Multi-level case-cause taxonomy, exact match, ancestor fallback, common fallback, evidence overlay, loading manifest, and Skill Context dry-run are part of v7.30.
+- Keep closed-case training and open-case practical analysis separated.
+- v7.30 must not execute real training, read real case materials, call providers, read API keys, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+
+## v7.31 Execute Codex Training on Closed Case Samples Notes
+
+- v7.31 executes Codex training on closed-case or synthetic closed-case samples.
+- If no suitable closed-case samples exist, use synthetic closed-case samples and mark `source_case_mode=synthetic_closed_case`.
+- Generated artifacts must include training run manifest, experience packages, two Skill manifests, evaluation manifests, gate manifests, test cases, and loading manifest.
+- Validate generated artifacts through v7.30 loader dry-run.
+- Keep `fine_tune_model_training=false`, `open_case_data_used=false`, `raw_content_included=false`, `writes_to_training_set=false`, `skill_published=false`, `skill_auto_published=false`, `load_executed=false`, and `blocks_next_stage=false`.
+- v7.31 must not use unresolved/open cases, raw OCR, unredacted real materials, provider calls, API keys, local sensitive paths, customer identity data, automatic Skill publishing, final legal opinions, final reports, public links, email, or external delivery.
+
+## v7.31a Real Closed-Case Training Intake & Redaction Pipeline Notes
+
+- v7.31a adds `/personal-skill-studio/training-artifacts/real-closed-case-*` as 真实已结案件训练材料导入与脱敏管线.
+- This stage prepares training material metadata only and does not execute Codex training.
+- Only authorized closed-case training metadata may enter this pipeline.
+- Redaction must remove private identity fields while preserving legally necessary metadata such as jurisdiction context, age/capacity context, subject type, contract type, object type, timeline markers, and evidence type.
+- Review, source trace, audit, and safety metadata are required.
+- v7.31a must not use unresolved/open cases, read or return raw OCR/raw content, call providers, read API keys, expose local paths, write training sets, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+
+## v7.31b Codex Training on Real Closed Cases Notes
+
+- v7.31b is planned after v7.31a.
+- Do not re-implement the v7.30 loader or v7.31 training run generator.
+- Do not re-implement the v7.31a intake and redaction pipeline.
+- Use only v7.31a-authorized and redacted closed-case training metadata.
+- Codex training remains metadata artifact generation/loading, not model-parameter fine-tuning.
+- Keep closed-case training and open-case practical analysis separated.
+- v7.31b must not use unresolved/open cases for training, read raw OCR, read unredacted real materials, call providers, read API keys, expose local sensitive paths, auto-publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
 
 ## Product Design Closed Loop
 

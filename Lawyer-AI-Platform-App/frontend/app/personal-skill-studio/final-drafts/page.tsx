@@ -108,6 +108,16 @@ export default function SkillFinalDraftWorkbenchPage() {
           </p>
         </Panel>
 
+        <Panel title="v7.30 训练产物加载器关联">
+          <div className="grid gap-4 md:grid-cols-3">
+            <Info title="关联内容" items={["Codex 训练方案 metadata", "多层级案由 taxonomy", "Experience Package manifest", "Skill Context dry-run"]} />
+            <Info title="边界" items={["不执行模型微调", "不训练未结案件", "不自动发布 Skill", "不生成最终法律意见"]} />
+            <a className="rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white" href="/personal-skill-studio/training-artifacts">
+              打开训练产物加载器
+            </a>
+          </div>
+        </Panel>
+
         <section className="grid gap-6 xl:grid-cols-2">
           {(data.finalDrafts?.final_drafts ?? []).map((draft: SkillStudioFinalDraft) => (
             <Panel key={draft.skill_id} title={draft.skill_name}>

@@ -188,6 +188,8 @@ export function LocalPilotPath() {
     ["/", "首页"],
     ["/personal-production", "个人生产总控台"],
     ["/personal-production-pilot", "个人生产实战 Pilot"],
+    ["/personal-trial-readiness", "个人版实战试运行准备"],
+    ["/personal-provider-readiness", "真实接口接入准备"],
     ["/personal-owner-output-center", "用户本人产出下载中心"],
     ["/personal-case-workspace", "个人案件与材料工作台"],
     ["/personal-showcase-pack", "公开演示入口"],
@@ -197,7 +199,8 @@ export function LocalPilotPath() {
     ["/personal-ai-gateway", "AI 草稿 Runtime"],
     ["/personal-material-runtime", "材料与 OCR Runtime"],
     ["/personal-intelligence", "法律/企业信息网关"],
-    ["/personal-skill-studio", "经验包与技能工作室"]
+    ["/personal-skill-studio", "经验包与技能工作室"],
+    ["/personal-skill-studio/training-artifacts", "训练产物加载器"]
   ];
   return (
     <Panel title="本地 Pilot 操作路径" eyebrow="Local Pilot">

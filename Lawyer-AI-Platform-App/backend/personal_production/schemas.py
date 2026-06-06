@@ -23,6 +23,14 @@ class PersonalProductionStatus(BaseModel):
     controlled_case_analysis_runtime_registered: bool = True
     personal_production_pilot_runtime_registered: bool = True
     personal_owner_output_center_runtime_registered: bool = True
+    personal_trial_readiness_runtime_registered: bool = True
+    personal_provider_readiness_runtime_registered: bool = True
+    personal_material_live_connection_runtime_registered: bool = True
+    personal_live_connection_runtime_registered: bool = True
+    personal_legal_enterprise_gateway_runtime_registered: bool = True
+    training_artifact_loader_runtime_registered: bool = True
+    codex_training_run_runtime_registered: bool = True
+    real_closed_case_training_intake_runtime_registered: bool = True
     personal_delivery_packet_runtime_registered: bool = True
     personal_showcase_pack_runtime_registered: bool = True
     delivery_runtime_registered: bool = True
@@ -145,6 +153,14 @@ class PersonalProductionProviderCapabilities(BaseModel):
     legal_analysis_draft_workbench_status: str = "legal_analysis_draft_metadata_ready"
     skill_final_draft_workbench_status: str = "skill_final_draft_metadata_ready"
     owner_output_center_status: str = "owner_output_center_metadata_ready"
+    personal_trial_readiness_status: str = "trial_readiness_metadata_ready"
+    personal_provider_readiness_status: str = "provider_readiness_metadata_ready"
+    personal_material_live_connection_status: str = "ocr_document_live_connection_metadata_ready"
+    personal_live_connection_status: str = "personal_live_connection_metadata_ready"
+    personal_legal_enterprise_gateway_status: str = "legal_enterprise_gateway_metadata_ready"
+    training_artifact_loader_status: str = "training_artifact_loader_metadata_ready"
+    codex_training_run_status: str = "codex_training_run_metadata_ready"
+    real_closed_case_training_intake_status: str = "real_closed_case_training_intake_metadata_ready"
     personal_production_pilot_dashboard_status: str = "dashboard_metadata_ready"
     pilot_ai_ocr_legal_enterprise_skill_case_analysis_connected: bool = True
     case_workspace_owner_raw_view_gated: bool = True
@@ -172,6 +188,73 @@ class PersonalProductionProviderCapabilities(BaseModel):
     pilot_dashboard_optimization_suggestions_ready: bool = True
     owner_only_downloads_ready: bool = True
     owner_output_center_download_ready: bool = True
+    trial_readiness_ready: bool = True
+    trial_checklist_ready: bool = True
+    trial_issue_log_ready: bool = True
+    trial_quality_review_ready: bool = True
+    trial_safety_confirmation_ready: bool = True
+    trial_optimization_backlog_ready: bool = True
+    trial_issue_log_reference_only: bool = True
+    trial_quality_review_reference_only: bool = True
+    provider_readiness_ready: bool = True
+    provider_registry_ready: bool = True
+    secret_boundary_ready: bool = True
+    live_gate_ready: bool = True
+    usage_cost_metadata_ready: bool = True
+    dry_run_health_ready: bool = True
+    real_provider_calls_still_disabled: bool = True
+    material_live_connection_ready: bool = True
+    material_live_provider_registry_ready: bool = True
+    material_live_secret_boundary_ready: bool = True
+    material_live_gate_ready: bool = True
+    material_live_dry_run_health_ready: bool = True
+    material_live_raw_content_blocked: bool = True
+    material_live_ai_prompt_injection_blocked: bool = True
+    personal_live_connection_ready: bool = True
+    personal_live_connection_provider_registry_ready: bool = True
+    personal_live_connection_secret_boundary_ready: bool = True
+    personal_live_connection_gate_ready: bool = True
+    personal_live_connection_usage_cost_ready: bool = True
+    personal_live_connection_health_ready: bool = True
+    personal_live_connection_audit_ready: bool = True
+    legal_enterprise_gateway_ready: bool = True
+    legal_provider_readiness_ready: bool = True
+    enterprise_provider_readiness_ready: bool = True
+    legal_source_trace_ready: bool = True
+    enterprise_verification_ready: bool = True
+    legal_enterprise_review_required: bool = True
+    training_artifact_loader_ready: bool = True
+    codex_training_scheme_ready: bool = True
+    case_cause_taxonomy_ready: bool = True
+    multi_level_case_cause_loader_ready: bool = True
+    experience_package_manifest_ready: bool = True
+    skill_manifest_loader_ready: bool = True
+    case_cause_fallback_ready: bool = True
+    skill_context_dry_run_ready: bool = True
+    codex_fine_tune_training_disabled: bool = True
+    training_artifact_open_case_training_disabled: bool = True
+    training_artifact_skill_auto_publish_disabled: bool = True
+    closed_case_training_run_ready: bool = True
+    synthetic_closed_case_samples_ready: bool = True
+    training_run_manifest_ready: bool = True
+    generated_experience_packages_ready: bool = True
+    generated_skill_manifests_ready: bool = True
+    generated_evaluation_gate_test_cases_ready: bool = True
+    generated_loading_manifest_ready: bool = True
+    training_run_load_dry_run_ready: bool = True
+    training_run_open_case_training_disabled: bool = True
+    training_run_skill_auto_publish_disabled: bool = True
+    training_run_fine_tune_disabled: bool = True
+    training_run_real_case_material_read_disabled: bool = True
+    real_closed_case_training_intake_ready: bool = True
+    real_closed_case_redaction_pipeline_ready: bool = True
+    real_closed_case_classification_ready: bool = True
+    real_closed_case_training_sample_segmentation_ready: bool = True
+    real_closed_case_source_trace_ready: bool = True
+    real_closed_case_review_queue_ready: bool = True
+    real_closed_case_open_case_training_disabled: bool = True
+    real_closed_case_raw_content_blocked: bool = True
+    real_closed_case_ready_for_codex_training: bool = False
     external_delivery_disabled: bool = True
     public_link_disabled: bool = True
     email_sending_disabled: bool = True
@@ -230,6 +313,14 @@ class PersonalProductionConsoleSummary(BaseModel):
     runtime_summary: dict[str, int] = Field(default_factory=dict)
     trust_summary: dict[str, bool] = Field(default_factory=dict)
     v7_23_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_25_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_26_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_27_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_28_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_29_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_30_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_31_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_31a_readiness: dict[str, bool] = Field(default_factory=dict)
     mock_or_redacted_only: bool = True
     raw_content_included: bool = False
     final_legal_opinion_generated: bool = False

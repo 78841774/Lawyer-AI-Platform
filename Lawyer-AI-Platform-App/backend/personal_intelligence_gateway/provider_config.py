@@ -115,7 +115,7 @@ def get_live_provider_config(provider_id: str) -> PersonalIntelligenceLiveProvid
 
 def _build_provider(definition: dict) -> PersonalIntelligenceLiveProviderConfig:
     key_env = definition.get("key_env")
-    key_loaded = bool(key_env and os.environ.get(str(key_env)))
+    key_loaded = str(key_env) in os.environ if key_env else False
     key_source = "env" if key_loaded else "unavailable"
     if not definition["key_required"]:
         key_loaded = False

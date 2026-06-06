@@ -12,6 +12,7 @@ def build_personal_production_status() -> dict:
             "v7.5 registers Real Case Production Workflow foundations.",
             "Real provider calls are not enabled in v7.5.",
             "External client delivery is not enabled.",
+            "v7.30 registers Codex training scheme and multi-level case-cause artifact loader metadata; no fine-tune training or open-case training is executed.",
         ],
     ).model_dump()
 

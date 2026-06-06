@@ -79,7 +79,7 @@ def build_live_gateway_status() -> dict:
 def _build_provider_config(definition: dict) -> PersonalAILiveProviderConfig:
     key_env = definition.get("key_env")
     key_required = bool(key_env)
-    key_loaded = bool(os.environ.get(str(key_env))) if key_env else False
+    key_loaded = str(key_env) in os.environ if key_env else False
     live_enabled = (
         live_mode_enabled()
         and _env_flag(f"AI_LIVE_PROVIDER_{definition['provider_id'].upper()}_ENABLED", default=False)

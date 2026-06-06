@@ -13,21 +13,29 @@
 - v7.7 commit: `761dbb4`
 - v7.8 commit: `b7ce642`
 - v7.9 commit: `c59e137`
-- v7.10 commit: pending
-- v7.11 commit: pending
-- v7.12 commit: pending
-- v7.13 commit: pending
-- v7.14 commit: pending
-- v7.15 commit: pending
-- v7.16 commit: pending
-- v7.17 commit: pending
-- v7.18 commit: pending
-- v7.19 commit: pending
-- v7.20 commit: pending
-- v7.21 commit: pending
-- v7.22 commit: pending
-- v7.23 commit: pending
-- v7.24 commit: pending
+- v7.10 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.11 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.12 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.13 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.14 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.15 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.16 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.17 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.18 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.19 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.20 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.21 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.22 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.23 commit: `b4e4bca` (included in v7.24 practical production workbench release)
+- v7.24 commit: `b4e4bca`
+- v7.25 commit: pending
+- v7.26 commit: pending
+- v7.27 commit: pending (local uncommitted large-stage worktree)
+- v7.28 commit: pending (local uncommitted large-stage worktree)
+- v7.29 commit: pending (local uncommitted large-stage worktree)
+- v7.30 commit: pending (local uncommitted large-stage worktree)
+- v7.31 commit: pending (local uncommitted large-stage worktree)
+- v7.31a commit: pending (local uncommitted large-stage worktree)
 
 ## Known Tags
 
@@ -61,24 +69,39 @@
 - `v7.7-personal-production-showcase-pack`: detected
 - `v7.8-ui-polish-showcase-hardening`: detected
 - `v7.9-personal-production-demo-pack`: detected
-- `v7.10-personal-version-polish-public-demo-readiness`: pending
-- `v7.11-personal-production-stability-local-pilot-hardening`: pending
-- `v7.12-ai-provider-live-gateway`: pending
-- `v7.13-ocr-document-provider-live-gateway`: pending
-- `v7.14-legal-enterprise-api-live-gateway`: pending
-- `v7.15-skill-training-runtime`: pending
-- `v7.16-controlled-case-analysis-runtime`: pending
-- `v7.18-case-intake-material-workspace-hardening`: pending
-- `v7.19-personal-production-pilot-dashboard-enhancement`: pending
-- `v7.20-fact-preview-correction-workbench`: pending
-- `v7.21-legal-analysis-draft-workbench`: pending
-- `v7.22-skill-final-draft-optimization-workbench`: pending
-- `v7.23-owner-only-output-center`: pending
-- `v7.24-legal-tech-ui-ux-polish`: pending
+- `v7.10-personal-version-polish-public-demo-readiness`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.11-personal-production-stability-local-pilot-hardening`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.12-ai-provider-live-gateway`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.13-ocr-document-provider-live-gateway`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.14-legal-enterprise-api-live-gateway`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.15-skill-training-runtime`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.16-controlled-case-analysis-runtime`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.18-case-intake-material-workspace-hardening`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.19-personal-production-pilot-dashboard-enhancement`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.20-fact-preview-correction-workbench`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.21-legal-analysis-draft-workbench`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.22-skill-final-draft-optimization-workbench`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.23-owner-only-output-center`: included in comprehensive tag `v7.24-personal-practical-production-workbench`
+- `v7.24-personal-practical-production-workbench`: detected
+- `v7.25-personal-practical-case-trial-readiness`: pending
+- `v7.26-provider-live-readiness-secret-boundary`: pending
+- `v7.27-ocr-document-provider-live-connection`: pending
+- `v7.28-unified-personal-live-connection-dashboard`: pending
+- `v7.29-legal-enterprise-api-live-connection`: pending
+- `v7.30-codex-training-scheme-artifact-loader`: pending
+- `v7.31-codex-training-closed-case-samples`: pending
+- `v7.31a-real-closed-case-training-intake-redaction`: pending
 - `v7.17-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.19-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.20-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.21-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.22-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.23-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
-- `v7.24-personal-live-intelligence-case-analysis`: planned combined release tag for v7.10-v7.24 after unified validation and final security audit
+- `v7.24-personal-live-intelligence-case-analysis`: superseded by detected tag `v7.24-personal-practical-production-workbench`
+
+## Current Release Boundary
+
+- Latest released baseline: v7.24 Personal Practical Production Workbench at commit `b4e4bca` and tag `v7.24-personal-practical-production-workbench`.
+- v7.25-v7.31a are current local continuous large-stage work and remain uncommitted.
+- Do not infer or fabricate commits, tags, pushes, or releases for v7.25-v7.31a.
+- Release remains pending until unified validation, final review, and explicit user-approved release handling.

@@ -11,12 +11,16 @@ import {
   PersonalMaterialAuditTimeline,
   PersonalMaterialLiveAuditTimeline,
   PersonalMaterialLiveGatewayStatus,
-  PersonalMaterialLiveProviderConfigList,
+  PersonalMaterialLiveGateList,
+  PersonalMaterialLiveGateStatus,
+  PersonalMaterialLiveHealthDryRun,
+  PersonalMaterialLiveProviderReadinessList,
   PersonalMaterialLiveReviewActionResult,
   PersonalMaterialLiveReviewQueue,
   PersonalMaterialLiveRunList,
   PersonalMaterialLiveRunRecord,
   PersonalMaterialLiveSafetyStatus,
+  PersonalMaterialLiveSecretBoundary,
   PersonalMaterialLiveSourceTraceList,
   PersonalMaterialParseJobList,
   PersonalMaterialParseJobResult,
@@ -30,6 +34,7 @@ import {
   PersonalOCRReviewActionResult,
   PersonalOCRReviewQueue,
   createPersonalMaterialDocumentLiveDryRun,
+  createPersonalMaterialLiveGateMock,
   createPersonalMaterialDocumentLiveRun,
   createPersonalMaterialOCRLiveDryRun,
   createPersonalMaterialOCRLiveRun,
@@ -37,9 +42,12 @@ import {
   createPersonalOCRJob,
   getPersonalMaterialAudit,
   getPersonalMaterialLiveAudit,
+  getPersonalMaterialLiveGate,
+  getPersonalMaterialLiveHealthDryRun,
   getPersonalMaterialLiveProviders,
   getPersonalMaterialLiveReviewQueue,
   getPersonalMaterialLiveSafety,
+  getPersonalMaterialLiveSecretBoundary,
   getPersonalMaterialLiveSourceTraces,
   getPersonalMaterialLiveStatus,
   getPersonalMaterialRuntimeProviders,
@@ -49,6 +57,7 @@ import {
   getPersonalOCRPreview,
   getPersonalOCRReviewQueue,
   listPersonalMaterialDocumentLiveRuns,
+  listPersonalMaterialLiveGates,
   listPersonalMaterialOCRLiveRuns,
   listPersonalMaterialParseJobs,
   listPersonalOCRJobs,
@@ -98,7 +107,11 @@ export default function PersonalMaterialRuntimePage() {
   const [audit, setAudit] = useState<PersonalMaterialAuditTimeline | null>(null);
   const [safety, setSafety] = useState<PersonalMaterialSafetyStatus | null>(null);
   const [liveStatus, setLiveStatus] = useState<PersonalMaterialLiveGatewayStatus | null>(null);
-  const [liveProviders, setLiveProviders] = useState<PersonalMaterialLiveProviderConfigList | null>(null);
+  const [liveProviders, setLiveProviders] = useState<PersonalMaterialLiveProviderReadinessList | null>(null);
+  const [liveSecretBoundary, setLiveSecretBoundary] = useState<PersonalMaterialLiveSecretBoundary | null>(null);
+  const [liveGate, setLiveGate] = useState<PersonalMaterialLiveGateStatus | null>(null);
+  const [liveGateList, setLiveGateList] = useState<PersonalMaterialLiveGateList | null>(null);
+  const [liveHealth, setLiveHealth] = useState<PersonalMaterialLiveHealthDryRun | null>(null);
   const [documentLiveRuns, setDocumentLiveRuns] = useState<PersonalMaterialLiveRunList | null>(null);
   const [ocrLiveRuns, setOCRLiveRuns] = useState<PersonalMaterialLiveRunList | null>(null);
   const [liveReviewQueue, setLiveReviewQueue] = useState<PersonalMaterialLiveReviewQueue | null>(null);
@@ -125,6 +138,7 @@ export default function PersonalMaterialRuntimePage() {
   const [liveByteSize, setLiveByteSize] = useState(1200000);
   const [liveReviewAction, setLiveReviewAction] = useState("approve_metadata_only");
   const [selectedLiveReviewItemId, setSelectedLiveReviewItemId] = useState("");
+  const [selectedLiveProviderId, setSelectedLiveProviderId] = useState("paddleocr");
   const [selectedOCRJobId, setSelectedOCRJobId] = useState("");
   const [parseConfirmed, setParseConfirmed] = useState(true);
   const [ocrConfirmed, setOCRConfirmed] = useState(true);
@@ -149,6 +163,10 @@ export default function PersonalMaterialRuntimePage() {
         nextSafety,
         nextLiveStatus,
         nextLiveProviders,
+        nextLiveSecretBoundary,
+        nextLiveGate,
+        nextLiveGateList,
+        nextLiveHealth,
         nextDocumentRuns,
         nextOCRRuns,
         nextLiveQueue,
@@ -167,6 +185,10 @@ export default function PersonalMaterialRuntimePage() {
           getPersonalMaterialSafety(),
           getPersonalMaterialLiveStatus(),
           getPersonalMaterialLiveProviders(),
+          getPersonalMaterialLiveSecretBoundary(selectedLiveProviderId),
+          getPersonalMaterialLiveGate(selectedLiveProviderId),
+          listPersonalMaterialLiveGates(),
+          getPersonalMaterialLiveHealthDryRun(selectedLiveProviderId),
           listPersonalMaterialDocumentLiveRuns(),
           listPersonalMaterialOCRLiveRuns(),
           getPersonalMaterialLiveReviewQueue(),
@@ -184,6 +206,10 @@ export default function PersonalMaterialRuntimePage() {
       setSafety(nextSafety);
       setLiveStatus(nextLiveStatus);
       setLiveProviders(nextLiveProviders);
+      setLiveSecretBoundary(nextLiveSecretBoundary);
+      setLiveGate(nextLiveGate);
+      setLiveGateList(nextLiveGateList);
+      setLiveHealth(nextLiveHealth);
       setDocumentLiveRuns(nextDocumentRuns);
       setOCRLiveRuns(nextOCRRuns);
       setLiveReviewQueue(nextLiveQueue);
@@ -197,6 +223,7 @@ export default function PersonalMaterialRuntimePage() {
         (current) => current || nextLiveProviders.providers.find((provider) => provider.provider_type === "document_parser")?.provider_id || "mineru"
       );
       setLiveOCRProvider((current) => current || nextLiveProviders.providers.find((provider) => provider.provider_type === "ocr")?.provider_id || "paddleocr");
+      setSelectedLiveProviderId((current) => current || nextLiveProviders.providers[0]?.provider_id || "paddleocr");
       setSelectedLiveReviewItemId((current) => current || nextLiveQueue.items[0]?.review_item_id || "");
     } catch {
       setError("Material Runtime API 暂不可用，请确认后端服务已启动。");
@@ -392,6 +419,25 @@ export default function PersonalMaterialRuntimePage() {
     }
   }
 
+  async function handleLiveGateMock() {
+    setError("");
+    try {
+      const gate = await createPersonalMaterialLiveGateMock({
+        provider_id: selectedLiveProviderId,
+        explicit_live_confirmation: false,
+        owner_authorized: false,
+        raw_content_boundary_acknowledged: true,
+        no_ai_prompt_injection_acknowledged: true,
+        audit_acknowledged: true
+      });
+      setLiveGate(gate);
+      const gates = await listPersonalMaterialLiveGates();
+      setLiveGateList(gates);
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Live gate metadata failed.");
+    }
+  }
+
   return (
     <AppShell>
       <div className="space-y-6">
@@ -401,16 +447,16 @@ export default function PersonalMaterialRuntimePage() {
           <div className="grid gap-6 p-6 md:grid-cols-[1.35fr_0.75fr] md:p-8">
             <div>
               <div className="inline-flex items-center rounded-md border border-lime-300/40 bg-lime-300/10 px-3 py-1 text-xs font-medium text-lime-100">
-                {status?.version ?? "v7.2"} · mock-first material runtime
+                {liveStatus?.version ?? "v7.27"} · OCR Live Gateway · dry-run only
               </div>
               <h1 className="mt-5 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-                AIHome.law 材料解析与 OCR Runtime
+                AIHome.law OCR Live Gateway
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                受控文件解析与 PaddleOCR-ready runtime，仅处理 metadata 与预览状态。OCR preview 不暴露原文，律师复核保持必需。
+                OCR / Document Provider 接入准备层，仅返回 provider registry、secret boundary、live gate、dry-run health、source trace 与 audit metadata。默认不调用真实服务，不上传材料，不展示 OCR / 文档原文。
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {["受控材料解析", "PaddleOCR-ready", "OCR 复核必需", "来源追踪必需", "不暴露 raw OCR"].map((badge) => (
+                {["owner-only", "metadata-only", "draft-only", "live disabled", "不暴露 raw OCR"].map((badge) => (
                   <SafetyBadge key={badge} label={badge} />
                 ))}
               </div>
@@ -420,8 +466,8 @@ export default function PersonalMaterialRuntimePage() {
               <div className="mt-4 grid gap-3">
                 <HeroMetric label="材料解析 Runtime" value={status?.material_parser_runtime_enabled ?? true} />
                 <HeroMetric label="OCR Runtime" value={status?.ocr_runtime_enabled ?? true} />
-                <HeroMetric label="真实 provider 调用" value={status?.live_provider_call_enabled ?? false} invert />
-                <HeroMetric label="OCR 原文暴露" value={status?.raw_ocr_text_exposed ?? false} invert />
+                <HeroMetric label="live call allowed" value={liveStatus?.live_call_allowed ?? false} invert />
+                <HeroMetric label="OCR / 文档原文暴露" value={(liveStatus?.raw_ocr_text_exposed || liveStatus?.raw_document_content_exposed) ?? false} invert />
               </div>
               <button
                 type="button"
@@ -457,16 +503,42 @@ export default function PersonalMaterialRuntimePage() {
           </div>
         </Panel>
 
-        <Panel title="OCR / Document Live Gateway 受控接入">
+        <Panel title="OCR Live Gateway / 文档 Provider 接入准备">
           <div className="grid gap-4">
             <div className="grid gap-3 md:grid-cols-4">
               <StatusTile label="OCR live mode" value={liveStatus?.ocr_live_mode_enabled ?? false} invert />
               <StatusTile label="Document live mode" value={liveStatus?.document_live_mode_enabled ?? false} invert />
-              <StatusTile label="API Key 前端可见" value={liveProviders?.api_key_exposed ?? false} invert />
+              <StatusTile label="live_call_allowed" value={liveStatus?.live_call_allowed ?? false} invert />
               <StatusTile label="AI Prompt 注入" value={liveStatus?.ai_prompt_injected ?? false} invert />
             </div>
             <div className="rounded-md border border-cyan-200 bg-cyan-50 p-4 text-sm leading-6 text-cyan-950">
-              OCR / 文档解析真实接口默认关闭。API Key 仅后端读取，前端不可见；OCR 原文和文档原文默认不展示，不自动进入 AI Prompt，不自动触发事实抽取或法律分析。律师复核与来源追踪保持必需。
+              v7.27 只完成 OCR / Document Provider live connection readiness。API Key 仅返回 key_loaded boolean，前端不可输入或查看密钥；OCR 原文和文档原文默认不展示，不自动进入 AI Prompt，不自动触发事实抽取或法律分析。律师复核、来源追踪与审计保持必需。
+            </div>
+            <div className="grid gap-3 lg:grid-cols-[0.95fr_1.05fr]">
+              <div className="rounded-md border border-line bg-white p-4">
+                <SelectField
+                  label="selected provider"
+                  value={selectedLiveProviderId}
+                  options={(liveProviders?.providers ?? []).map((provider) => provider.provider_id)}
+                  onChange={(nextProviderId) => {
+                    setSelectedLiveProviderId(nextProviderId);
+                    void Promise.all([
+                      getPersonalMaterialLiveSecretBoundary(nextProviderId).then(setLiveSecretBoundary),
+                      getPersonalMaterialLiveGate(nextProviderId).then(setLiveGate),
+                      getPersonalMaterialLiveHealthDryRun(nextProviderId).then(setLiveHealth)
+                    ]);
+                  }}
+                />
+                <ActionButton label="生成 live gate mock metadata" onClick={() => void handleLiveGateMock()} />
+              </div>
+              <div className="grid gap-2 rounded-md border border-slate-200 bg-slate-50 p-4 text-xs text-slate-700 md:grid-cols-2">
+                <MetadataRow label="secret key_loaded" value={String(liveSecretBoundary?.key_loaded ?? false)} />
+                <MetadataRow label="secret returned" value={String(liveSecretBoundary?.secret_value_returned ?? false)} />
+                <MetadataRow label="live gate status" value={liveGate?.live_gate_status ?? "blocked_by_default"} />
+                <MetadataRow label="network call" value={String(liveHealth?.network_call_executed ?? false)} />
+                <MetadataRow label="upload executed" value={String(liveHealth?.upload_executed ?? false)} />
+                <MetadataRow label="raw uploaded" value={String(liveHealth?.raw_content_uploaded ?? false)} />
+              </div>
             </div>
             <div className="grid gap-3 md:grid-cols-4">
               {(liveProviders?.providers ?? []).map((provider) => (
@@ -476,17 +548,64 @@ export default function PersonalMaterialRuntimePage() {
                       <div className="text-sm font-semibold text-ink">{provider.display_name}</div>
                       <div className="mt-1 text-xs text-muted">{provider.provider_id}</div>
                     </div>
-                    <StatusBadge tone={provider.live_enabled ? "blocked" : "preview"} label={provider.provider_type} />
+                    <StatusBadge tone={provider.live_enabled ? "blocked" : "preview"} label={provider.status} />
                   </div>
                   <div className="mt-4 grid gap-2 text-xs text-muted">
+                    <span>dry_run_ready: {String(provider.dry_run_ready)}</span>
                     <span>live_enabled: {String(provider.live_enabled)}</span>
                     <span>key_loaded: {String(provider.key_loaded)}</span>
                     <span>key_source: {provider.key_source}</span>
+                    <span>adapter_registered: {String(provider.adapter_registered)}</span>
                     <span>max_file_size_mb: {provider.max_file_size_mb}</span>
                     <span>supports_bbox: {String(provider.supports_bbox)}</span>
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="grid gap-3 md:grid-cols-3">
+              <div className="rounded-md border border-line bg-white p-4">
+                <div className="text-sm font-semibold text-ink">Secret Boundary</div>
+                <ResultFlags
+                  flags={{
+                    key_loaded: liveSecretBoundary?.key_loaded ?? false,
+                    key_value_exposed: liveSecretBoundary?.key_value_exposed ?? false,
+                    masked_key_returned: liveSecretBoundary?.masked_key_returned ?? false,
+                    frontend_key_input_enabled: liveSecretBoundary?.frontend_key_input_enabled ?? false
+                  }}
+                />
+              </div>
+              <div className="rounded-md border border-line bg-white p-4">
+                <div className="text-sm font-semibold text-ink">Live Gate</div>
+                <ResultFlags
+                  flags={{
+                    live_gate_status: liveGate?.live_gate_status ?? "blocked_by_default",
+                    global_live_enabled: liveGate?.global_live_enabled ?? false,
+                    provider_live_enabled: liveGate?.provider_live_enabled ?? false,
+                    live_call_allowed: liveGate?.live_call_allowed ?? false,
+                    live_call_executed: liveGate?.live_call_executed ?? false
+                  }}
+                />
+                <p className="mt-3 text-xs leading-5 text-muted">{liveGate?.live_blocked_reason ?? "global_live_disabled"}</p>
+              </div>
+              <div className="rounded-md border border-line bg-white p-4">
+                <div className="text-sm font-semibold text-ink">Dry-run Health</div>
+                <ResultFlags
+                  flags={{
+                    dry_run_ready: liveHealth?.dry_run_ready ?? true,
+                    network_call_executed: liveHealth?.network_call_executed ?? false,
+                    upload_executed: liveHealth?.upload_executed ?? false,
+                    raw_content_uploaded: liveHealth?.raw_content_uploaded ?? false
+                  }}
+                />
+              </div>
+            </div>
+            <div className="rounded-md border border-line bg-white p-4">
+              <div className="text-sm font-semibold text-ink">Live Gate Queue / 门禁 metadata</div>
+              <div className="mt-3 grid gap-2 md:grid-cols-2">
+                {(liveGateList?.live_gates ?? []).slice(0, 6).map((gate) => (
+                  <MetadataRow key={gate.gate_id} label={gate.provider_id} value={`${gate.live_gate_status} · live=${String(gate.live_call_executed)}`} />
+                ))}
+              </div>
             </div>
           </div>
         </Panel>

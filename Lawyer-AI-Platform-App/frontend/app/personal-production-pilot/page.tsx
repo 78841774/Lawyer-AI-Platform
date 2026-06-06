@@ -33,6 +33,38 @@ import {
   getPersonalProductionPilotStatus,
   getPersonalProductionPilotWorkflow,
   getPersonalOwnerOutputCenterStatus,
+  getPersonalTrialReadinessStatus,
+  getPersonalTrialReadinessChecklist,
+  getPersonalTrialReadinessSafety,
+  listPersonalTrialReadinessTrials,
+  listPersonalTrialReadinessIssues,
+  listPersonalTrialReadinessOptimizationBacklog,
+  getPersonalProviderReadinessStatus,
+  listPersonalProviderReadinessProviders,
+  listPersonalProviderReadinessCategories,
+  listPersonalProviderReadinessLiveGates,
+  getPersonalMaterialLiveStatus,
+  getPersonalMaterialLiveProviders,
+  getPersonalMaterialLiveSafety,
+  listPersonalMaterialLiveGates,
+  getPersonalLiveConnectionStatus,
+  listPersonalLiveConnectionProviders,
+  getPersonalLiveConnectionAudit,
+  getPersonalLiveConnectionSafety,
+  getPersonalLegalEnterpriseStatus,
+  listPersonalLegalEnterpriseProviders,
+  getPersonalLegalEnterpriseReviewQueue,
+  getPersonalLegalEnterpriseSourceTraces,
+  getPersonalTrainingArtifactStatus,
+  getPersonalTrainingArtifactCaseCauseTaxonomy,
+  listPersonalTrainingArtifactPackages,
+  listPersonalTrainingArtifactSkills,
+  listPersonalTrainingArtifactLoadDryRuns,
+  listPersonalTrainingArtifactSkillContexts,
+  getPersonalTrainingArtifactSafety,
+  listPersonalCodexTrainingRuns,
+  getPersonalRealClosedCaseIntakeStatus,
+  listPersonalRealClosedCaseIntakes,
   listPersonalSkillFinalDrafts,
   listPersonalOwnerOutputCenterDownloads,
   listPersonalOwnerOutputCenterOutputs,
@@ -90,7 +122,39 @@ export default function PersonalProductionPilotPage() {
         skillStudioFinalDrafts,
         ownerOutputCenterStatus,
         ownerOutputCenterOutputs,
-        ownerOutputCenterDownloads
+        ownerOutputCenterDownloads,
+        trialReadinessStatus,
+        trialReadinessChecklist,
+        trialReadinessSafety,
+        trialReadinessTrials,
+        trialReadinessIssues,
+        trialReadinessBacklog,
+        providerReadinessStatus,
+        providerReadinessProviders,
+        providerReadinessCategories,
+        providerReadinessLiveGates,
+        materialLiveStatus,
+        materialLiveProviders,
+        materialLiveSafety,
+        materialLiveGates,
+        liveConnectionStatus,
+        liveConnectionProviders,
+        liveConnectionAudit,
+        liveConnectionSafety,
+        legalEnterpriseStatus,
+        legalEnterpriseProviders,
+        legalEnterpriseReviewQueue,
+        legalEnterpriseSourceTraces,
+        trainingArtifactStatus,
+        trainingArtifactTaxonomy,
+        trainingArtifactPackages,
+        trainingArtifactSkills,
+        trainingArtifactDryRuns,
+        trainingArtifactSkillContexts,
+        trainingArtifactSafety,
+        codexTrainingRuns,
+        realClosedCaseIntakeStatus,
+        realClosedCaseIntakes
       ] =
         await Promise.all([
           getPersonalProductionPilotStatus(),
@@ -120,7 +184,39 @@ export default function PersonalProductionPilotPage() {
           listPersonalSkillFinalDrafts(),
           getPersonalOwnerOutputCenterStatus(),
           listPersonalOwnerOutputCenterOutputs(),
-          listPersonalOwnerOutputCenterDownloads()
+          listPersonalOwnerOutputCenterDownloads(),
+          getPersonalTrialReadinessStatus(),
+          getPersonalTrialReadinessChecklist(),
+          getPersonalTrialReadinessSafety(),
+          listPersonalTrialReadinessTrials(),
+          listPersonalTrialReadinessIssues(),
+          listPersonalTrialReadinessOptimizationBacklog(),
+          getPersonalProviderReadinessStatus(),
+          listPersonalProviderReadinessProviders(),
+          listPersonalProviderReadinessCategories(),
+          listPersonalProviderReadinessLiveGates(),
+          getPersonalMaterialLiveStatus(),
+          getPersonalMaterialLiveProviders(),
+          getPersonalMaterialLiveSafety(),
+          listPersonalMaterialLiveGates(),
+          getPersonalLiveConnectionStatus(),
+          listPersonalLiveConnectionProviders(),
+          getPersonalLiveConnectionAudit(),
+          getPersonalLiveConnectionSafety(),
+          getPersonalLegalEnterpriseStatus(),
+          listPersonalLegalEnterpriseProviders(),
+          getPersonalLegalEnterpriseReviewQueue(),
+          getPersonalLegalEnterpriseSourceTraces(),
+          getPersonalTrainingArtifactStatus(),
+          getPersonalTrainingArtifactCaseCauseTaxonomy(),
+          listPersonalTrainingArtifactPackages(),
+          listPersonalTrainingArtifactSkills(),
+          listPersonalTrainingArtifactLoadDryRuns(),
+          listPersonalTrainingArtifactSkillContexts(),
+          getPersonalTrainingArtifactSafety(),
+          listPersonalCodexTrainingRuns(),
+          getPersonalRealClosedCaseIntakeStatus(),
+          listPersonalRealClosedCaseIntakes()
         ]);
       setData({
         status,
@@ -150,7 +246,39 @@ export default function PersonalProductionPilotPage() {
         skillStudioFinalDrafts,
         ownerOutputCenterStatus,
         ownerOutputCenterOutputs,
-        ownerOutputCenterDownloads
+        ownerOutputCenterDownloads,
+        trialReadinessStatus,
+        trialReadinessChecklist,
+        trialReadinessSafety,
+        trialReadinessTrials,
+        trialReadinessIssues,
+        trialReadinessBacklog,
+        providerReadinessStatus,
+        providerReadinessProviders,
+        providerReadinessCategories,
+        providerReadinessLiveGates,
+        materialLiveStatus,
+        materialLiveProviders,
+        materialLiveSafety,
+        materialLiveGates,
+        liveConnectionStatus,
+        liveConnectionProviders,
+        liveConnectionAudit,
+        liveConnectionSafety,
+        legalEnterpriseStatus,
+        legalEnterpriseProviders,
+        legalEnterpriseReviewQueue,
+        legalEnterpriseSourceTraces,
+        trainingArtifactStatus,
+        trainingArtifactTaxonomy,
+        trainingArtifactPackages,
+        trainingArtifactSkills,
+        trainingArtifactDryRuns,
+        trainingArtifactSkillContexts,
+        trainingArtifactSafety,
+        codexTrainingRuns,
+        realClosedCaseIntakeStatus,
+        realClosedCaseIntakes
       });
       setOutputId((current) => current || outputs.outputs?.[0]?.output_id || "");
     } catch {
@@ -296,6 +424,127 @@ export default function PersonalProductionPilotPage() {
           </div>
           <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
             v7.23 将 Skill 最终稿、事实产出、法律分析草稿、Pilot / Delivery 草稿集中到用户本人产出下载中心；gate 仅作为质量评分和优化建议，不阻断用户本人下载。
+          </div>
+        </Panel>
+
+        <Panel title="v7.25 个人版实战试运行准备">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Trial Readiness" value={String(data.trialReadinessStatus?.trial_readiness_ready ?? true)} detail="进入真实办案前试运行 metadata" tone="safe" />
+            <StatusCard label="Trial Sessions" value={data.trialReadinessTrials?.trial_count ?? 1} detail="owner-only / metadata-only" tone="info" />
+            <StatusCard label="Checklist" value={data.trialReadinessChecklist?.checked_item_count ?? 12} detail="12 项路径检查" tone="safe" />
+            <StatusCard label="Issue Log" value={data.trialReadinessIssues?.issue_count ?? 0} detail="只用于优化，不阻断下一步" tone="warning" />
+          </div>
+          <div className="mt-4 rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-900">
+            v7.25 记录 trial session、checklist、observation、issue log、quality review、safety confirmation 与 optimization backlog；不读取真实案件原文、不调用真实 provider、不训练未结案件、不自动发布 Skill、不自动对外交付。
+          </div>
+        </Panel>
+
+        <Panel title="v7.26 真实接口接入准备">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Provider Readiness" value={String(data.providerReadinessStatus?.provider_readiness_ready ?? true)} detail="registry / boundary / gate" tone="safe" />
+            <StatusCard label="Providers" value={data.providerReadinessProviders?.provider_count ?? 13} detail="AI / OCR / Document / Legal / Enterprise" tone="info" />
+            <StatusCard label="Live Gates" value={data.providerReadinessLiveGates?.live_gate_count ?? 0} detail="live_call_allowed=false" tone="warning" />
+            <StatusCard label="Real Calls" value={String(data.providerReadinessStatus?.real_provider_calls_still_disabled ?? true)} detail="真实 provider 仍关闭" tone="safe" />
+          </div>
+          <div className="mt-4 rounded-md border border-violet-200 bg-violet-50 px-3 py-2 text-xs leading-5 text-violet-900">
+            v7.26 只做真实接口接入前 readiness：key_loaded 只返回 boolean，不读取密钥值；dry-run health 不访问 provider network；Pilot 仍不上传案件材料、不训练、不生成最终法律意见或正式报告。
+          </div>
+        </Panel>
+
+        <Panel title="v7.27 OCR / Document Provider 接入准备">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Material Live" value={String(data.materialLiveStatus?.metadata_only ?? true)} detail="metadata-only / draft-only" tone="safe" />
+            <StatusCard label="Providers" value={data.materialLiveProviders?.provider_count ?? 4} detail="PaddleOCR / MinerU / Docling" tone="info" />
+            <StatusCard label="Live Gates" value={data.materialLiveGates?.live_gate_count ?? 0} detail="blocked_by_default" tone="warning" />
+            <StatusCard label="Live Allowed" value={String(data.materialLiveStatus?.live_call_allowed ?? false)} detail="live_call_allowed=false" tone="safe" />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <StatusCard label="Raw OCR" value={String(data.materialLiveStatus?.raw_ocr_text_exposed ?? false)} detail="raw_ocr_text_exposed=false" tone="safe" />
+            <StatusCard label="Raw Document" value={String(data.materialLiveStatus?.raw_document_content_exposed ?? false)} detail="raw_document_content_exposed=false" tone="safe" />
+            <StatusCard label="AI Prompt" value={String(data.materialLiveStatus?.ai_prompt_injected ?? false)} detail="不自动进入 AI Prompt" tone="safe" />
+          </div>
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            v7.27 只做 OCR / 文档 Provider live connection metadata：dry-run 默认开启，health check 不访问网络，不上传材料，不生成最终 PDF/DOCX，不生成最终法律意见或报告。
+          </div>
+        </Panel>
+
+        <Panel title="v7.28 个人生产受控接口接入">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Live Connection" value={String(data.liveConnectionStatus?.live_connection_ready ?? true)} detail="AI / OCR / Legal / Enterprise" tone="safe" />
+            <StatusCard label="Providers" value={data.liveConnectionProviders?.provider_count ?? 0} detail="统一 provider readiness" tone="info" />
+            <StatusCard label="Dry-run Ready" value={data.liveConnectionStatus?.dry_run_ready_count ?? 0} detail="dry-run 默认开启" tone="safe" />
+            <StatusCard label="Network Call" value={String(data.liveConnectionStatus?.network_call_executed ?? false)} detail="network_call_executed=false" tone="safe" />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <StatusCard label="Audit" value={data.liveConnectionAudit?.event_count ?? 0} detail="metadata-only audit" tone="info" />
+            <StatusCard label="Safety" value={String(data.liveConnectionSafety?.all_safety_checks_passed ?? true)} detail="Trust / Safety ready" tone="safe" />
+            <StatusCard label="External Delivery" value={String(data.liveConnectionStatus?.external_delivery_triggered ?? false)} detail="不自动对外交付" tone="safe" />
+          </div>
+        </Panel>
+
+        <Panel title="v7.29 法律与企业信息 API 受控接入">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Legal Gateway" value={String(data.legalEnterpriseStatus?.legal_gateway_ready ?? true)} detail="法律检索 dry-run metadata" tone="safe" />
+            <StatusCard label="Enterprise Gateway" value={String(data.legalEnterpriseStatus?.enterprise_gateway_ready ?? true)} detail="企业信息 verification metadata" tone="safe" />
+            <StatusCard label="Providers" value={data.legalEnterpriseProviders?.provider_count ?? 0} detail="legal / enterprise providers" tone="info" />
+            <StatusCard label="Review Queue" value={data.legalEnterpriseReviewQueue?.item_count ?? 0} detail="律师复核必需" tone="warning" />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <StatusCard label="Source Trace" value={data.legalEnterpriseSourceTraces?.source_trace_count ?? 0} detail="结果进入 source trace" tone="safe" />
+            <StatusCard label="Final Citation" value="false" detail="不自动选择最终引用" tone="safe" />
+            <StatusCard label="Final Fact Finding" value={String(data.legalEnterpriseStatus?.final_fact_finding ?? false)} detail="不自动形成最终事实认定" tone="safe" />
+          </div>
+        </Panel>
+
+        <Panel title="v7.30 Codex 训练产物加载器">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Training Artifacts" value={String(data.trainingArtifactStatus?.training_artifact_loader_ready ?? true)} detail="loader metadata ready" tone="safe" />
+            <StatusCard label="Case Cause Taxonomy" value={data.trainingArtifactTaxonomy?.node_count ?? 0} detail="multi-level case cause" tone="info" />
+            <StatusCard label="Packages" value={data.trainingArtifactPackages?.artifact_count ?? 0} detail="exact / fallback / overlay" tone="info" />
+            <StatusCard label="Load Dry-runs" value={data.trainingArtifactDryRuns?.run_count ?? 0} detail="load_executed=false" tone="safe" />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <StatusCard label="Skill Manifests" value={data.trainingArtifactSkills?.artifact_count ?? 0} detail="fact + legal Skill metadata" tone="safe" />
+            <StatusCard label="Skill Context" value={data.trainingArtifactSkillContexts?.skill_context_count ?? 0} detail="loaded skill metadata dry-run" tone="safe" />
+            <StatusCard label="Open Case Training" value={String(data.trainingArtifactStatus?.open_case_data_used ?? false)} detail="open_case_data_used=false" tone="safe" />
+          </div>
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            Pilot 仅展示 v7.30 训练产物 readiness 和案由匹配 dry-run 状态；不训练未结案件，不执行模型微调，不更新或自动发布 Skill。
+          </div>
+        </Panel>
+
+        <Panel title="v7.31 已结案件 Codex 训练执行">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Training Runs" value={data.codexTrainingRuns?.run_count ?? 0} detail="synthetic closed-case metadata" tone="info" />
+            <StatusCard label="Closed Case Only" value={String(data.codexTrainingRuns?.closed_case_only ?? true)} detail="open_case_data_used=false" tone="safe" />
+            <StatusCard label="Fine Tune" value={String(data.codexTrainingRuns?.fine_tune_model_training ?? false)} detail="Codex 训练不是模型微调" tone="safe" />
+            <StatusCard label="Skill Publish" value={String(data.codexTrainingRuns?.skill_published ?? false)} detail="skill_published=false" tone="safe" />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <StatusCard label="Experience Packages" value={data.codexTrainingRuns?.training_runs?.[0]?.experience_packages?.length ?? 0} detail="generated metadata packages" tone="info" />
+            <StatusCard label="Generated Skills" value={data.codexTrainingRuns?.training_runs?.[0]?.generated_skills?.length ?? 0} detail="fact + legal Skill manifests" tone="safe" />
+            <StatusCard label="Loader Dry-run" value={String(data.codexTrainingRuns?.training_runs?.[0]?.load_dry_run_result?.load_executed ?? false)} detail="load_executed=false" tone="safe" />
+          </div>
+          <div className="mt-4 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs leading-5 text-emerald-900">
+            v7.31 仅生成训练执行 metadata 与加载清单；synthetic closed-case samples 不被表述为真实案件，不写训练集，不更新或自动发布 Skill。
+          </div>
+        </Panel>
+
+        <Panel title="v7.31a 真实已结案件训练材料导入与脱敏">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="Intake Ready" value={String(data.realClosedCaseIntakeStatus?.intake_pipeline_ready ?? true)} detail="real_closed_case_intake=true" tone="safe" />
+            <StatusCard label="Redaction" value={String(data.realClosedCaseIntakeStatus?.redaction_pipeline_ready ?? true)} detail="脱敏管线 metadata ready" tone="safe" />
+            <StatusCard label="Classification" value={String(data.realClosedCaseIntakeStatus?.case_cause_classification_ready ?? true)} detail="多层级案由归类" tone="info" />
+            <StatusCard label="Ready For Training" value={String(data.realClosedCaseIntakeStatus?.ready_for_codex_training ?? false)} detail="v7.31a 不执行训练" tone="warning" />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <StatusCard label="Intakes" value={data.realClosedCaseIntakes?.intake_count ?? 0} detail="owner-only metadata" tone="info" />
+            <StatusCard label="Authorization" value={String(data.realClosedCaseIntakes?.intakes?.[0]?.authorization_confirmed ?? true)} detail="authorization_confirmed" tone="safe" />
+            <StatusCard label="Closed Case" value={String(data.realClosedCaseIntakes?.intakes?.[0]?.case_closed_confirmed ?? true)} detail="case_closed_confirmed" tone="safe" />
+            <StatusCard label="Open Case Used" value={String(data.realClosedCaseIntakeStatus?.open_case_data_used ?? false)} detail="open_case_data_used=false" tone="safe" />
+          </div>
+          <div className="mt-4 rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-xs leading-5 text-sky-900">
+            Pilot 只展示真实闭案训练材料 intake readiness；原文不返回，未结案件不参与训练，后续 v7.31b 才会进入真实闭案 Codex training。
           </div>
         </Panel>
 
@@ -453,6 +702,9 @@ export default function PersonalProductionPilotPage() {
                 ["OCR / Document Gateway", data.readiness?.readiness?.ocr_document_gateway_connected ?? true],
                 ["Legal / Enterprise Gateway", data.readiness?.readiness?.legal_enterprise_gateway_connected ?? true],
                 ["Skill Training Runtime", data.readiness?.readiness?.skill_training_runtime_connected ?? true],
+                ["Training Artifact Loader", data.trainingArtifactStatus?.training_artifact_loader_ready ?? true],
+                ["Case Cause Match Dry-run", data.trainingArtifactStatus?.multi_level_loader_ready ?? true],
+                ["Loaded Skill Metadata Dry-run", data.trainingArtifactStatus?.skill_context_dry_run_ready ?? true],
                 ["Case Analysis Runtime", data.readiness?.readiness?.case_analysis_runtime_connected ?? true],
                 ["Delivery Packet", data.readiness?.readiness?.delivery_packet_connected ?? true],
                 ["Owner Output Center", data.readiness?.readiness?.owner_output_center_ready ?? true],

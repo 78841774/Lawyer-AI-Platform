@@ -170,6 +170,399 @@ export type OwnerOutputSafetyStatus = OwnerOutputSafetyBase & {
   warnings: string[];
 };
 
+export type TrialSafetyBase = {
+  owner_only: boolean;
+  trial_metadata_only: boolean;
+  metadata_only: boolean;
+  draft_only: boolean;
+  raw_case_content_included: boolean;
+  raw_ocr_content_included: boolean;
+  api_key_exposed: boolean;
+  provider_live_call_triggered: boolean;
+  public_link_created: boolean;
+  email_sent: boolean;
+  external_delivery_triggered: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  training_data_generated: boolean;
+  writes_to_training_set: boolean;
+  skill_updated: boolean;
+  skill_published: boolean;
+  gate_reference_only: boolean;
+  blocks_next_stage: boolean;
+  audit_required: boolean;
+  source_trace_required: boolean;
+  lawyer_review_required: boolean;
+  local_path_visible: boolean;
+  raw_content_written_to_git_docs_regression: boolean;
+};
+
+export type TrialSessionMockRequest = {
+  trial_name: string;
+  case_mode: string;
+  owner_user_id?: string;
+  case_reference_label?: string;
+  explicit_owner_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+  explicit_no_provider_confirmation: boolean;
+  explicit_no_training_confirmation: boolean;
+  explicit_no_external_delivery_confirmation: boolean;
+};
+
+export type TrialSession = TrialSafetyBase & {
+  trial_id: string;
+  trial_name: string;
+  case_mode: string;
+  owner_user_id: string;
+  case_reference_label: string;
+  trial_status: string;
+  started_at: string;
+  completed_at?: string | null;
+  warnings: string[];
+};
+
+export type TrialSessionList = TrialSafetyBase & {
+  trials: TrialSession[];
+  trial_count: number;
+  warnings: string[];
+};
+
+export type TrialReadinessStatus = TrialSafetyBase & {
+  enabled: boolean;
+  version: string;
+  runtime_label: string;
+  trial_readiness_ready: boolean;
+  trial_checklist_ready: boolean;
+  issue_log_ready: boolean;
+  quality_review_ready: boolean;
+  safety_confirmation_ready: boolean;
+  optimization_backlog_ready: boolean;
+  live_provider_disabled: boolean;
+  open_case_training_disabled: boolean;
+  skill_auto_publish_disabled: boolean;
+  warnings: string[];
+};
+
+export type TrialChecklist = TrialSafetyBase & {
+  trial_id: string;
+  case_workspace_checked: boolean;
+  material_workspace_checked: boolean;
+  ocr_status_checked: boolean;
+  fact_preview_checked: boolean;
+  fact_correction_checked: boolean;
+  legal_draft_checked: boolean;
+  skill_final_drafts_checked: boolean;
+  owner_output_center_checked: boolean;
+  source_trace_checked: boolean;
+  review_queue_checked: boolean;
+  trust_safety_checked: boolean;
+  diagnostics_collapsed_checked: boolean;
+  checked_item_count: number;
+  warnings: string[];
+};
+
+export type StageObservationMockRequest = {
+  stage_id: string;
+  notes?: string;
+  issue_count?: number;
+};
+
+export type StageObservation = TrialSafetyBase & {
+  trial_id: string;
+  stage_id: string;
+  stage_name: string;
+  observation_status: string;
+  usability_score: number;
+  quality_score: number;
+  issue_count: number;
+  notes: string;
+  optimization_suggestions: string[];
+  warnings: string[];
+};
+
+export type StageObservationList = TrialSafetyBase & {
+  trial_id: string;
+  observations: StageObservation[];
+  observation_count: number;
+  warnings: string[];
+};
+
+export type IssueLogMockRequest = {
+  stage_id?: string;
+  issue_type?: string;
+  severity?: string;
+  title: string;
+  description: string;
+  suggested_fix: string;
+};
+
+export type IssueLogItem = TrialSafetyBase & {
+  issue_id: string;
+  trial_id: string;
+  stage_id: string;
+  issue_type: string;
+  severity: string;
+  title: string;
+  description: string;
+  suggested_fix: string;
+  status: string;
+  blocks_trial: boolean;
+  warnings: string[];
+};
+
+export type IssueLogList = TrialSafetyBase & {
+  trial_id?: string | null;
+  issues: IssueLogItem[];
+  issue_count: number;
+  warnings: string[];
+};
+
+export type QualityReview = TrialSafetyBase & {
+  review_id: string;
+  trial_id: string;
+  overall_score: number;
+  stage_scores: Record<string, number>;
+  fact_quality_score: number;
+  legal_draft_quality_score: number;
+  skill_helpfulness_score: number;
+  source_trace_score: number;
+  owner_download_score: number;
+  optimization_suggestions: string[];
+  warnings: string[];
+};
+
+export type SafetyConfirmation = TrialSafetyBase & {
+  trial_id: string;
+  owner_only_confirmed: boolean;
+  draft_only_confirmed: boolean;
+  no_public_link_confirmed: boolean;
+  no_email_confirmed: boolean;
+  no_external_delivery_confirmed: boolean;
+  no_final_legal_opinion_confirmed: boolean;
+  no_final_report_confirmed: boolean;
+  no_open_case_training_confirmed: boolean;
+  no_skill_auto_publish_confirmed: boolean;
+  no_api_key_exposed_confirmed: boolean;
+  no_raw_content_in_diagnostics_confirmed: boolean;
+  no_raw_content_in_git_docs_regression_confirmed: boolean;
+  warnings: string[];
+};
+
+export type OptimizationBacklogMockRequest = {
+  source_trial_id?: string;
+  source_issue_ids?: string[];
+  priority?: string;
+  target_area?: string;
+  title: string;
+  description: string;
+  recommended_version?: string;
+};
+
+export type OptimizationBacklogItem = TrialSafetyBase & {
+  backlog_id: string;
+  source_trial_id: string;
+  source_issue_ids: string[];
+  priority: string;
+  target_area: string;
+  title: string;
+  description: string;
+  recommended_version: string;
+  status: string;
+  warnings: string[];
+};
+
+export type OptimizationBacklogList = TrialSafetyBase & {
+  backlog_items: OptimizationBacklogItem[];
+  backlog_count: number;
+  warnings: string[];
+};
+
+export type TrialAuditTimeline = TrialSafetyBase & {
+  events: Array<Record<string, unknown>>;
+  event_count: number;
+  warnings: string[];
+};
+
+export type TrialSafetyStatus = TrialSafetyBase & {
+  safety_items: string[];
+  safety_item_count: number;
+  all_safety_checks_passed: boolean;
+  warnings: string[];
+};
+
+export type ProviderReadinessSafetyBase = {
+  metadata_only: boolean;
+  dry_run: boolean;
+  provider_gated: boolean;
+  live_default_enabled: boolean;
+  live_call_allowed: boolean;
+  live_call_executed: boolean;
+  api_key_exposed: boolean;
+  secret_value_returned: boolean;
+  secret_logged: boolean;
+  frontend_key_input_enabled: boolean;
+  external_transfer_triggered: boolean;
+  owner_confirmation_required: boolean;
+  lawyer_review_required: boolean;
+  source_trace_required: boolean;
+  audit_required: boolean;
+  training_data_generated: boolean;
+  writes_to_training_set: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  public_link_created: boolean;
+  email_sent: boolean;
+  external_delivery_triggered: boolean;
+};
+
+export type ProviderMetadata = ProviderReadinessSafetyBase & {
+  provider_id: string;
+  provider_name: string;
+  provider_category: string;
+  live_supported: boolean;
+  dry_run_supported: boolean;
+  requires_api_key: boolean;
+  key_env_names: string[];
+  key_loaded: boolean;
+  key_source: string;
+  key_value_exposed: boolean;
+  external_transfer_required: boolean;
+  usage_meter_supported: boolean;
+  cost_metadata_supported: boolean;
+  adapter_registered: boolean;
+  status: string;
+  warnings: string[];
+};
+
+export type ProviderList = ProviderReadinessSafetyBase & {
+  providers: ProviderMetadata[];
+  provider_count: number;
+  key_loaded_count: number;
+  dry_run_ready_count: number;
+  live_disabled_count: number;
+  blocked_provider_count: number;
+  warnings: string[];
+};
+
+export type ProviderStatus = ProviderReadinessSafetyBase & {
+  enabled: boolean;
+  version: string;
+  runtime_label: string;
+  provider_readiness_ready: boolean;
+  provider_registry_ready: boolean;
+  secret_boundary_ready: boolean;
+  live_gate_ready: boolean;
+  usage_cost_metadata_ready: boolean;
+  dry_run_health_ready: boolean;
+  real_provider_calls_still_disabled: boolean;
+  provider_count: number;
+  key_loaded_count: number;
+  warnings: string[];
+};
+
+export type CategorySummary = ProviderReadinessSafetyBase & {
+  category: string;
+  provider_count: number;
+  key_loaded_count: number;
+  dry_run_ready_count: number;
+  live_disabled_count: number;
+  blocked_provider_count: number;
+  warnings: string[];
+};
+
+export type CategorySummaryList = ProviderReadinessSafetyBase & {
+  categories: CategorySummary[];
+  category_count: number;
+  warnings: string[];
+};
+
+export type SecretBoundaryStatus = ProviderReadinessSafetyBase & {
+  provider_id: string;
+  key_env_names: string[];
+  requires_api_key: boolean;
+  key_loaded: boolean;
+  key_source: string;
+  key_value_exposed: boolean;
+  key_prefix_returned: boolean;
+  key_suffix_returned: boolean;
+  masked_key_returned: boolean;
+  token_value_returned: boolean;
+  secret_value_stored: boolean;
+  warnings: string[];
+};
+
+export type LiveGateMockRequest = {
+  provider_id: string;
+  explicit_live_confirmation?: boolean;
+  owner_authorized?: boolean;
+  external_transfer_acknowledged?: boolean;
+  no_training_use_acknowledged?: boolean;
+  audit_acknowledged?: boolean;
+};
+
+export type LiveGateStatus = ProviderReadinessSafetyBase & {
+  gate_id: string;
+  provider_id: string;
+  global_live_enabled: boolean;
+  provider_live_enabled: boolean;
+  key_loaded: boolean;
+  explicit_live_confirmation: boolean;
+  owner_authorized: boolean;
+  external_transfer_acknowledged: boolean;
+  no_training_use_acknowledged: boolean;
+  audit_acknowledged: boolean;
+  live_gate_status: string;
+  live_blocked_reason: string;
+  next_required_confirmation: string;
+  warnings: string[];
+};
+
+export type LiveGateList = ProviderReadinessSafetyBase & {
+  live_gates: LiveGateStatus[];
+  live_gate_count: number;
+  warnings: string[];
+};
+
+export type UsagePolicy = ProviderReadinessSafetyBase & {
+  provider_id: string;
+  usage_meter_enabled: boolean;
+  estimated_token_count: number;
+  estimated_page_count: number;
+  estimated_document_count: number;
+  estimated_call_count: number;
+  estimated_cost_available: boolean;
+  actual_cost_recorded: boolean;
+  billable_call_executed: boolean;
+  usage_recorded_as_metadata_only: boolean;
+  warnings: string[];
+};
+
+export type ProviderHealthDryRun = ProviderReadinessSafetyBase & {
+  provider_id: string;
+  config_detected: boolean;
+  key_loaded: boolean;
+  live_gate_status: string;
+  adapter_registered: boolean;
+  dry_run_ready: boolean;
+  live_blocked_reason: string;
+  next_required_confirmation: string;
+  network_call_executed: boolean;
+  warnings: string[];
+};
+
+export type ProviderAuditTimeline = ProviderReadinessSafetyBase & {
+  events: Array<Record<string, unknown>>;
+  event_count: number;
+  warnings: string[];
+};
+
+export type ProviderSafetyStatus = ProviderReadinessSafetyBase & {
+  safety_items: string[];
+  safety_item_count: number;
+  all_safety_checks_passed: boolean;
+  warnings: string[];
+};
+
 export type RuntimeStatus = {
   provider: string;
   model: string;
@@ -3860,6 +4253,14 @@ export type PersonalProductionProviderCapabilities = {
   legal_analysis_draft_workbench_status: string;
   skill_final_draft_workbench_status: string;
   owner_output_center_status: string;
+  personal_trial_readiness_status: string;
+  personal_provider_readiness_status: string;
+  personal_material_live_connection_status: string;
+  personal_live_connection_status: string;
+  personal_legal_enterprise_gateway_status: string;
+  training_artifact_loader_status: string;
+  codex_training_run_status: string;
+  real_closed_case_training_intake_status: string;
   owner_output_center_ready: boolean;
   skill_final_drafts_aggregated: boolean;
   fact_outputs_aggregated: boolean;
@@ -3886,6 +4287,73 @@ export type PersonalProductionProviderCapabilities = {
   pilot_dashboard_optimization_suggestions_ready: boolean;
   owner_only_downloads_ready: boolean;
   owner_output_center_download_ready: boolean;
+  trial_readiness_ready: boolean;
+  trial_checklist_ready: boolean;
+  trial_issue_log_ready: boolean;
+  trial_quality_review_ready: boolean;
+  trial_safety_confirmation_ready: boolean;
+  trial_optimization_backlog_ready: boolean;
+  trial_issue_log_reference_only: boolean;
+  trial_quality_review_reference_only: boolean;
+  provider_readiness_ready: boolean;
+  provider_registry_ready: boolean;
+  secret_boundary_ready: boolean;
+  live_gate_ready: boolean;
+  usage_cost_metadata_ready: boolean;
+  dry_run_health_ready: boolean;
+  real_provider_calls_still_disabled: boolean;
+  material_live_connection_ready: boolean;
+  material_live_provider_registry_ready: boolean;
+  material_live_secret_boundary_ready: boolean;
+  material_live_gate_ready: boolean;
+  material_live_dry_run_health_ready: boolean;
+  material_live_raw_content_blocked: boolean;
+  material_live_ai_prompt_injection_blocked: boolean;
+  personal_live_connection_ready: boolean;
+  personal_live_connection_provider_registry_ready: boolean;
+  personal_live_connection_secret_boundary_ready: boolean;
+  personal_live_connection_gate_ready: boolean;
+  personal_live_connection_usage_cost_ready: boolean;
+  personal_live_connection_health_ready: boolean;
+  personal_live_connection_audit_ready: boolean;
+  legal_enterprise_gateway_ready: boolean;
+  legal_provider_readiness_ready: boolean;
+  enterprise_provider_readiness_ready: boolean;
+  legal_source_trace_ready: boolean;
+  enterprise_verification_ready: boolean;
+  legal_enterprise_review_required: boolean;
+  training_artifact_loader_ready: boolean;
+  codex_training_scheme_ready: boolean;
+  case_cause_taxonomy_ready: boolean;
+  multi_level_case_cause_loader_ready: boolean;
+  experience_package_manifest_ready: boolean;
+  skill_manifest_loader_ready: boolean;
+  case_cause_fallback_ready: boolean;
+  skill_context_dry_run_ready: boolean;
+  codex_fine_tune_training_disabled: boolean;
+  training_artifact_open_case_training_disabled: boolean;
+  training_artifact_skill_auto_publish_disabled: boolean;
+  closed_case_training_run_ready: boolean;
+  synthetic_closed_case_samples_ready: boolean;
+  training_run_manifest_ready: boolean;
+  generated_experience_packages_ready: boolean;
+  generated_skill_manifests_ready: boolean;
+  generated_evaluation_gate_test_cases_ready: boolean;
+  generated_loading_manifest_ready: boolean;
+  training_run_load_dry_run_ready: boolean;
+  training_run_open_case_training_disabled: boolean;
+  training_run_skill_auto_publish_disabled: boolean;
+  training_run_fine_tune_disabled: boolean;
+  training_run_real_case_material_read_disabled: boolean;
+  real_closed_case_training_intake_ready: boolean;
+  real_closed_case_redaction_pipeline_ready: boolean;
+  real_closed_case_classification_ready: boolean;
+  real_closed_case_training_sample_segmentation_ready: boolean;
+  real_closed_case_source_trace_ready: boolean;
+  real_closed_case_review_queue_ready: boolean;
+  real_closed_case_open_case_training_disabled: boolean;
+  real_closed_case_raw_content_blocked: boolean;
+  real_closed_case_ready_for_codex_training: boolean;
   external_delivery_disabled: boolean;
   public_link_disabled: boolean;
   email_sending_disabled: boolean;
@@ -3943,6 +4411,15 @@ export type PersonalProductionConsoleSummary = {
   next_steps: string[];
   runtime_summary: Record<string, number>;
   trust_summary: Record<string, boolean>;
+  v7_23_readiness: Record<string, boolean>;
+  v7_25_readiness: Record<string, boolean>;
+  v7_26_readiness: Record<string, boolean>;
+  v7_27_readiness: Record<string, boolean>;
+  v7_28_readiness: Record<string, boolean>;
+  v7_29_readiness: Record<string, boolean>;
+  v7_30_readiness: Record<string, boolean>;
+  v7_31_readiness: Record<string, boolean>;
+  v7_31a_readiness: Record<string, boolean>;
   mock_or_redacted_only: boolean;
   raw_content_included: boolean;
   final_legal_opinion_generated: boolean;
@@ -4747,13 +5224,147 @@ export type PersonalMaterialLiveProviderConfigList = {
   warnings: string[];
 };
 
+export type PersonalMaterialLiveSafetyBase = {
+  owner_only: boolean;
+  metadata_only: boolean;
+  draft_only: boolean;
+  dry_run: boolean;
+  provider_gated: boolean;
+  live_default_enabled: boolean;
+  live_call_allowed: boolean;
+  live_call_executed: boolean;
+  api_key_exposed: boolean;
+  secret_value_returned: boolean;
+  secret_logged: boolean;
+  frontend_key_input_enabled: boolean;
+  raw_content_exposed: boolean;
+  raw_ocr_text_exposed: boolean;
+  raw_document_content_exposed: boolean;
+  ai_prompt_injected: boolean;
+  source_trace_required: boolean;
+  lawyer_review_required: boolean;
+  audit_required: boolean;
+  training_data_generated: boolean;
+  writes_to_training_set: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  real_pdf_generated: boolean;
+  real_docx_generated: boolean;
+  public_link_created: boolean;
+  email_sent: boolean;
+  external_delivery_triggered: boolean;
+};
+
+export type PersonalMaterialLiveProviderReadiness = PersonalMaterialLiveSafetyBase & {
+  provider_id: string;
+  display_name: string;
+  provider_type: string;
+  provider_category: string;
+  live_supported: boolean;
+  live_enabled: boolean;
+  dry_run_ready: boolean;
+  key_required: boolean;
+  key_loaded: boolean;
+  key_source: string;
+  key_env_names: string[];
+  adapter_registered: boolean;
+  health_status: string;
+  status: string;
+  supported_file_types: string[];
+  max_file_size_mb: number;
+  supports_page_range: boolean;
+  supports_bbox: boolean;
+  supports_table_extraction: boolean;
+  supports_layout_extraction: boolean;
+  timeout_seconds: number;
+  safety_notes: string[];
+  warnings: string[];
+};
+
+export type PersonalMaterialLiveProviderReadinessList = PersonalMaterialLiveSafetyBase & {
+  providers: PersonalMaterialLiveProviderReadiness[];
+  provider_count: number;
+  dry_run_ready_count: number;
+  key_loaded_count: number;
+  live_disabled_count: number;
+  blocked_provider_count: number;
+  provider_secrets_visible: boolean;
+  warnings: string[];
+};
+
+export type PersonalMaterialLiveSecretBoundary = PersonalMaterialLiveSafetyBase & {
+  provider_id: string;
+  key_env_names: string[];
+  key_required: boolean;
+  key_loaded: boolean;
+  key_source: string;
+  key_value_exposed: boolean;
+  key_prefix_returned: boolean;
+  key_suffix_returned: boolean;
+  masked_key_returned: boolean;
+  token_value_returned: boolean;
+  secret_value_stored: boolean;
+  warnings: string[];
+};
+
+export type PersonalMaterialLiveGateMockRequest = {
+  provider_id: string;
+  explicit_live_confirmation: boolean;
+  owner_authorized: boolean;
+  raw_content_boundary_acknowledged: boolean;
+  no_ai_prompt_injection_acknowledged: boolean;
+  audit_acknowledged: boolean;
+};
+
+export type PersonalMaterialLiveGateStatus = PersonalMaterialLiveSafetyBase & {
+  gate_id: string;
+  provider_id: string;
+  global_live_enabled: boolean;
+  provider_live_enabled: boolean;
+  key_loaded: boolean;
+  explicit_live_confirmation: boolean;
+  owner_authorized: boolean;
+  raw_content_boundary_acknowledged: boolean;
+  no_ai_prompt_injection_acknowledged: boolean;
+  audit_acknowledged: boolean;
+  live_gate_status: string;
+  live_blocked_reason: string;
+  next_required_confirmation: string;
+  warnings: string[];
+};
+
+export type PersonalMaterialLiveGateList = PersonalMaterialLiveSafetyBase & {
+  live_gates: PersonalMaterialLiveGateStatus[];
+  live_gate_count: number;
+  warnings: string[];
+};
+
+export type PersonalMaterialLiveHealthDryRun = PersonalMaterialLiveSafetyBase & {
+  provider_id: string;
+  config_detected: boolean;
+  key_loaded: boolean;
+  live_gate_status: string;
+  adapter_registered: boolean;
+  dry_run_ready: boolean;
+  live_blocked_reason: string;
+  next_required_confirmation: string;
+  network_call_executed: boolean;
+  upload_executed: boolean;
+  raw_content_uploaded: boolean;
+  warnings: string[];
+};
+
 export type PersonalMaterialLiveGatewayStatus = {
   enabled: boolean;
   mode: string;
   version: string;
+  owner_only: boolean;
+  metadata_only: boolean;
+  draft_only: boolean;
   ocr_live_mode_enabled: boolean;
   document_live_mode_enabled: boolean;
   live_mode_enabled: boolean;
+  live_call_allowed: boolean;
   live_call_executed: boolean;
   dry_run_ready: boolean;
   document_dry_run_ready: boolean;
@@ -4763,14 +5374,19 @@ export type PersonalMaterialLiveGatewayStatus = {
   api_key_exposed: boolean;
   raw_content_exposed: boolean;
   raw_ocr_text_exposed: boolean;
+  raw_document_content_exposed: boolean;
   ai_prompt_injected: boolean;
   fact_extraction_triggered: boolean;
   legal_analysis_triggered: boolean;
   final_legal_opinion_generated: boolean;
   final_report_generated: boolean;
+  real_pdf_generated: boolean;
+  real_docx_generated: boolean;
+  email_sent: boolean;
   external_delivery_triggered: boolean;
   source_trace_required: boolean;
   lawyer_review_required: boolean;
+  audit_required: boolean;
   warnings: string[];
 };
 
@@ -5031,6 +5647,290 @@ export type PersonalMaterialLiveSafetyStatus = {
   lawyer_review_required: boolean;
   warnings: string[];
 };
+
+export type LiveConnectionSafetyBase = {
+  owner_only: boolean;
+  lawyer_gated: boolean;
+  metadata_only: boolean;
+  draft_only: boolean;
+  dry_run: boolean;
+  provider_gated: boolean;
+  live_default_enabled: boolean;
+  live_call_allowed: boolean;
+  live_call_executed: boolean;
+  network_call_executed: boolean;
+  api_key_exposed: boolean;
+  secret_value_returned: boolean;
+  secret_logged: boolean;
+  frontend_key_input_enabled: boolean;
+  raw_content_exposed: boolean;
+  raw_ocr_text_exposed: boolean;
+  raw_provider_response_exposed: boolean;
+  local_path_exposed: boolean;
+  source_trace_required: boolean;
+  lawyer_review_required: boolean;
+  audit_required: boolean;
+  training_data_generated: boolean;
+  writes_to_training_set: boolean;
+  skill_published: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  real_pdf_generated: boolean;
+  real_docx_generated: boolean;
+  public_link_created: boolean;
+  email_sent: boolean;
+  external_delivery_triggered: boolean;
+};
+
+export type LiveConnectionStatus = LiveConnectionSafetyBase & {
+  enabled: boolean;
+  version: string;
+  runtime_label: string;
+  provider_count: number;
+  dry_run_ready_count: number;
+  key_loaded_count: number;
+  live_disabled_count: number;
+  live_connection_ready: boolean;
+  quality_metadata_ready: boolean;
+  usage_cost_metadata_ready: boolean;
+  health_check_ready: boolean;
+  audit_ready: boolean;
+  safety_ready: boolean;
+  warnings: string[];
+};
+
+export type LiveConnectionProvider = LiveConnectionSafetyBase & {
+  provider_id: string;
+  display_name: string;
+  provider_category: string;
+  provider_type: string;
+  key_env_name?: string | null;
+  key_loaded: boolean;
+  key_source: string;
+  key_required: boolean;
+  dry_run_ready: boolean;
+  live_supported: boolean;
+  provider_live_enabled: boolean;
+  adapter_registered: boolean;
+  health_status: string;
+  usage_meter_supported: boolean;
+  cost_metadata_supported: boolean;
+  status: string;
+  warnings: string[];
+};
+
+export type LiveConnectionProviderList = LiveConnectionSafetyBase & {
+  providers: LiveConnectionProvider[];
+  provider_count: number;
+  category_count: number;
+  dry_run_ready_count: number;
+  key_loaded_count: number;
+  live_disabled_count: number;
+  blocked_provider_count: number;
+  warnings: string[];
+};
+
+export type LiveConnectionRuntimeList = LiveConnectionSafetyBase & {
+  runtimes: Array<{ runtime_id: string; label: string; category: string; target_route: string; status: string; enabled: boolean; dry_run_ready: boolean; live_enabled: boolean; warnings: string[] }>;
+  runtime_count: number;
+  warnings: string[];
+};
+
+export type LiveConnectionSecretBoundary = LiveConnectionSafetyBase & {
+  provider_id: string;
+  key_env_name?: string | null;
+  key_loaded: boolean;
+  key_source: string;
+  key_required: boolean;
+  key_value_exposed: boolean;
+  key_prefix_returned: boolean;
+  key_suffix_returned: boolean;
+  masked_key_returned: boolean;
+  token_value_returned: boolean;
+  warnings: string[];
+};
+
+export type LiveConnectionLiveGate = LiveConnectionSafetyBase & {
+  gate_id: string;
+  provider_id: string;
+  global_live_enabled: boolean;
+  provider_live_enabled: boolean;
+  key_loaded: boolean;
+  manual_confirmation_received: boolean;
+  owner_confirmation_received: boolean;
+  lawyer_gate_acknowledged: boolean;
+  raw_content_boundary_acknowledged: boolean;
+  live_gate_status: string;
+  live_blocked_reason: string;
+  next_required_confirmation: string;
+  warnings: string[];
+};
+
+export type LiveConnectionUsagePolicy = LiveConnectionSafetyBase & {
+  provider_id: string;
+  estimated_token_count: number;
+  estimated_page_count: number;
+  estimated_query_count: number;
+  estimated_call_count: number;
+  estimated_cost_available: boolean;
+  actual_cost_recorded: boolean;
+  billable_call_executed: boolean;
+  usage_recorded_as_metadata_only: boolean;
+  warnings: string[];
+};
+
+export type LiveConnectionHealthDryRun = LiveConnectionSafetyBase & {
+  provider_id: string;
+  config_detected: boolean;
+  key_loaded: boolean;
+  adapter_registered: boolean;
+  dry_run_ready: boolean;
+  health_status: string;
+  network_call_executed: boolean;
+  upload_executed: boolean;
+  live_blocked_reason: string;
+  warnings: string[];
+};
+
+export type LiveConnectionRunRequest = {
+  provider_id: string;
+  run_type: string;
+  case_id: string;
+  material_id?: string | null;
+  query_purpose: string;
+  dry_run: boolean;
+  manual_confirmation: boolean;
+  owner_confirmation: boolean;
+  lawyer_gate_acknowledged: boolean;
+  source_trace_acknowledged: boolean;
+  raw_content_boundary_acknowledged: boolean;
+  draft_only_acknowledged: boolean;
+};
+
+export type LiveConnectionRunRecord = LiveConnectionSafetyBase & {
+  run_id: string;
+  provider_id: string;
+  provider_category: string;
+  run_type: string;
+  case_id: string;
+  material_id?: string | null;
+  status: string;
+  dry_run: boolean;
+  live_call_requested: boolean;
+  blocked_reasons: string[];
+  quality_score: number;
+  quality_reference_only: boolean;
+  usage_metadata: Record<string, any>;
+  cost_metadata: Record<string, any>;
+  health_metadata: Record<string, any>;
+  source_trace_ids: string[];
+  created_at: string;
+  warnings: string[];
+};
+
+export type LiveConnectionRunList = LiveConnectionSafetyBase & {
+  runs: LiveConnectionRunRecord[];
+  run_count: number;
+  warnings: string[];
+};
+
+export type LiveConnectionAuditTimeline = LiveConnectionSafetyBase & {
+  events: Array<LiveConnectionSafetyBase & { event_id: string; provider_id: string; action: string; run_id?: string | null; created_at: string; warnings: string[] }>;
+  event_count: number;
+  warnings: string[];
+};
+
+export type LiveConnectionSafetyStatus = LiveConnectionSafetyBase & {
+  safety_items: string[];
+  safety_item_count: number;
+  all_safety_checks_passed: boolean;
+  warnings: string[];
+};
+
+export type LegalEnterpriseSafetyBase = {
+  metadata_only: boolean;
+  dry_run: boolean;
+  provider_gated: boolean;
+  live_default_enabled: boolean;
+  live_call_allowed: boolean;
+  live_call_executed: boolean;
+  network_call_executed: boolean;
+  api_key_exposed: boolean;
+  secret_value_returned: boolean;
+  secret_logged: boolean;
+  frontend_key_input_enabled: boolean;
+  external_transfer_triggered: boolean;
+  owner_confirmation_required: boolean;
+  lawyer_review_required: boolean;
+  source_trace_required: boolean;
+  audit_required: boolean;
+  review_required: boolean;
+  training_data_generated: boolean;
+  writes_to_training_set: boolean;
+  skill_updated: boolean;
+  skill_published: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  final_fact_finding: boolean;
+  public_link_created: boolean;
+  email_sent: boolean;
+  external_delivery_triggered: boolean;
+  third_party_share_enabled: boolean;
+  client_auto_delivery: boolean;
+  raw_provider_response_exposed: boolean;
+  local_path_exposed: boolean;
+};
+
+export type LegalEnterpriseProvider = LegalEnterpriseSafetyBase & {
+  provider_id: string;
+  provider_name: string;
+  provider_category: string;
+  provider_subtype: string;
+  live_supported: boolean;
+  dry_run_supported: boolean;
+  requires_api_key: boolean;
+  key_env_names: string[];
+  key_loaded: boolean;
+  key_source: string;
+  key_value_exposed: boolean;
+  external_transfer_required: boolean;
+  usage_meter_supported: boolean;
+  cost_metadata_supported: boolean;
+  adapter_registered: boolean;
+  status: string;
+  warnings: string[];
+};
+
+export type LegalEnterpriseStatus = LegalEnterpriseSafetyBase & {
+  enabled: boolean;
+  version: string;
+  runtime_label: string;
+  legal_gateway_ready: boolean;
+  enterprise_gateway_ready: boolean;
+  legal_source_trace_ready: boolean;
+  enterprise_verification_ready: boolean;
+  provider_count: number;
+  legal_provider_count: number;
+  enterprise_provider_count: number;
+  warnings: string[];
+};
+
+export type LegalEnterpriseProviderList = LegalEnterpriseSafetyBase & {
+  providers: LegalEnterpriseProvider[];
+  provider_count: number;
+  key_loaded_count: number;
+  dry_run_ready_count: number;
+  live_disabled_count: number;
+  blocked_provider_count: number;
+  warnings: string[];
+};
+
+export type LegalEnterpriseCategorySummaryList = LegalEnterpriseSafetyBase & {
+  categories: Array<LegalEnterpriseSafetyBase & { category: string; provider_count: number; key_loaded_count: number; dry_run_ready_count: number; live_disabled_count: number; blocked_provider_count: number }>;
+  category_count: number;
+};
+
+export type LegalEnterpriseGenericResponse = LegalEnterpriseSafetyBase & Record<string, any>;
 
 export type PersonalIntelligenceStatus = {
   enabled: boolean;
@@ -5575,6 +6475,174 @@ export type SkillStudioFinalOwnerDownloadRequest = {
 };
 export type SkillStudioFinalOwnerDownload = SkillStudioFinalDraftSafetyBase & Record<string, unknown> & { download_id: string; skill_id: string; requested_format: string; download_status: string; warnings: string[] };
 export type SkillStudioFinalOwnerDownloadList = SkillStudioFinalDraftSafetyBase & { owner_downloads: SkillStudioFinalOwnerDownload[]; download_count: number; warnings: string[] };
+export type TrainingArtifactSafetyBase = Record<string, unknown> & {
+  owner_only: boolean;
+  metadata_only: boolean;
+  training_artifact_only: boolean;
+  codex_training_scheme: boolean;
+  fine_tune_model_training: boolean;
+  closed_case_only: boolean;
+  open_case_data_used: boolean;
+  raw_content_included: boolean;
+  raw_ocr_content_included: boolean;
+  api_key_exposed: boolean;
+  secret_value_returned: boolean;
+  local_path_exposed: boolean;
+  training_data_generated: boolean;
+  writes_to_training_set: boolean;
+  skill_updated: boolean;
+  skill_published: boolean;
+  skill_auto_published: boolean;
+  case_cause_taxonomy_required: boolean;
+  multi_level_case_cause_enabled: boolean;
+  case_cause_match_required: boolean;
+  fallback_supported: boolean;
+  load_dry_run: boolean;
+  load_executed: boolean;
+  final_legal_opinion_generated: boolean;
+  final_report_generated: boolean;
+  public_link_created: boolean;
+  email_sent: boolean;
+  external_delivery_triggered: boolean;
+  gate_reference_only: boolean;
+  blocks_next_stage: boolean;
+  audit_required: boolean;
+};
+export type TrainingArtifactStatus = TrainingArtifactSafetyBase & {
+  version: string;
+  status: string;
+  training_artifact_loader_ready: boolean;
+  codex_training_scheme_ready: boolean;
+  case_cause_taxonomy_ready: boolean;
+  multi_level_loader_ready: boolean;
+  experience_package_manifest_ready: boolean;
+  skill_manifest_loader_ready: boolean;
+  fallback_ready: boolean;
+  skill_context_dry_run_ready: boolean;
+  package_count: number;
+  skill_count: number;
+  taxonomy_node_count: number;
+  warnings: string[];
+};
+export type CodexTrainingScheme = TrainingArtifactSafetyBase & { scheme_id: string; scheme_version: string; display_name_cn: string; target_skill_ids: string[]; training_steps: string[]; output_artifacts: string[] };
+export type CaseCauseNode = TrainingArtifactSafetyBase & { case_cause_id: string; case_domain: string; case_cause_code: string; case_cause_name: string; level: number; case_cause_path: string[]; parent_id?: string | null; child_ids: string[] };
+export type CaseCauseTaxonomyManifest = TrainingArtifactSafetyBase & { taxonomy_id: string; taxonomy_version: string; nodes: CaseCauseNode[]; node_count: number; supported_levels: number[] };
+export type TrainingArtifactManifestList = TrainingArtifactSafetyBase & { artifacts: Array<Record<string, unknown>>; artifact_count: number; warnings: string[] };
+export type TrainingArtifactCaseCauseMatchRequest = {
+  case_domain: string;
+  case_cause_level_1: string;
+  case_cause_level_2: string;
+  case_cause_level_3?: string | null;
+  case_cause_name: string;
+  case_cause_code: string;
+  case_cause_path: string[];
+  evidence_types: string[];
+};
+export type TrainingArtifactLoadDryRunRequest = TrainingArtifactCaseCauseMatchRequest & {
+  target_skill_ids: string[];
+  explicit_dry_run_confirmation: boolean;
+  explicit_no_training_confirmation: boolean;
+  explicit_no_open_case_training_confirmation: boolean;
+  explicit_no_auto_publish_confirmation: boolean;
+};
+export type TrainingArtifactCaseCauseMatchResult = TrainingArtifactSafetyBase & {
+  match_id: string;
+  requested_case_cause_path: string[];
+  matched_case_cause_id?: string | null;
+  exact_package_ids: string[];
+  ancestor_fallback_package_ids: string[];
+  common_package_ids: string[];
+  evidence_overlay_package_ids: string[];
+  selected_package_ids: string[];
+  fallback_chain: string[];
+  merge_order: string[];
+  warnings: string[];
+};
+export type TrainingArtifactSkillContext = TrainingArtifactSafetyBase & { skill_context_id: string; source_match_id: string; selected_skill_ids: string[]; selected_package_ids: string[]; case_cause_path: string[]; fallback_chain: string[]; optimization_suggestions: string[] };
+export type TrainingArtifactLoadDryRun = TrainingArtifactSafetyBase & { run_id: string; run_status: string; match_result: TrainingArtifactCaseCauseMatchResult; skill_context: TrainingArtifactSkillContext; warnings: string[] };
+export type TrainingArtifactLoadDryRunList = TrainingArtifactSafetyBase & { load_dry_runs: TrainingArtifactLoadDryRun[]; run_count: number };
+export type TrainingArtifactSkillContextList = TrainingArtifactSafetyBase & { skill_contexts: TrainingArtifactSkillContext[]; skill_context_count: number };
+export type TrainingArtifactSafetyStatus = TrainingArtifactSafetyBase & { safety_checklist: string[]; safety: Record<string, boolean>; all_safety_checks_passed: boolean; warnings: string[] };
+export type CodexTrainingRunSafetyBase = TrainingArtifactSafetyBase & {
+  codex_training: boolean;
+  training_run_generated: boolean;
+  redaction_completed: boolean;
+  quality_reference_only: boolean;
+};
+export type CodexTrainingRunRequest = {
+  source_case_mode: string;
+  target_case_cause_paths: string[][];
+  target_skill_ids: string[];
+  explicit_closed_case_only_confirmation: boolean;
+  explicit_redaction_confirmation: boolean;
+  explicit_no_raw_content_confirmation: boolean;
+  explicit_no_open_case_training_confirmation: boolean;
+  explicit_no_auto_publish_confirmation: boolean;
+};
+export type CodexTrainingRun = CodexTrainingRunSafetyBase & Record<string, unknown> & {
+  training_run_id: string;
+  run_status: string;
+  manifest: Record<string, unknown>;
+  training_samples: Array<Record<string, unknown>>;
+  experience_packages: Array<Record<string, unknown>>;
+  generated_skills: Array<Record<string, unknown>>;
+  evaluations: Array<Record<string, unknown>>;
+  gates: Array<Record<string, unknown>>;
+  test_cases: Array<Record<string, unknown>>;
+  loading_manifest: Record<string, unknown>;
+  warnings: string[];
+};
+export type CodexTrainingRunList = CodexTrainingRunSafetyBase & { training_runs: CodexTrainingRun[]; run_count: number; warnings: string[] };
+export type CodexTrainingRunLoadDryRunResult = CodexTrainingRunSafetyBase & { training_run_id: string; load_dry_run_result: TrainingArtifactLoadDryRun; warnings: string[] };
+export type RealClosedCaseIntakeSafetyBase = TrainingArtifactSafetyBase & {
+  real_closed_case_intake: boolean;
+  redaction_required: boolean;
+  redaction_completed: boolean;
+  source_trace_required: boolean;
+  manual_review_required: boolean;
+  ready_for_codex_training: boolean;
+};
+export type RealClosedCaseTrainingIntakeRequest = {
+  case_reference_label: string;
+  owner_user_id: string;
+  authorization_confirmed: boolean;
+  case_closed_confirmed: boolean;
+  target_case_cause_path: string[];
+  target_skill_ids: string[];
+  explicit_no_raw_content_confirmation: boolean;
+  explicit_no_open_case_confirmation: boolean;
+  explicit_no_provider_confirmation: boolean;
+};
+export type RealClosedCaseTrainingIntake = RealClosedCaseIntakeSafetyBase & {
+  intake_id: string;
+  source_case_mode: string;
+  case_reference_label: string;
+  owner_user_id: string;
+  authorization_confirmed: boolean;
+  case_closed_confirmed: boolean;
+  redaction_status: string;
+  raw_content_retained: boolean;
+  raw_content_exported: boolean;
+  target_case_cause_path: string[];
+  target_skill_ids: string[];
+  status: string;
+  created_at: string;
+  warnings: string[];
+};
+export type RedactionReport = RealClosedCaseIntakeSafetyBase & Record<string, unknown> & { redaction_report_id: string; intake_id: string };
+export type CaseCauseClassification = RealClosedCaseIntakeSafetyBase & Record<string, unknown> & { classification_id: string; intake_id: string; case_cause_path: string[] };
+export type TrainingSampleSegment = RealClosedCaseIntakeSafetyBase & Record<string, unknown> & { segment_id: string; intake_id: string; segment_type: string; target_skill_id: string };
+export type RealClosedCaseTrainingIntakeRecord = RealClosedCaseIntakeSafetyBase & Record<string, unknown> & {
+  intake: RealClosedCaseTrainingIntake;
+  redaction_report?: RedactionReport | null;
+  classification?: CaseCauseClassification | null;
+  segments: TrainingSampleSegment[];
+  review_queue: Array<Record<string, unknown>>;
+  source_traces: Array<Record<string, unknown>>;
+  warnings: string[];
+};
+export type RealClosedCaseTrainingIntakeList = RealClosedCaseIntakeSafetyBase & { intakes: RealClosedCaseTrainingIntake[]; intake_count: number; warnings: string[] };
+export type RealClosedCaseIntakeStatus = RealClosedCaseIntakeSafetyBase & Record<string, unknown> & { status: string; intake_count: number; warnings: string[] };
 
 export type PersonalCaseProductionStatus = Record<string, unknown>;
 export type WorkflowStage = Record<string, unknown> & { stage_id: string; display_name: string; stage_type: string };

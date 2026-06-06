@@ -159,6 +159,36 @@ export default function PersonalSkillStudioPage() {
             </a>
           </div>
         </Panel>
+        <Panel title="v7.30 Codex 训练产物加载器">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card title="Codex 训练方案" lines={["不是模型微调", "闭案样本 metadata", "不训练未结案件"]} />
+            <Card title="多层级案由" lines={["civil / contract / tort", "exact + ancestor fallback", "evidence overlay"]} />
+            <Card title="Skill Context" lines={["fact + legal Skill", "dry-run only", "不自动发布 Skill"]} />
+            <a className="rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white" href="/personal-skill-studio/training-artifacts">
+              打开训练产物加载器
+            </a>
+          </div>
+        </Panel>
+        <Panel title="v7.31 已结案件 Codex 训练执行">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card title="Synthetic Closed Cases" lines={["source_case_mode=synthetic_closed_case", "不读取真实案件", "不使用未结案件"]} />
+            <Card title="Training Run Manifest" lines={["生成 run metadata", "experience packages", "loading manifest"]} />
+            <Card title="Generated Skill Manifests" lines={["case_fact_extraction_skill", "case_legal_analysis_skill", "不自动发布 Skill"]} />
+            <a className="rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white" href="/personal-skill-studio/training-artifacts">
+              打开 v7.31 训练执行
+            </a>
+          </div>
+        </Panel>
+        <Panel title="v7.31a 真实已结案件训练材料导入与脱敏管线">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card title="Real Closed Case Intake" lines={["source_case_mode=real_closed_case", "授权与已结确认", "不保存原文"]} />
+            <Card title="Redaction Pipeline" lines={["身份信息移除", "法律必要 metadata 保留", "manual review required"]} />
+            <Card title="Segments" lines={["事实类 segment", "法律分析类 segment", "metadata_only=true"]} />
+            <a className="rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white" href="/personal-skill-studio/training-artifacts">
+              打开 v7.31a intake
+            </a>
+          </div>
+        </Panel>
         <section className="grid gap-4 md:grid-cols-6">
           {["工作室状态", "经验包草案", "技能候选草案", "测试用例", "评估记录", "发布门禁"].map((label) => <StatusCard key={label} label={label} />)}
         </section>

@@ -412,13 +412,147 @@ class PersonalMaterialLiveProviderConfigList(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class PersonalMaterialLiveSafetyBase(BaseModel):
+    owner_only: bool = True
+    metadata_only: bool = True
+    draft_only: bool = True
+    dry_run: bool = True
+    provider_gated: bool = True
+    live_default_enabled: bool = False
+    live_call_allowed: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    secret_value_returned: bool = False
+    secret_logged: bool = False
+    frontend_key_input_enabled: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    raw_document_content_exposed: bool = False
+    ai_prompt_injected: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    audit_required: bool = True
+    training_data_generated: bool = False
+    writes_to_training_set: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    real_pdf_generated: bool = False
+    real_docx_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class PersonalMaterialLiveProviderReadiness(PersonalMaterialLiveSafetyBase):
+    provider_id: str
+    display_name: str
+    provider_type: str
+    provider_category: str
+    live_supported: bool = True
+    live_enabled: bool = False
+    dry_run_ready: bool = True
+    key_required: bool = False
+    key_loaded: bool = False
+    key_source: str = "unavailable"
+    key_env_names: list[str] = Field(default_factory=list)
+    adapter_registered: bool = False
+    health_status: str = "dry_run_ready_live_blocked"
+    status: str = "registered_dry_run_ready_live_blocked"
+    supported_file_types: list[str] = Field(default_factory=list)
+    max_file_size_mb: int = 25
+    supports_page_range: bool = False
+    supports_bbox: bool = False
+    supports_table_extraction: bool = False
+    supports_layout_extraction: bool = False
+    timeout_seconds: int = 30
+    safety_notes: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveProviderReadinessList(PersonalMaterialLiveSafetyBase):
+    providers: list[PersonalMaterialLiveProviderReadiness] = Field(default_factory=list)
+    provider_count: int = 0
+    dry_run_ready_count: int = 0
+    key_loaded_count: int = 0
+    live_disabled_count: int = 0
+    blocked_provider_count: int = 0
+    provider_secrets_visible: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveSecretBoundary(PersonalMaterialLiveSafetyBase):
+    provider_id: str
+    key_env_names: list[str] = Field(default_factory=list)
+    key_required: bool = False
+    key_loaded: bool = False
+    key_source: str = "unavailable"
+    key_value_exposed: bool = False
+    key_prefix_returned: bool = False
+    key_suffix_returned: bool = False
+    masked_key_returned: bool = False
+    token_value_returned: bool = False
+    secret_value_stored: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveGateMockRequest(BaseModel):
+    provider_id: str = "paddleocr"
+    explicit_live_confirmation: bool = False
+    owner_authorized: bool = False
+    raw_content_boundary_acknowledged: bool = False
+    no_ai_prompt_injection_acknowledged: bool = False
+    audit_acknowledged: bool = False
+
+
+class PersonalMaterialLiveGateStatus(PersonalMaterialLiveSafetyBase):
+    gate_id: str
+    provider_id: str
+    global_live_enabled: bool = False
+    provider_live_enabled: bool = False
+    key_loaded: bool = False
+    explicit_live_confirmation: bool = False
+    owner_authorized: bool = False
+    raw_content_boundary_acknowledged: bool = False
+    no_ai_prompt_injection_acknowledged: bool = False
+    audit_acknowledged: bool = False
+    live_gate_status: str = "blocked_by_default"
+    live_blocked_reason: str = "global_live_disabled"
+    next_required_confirmation: str = "v7_27_owner_live_connection_confirmation"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveGateList(PersonalMaterialLiveSafetyBase):
+    live_gates: list[PersonalMaterialLiveGateStatus] = Field(default_factory=list)
+    live_gate_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveHealthDryRun(PersonalMaterialLiveSafetyBase):
+    provider_id: str
+    config_detected: bool = True
+    key_loaded: bool = False
+    live_gate_status: str = "blocked_by_default"
+    adapter_registered: bool = False
+    dry_run_ready: bool = True
+    live_blocked_reason: str = "global_live_disabled"
+    next_required_confirmation: str = "v7_27_owner_live_connection_confirmation"
+    network_call_executed: bool = False
+    upload_executed: bool = False
+    raw_content_uploaded: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
 class PersonalMaterialLiveGatewayStatus(BaseModel):
     enabled: bool = True
     mode: str = "ocr_document_provider_live_gateway"
-    version: str = "v7.13"
+    version: str = "v7.27"
+    owner_only: bool = True
+    metadata_only: bool = True
+    draft_only: bool = True
     ocr_live_mode_enabled: bool = False
     document_live_mode_enabled: bool = False
     live_mode_enabled: bool = False
+    live_call_allowed: bool = False
     live_call_executed: bool = False
     dry_run_ready: bool = True
     document_dry_run_ready: bool = True
@@ -428,14 +562,19 @@ class PersonalMaterialLiveGatewayStatus(BaseModel):
     api_key_exposed: bool = False
     raw_content_exposed: bool = False
     raw_ocr_text_exposed: bool = False
+    raw_document_content_exposed: bool = False
     ai_prompt_injected: bool = False
     fact_extraction_triggered: bool = False
     legal_analysis_triggered: bool = False
     final_legal_opinion_generated: bool = False
     final_report_generated: bool = False
+    real_pdf_generated: bool = False
+    real_docx_generated: bool = False
+    email_sent: bool = False
     external_delivery_triggered: bool = False
     source_trace_required: bool = True
     lawyer_review_required: bool = True
+    audit_required: bool = True
     warnings: list[str] = Field(default_factory=list)
 
 

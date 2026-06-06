@@ -49,6 +49,10 @@ const navGroups = [
     items: [
       { href: "/personal-production", label: "个人生产总控台" },
       { href: "/personal-production-pilot", label: "个人生产实战 Pilot" },
+      { href: "/personal-trial-readiness", label: "个人版实战试运行准备" },
+      { href: "/personal-provider-readiness", label: "真实接口接入准备" },
+      { href: "/personal-live-connection", label: "受控接口接入" },
+      { href: "/personal-legal-enterprise", label: "法律与企业信息接口" },
       { href: "/personal-owner-output-center", label: "用户本人产出下载中心" },
       { href: "/personal-case-workspace", label: "个人案件与材料工作台" },
       { href: "/personal-showcase-pack", label: "个人生产试点与展示包" },
@@ -58,6 +62,7 @@ const navGroups = [
       { href: "/personal-case-production", label: "受控案件生产工作流" },
       { href: "/personal-skill-studio", label: "经验包与技能工作室" },
       { href: "/personal-skill-studio/final-drafts", label: "Skill 最终稿工作台" },
+      { href: "/personal-skill-studio/training-artifacts", label: "训练产物加载器" },
       { href: "/personal-intelligence", label: "法律与企业信息网关" },
       { href: "/personal-material-runtime", label: "材料解析与 OCR Runtime" },
       { href: "/personal-ai-gateway", label: "AI 网关与草稿 Runtime" }

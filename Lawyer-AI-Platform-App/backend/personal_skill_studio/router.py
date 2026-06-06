@@ -35,9 +35,11 @@ from personal_skill_studio.skill_sample_registry import build_skill_sample_regis
 from personal_skill_studio.skill_training_runtime import build_runtime as build_skill_training_runtime
 from personal_skill_studio.source_trace_engine import build_source_trace_list, get_source_trace
 from personal_skill_studio.test_case_runtime import build_test_case_list, create_mock_test_case, get_test_case
+from personal_skill_studio.training_artifacts.router import router as training_artifacts_router
 
 
 router = APIRouter(prefix="/personal-skill-studio", tags=["personal-skill-studio"])
+router.include_router(training_artifacts_router)
 
 
 @router.get("/status")

@@ -41,6 +41,14 @@ const workflowSteps = [
   "法律分析草稿",
   "Skill 最终稿与优化",
   "用户本人产出下载中心",
+  "实战试运行准备",
+  "真实接口接入准备",
+  "OCR / Document 接入准备",
+  "受控接口接入",
+  "法律与企业信息接口",
+  "Codex 训练产物加载器",
+  "已结案件 Codex 训练执行",
+  "真实已结案件训练材料导入与脱敏",
   "受控案件分析",
   "实战 Pilot 与本人下载",
   "Pilot Dashboard 增强",
@@ -75,6 +83,14 @@ const nextRoute = [
   "v7.21 Legal Analysis Draft Workbench",
   "v7.22 Skill Final Draft & Optimization Workbench",
   "v7.23 Owner-only Output Center",
+  "v7.24 Personal Practical Production Workbench stable release",
+  "v7.25 Personal Practical Case Trial Readiness",
+  "v7.26 Provider Live Readiness & Secret Boundary",
+  "v7.27 OCR / Document Provider Live Connection",
+  "v7.30 Codex Training Scheme & Multi-Level Case-Cause Artifact Loader",
+  "v7.31 Execute Codex Training on Closed Case Samples",
+  "v7.31a Real Closed-Case Training Intake & Redaction Pipeline",
+  "v7.31b Codex Training on Real Closed Cases",
   "Final Security Audit for Personal Live Intelligence & Controlled Case Analysis",
   "Team Workspace deferred / 团队版后置",
   "External Client Delivery deferred / 外部交付后置"
@@ -150,6 +166,14 @@ export default function PersonalProductionPage() {
       { label: "法律分析草稿工作台", value: Boolean(readiness?.readiness.legal_analysis_draft_workbench_gateway_registered ?? true) },
       { label: "Skill 最终稿工作台", value: Boolean(readiness?.readiness.skill_final_draft_workbench_gateway_registered ?? true) },
       { label: "用户本人产出下载中心", value: Boolean(readiness?.readiness.owner_output_center_ready ?? true) },
+      { label: "实战试运行准备", value: Boolean(readiness?.readiness.personal_trial_readiness_gateway_registered ?? true) },
+      { label: "真实接口接入准备", value: Boolean(readiness?.readiness.personal_provider_readiness_gateway_registered ?? true) },
+      { label: "OCR / Document 接入准备", value: Boolean(readiness?.readiness.personal_material_live_connection_gateway_registered ?? true) },
+      { label: "受控接口接入", value: Boolean(readiness?.readiness.personal_live_connection_gateway_registered ?? true) },
+      { label: "法律与企业信息接口", value: Boolean(readiness?.readiness.personal_legal_enterprise_gateway_registered ?? true) },
+      { label: "训练产物加载器", value: Boolean(readiness?.readiness.training_artifact_loader_gateway_registered ?? true) },
+      { label: "已结案件 Codex 训练", value: Boolean(readiness?.readiness.codex_training_run_gateway_registered ?? true) },
+      { label: "真实闭案 intake", value: Boolean(readiness?.readiness.real_closed_case_training_intake_gateway_registered ?? true) },
       { label: "个人生产实战 Pilot", value: Boolean(readiness?.readiness.personal_production_pilot_gateway_registered ?? true) },
       { label: "个人案件与材料工作台", value: Boolean(readiness?.readiness.personal_case_workspace_gateway_registered ?? true) },
       { label: "Pilot Dashboard 增强", value: Boolean(readiness?.readiness.personal_production_pilot_dashboard_gateway_registered ?? true) },
@@ -433,6 +457,162 @@ export default function PersonalProductionPage() {
           </div>
         </section>
 
+        <section className="rounded-md border border-slate-300 bg-slate-50 p-5 text-slate-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.25 Personal Practical Case Trial Readiness</div>
+          <h2 className="mt-2 text-lg font-semibold">个人版实战试运行准备</h2>
+          <p className="mt-2 text-sm leading-6">
+            Trial Readiness：进入真实办案前的个人版试运行 metadata。记录 trial session、checklist、stage observation、issue log、quality review、safety confirmation 和 optimization backlog；不读取真实案件原文、不调用真实 provider、不训练未结案件、不自动发布 Skill、不自动对外交付。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="trial_readiness_status" value={providerCapabilities?.personal_trial_readiness_status ?? "trial_readiness_metadata_ready"} />
+            <MetricTile label="trial_checklist_ready" value={String(providerCapabilities?.trial_checklist_ready ?? true)} />
+            <MetricTile label="issue_log_ready" value={String(providerCapabilities?.trial_issue_log_ready ?? true)} />
+            <MetricTile label="quality_review_ready" value={String(providerCapabilities?.trial_quality_review_ready ?? true)} />
+            <MetricTile label="safety_confirmation_ready" value={String(providerCapabilities?.trial_safety_confirmation_ready ?? true)} />
+            <MetricTile label="optimization_backlog_ready" value={String(providerCapabilities?.trial_optimization_backlog_ready ?? true)} />
+            <MetricTile label="issue_log_reference_only" value={String(providerCapabilities?.trial_issue_log_reference_only ?? true)} />
+            <MetricTile label="quality_review_reference_only" value={String(providerCapabilities?.trial_quality_review_reference_only ?? true)} />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-violet-200 bg-violet-50 p-5 text-violet-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.26 Provider Live Readiness & Secret Boundary</div>
+          <h2 className="mt-2 text-lg font-semibold">真实接口接入准备与密钥边界</h2>
+          <p className="mt-2 text-sm leading-6">
+            Provider Readiness：进入真实 OCR / AI / 法律 / 企业 API 前的统一 readiness 层。只展示 provider registry、key_loaded boolean、live gate、usage/cost metadata 与 dry-run health；不读取密钥值、不真实调用 provider、不上传案件材料。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="provider_readiness_status" value={providerCapabilities?.personal_provider_readiness_status ?? "provider_readiness_metadata_ready"} />
+            <MetricTile label="provider_registry_ready" value={String(providerCapabilities?.provider_registry_ready ?? true)} />
+            <MetricTile label="secret_boundary_ready" value={String(providerCapabilities?.secret_boundary_ready ?? true)} />
+            <MetricTile label="live_gate_ready" value={String(providerCapabilities?.live_gate_ready ?? true)} />
+            <MetricTile label="usage_cost_metadata_ready" value={String(providerCapabilities?.usage_cost_metadata_ready ?? true)} />
+            <MetricTile label="dry_run_health_ready" value={String(providerCapabilities?.dry_run_health_ready ?? true)} />
+            <MetricTile label="real_provider_calls_still_disabled" value={String(providerCapabilities?.real_provider_calls_still_disabled ?? true)} />
+            <MetricTile label="frontend_key_input_enabled" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.27 OCR / Document Provider Live Connection</div>
+          <h2 className="mt-2 text-lg font-semibold">OCR / 文档接口接入准备</h2>
+          <p className="mt-2 text-sm leading-6">
+            OCR / Document Live Connection：在 v7.26 密钥边界之后，补齐材料 Provider 的 secret boundary、live gate、dry-run health、source trace、audit 与 safety metadata。默认 dry-run，live_call_allowed=false，不上传文件、不返回 OCR / 文档原文、不进入 AI Prompt。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="material_live_connection_status" value={providerCapabilities?.personal_material_live_connection_status ?? "ocr_document_live_connection_metadata_ready"} />
+            <MetricTile label="provider_registry_ready" value={String(providerCapabilities?.material_live_provider_registry_ready ?? true)} />
+            <MetricTile label="secret_boundary_ready" value={String(providerCapabilities?.material_live_secret_boundary_ready ?? true)} />
+            <MetricTile label="live_gate_ready" value={String(providerCapabilities?.material_live_gate_ready ?? true)} />
+            <MetricTile label="dry_run_health_ready" value={String(providerCapabilities?.material_live_dry_run_health_ready ?? true)} />
+            <MetricTile label="raw_content_blocked" value={String(providerCapabilities?.material_live_raw_content_blocked ?? true)} />
+            <MetricTile label="ai_prompt_injection_blocked" value={String(providerCapabilities?.material_live_ai_prompt_injection_blocked ?? true)} />
+            <MetricTile label="live_call_allowed" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-emerald-200 bg-emerald-50 p-5 text-emerald-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.28 Personal Live AI/OCR/Legal/Enterprise Connection</div>
+          <h2 className="mt-2 text-lg font-semibold">个人生产受控接口接入</h2>
+          <p className="mt-2 text-sm leading-6">
+            统一展示 AI / OCR / Document / Legal / Enterprise Provider readiness、secret boundary、live gate、usage/cost、health 与 audit。默认 dry-run，live disabled，不执行网络请求，不生成最终法律意见、最终报告、真实 PDF/DOCX、邮件或外部交付。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="live_connection_status" value={providerCapabilities?.personal_live_connection_status ?? "personal_live_connection_metadata_ready"} />
+            <MetricTile label="provider_registry_ready" value={String(providerCapabilities?.personal_live_connection_provider_registry_ready ?? true)} />
+            <MetricTile label="secret_boundary_ready" value={String(providerCapabilities?.personal_live_connection_secret_boundary_ready ?? true)} />
+            <MetricTile label="live_gate_ready" value={String(providerCapabilities?.personal_live_connection_gate_ready ?? true)} />
+            <MetricTile label="usage_cost_ready" value={String(providerCapabilities?.personal_live_connection_usage_cost_ready ?? true)} />
+            <MetricTile label="health_ready" value={String(providerCapabilities?.personal_live_connection_health_ready ?? true)} />
+            <MetricTile label="audit_ready" value={String(providerCapabilities?.personal_live_connection_audit_ready ?? true)} />
+            <MetricTile label="network_call_executed" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.29 Legal / Enterprise API Live Connection</div>
+          <h2 className="mt-2 text-lg font-semibold">法律检索与企业信息 API 受控接入</h2>
+          <p className="mt-2 text-sm leading-6">
+            法律检索与企业信息接口只返回 dry-run metadata、source trace、review queue 与 audit。法律检索结果不自动作为最终引用，企业信息不自动形成最终事实认定，不写训练集、不更新 Skill、不自动对外交付。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="gateway_status" value={providerCapabilities?.personal_legal_enterprise_gateway_status ?? "legal_enterprise_gateway_metadata_ready"} />
+            <MetricTile label="legal_provider_ready" value={String(providerCapabilities?.legal_provider_readiness_ready ?? true)} />
+            <MetricTile label="enterprise_provider_ready" value={String(providerCapabilities?.enterprise_provider_readiness_ready ?? true)} />
+            <MetricTile label="legal_source_trace_ready" value={String(providerCapabilities?.legal_source_trace_ready ?? true)} />
+            <MetricTile label="enterprise_verification_ready" value={String(providerCapabilities?.enterprise_verification_ready ?? true)} />
+            <MetricTile label="review_required" value={String(providerCapabilities?.legal_enterprise_review_required ?? true)} />
+            <MetricTile label="real_provider_calls_disabled" value={String(providerCapabilities?.real_provider_calls_still_disabled ?? true)} />
+            <MetricTile label="final_fact_finding" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.30 Codex Training Scheme & Multi-Level Case-Cause Artifact Loader</div>
+          <h2 className="mt-2 text-lg font-semibold">Codex 训练方案与多层级案由产物加载器</h2>
+          <p className="mt-2 text-sm leading-6">
+            训练产物加载器只读取合成闭案训练产物 metadata，按案由层级匹配 common / ancestor / exact / evidence overlay 包，生成 Skill Context dry-run。Codex 训练不是模型微调，不训练未结案件，不写训练集，不自动更新或发布 Skill。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="loader_status" value={providerCapabilities?.training_artifact_loader_status ?? "training_artifact_loader_metadata_ready"} />
+            <MetricTile label="codex_training_scheme_ready" value={String(providerCapabilities?.codex_training_scheme_ready ?? true)} />
+            <MetricTile label="case_cause_taxonomy_ready" value={String(providerCapabilities?.case_cause_taxonomy_ready ?? true)} />
+            <MetricTile label="multi_level_loader_ready" value={String(providerCapabilities?.multi_level_case_cause_loader_ready ?? true)} />
+            <MetricTile label="experience_package_manifest_ready" value={String(providerCapabilities?.experience_package_manifest_ready ?? true)} />
+            <MetricTile label="skill_manifest_loader_ready" value={String(providerCapabilities?.skill_manifest_loader_ready ?? true)} />
+            <MetricTile label="fallback_ready" value={String(providerCapabilities?.case_cause_fallback_ready ?? true)} />
+            <MetricTile label="skill_context_dry_run_ready" value={String(providerCapabilities?.skill_context_dry_run_ready ?? true)} />
+            <MetricTile label="fine_tune_training" value={String(!(providerCapabilities?.codex_fine_tune_training_disabled ?? true))} />
+            <MetricTile label="open_case_training" value={String(!(providerCapabilities?.training_artifact_open_case_training_disabled ?? true))} />
+            <MetricTile label="skill_auto_publish" value={String(!(providerCapabilities?.training_artifact_skill_auto_publish_disabled ?? true))} />
+            <MetricTile label="load_executed" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-emerald-200 bg-emerald-50 p-5 text-emerald-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.31 Execute Codex Training on Closed Case Samples</div>
+          <h2 className="mt-2 text-lg font-semibold">已结案件 Codex 训练执行</h2>
+          <p className="mt-2 text-sm leading-6">
+            使用 synthetic closed-case samples 生成 training run manifest、experience packages、两个核心 Skill manifests、evaluation / gate / test cases 与 loading manifest，并通过 v7.30 loader dry-run 校验。当前不读取真实案件材料，不训练未结案件，不执行模型微调，不写正式训练集。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="training_run_status" value={providerCapabilities?.codex_training_run_status ?? "codex_training_run_metadata_ready"} />
+            <MetricTile label="closed_case_training_run_ready" value={String(providerCapabilities?.closed_case_training_run_ready ?? true)} />
+            <MetricTile label="synthetic_samples_ready" value={String(providerCapabilities?.synthetic_closed_case_samples_ready ?? true)} />
+            <MetricTile label="training_run_manifest_ready" value={String(providerCapabilities?.training_run_manifest_ready ?? true)} />
+            <MetricTile label="experience_packages_ready" value={String(providerCapabilities?.generated_experience_packages_ready ?? true)} />
+            <MetricTile label="skill_manifests_ready" value={String(providerCapabilities?.generated_skill_manifests_ready ?? true)} />
+            <MetricTile label="eval_gate_tests_ready" value={String(providerCapabilities?.generated_evaluation_gate_test_cases_ready ?? true)} />
+            <MetricTile label="loading_manifest_ready" value={String(providerCapabilities?.generated_loading_manifest_ready ?? true)} />
+            <MetricTile label="loader_dry_run_ready" value={String(providerCapabilities?.training_run_load_dry_run_ready ?? true)} />
+            <MetricTile label="open_case_training" value={String(!(providerCapabilities?.training_run_open_case_training_disabled ?? true))} />
+            <MetricTile label="skill_auto_publish" value={String(!(providerCapabilities?.training_run_skill_auto_publish_disabled ?? true))} />
+            <MetricTile label="fine_tune_training" value={String(!(providerCapabilities?.training_run_fine_tune_disabled ?? true))} />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-sky-200 bg-sky-50 p-5 text-sky-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.31a Real Closed-Case Training Intake & Redaction Pipeline</div>
+          <h2 className="mt-2 text-lg font-semibold">真实已结案件训练材料导入与脱敏管线</h2>
+          <p className="mt-2 text-sm leading-6">
+            v7.31a 只准备已授权、已结案件训练材料的 intake、脱敏、案由归类、训练样本切分、source trace、audit 和 safety metadata，不执行 Codex 训练，不写训练集，不读取原文。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="intake_status" value={providerCapabilities?.real_closed_case_training_intake_status ?? "real_closed_case_training_intake_metadata_ready"} />
+            <MetricTile label="intake_ready" value={String(providerCapabilities?.real_closed_case_training_intake_ready ?? true)} />
+            <MetricTile label="redaction_pipeline_ready" value={String(providerCapabilities?.real_closed_case_redaction_pipeline_ready ?? true)} />
+            <MetricTile label="classification_ready" value={String(providerCapabilities?.real_closed_case_classification_ready ?? true)} />
+            <MetricTile label="sample_segmentation_ready" value={String(providerCapabilities?.real_closed_case_training_sample_segmentation_ready ?? true)} />
+            <MetricTile label="source_trace_ready" value={String(providerCapabilities?.real_closed_case_source_trace_ready ?? true)} />
+            <MetricTile label="review_queue_ready" value={String(providerCapabilities?.real_closed_case_review_queue_ready ?? true)} />
+            <MetricTile label="open_case_training" value={String(!(providerCapabilities?.real_closed_case_open_case_training_disabled ?? true))} />
+            <MetricTile label="raw_content_blocked" value={String(providerCapabilities?.real_closed_case_raw_content_blocked ?? true)} />
+            <MetricTile label="ready_for_codex_training" value={String(providerCapabilities?.real_closed_case_ready_for_codex_training ?? false)} />
+            <MetricTile label="skill_published" value="false" />
+            <MetricTile label="external_delivery" value="false" />
+          </div>
+        </section>
+
         <section className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
           <Panel title="受控工作流 Stepper">
             <ShowcaseStepper
@@ -479,7 +659,8 @@ export default function PersonalProductionPage() {
               ].map((step) => (
                 <div key={step} className="rounded-md border border-line bg-white px-4 py-3 text-sm font-medium text-ink">
                   {step}
-                  {step.includes("v7.22") ? <span className="ml-2 text-xs text-emerald-700">当前阶段</span> : null}
+                  {step.includes("v7.31a") ? <span className="ml-2 text-xs text-emerald-700">已完成</span> : null}
+                  {step.includes("v7.31b") ? <span className="ml-2 text-xs text-emerald-700">下一步</span> : null}
                   {step.includes("后置") || step.includes("deferred") ? <span className="ml-2 text-xs text-amber-700">未进入</span> : null}
                 </div>
               ))}

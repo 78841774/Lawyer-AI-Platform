@@ -46,6 +46,12 @@ import {
   listPersonalIntelligenceEnterpriseLiveRuns,
   listPersonalIntelligenceLegalLiveRuns,
   listPersonalIntelligenceLiveSourceTraces,
+  getPersonalLegalEnterpriseStatus,
+  listPersonalLegalEnterpriseProviders,
+  getPersonalLegalEnterpriseReviewQueue,
+  getPersonalLegalEnterpriseSourceTraces,
+  getPersonalLegalEnterpriseAudit,
+  getPersonalLegalEnterpriseSafety,
   listPersonalEnterpriseQuery,
   listPersonalIntelligenceSourceTraces,
   listPersonalLegalSearch,
@@ -97,6 +103,7 @@ export default function PersonalIntelligencePage() {
   const [liveSourceTraces, setLiveSourceTraces] = useState<PersonalIntelligenceLiveSourceTraceList | null>(null);
   const [liveAudit, setLiveAudit] = useState<PersonalIntelligenceLiveAuditTimeline | null>(null);
   const [liveSafety, setLiveSafety] = useState<PersonalIntelligenceLiveSafetyStatus | null>(null);
+  const [legalEnterpriseLive, setLegalEnterpriseLive] = useState<Record<string, any>>({});
   const [legalResult, setLegalResult] = useState<PersonalLegalSearchResult | null>(null);
   const [enterpriseResult, setEnterpriseResult] = useState<PersonalEnterpriseQueryResult | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<PersonalIntelligenceConfirmationActionResult | null>(null);
@@ -147,7 +154,13 @@ export default function PersonalIntelligencePage() {
         nextLiveQueue,
         nextLiveTraces,
         nextLiveAudit,
-        nextLiveSafety
+        nextLiveSafety,
+        nextLegalEnterpriseStatus,
+        nextLegalEnterpriseProviders,
+        nextLegalEnterpriseReviewQueue,
+        nextLegalEnterpriseSourceTraces,
+        nextLegalEnterpriseAudit,
+        nextLegalEnterpriseSafety
       ] =
         await Promise.all([
           getPersonalIntelligenceStatus(),
@@ -165,7 +178,13 @@ export default function PersonalIntelligencePage() {
           getPersonalIntelligenceLiveReviewQueue(),
           listPersonalIntelligenceLiveSourceTraces(),
           getPersonalIntelligenceLiveAudit(),
-          getPersonalIntelligenceLiveSafety()
+          getPersonalIntelligenceLiveSafety(),
+          getPersonalLegalEnterpriseStatus(),
+          listPersonalLegalEnterpriseProviders(),
+          getPersonalLegalEnterpriseReviewQueue(),
+          getPersonalLegalEnterpriseSourceTraces(),
+          getPersonalLegalEnterpriseAudit(),
+          getPersonalLegalEnterpriseSafety()
         ]);
       setStatus(nextStatus);
       setProviders(nextProviders);
@@ -183,6 +202,14 @@ export default function PersonalIntelligencePage() {
       setLiveSourceTraces(nextLiveTraces);
       setLiveAudit(nextLiveAudit);
       setLiveSafety(nextLiveSafety);
+      setLegalEnterpriseLive({
+        status: nextLegalEnterpriseStatus,
+        providers: nextLegalEnterpriseProviders,
+        review_queue: nextLegalEnterpriseReviewQueue,
+        source_traces: nextLegalEnterpriseSourceTraces,
+        audit: nextLegalEnterpriseAudit,
+        safety: nextLegalEnterpriseSafety
+      });
       setSelectedTraceId((current) => current || nextQueue.source_traces[0]?.source_trace_id || "");
       setLiveLegalProvider((current) => current || nextLiveProviders.providers.find((provider) => provider.provider_type === "legal_search")?.provider_id || "kuaicha365_lawskills_provider");
       setLiveEnterpriseProvider((current) => current || nextLiveProviders.providers.find((provider) => provider.provider_type === "enterprise_info")?.provider_id || "tianyancha_ai_provider");
@@ -683,6 +710,23 @@ export default function PersonalIntelligencePage() {
           </Panel>
         </section>
 
+        <Panel title="v7.29 法律与企业信息 API 受控接入">
+          <div className="grid gap-3 md:grid-cols-4">
+            <StatusTile label="Legal Gateway" value={legalEnterpriseLive.status?.legal_gateway_ready ?? true} />
+            <StatusTile label="Enterprise Gateway" value={legalEnterpriseLive.status?.enterprise_gateway_ready ?? true} />
+            <StatusTile label="Live Call Executed" value={legalEnterpriseLive.status?.live_call_executed ?? false} invert />
+            <StatusTile label="Final Fact Finding" value={legalEnterpriseLive.status?.final_fact_finding ?? false} invert />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <MetadataRow label="provider_count" value={String(legalEnterpriseLive.providers?.provider_count ?? 0)} />
+            <MetadataRow label="review_queue" value={String(legalEnterpriseLive.review_queue?.item_count ?? 0)} />
+            <MetadataRow label="source_trace_count" value={String(legalEnterpriseLive.source_traces?.source_trace_count ?? 0)} />
+          </div>
+          <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
+            法律检索结果仅作为 legal analysis draft 的参考 metadata，不自动选择最终引用；企业信息仅作为 verification metadata，不自动形成最终事实认定。
+          </div>
+        </Panel>
+
         <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
           <TrustSafetyPanel items={safety?.safety_checklist ?? []} title="安全清单" />
 
@@ -706,7 +750,8 @@ export default function PersonalIntelligencePage() {
                 live_review_queue: liveReviewQueue,
                 live_source_traces: liveSourceTraces,
                 live_audit: liveAudit,
-                live_safety: liveSafety
+                live_safety: liveSafety,
+                legal_enterprise_live: legalEnterpriseLive
               }}
             />
           </Panel>

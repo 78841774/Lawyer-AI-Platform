@@ -10,6 +10,14 @@ from personal_material_runtime.document_live_gateway import (
     list_document_live_runs,
     submit_live_review_action,
 )
+from personal_material_runtime.live_gateway.live_gate_engine import (
+    build_live_gate,
+    build_live_gate_list,
+    create_mock_live_gate,
+)
+from personal_material_runtime.live_gateway.provider_health_engine import build_health_dry_run
+from personal_material_runtime.live_gateway.provider_registry import build_provider_readiness, build_provider_readiness_list
+from personal_material_runtime.live_gateway.secret_boundary import build_secret_boundary
 from personal_material_runtime.material_parser_runtime import build_parse_job_list, create_mock_parse_job, get_parse_job
 from personal_material_runtime.ocr_review_queue import build_review_queue, submit_review_action
 from personal_material_runtime.ocr_live_gateway import execute_ocr_live_run, get_ocr_live_run, list_ocr_live_runs
@@ -24,6 +32,7 @@ from personal_material_runtime.provider_registry import get_provider, list_provi
 from personal_material_runtime.safety_engine import build_live_safety_status, build_safety_status
 from personal_material_runtime.schemas import (
     PersonalMaterialLiveGatewayStatus,
+    PersonalMaterialLiveGateMockRequest,
     PersonalMaterialLiveReviewActionRequest,
     PersonalMaterialLiveRunRequest,
     PersonalMaterialRuntimeStatus,
@@ -137,10 +146,11 @@ def material_live_status() -> dict[str, Any]:
     return PersonalMaterialLiveGatewayStatus(
         ocr_live_mode_enabled=ocr_enabled,
         document_live_mode_enabled=document_enabled,
-        live_mode_enabled=ocr_enabled or document_enabled,
+        live_mode_enabled=False,
+        live_call_allowed=False,
         warnings=[
-            "OCR / Document Live Gateway is disabled by default in v7.13.",
-            "Dry-run is available and does not call OCR or document parser providers.",
+            "OCR / Document Live Gateway remains disabled by default in v7.27.",
+            "Dry-run readiness is available and does not call OCR or document parser providers.",
             "Raw OCR text and raw document content are blocked by default and never injected into AI prompts.",
         ],
     ).model_dump()
@@ -148,15 +158,52 @@ def material_live_status() -> dict[str, Any]:
 
 @router.get("/live/providers")
 def material_live_providers() -> dict[str, Any]:
-    return list_live_provider_configs()
+    return build_provider_readiness_list()
 
 
 @router.get("/live/providers/{provider_id}")
 def material_live_provider_detail(provider_id: str) -> dict[str, Any]:
-    provider = get_live_provider_config(provider_id)
+    provider = build_provider_readiness(provider_id)
     if provider is None:
         raise HTTPException(status_code=404, detail="Live provider metadata not found")
     return provider.model_dump()
+
+
+@router.get("/live/providers/{provider_id}/secret-boundary")
+def material_live_provider_secret_boundary(provider_id: str) -> dict[str, Any]:
+    boundary = build_secret_boundary(provider_id)
+    if boundary is None:
+        raise HTTPException(status_code=404, detail="Live provider metadata not found")
+    return boundary.model_dump()
+
+
+@router.get("/live/providers/{provider_id}/live-gate")
+def material_live_provider_gate(provider_id: str) -> dict[str, Any]:
+    gate = build_live_gate(provider_id)
+    if gate is None:
+        raise HTTPException(status_code=404, detail="Live provider metadata not found")
+    return gate.model_dump()
+
+
+@router.get("/live/providers/{provider_id}/health/dry-run")
+def material_live_provider_health(provider_id: str) -> dict[str, Any]:
+    health = build_health_dry_run(provider_id)
+    if health is None:
+        raise HTTPException(status_code=404, detail="Live provider metadata not found")
+    return health.model_dump()
+
+
+@router.post("/live-gates/mock")
+def material_live_gates_mock(request: PersonalMaterialLiveGateMockRequest) -> dict[str, Any]:
+    gate = create_mock_live_gate(request)
+    if gate is None:
+        raise HTTPException(status_code=404, detail="Live provider metadata not found")
+    return gate
+
+
+@router.get("/live-gates")
+def material_live_gates() -> dict[str, Any]:
+    return build_live_gate_list()
 
 
 @router.post("/live/document/dry-run")
