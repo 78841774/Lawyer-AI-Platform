@@ -241,3 +241,192 @@ class PersonalAISafetyStatus(BaseModel):
     final_legal_opinion_generated: bool = False
     final_report_generated: bool = False
     warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAILiveProviderConfig(BaseModel):
+    provider_id: str
+    display_name: str
+    provider_type: str = "ai_model"
+    live_supported: bool = True
+    live_enabled: bool = False
+    key_required: bool = True
+    key_loaded: bool = False
+    key_source: str = "unavailable"
+    model_options: list[str] = Field(default_factory=list)
+    timeout_seconds: int = 30
+    safety_notes: list[str] = Field(default_factory=list)
+    api_key_exposed: bool = False
+
+
+class PersonalAILiveProviderConfigList(BaseModel):
+    providers: list[PersonalAILiveProviderConfig] = Field(default_factory=list)
+    provider_count: int = 0
+    live_provider_count: int = 0
+    key_loaded_count: int = 0
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_included: bool = False
+    draft_only: bool = True
+    lawyer_review_required: bool = True
+    source_trace_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAILiveGatewayStatus(BaseModel):
+    enabled: bool = True
+    mode: str = "personal_ai_provider_live_gateway"
+    version: str = "v7.12"
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    dry_run_enabled: bool = True
+    provider_count: int = 0
+    live_provider_count: int = 0
+    key_loaded_count: int = 0
+    explicit_live_confirmation_required: bool = True
+    lawyer_review_acknowledged_required: bool = True
+    draft_only_acknowledged_required: bool = True
+    no_final_opinion_acknowledged_required: bool = True
+    api_key_exposed: bool = False
+    raw_content_included: bool = False
+    draft_only: bool = True
+    lawyer_review_required: bool = True
+    source_trace_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAILiveRunRequest(BaseModel):
+    provider_id: str
+    model: str | None = None
+    prompt_template_id: str
+    prompt_purpose: str
+    case_id: str | None = None
+    source_trace_ids: list[str] = Field(default_factory=list)
+    dry_run: bool = True
+    actor_id: str = "local_demo_lawyer"
+    explicit_live_confirmation: bool = False
+    lawyer_review_acknowledged: bool = False
+    draft_only_acknowledged: bool = False
+    no_final_opinion_acknowledged: bool = False
+    no_final_report_acknowledged: bool = False
+    no_external_delivery_acknowledged: bool = False
+    raw_content_included: bool = False
+    final_legal_opinion_requested: bool = False
+    final_report_requested: bool = False
+
+
+class PersonalAILiveDraftMetadata(BaseModel):
+    ai_draft: str = "AI draft metadata placeholder"
+    draft_type: str = "controlled_ai_draft"
+    provider_id: str
+    model: str
+    token_usage: dict[str, int | None] = Field(default_factory=dict)
+    latency_ms: int | None = None
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+
+
+class PersonalAILiveRunRecord(BaseModel):
+    run_id: str
+    provider_id: str
+    model: str
+    prompt_template_id: str
+    prompt_purpose: str
+    case_id: str | None = None
+    source_trace_ids: list[str] = Field(default_factory=list)
+    status: str = "dry_run_completed"
+    dry_run: bool = True
+    would_call_provider: bool = False
+    live_call_requested: bool = False
+    live_call_executed: bool = False
+    blocked_reason: str | None = None
+    confirmations: dict[str, bool] = Field(default_factory=dict)
+    draft_output_metadata: PersonalAILiveDraftMetadata | None = None
+    created_at: str
+    live_mode_enabled: bool = False
+    api_key_exposed: bool = False
+    raw_content_included: bool = False
+    draft_only: bool = True
+    lawyer_review_required: bool = True
+    source_trace_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAILiveRunList(BaseModel):
+    runs: list[PersonalAILiveRunRecord] = Field(default_factory=list)
+    run_count: int = 0
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_included: bool = False
+    draft_only: bool = True
+    lawyer_review_required: bool = True
+    source_trace_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAILiveAuditEvent(BaseModel):
+    event_id: str
+    provider_id: str
+    action: str
+    actor_id: str
+    live_call_requested: bool = False
+    live_call_executed: bool = False
+    blocked_reason: str | None = None
+    confirmations: dict[str, bool] = Field(default_factory=dict)
+    token_usage: dict[str, int | None] = Field(default_factory=dict)
+    created_at: str
+    api_key_exposed: bool = False
+    raw_content_included: bool = False
+    draft_only: bool = True
+    lawyer_review_required: bool = True
+    source_trace_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+
+
+class PersonalAILiveAuditTimeline(BaseModel):
+    events: list[PersonalAILiveAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_included: bool = False
+    draft_only: bool = True
+    lawyer_review_required: bool = True
+    source_trace_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalAILiveSafetyStatus(BaseModel):
+    safety: dict[str, bool] = Field(default_factory=dict)
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_included: bool = False
+    draft_only: bool = True
+    lawyer_review_required: bool = True
+    source_trace_required: bool = True
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    warnings: list[str] = Field(default_factory=list)

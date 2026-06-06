@@ -12,7 +12,22 @@
 - v7.6 commit: `3461e28`
 - v7.7 commit: `761dbb4`
 - v7.8 commit: `b7ce642`
-- v7.9 commit: pending
+- v7.9 commit: `c59e137`
+- v7.10 commit: pending
+- v7.11 commit: pending
+- v7.12 commit: pending
+- v7.13 commit: pending
+- v7.14 commit: pending
+- v7.15 commit: pending
+- v7.16 commit: pending
+- v7.17 commit: pending
+- v7.18 commit: pending
+- v7.19 commit: pending
+- v7.20 commit: pending
+- v7.21 commit: pending
+- v7.22 commit: pending
+- v7.23 commit: pending
+- v7.24 commit: pending
 
 ## Known Tags
 
@@ -45,4 +60,25 @@
 - `v7.6-personal-delivery-packet`: detected
 - `v7.7-personal-production-showcase-pack`: detected
 - `v7.8-ui-polish-showcase-hardening`: detected
-- `v7.9-personal-production-demo-script-screenshot-pack`: pending
+- `v7.9-personal-production-demo-pack`: detected
+- `v7.10-personal-version-polish-public-demo-readiness`: pending
+- `v7.11-personal-production-stability-local-pilot-hardening`: pending
+- `v7.12-ai-provider-live-gateway`: pending
+- `v7.13-ocr-document-provider-live-gateway`: pending
+- `v7.14-legal-enterprise-api-live-gateway`: pending
+- `v7.15-skill-training-runtime`: pending
+- `v7.16-controlled-case-analysis-runtime`: pending
+- `v7.18-case-intake-material-workspace-hardening`: pending
+- `v7.19-personal-production-pilot-dashboard-enhancement`: pending
+- `v7.20-fact-preview-correction-workbench`: pending
+- `v7.21-legal-analysis-draft-workbench`: pending
+- `v7.22-skill-final-draft-optimization-workbench`: pending
+- `v7.23-owner-only-output-center`: pending
+- `v7.24-legal-tech-ui-ux-polish`: pending
+- `v7.17-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
+- `v7.19-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
+- `v7.20-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
+- `v7.21-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
+- `v7.22-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
+- `v7.23-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
+- `v7.24-personal-live-intelligence-case-analysis`: planned combined release tag for v7.10-v7.24 after unified validation and final security audit

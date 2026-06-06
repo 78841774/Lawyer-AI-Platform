@@ -10,7 +10,7 @@ def build_trust_panel() -> dict:
     record_audit_event(action="trust_panel_viewed", actor="system", object_type="trust_panel", object_id="default", timestamp=now)
     trust_items = [
         "未调用真实 provider",
-        "未读取 API key",
+        "未读取密钥值",
         "未读取真实案件材料",
         "未生成最终法律意见",
         "未生成最终报告",

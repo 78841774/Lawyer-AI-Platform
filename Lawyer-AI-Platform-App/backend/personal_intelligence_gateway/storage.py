@@ -8,6 +8,12 @@ ENTERPRISE_QUERY_DIR = RUNTIME_ROOT / "enterprise_query"
 SOURCE_TRACES_DIR = RUNTIME_ROOT / "source_traces"
 CONFIRMATION_QUEUE_DIR = RUNTIME_ROOT / "confirmation_queue"
 AUDIT_DIR = RUNTIME_ROOT / "audit"
+LIVE_ROOT = RUNTIME_ROOT / "live"
+LIVE_LEGAL_RUNS_DIR = LIVE_ROOT / "legal_search_runs"
+LIVE_ENTERPRISE_RUNS_DIR = LIVE_ROOT / "enterprise_query_runs"
+LIVE_REVIEW_QUEUE_DIR = LIVE_ROOT / "review_queue"
+LIVE_SOURCE_TRACES_DIR = LIVE_ROOT / "source_traces"
+LIVE_AUDIT_DIR = LIVE_ROOT / "audit"
 
 
 def write_payload(directory: Path, record_id: str, payload: dict) -> None:

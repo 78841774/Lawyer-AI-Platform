@@ -4,10 +4,20 @@ import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
   DiagnosticsPanel,
+  SafeErrorNotice,
   TrustSafetyPanel
 } from "@/components/personal-production/ProductionShowcaseUI";
 import {
   PersonalMaterialAuditTimeline,
+  PersonalMaterialLiveAuditTimeline,
+  PersonalMaterialLiveGatewayStatus,
+  PersonalMaterialLiveProviderConfigList,
+  PersonalMaterialLiveReviewActionResult,
+  PersonalMaterialLiveReviewQueue,
+  PersonalMaterialLiveRunList,
+  PersonalMaterialLiveRunRecord,
+  PersonalMaterialLiveSafetyStatus,
+  PersonalMaterialLiveSourceTraceList,
   PersonalMaterialParseJobList,
   PersonalMaterialParseJobResult,
   PersonalMaterialProviderList,
@@ -19,17 +29,30 @@ import {
   PersonalOCRPreview,
   PersonalOCRReviewActionResult,
   PersonalOCRReviewQueue,
+  createPersonalMaterialDocumentLiveDryRun,
+  createPersonalMaterialDocumentLiveRun,
+  createPersonalMaterialOCRLiveDryRun,
+  createPersonalMaterialOCRLiveRun,
   createPersonalMaterialParseJob,
   createPersonalOCRJob,
   getPersonalMaterialAudit,
+  getPersonalMaterialLiveAudit,
+  getPersonalMaterialLiveProviders,
+  getPersonalMaterialLiveReviewQueue,
+  getPersonalMaterialLiveSafety,
+  getPersonalMaterialLiveSourceTraces,
+  getPersonalMaterialLiveStatus,
   getPersonalMaterialRuntimeProviders,
   getPersonalMaterialRuntimeStatus,
   getPersonalMaterialSafety,
   getPersonalMaterialSourceTraces,
   getPersonalOCRPreview,
   getPersonalOCRReviewQueue,
+  listPersonalMaterialDocumentLiveRuns,
+  listPersonalMaterialOCRLiveRuns,
   listPersonalMaterialParseJobs,
   listPersonalOCRJobs,
+  submitPersonalMaterialLiveReviewAction,
   submitPersonalOCRReviewAction
 } from "@/services/api";
 
@@ -56,6 +79,14 @@ const reviewActions = [
   "reject_ocr_preview",
   "mark_low_confidence"
 ];
+const liveReviewActions = [
+  "approve_metadata_only",
+  "request_manual_review",
+  "reject",
+  "mark_low_confidence",
+  "allow_redacted_preview",
+  "block_raw_content"
+];
 
 export default function PersonalMaterialRuntimePage() {
   const [status, setStatus] = useState<PersonalMaterialRuntimeStatus | null>(null);
@@ -66,10 +97,21 @@ export default function PersonalMaterialRuntimePage() {
   const [sourceTraces, setSourceTraces] = useState<PersonalMaterialSourceTraceList | null>(null);
   const [audit, setAudit] = useState<PersonalMaterialAuditTimeline | null>(null);
   const [safety, setSafety] = useState<PersonalMaterialSafetyStatus | null>(null);
+  const [liveStatus, setLiveStatus] = useState<PersonalMaterialLiveGatewayStatus | null>(null);
+  const [liveProviders, setLiveProviders] = useState<PersonalMaterialLiveProviderConfigList | null>(null);
+  const [documentLiveRuns, setDocumentLiveRuns] = useState<PersonalMaterialLiveRunList | null>(null);
+  const [ocrLiveRuns, setOCRLiveRuns] = useState<PersonalMaterialLiveRunList | null>(null);
+  const [liveReviewQueue, setLiveReviewQueue] = useState<PersonalMaterialLiveReviewQueue | null>(null);
+  const [liveSourceTraces, setLiveSourceTraces] = useState<PersonalMaterialLiveSourceTraceList | null>(null);
+  const [liveAudit, setLiveAudit] = useState<PersonalMaterialLiveAuditTimeline | null>(null);
+  const [liveSafety, setLiveSafety] = useState<PersonalMaterialLiveSafetyStatus | null>(null);
   const [parseResult, setParseResult] = useState<PersonalMaterialParseJobResult | null>(null);
   const [ocrResult, setOCRResult] = useState<PersonalOCRJobResult | null>(null);
   const [ocrPreview, setOCRPreview] = useState<PersonalOCRPreview | null>(null);
   const [reviewResult, setReviewResult] = useState<PersonalOCRReviewActionResult | null>(null);
+  const [documentLiveResult, setDocumentLiveResult] = useState<PersonalMaterialLiveRunRecord | null>(null);
+  const [ocrLiveResult, setOCRLiveResult] = useState<PersonalMaterialLiveRunRecord | null>(null);
+  const [liveReviewResult, setLiveReviewResult] = useState<PersonalMaterialLiveReviewActionResult | null>(null);
   const [caseId, setCaseId] = useState(defaultCaseId);
   const [materialId, setMaterialId] = useState(defaultMaterialId);
   const [parserProvider, setParserProvider] = useState("mineru_file_parser_provider");
@@ -77,10 +119,18 @@ export default function PersonalMaterialRuntimePage() {
   const [parseType, setParseType] = useState("pdf_text_extract_preview");
   const [ocrJobType, setOCRJobType] = useState("scanned_pdf_ocr_preview");
   const [reviewAction, setReviewAction] = useState("approve_preview_for_analysis");
+  const [liveDocumentProvider, setLiveDocumentProvider] = useState("mineru");
+  const [liveOCRProvider, setLiveOCRProvider] = useState("paddleocr");
+  const [liveFileType, setLiveFileType] = useState("pdf");
+  const [liveByteSize, setLiveByteSize] = useState(1200000);
+  const [liveReviewAction, setLiveReviewAction] = useState("approve_metadata_only");
+  const [selectedLiveReviewItemId, setSelectedLiveReviewItemId] = useState("");
   const [selectedOCRJobId, setSelectedOCRJobId] = useState("");
   const [parseConfirmed, setParseConfirmed] = useState(true);
   const [ocrConfirmed, setOCRConfirmed] = useState(true);
   const [reviewConfirmed, setReviewConfirmed] = useState(true);
+  const [liveConfirmed, setLiveConfirmed] = useState(false);
+  const [liveReviewConfirmed, setLiveReviewConfirmed] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -88,7 +138,24 @@ export default function PersonalMaterialRuntimePage() {
     setLoading(true);
     setError("");
     try {
-      const [nextStatus, nextProviders, nextParseJobs, nextOCRJobs, nextQueue, nextTraces, nextAudit, nextSafety] =
+      const [
+        nextStatus,
+        nextProviders,
+        nextParseJobs,
+        nextOCRJobs,
+        nextQueue,
+        nextTraces,
+        nextAudit,
+        nextSafety,
+        nextLiveStatus,
+        nextLiveProviders,
+        nextDocumentRuns,
+        nextOCRRuns,
+        nextLiveQueue,
+        nextLiveTraces,
+        nextLiveAudit,
+        nextLiveSafety
+      ] =
         await Promise.all([
           getPersonalMaterialRuntimeStatus(),
           getPersonalMaterialRuntimeProviders(),
@@ -97,7 +164,15 @@ export default function PersonalMaterialRuntimePage() {
           getPersonalOCRReviewQueue(),
           getPersonalMaterialSourceTraces(),
           getPersonalMaterialAudit(),
-          getPersonalMaterialSafety()
+          getPersonalMaterialSafety(),
+          getPersonalMaterialLiveStatus(),
+          getPersonalMaterialLiveProviders(),
+          listPersonalMaterialDocumentLiveRuns(),
+          listPersonalMaterialOCRLiveRuns(),
+          getPersonalMaterialLiveReviewQueue(),
+          getPersonalMaterialLiveSourceTraces(),
+          getPersonalMaterialLiveAudit(),
+          getPersonalMaterialLiveSafety()
         ]);
       setStatus(nextStatus);
       setProviders(nextProviders);
@@ -107,9 +182,22 @@ export default function PersonalMaterialRuntimePage() {
       setSourceTraces(nextTraces);
       setAudit(nextAudit);
       setSafety(nextSafety);
+      setLiveStatus(nextLiveStatus);
+      setLiveProviders(nextLiveProviders);
+      setDocumentLiveRuns(nextDocumentRuns);
+      setOCRLiveRuns(nextOCRRuns);
+      setLiveReviewQueue(nextLiveQueue);
+      setLiveSourceTraces(nextLiveTraces);
+      setLiveAudit(nextLiveAudit);
+      setLiveSafety(nextLiveSafety);
       setParserProvider((current) => current || nextProviders.providers.find((provider) => provider.category === "file_parser")?.provider_id || "mineru_file_parser_provider");
       setOCRProvider((current) => current || nextProviders.providers.find((provider) => provider.category === "ocr")?.provider_id || "paddleocr_provider");
       setSelectedOCRJobId((current) => current || nextOCRJobs.ocr_jobs[0]?.ocr_job_id || "");
+      setLiveDocumentProvider(
+        (current) => current || nextLiveProviders.providers.find((provider) => provider.provider_type === "document_parser")?.provider_id || "mineru"
+      );
+      setLiveOCRProvider((current) => current || nextLiveProviders.providers.find((provider) => provider.provider_type === "ocr")?.provider_id || "paddleocr");
+      setSelectedLiveReviewItemId((current) => current || nextLiveQueue.items[0]?.review_item_id || "");
     } catch {
       setError("Material Runtime API 暂不可用，请确认后端服务已启动。");
     } finally {
@@ -129,7 +217,16 @@ export default function PersonalMaterialRuntimePage() {
     () => providers?.providers.filter((provider) => provider.category === "ocr") ?? [],
     [providers]
   );
+  const liveDocumentProviders = useMemo(
+    () => liveProviders?.providers.filter((provider) => provider.provider_type === "document_parser") ?? [],
+    [liveProviders]
+  );
+  const liveOCRProviders = useMemo(
+    () => liveProviders?.providers.filter((provider) => provider.provider_type === "ocr") ?? [],
+    [liveProviders]
+  );
   const selectedReviewJobId = selectedOCRJobId || reviewQueue?.items[0]?.ocr_job_id || "";
+  const selectedLiveReviewId = selectedLiveReviewItemId || liveReviewQueue?.items[0]?.review_item_id || "";
   const activePreview = ocrPreview ?? ocrResult?.ocr_preview ?? ocrJobs?.ocr_jobs[0]?.ocr_preview ?? null;
 
   async function handleParseJob() {
@@ -204,10 +301,101 @@ export default function PersonalMaterialRuntimePage() {
     }
   }
 
+  function buildLivePayload(providerId: string, dryRun: boolean) {
+    return {
+      provider_id: providerId,
+      case_id: caseId,
+      material_id: materialId,
+      file_name: "controlled_demo_material.pdf",
+      file_type: liveFileType,
+      byte_size: Number(liveByteSize) || 0,
+      page_range: "1-2",
+      actor_id: "local_demo_lawyer",
+      dry_run: dryRun,
+      explicit_live_confirmation: liveConfirmed,
+      material_owner_confirmation: liveConfirmed,
+      raw_content_handling_acknowledged: liveConfirmed,
+      no_ai_prompt_injection_acknowledged: liveConfirmed,
+      lawyer_review_acknowledged: liveConfirmed,
+      draft_only_acknowledged: liveConfirmed
+    };
+  }
+
+  async function handleDocumentDryRun() {
+    setError("");
+    setDocumentLiveResult(null);
+    try {
+      const result = await createPersonalMaterialDocumentLiveDryRun(buildLivePayload(liveDocumentProvider, true));
+      setDocumentLiveResult(result);
+      await loadRuntime();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Document dry-run failed.");
+    }
+  }
+
+  async function handleDocumentLiveRun() {
+    setError("");
+    setDocumentLiveResult(null);
+    try {
+      const result = await createPersonalMaterialDocumentLiveRun(buildLivePayload(liveDocumentProvider, false));
+      setDocumentLiveResult(result);
+      await loadRuntime();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Document live run failed.");
+    }
+  }
+
+  async function handleOCRDryRun() {
+    setError("");
+    setOCRLiveResult(null);
+    try {
+      const result = await createPersonalMaterialOCRLiveDryRun(buildLivePayload(liveOCRProvider, true));
+      setOCRLiveResult(result);
+      await loadRuntime();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "OCR dry-run failed.");
+    }
+  }
+
+  async function handleOCRLiveRun() {
+    setError("");
+    setOCRLiveResult(null);
+    try {
+      const result = await createPersonalMaterialOCRLiveRun(buildLivePayload(liveOCRProvider, false));
+      setOCRLiveResult(result);
+      await loadRuntime();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "OCR live run failed.");
+    }
+  }
+
+  async function handleLiveReviewAction() {
+    setError("");
+    setLiveReviewResult(null);
+    const reviewItemId = selectedLiveReviewItemId || liveReviewQueue?.items[0]?.review_item_id || "";
+    if (!reviewItemId) {
+      setError("请先创建 document / OCR dry-run metadata，再进行 live review action。");
+      return;
+    }
+    try {
+      const result = await submitPersonalMaterialLiveReviewAction(reviewItemId, {
+        action: liveReviewAction,
+        actor_id: "local_demo_lawyer",
+        explicit_review_confirmation: liveReviewConfirmed,
+        raw_content_handling_acknowledged: liveReviewConfirmed,
+        no_ai_prompt_injection_acknowledged: liveReviewConfirmed
+      });
+      setLiveReviewResult(result);
+      await loadRuntime();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Live review action failed.");
+    }
+  }
+
   return (
     <AppShell>
       <div className="space-y-6">
-        {error ? <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div> : null}
+        {error ? <SafeErrorNotice message={error} /> : null}
 
         <section className="overflow-hidden rounded-md border border-slate-800 bg-[#10201c] text-white shadow-sm">
           <div className="grid gap-6 p-6 md:grid-cols-[1.35fr_0.75fr] md:p-8">
@@ -269,6 +457,158 @@ export default function PersonalMaterialRuntimePage() {
           </div>
         </Panel>
 
+        <Panel title="OCR / Document Live Gateway 受控接入">
+          <div className="grid gap-4">
+            <div className="grid gap-3 md:grid-cols-4">
+              <StatusTile label="OCR live mode" value={liveStatus?.ocr_live_mode_enabled ?? false} invert />
+              <StatusTile label="Document live mode" value={liveStatus?.document_live_mode_enabled ?? false} invert />
+              <StatusTile label="API Key 前端可见" value={liveProviders?.api_key_exposed ?? false} invert />
+              <StatusTile label="AI Prompt 注入" value={liveStatus?.ai_prompt_injected ?? false} invert />
+            </div>
+            <div className="rounded-md border border-cyan-200 bg-cyan-50 p-4 text-sm leading-6 text-cyan-950">
+              OCR / 文档解析真实接口默认关闭。API Key 仅后端读取，前端不可见；OCR 原文和文档原文默认不展示，不自动进入 AI Prompt，不自动触发事实抽取或法律分析。律师复核与来源追踪保持必需。
+            </div>
+            <div className="grid gap-3 md:grid-cols-4">
+              {(liveProviders?.providers ?? []).map((provider) => (
+                <div key={provider.provider_id} className="rounded-md border border-line bg-white p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-semibold text-ink">{provider.display_name}</div>
+                      <div className="mt-1 text-xs text-muted">{provider.provider_id}</div>
+                    </div>
+                    <StatusBadge tone={provider.live_enabled ? "blocked" : "preview"} label={provider.provider_type} />
+                  </div>
+                  <div className="mt-4 grid gap-2 text-xs text-muted">
+                    <span>live_enabled: {String(provider.live_enabled)}</span>
+                    <span>key_loaded: {String(provider.key_loaded)}</span>
+                    <span>key_source: {provider.key_source}</span>
+                    <span>max_file_size_mb: {provider.max_file_size_mb}</span>
+                    <span>supports_bbox: {String(provider.supports_bbox)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Panel>
+
+        <section className="grid gap-6 xl:grid-cols-2">
+          <Panel title="Document dry-run / 文档解析 dry-run">
+            <div className="grid gap-4">
+              <SelectField label="provider" value={liveDocumentProvider} options={liveDocumentProviders.map((provider) => provider.provider_id)} onChange={setLiveDocumentProvider} />
+              <SelectField label="file_type" value={liveFileType} options={["pdf", "docx", "pptx", "xlsx", "html", "md", "txt"]} onChange={setLiveFileType} />
+              <NumberField label="byte_size" value={liveByteSize} onChange={setLiveByteSize} />
+              <ActionButton label="生成文档解析 dry-run metadata" onClick={() => void handleDocumentDryRun()} />
+              <ConfirmField label="Gated live confirmations · 不读取原文 · 不进入 AI Prompt · 草稿 metadata only" checked={liveConfirmed} onChange={setLiveConfirmed} />
+              <ActionButton label="尝试 gated document live run" onClick={() => void handleDocumentLiveRun()} />
+            </div>
+            {documentLiveResult ? (
+              <ResultPanel title="Document Live Result">
+                <ResultFlags
+                  flags={{
+                    status: documentLiveResult.status,
+                    dry_run: documentLiveResult.dry_run,
+                    live_call_executed: documentLiveResult.live_call_executed,
+                    raw_content_exposed: documentLiveResult.raw_content_exposed,
+                    ai_prompt_injected: documentLiveResult.ai_prompt_injected,
+                    fact_extraction_triggered: documentLiveResult.fact_extraction_triggered,
+                    legal_analysis_triggered: documentLiveResult.legal_analysis_triggered
+                  }}
+                />
+                <MetricGrid
+                  metrics={{
+                    page_count_estimate: documentLiveResult.document_metadata.page_count_estimate,
+                    table_count: documentLiveResult.document_metadata.table_count,
+                    layout_blocks_count: documentLiveResult.document_metadata.layout_blocks_count,
+                    redacted_preview_available: String(documentLiveResult.document_metadata.redacted_preview_available)
+                  }}
+                />
+                <BlockedReasons reasons={documentLiveResult.blocked_reasons} />
+              </ResultPanel>
+            ) : null}
+          </Panel>
+
+          <Panel title="OCR dry-run / OCR dry-run">
+            <div className="grid gap-4">
+              <SelectField label="provider" value={liveOCRProvider} options={liveOCRProviders.map((provider) => provider.provider_id)} onChange={setLiveOCRProvider} />
+              <SelectField label="file_type" value={liveFileType} options={["pdf", "png", "jpg", "jpeg", "tiff"]} onChange={setLiveFileType} />
+              <NumberField label="byte_size" value={liveByteSize} onChange={setLiveByteSize} />
+              <ActionButton label="生成 OCR dry-run metadata" onClick={() => void handleOCRDryRun()} />
+              <ConfirmField label="Gated live confirmations · OCR 原文不展示 · 不进入 AI Prompt · 律师复核必需" checked={liveConfirmed} onChange={setLiveConfirmed} />
+              <ActionButton label="尝试 gated OCR live run" onClick={() => void handleOCRLiveRun()} />
+            </div>
+            {ocrLiveResult ? (
+              <ResultPanel title="OCR Live Result">
+                <ResultFlags
+                  flags={{
+                    status: ocrLiveResult.status,
+                    dry_run: ocrLiveResult.dry_run,
+                    live_call_executed: ocrLiveResult.live_call_executed,
+                    raw_ocr_text_exposed: ocrLiveResult.raw_ocr_text_exposed,
+                    ai_prompt_injected: ocrLiveResult.ai_prompt_injected,
+                    final_report_generated: ocrLiveResult.final_report_generated
+                  }}
+                />
+                <MetricGrid
+                  metrics={{
+                    page_count_estimate: ocrLiveResult.ocr_metadata.page_count_estimate,
+                    supports_bbox: String(ocrLiveResult.ocr_metadata.supports_bbox),
+                    supports_confidence: String(ocrLiveResult.ocr_metadata.supports_confidence),
+                    image_count: ocrLiveResult.ocr_metadata.image_count
+                  }}
+                />
+                <BlockedReasons reasons={ocrLiveResult.blocked_reasons} />
+              </ResultPanel>
+            ) : null}
+          </Panel>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-3">
+          <Panel title="Live Review Queue / Live 复核队列">
+            <div className="grid gap-3">
+              <SelectField
+                label="review_item_id"
+                value={selectedLiveReviewId}
+                options={(liveReviewQueue?.items ?? []).map((item) => item.review_item_id)}
+                onChange={setSelectedLiveReviewItemId}
+              />
+              <SelectField label="action" value={liveReviewAction} options={liveReviewActions} onChange={setLiveReviewAction} />
+              <ConfirmField label="人工复核确认 · 原始内容仍阻断 · 不进入 AI Prompt" checked={liveReviewConfirmed} onChange={setLiveReviewConfirmed} />
+              <ActionButton label="提交 live review action" onClick={() => void handleLiveReviewAction()} />
+              {liveReviewResult ? (
+                <ResultFlags
+                  flags={{
+                    status: liveReviewResult.status,
+                    review_status: liveReviewResult.review_status,
+                    raw_content_exposed: liveReviewResult.raw_content_exposed,
+                    ai_prompt_injected: liveReviewResult.ai_prompt_injected
+                  }}
+                />
+              ) : null}
+              {(liveReviewQueue?.items ?? []).slice(0, 4).map((item) => (
+                <MetadataRow key={item.review_item_id} label={item.review_item_id} value={`${item.review_status} · raw_blocked=${String(item.raw_content_blocked)}`} />
+              ))}
+            </div>
+          </Panel>
+
+          <Panel title="Live Source Trace / Live 来源追踪">
+            <div className="grid gap-3">
+              {(liveSourceTraces?.source_traces ?? []).slice(0, 6).map((trace) => (
+                <MetadataRow key={trace.source_trace_id} label={trace.source_trace_id} value={`${trace.run_type} · raw=${String(trace.raw_content_exposed)} · prompt=${String(trace.ai_prompt_injected)}`} />
+              ))}
+              {liveSourceTraces?.source_traces.length ? null : <EmptyState label="No live source traces yet" />}
+            </div>
+          </Panel>
+
+          <Panel title="Live Audit Timeline / Live 审计 metadata">
+            <div className="grid gap-3">
+              {(liveAudit?.events ?? []).slice(0, 6).map((event) => (
+                <MetadataRow key={event.event_id} label={event.action} value={`${event.provider_id} · live=${String(event.live_call_executed)}`} />
+              ))}
+              {liveAudit?.events.length ? null : <EmptyState label="No live audit events yet" />}
+            </div>
+          </Panel>
+        </section>
+
         <section className="grid gap-6 xl:grid-cols-2">
           <Panel title="Parse Job Mock Form / 材料解析草案">
             <div className="grid gap-4">
@@ -276,7 +616,7 @@ export default function PersonalMaterialRuntimePage() {
               <SelectField label="parse_type" value={parseType} options={parseTypes} onChange={setParseType} />
               <TextField label="case_id" value={caseId} onChange={setCaseId} />
               <TextField label="material_id" value={materialId} onChange={setMaterialId} />
-              <ConfirmField label="Manual approval · mock data only · no raw content · no external upload" checked={parseConfirmed} onChange={setParseConfirmed} />
+              <ConfirmField label="人工批准 · 仅模拟数据 · 不含原始内容 · 不外部上传" checked={parseConfirmed} onChange={setParseConfirmed} />
               <ActionButton label="Create Parse Job" onClick={() => void handleParseJob()} />
             </div>
             {parseResult ? (
@@ -411,10 +751,10 @@ export default function PersonalMaterialRuntimePage() {
             </div>
           </Panel>
 
-          <TrustSafetyPanel title="Safety Panel / 安全边界" />
+          <TrustSafetyPanel title="信任与安全面板" />
         </section>
 
-        <Panel title="Developer Diagnostics">
+        <Panel title="开发诊断（默认折叠）">
           <DiagnosticsPanel
             data={{
               status,
@@ -427,7 +767,17 @@ export default function PersonalMaterialRuntimePage() {
               review_queue: reviewQueue,
               source_traces: sourceTraces,
               audit,
-              safety
+              safety,
+              live_status: liveStatus,
+              live_providers: liveProviders,
+              document_live_result: documentLiveResult,
+              ocr_live_result: ocrLiveResult,
+              document_live_runs: documentLiveRuns,
+              ocr_live_runs: ocrLiveRuns,
+              live_review_queue: liveReviewQueue,
+              live_source_traces: liveSourceTraces,
+              live_audit: liveAudit,
+              live_safety: liveSafety
             }}
           />
         </Panel>
@@ -457,6 +807,21 @@ function TextField({ label, value, onChange }: { label: string; value: string; o
     <label className="grid gap-2 text-sm text-ink">
       <span className="font-medium">{label}</span>
       <input value={value} onChange={(event) => onChange(event.target.value)} className="rounded-md border border-line bg-white px-3 py-2 text-sm" />
+    </label>
+  );
+}
+
+function NumberField({ label, value, onChange }: { label: string; value: number; onChange: (value: number) => void }) {
+  return (
+    <label className="grid gap-2 text-sm text-ink">
+      <span className="font-medium">{label}</span>
+      <input
+        type="number"
+        min={0}
+        value={value}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className="rounded-md border border-line bg-white px-3 py-2 text-sm"
+      />
     </label>
   );
 }
@@ -550,6 +915,19 @@ function StatusBadge({ label, tone }: { label: string; tone: "safe" | "blocked" 
     preview: "border-cyan-200 bg-cyan-50 text-cyan-800"
   };
   return <span className={`rounded-md border px-2 py-1 text-xs font-medium ${tones[tone]}`}>{label}</span>;
+}
+
+function StatusTile({ label, value, invert = false }: { label: string; value: boolean; invert?: boolean }) {
+  const positive = invert ? !value : value;
+  return (
+    <div className="rounded-md border border-line bg-white p-4">
+      <div className="text-xs font-medium text-muted">{label}</div>
+      <div className="mt-2 text-xl font-semibold text-ink">{String(value)}</div>
+      <div className="mt-3">
+        <StatusBadge tone={positive ? "safe" : "blocked"} label={positive ? "受控" : "需阻断"} />
+      </div>
+    </div>
+  );
 }
 
 function HeroMetric({ label, value, invert = false }: { label: string; value: boolean; invert?: boolean }) {

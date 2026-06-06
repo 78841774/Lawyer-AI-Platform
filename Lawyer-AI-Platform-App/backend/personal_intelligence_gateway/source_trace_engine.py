@@ -1,7 +1,12 @@
 from datetime import datetime, timezone
 
-from personal_intelligence_gateway.schemas import PersonalIntelligenceSourceTrace, PersonalIntelligenceSourceTraceList
-from personal_intelligence_gateway.storage import CONFIRMATION_QUEUE_DIR, SOURCE_TRACES_DIR, read_payload, read_payloads, write_payload
+from personal_intelligence_gateway.schemas import (
+    PersonalIntelligenceLiveSourceTrace,
+    PersonalIntelligenceLiveSourceTraceList,
+    PersonalIntelligenceSourceTrace,
+    PersonalIntelligenceSourceTraceList,
+)
+from personal_intelligence_gateway.storage import CONFIRMATION_QUEUE_DIR, LIVE_SOURCE_TRACES_DIR, SOURCE_TRACES_DIR, read_payload, read_payloads, write_payload
 
 
 def create_source_traces(
@@ -67,3 +72,49 @@ def update_trace_confirmation(source_trace_id: str, citation_status: str, lawyer
     )
     save_source_trace(updated)
     return updated
+
+
+def create_live_source_traces(
+    *,
+    run_id: str,
+    run_type: str,
+    provider_id: str,
+    provider_type: str,
+    query_type: str,
+    created_at: str,
+    count: int,
+) -> list[PersonalIntelligenceLiveSourceTrace]:
+    traces: list[PersonalIntelligenceLiveSourceTrace] = []
+    for index in range(1, count + 1):
+        source_trace_id = f"personal_intelligence_live_source_trace_{run_id}_{index}"
+        trace = PersonalIntelligenceLiveSourceTrace(
+            source_trace_id=source_trace_id,
+            provider_id=provider_id,
+            provider_type=provider_type,
+            query_id=run_id,
+            query_type=query_type,
+            source_title=f"{run_type} candidate metadata {index}",
+            source_type="citation_candidate" if run_type == "legal" else "enterprise_candidate",
+            source_reference=f"metadata_reference_{index}",
+            citation_candidate=run_type == "legal",
+            enterprise_candidate=run_type == "enterprise",
+            created_at=created_at,
+        )
+        write_payload(LIVE_SOURCE_TRACES_DIR, source_trace_id, trace.model_dump())
+        traces.append(trace)
+    return traces
+
+
+def get_live_source_trace(source_trace_id: str) -> PersonalIntelligenceLiveSourceTrace | None:
+    payload = read_payload(LIVE_SOURCE_TRACES_DIR, source_trace_id)
+    return PersonalIntelligenceLiveSourceTrace(**payload) if payload else None
+
+
+def build_live_source_trace_list() -> dict:
+    traces = [PersonalIntelligenceLiveSourceTrace(**payload) for payload in read_payloads(LIVE_SOURCE_TRACES_DIR)]
+    traces = sorted(traces, key=lambda trace: trace.created_at, reverse=True)
+    return PersonalIntelligenceLiveSourceTraceList(
+        source_traces=traces,
+        source_trace_count=len(traces),
+        warnings=["Live source traces are candidate metadata only. No provider raw content, local path, or final citation is returned."],
+    ).model_dump()

@@ -5,6 +5,8 @@ import { AppShell } from "@/components/AppShell";
 import {
   DarkSafetyBadge,
   DiagnosticsPanel,
+  LocalPilotPath,
+  SafeErrorNotice,
   ShowcaseStepper,
   TrustSafetyPanel
 } from "@/components/personal-production/ProductionShowcaseUI";
@@ -57,7 +59,7 @@ export default function PersonalShowcasePackPage() {
   });
   const [flowForm, setFlowForm] = useState({
     story_title: "受控生产到交付包展示流程",
-    story_scope: "v7.3-v7.6 能力串联的 mock metadata 演示",
+    story_scope: "v7.3-v7.6 能力串联的模拟元数据演示",
     selected_stage_ids: storyStages.map((stage) => stage.id).join(",")
   });
 
@@ -160,36 +162,51 @@ export default function PersonalShowcasePackPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        {error ? <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div> : null}
+        {error ? <SafeErrorNotice message={error} /> : null}
         {message ? <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{message}</div> : null}
 
         <section className="overflow-hidden rounded-md border border-slate-800 bg-[#111827] text-white shadow-sm">
           <div className="grid gap-6 p-6 lg:grid-cols-[1.2fr_0.8fr] lg:p-8">
             <div>
               <div className="flex flex-wrap gap-2">
-                {["试点展示", "mock metadata", "律师复核必需", "来源可追踪", "不自动对外交付"].map((badge) => (
+                {["公开演示入口", "仅模拟结果", "律师复核必需", "来源可追踪", "不自动对外交付"].map((badge) => (
                   <DarkSafetyBadge key={badge} label={badge} />
                 ))}
               </div>
               <h1 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">个人生产试点与展示包</h1>
               <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-300 md:text-base">
-                把受控信息核验、技能沉淀、案件生产和交付包流程串联为可演示的 mock metadata 展示。
+                面向 3-5 分钟公开演示的个人生产入口，把受控信息核验、技能沉淀、案件生产和交付包流程串联为模拟元数据展示。这是展示和验证，不是正式生产交付。
               </p>
             </div>
             <div className="rounded-md border border-white/10 bg-white/5 p-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-cyan-100">Trust / Safety</div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-cyan-100">信任与安全</div>
               <div className="mt-4 grid gap-2 text-sm text-slate-200">
                 <span>未调用真实 provider</span>
-                <span>未读取 API key</span>
+                <span>不展示密钥值</span>
                 <span>未读取真实案件材料</span>
                 <span>未生成最终法律意见</span>
                 <span>未生成最终报告</span>
                 <span>未自动对外交付</span>
                 <span>不生成真实 PDF/DOCX</span>
+                <span>团队版后置</span>
+                <span>外部交付后置</span>
               </div>
             </div>
           </div>
         </section>
+
+        <section className="rounded-md border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">Public Demo Route</div>
+          <h2 className="mt-2 text-lg font-semibold">3-5 分钟演示路线</h2>
+          <div className="mt-3 grid gap-2 text-sm leading-6 md:grid-cols-5">
+            {["总控台 readiness", "Story Flow", "Pilot Sample", "交付包草案", "信任与安全面板"].map((item) => (
+              <div key={item} className="rounded-md border border-cyan-200 bg-white px-3 py-2">{item}</div>
+            ))}
+          </div>
+          <p className="mt-3 text-sm leading-6">演示样本仅为模拟元数据，不读取真实案件材料，不生成最终法律意见，不自动对外交付。</p>
+        </section>
+
+        <LocalPilotPath />
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
           {metricCards.map(([label, value]) => (
@@ -250,7 +267,7 @@ export default function PersonalShowcasePackPage() {
             <InfoRows
               rows={[
                 ["页面用途", "仅用于试点展示和产品演示"],
-                ["样本类型", "synthetic mock metadata"],
+                ["样本类型", "模拟元数据"],
                 ["真实客户信息", "false"],
                 ["真实案件材料", "false"],
                 ["真实交付触发", "false"],
@@ -275,7 +292,7 @@ export default function PersonalShowcasePackPage() {
               <Field label="案由" value={sampleForm.case_cause} onChange={(value) => setSampleForm({ ...sampleForm, case_cause: value })} />
               <Field label="风险等级" value={sampleForm.risk_level} onChange={(value) => setSampleForm({ ...sampleForm, risk_level: value })} />
               <Field label="Demo persona" value={sampleForm.demo_persona} onChange={(value) => setSampleForm({ ...sampleForm, demo_persona: value })} />
-              <Confirm checked={sampleConfirmed} onChange={setSampleConfirmed} label="我确认当前仅创建 synthetic mock metadata，不包含真实客户、真实案件或 raw content。" />
+              <Confirm checked={sampleConfirmed} onChange={setSampleConfirmed} label="我确认当前仅创建模拟元数据，不包含真实客户、真实案件或原始内容。" />
               <button className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:bg-slate-300" disabled={!sampleConfirmed || loading}>
                 创建 mock 试点样本
               </button>
@@ -294,7 +311,7 @@ export default function PersonalShowcasePackPage() {
               <Field label="Story title" value={flowForm.story_title} onChange={(value) => setFlowForm({ ...flowForm, story_title: value })} />
               <Field label="Story scope" value={flowForm.story_scope} onChange={(value) => setFlowForm({ ...flowForm, story_scope: value })} />
               <Field label="Selected stage IDs" value={flowForm.selected_stage_ids} onChange={(value) => setFlowForm({ ...flowForm, selected_stage_ids: value })} />
-              <Confirm checked={flowConfirmed} onChange={setFlowConfirmed} label="我确认 Story Flow 仅为 mock metadata 展示，不生成最终法律意见、最终报告或外部交付。" />
+              <Confirm checked={flowConfirmed} onChange={setFlowConfirmed} label="我确认 Story Flow 仅为模拟元数据展示，不生成最终法律意见、最终报告或外部交付。" />
               <button className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:bg-slate-300" disabled={!flowConfirmed || !selectedSampleId}>
                 生成 mock Story Flow
               </button>
@@ -322,7 +339,7 @@ export default function PersonalShowcasePackPage() {
           </Panel>
         </section>
 
-        <Panel title="Developer Diagnostics">
+        <Panel title="开发诊断（默认折叠）">
           <DiagnosticsPanel data={{ status, runtimes, metrics, trustPanel, safety, samples, flows, selectedFlow }} />
         </Panel>
       </div>

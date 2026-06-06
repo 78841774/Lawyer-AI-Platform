@@ -8,6 +8,12 @@ OCR_JOBS_DIR = RUNTIME_ROOT / "ocr_jobs"
 REVIEW_QUEUE_DIR = RUNTIME_ROOT / "ocr_review_queue"
 SOURCE_TRACES_DIR = RUNTIME_ROOT / "source_traces"
 AUDIT_DIR = RUNTIME_ROOT / "audit"
+LIVE_ROOT = RUNTIME_ROOT / "live"
+LIVE_DOCUMENT_RUNS_DIR = LIVE_ROOT / "document_runs"
+LIVE_OCR_RUNS_DIR = LIVE_ROOT / "ocr_runs"
+LIVE_REVIEW_QUEUE_DIR = LIVE_ROOT / "review_queue"
+LIVE_SOURCE_TRACES_DIR = LIVE_ROOT / "source_traces"
+LIVE_AUDIT_DIR = LIVE_ROOT / "audit"
 
 
 def write_payload(directory: Path, record_id: str, payload: dict) -> None:

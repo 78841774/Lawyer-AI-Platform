@@ -376,3 +376,322 @@ class PersonalMaterialSafetyStatus(BaseModel):
     final_legal_opinion_generated: bool = False
     final_report_generated: bool = False
     warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveProviderConfig(BaseModel):
+    provider_id: str
+    display_name: str
+    provider_type: str
+    live_supported: bool = True
+    live_enabled: bool = False
+    key_required: bool = False
+    key_loaded: bool = False
+    key_source: str = "unavailable"
+    supported_file_types: list[str] = Field(default_factory=list)
+    max_file_size_mb: int = 25
+    supports_page_range: bool = False
+    supports_bbox: bool = False
+    supports_table_extraction: bool = False
+    supports_layout_extraction: bool = False
+    timeout_seconds: int = 30
+    safety_notes: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveProviderConfigList(BaseModel):
+    providers: list[PersonalMaterialLiveProviderConfig] = Field(default_factory=list)
+    provider_count: int = 0
+    live_provider_count: int = 0
+    key_loaded_count: int = 0
+    provider_secrets_visible: bool = False
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveGatewayStatus(BaseModel):
+    enabled: bool = True
+    mode: str = "ocr_document_provider_live_gateway"
+    version: str = "v7.13"
+    ocr_live_mode_enabled: bool = False
+    document_live_mode_enabled: bool = False
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    dry_run_ready: bool = True
+    document_dry_run_ready: bool = True
+    ocr_dry_run_ready: bool = True
+    live_call_requires_confirmation: bool = True
+    provider_gated: bool = True
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    fact_extraction_triggered: bool = False
+    legal_analysis_triggered: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveRunRequest(BaseModel):
+    provider_id: str
+    case_id: str = "case_v55_approve_all"
+    material_id: str = "material_demo_001"
+    file_name: str = "controlled_demo_material.pdf"
+    file_type: str = "pdf"
+    byte_size: int = 0
+    page_range: str | None = None
+    actor_id: str = "local_demo_lawyer"
+    dry_run: bool = True
+    explicit_live_confirmation: bool = False
+    material_owner_confirmation: bool = False
+    raw_content_handling_acknowledged: bool = False
+    no_ai_prompt_injection_acknowledged: bool = False
+    lawyer_review_acknowledged: bool = False
+    draft_only_acknowledged: bool = False
+
+
+class PersonalMaterialLiveMetadataPreview(BaseModel):
+    page_count: int = 0
+    page_count_estimate: int = 0
+    file_type: str = "pdf"
+    byte_size: int = 0
+    parse_status: str = "metadata_preview_only"
+    confidence_summary: str = "not_applicable"
+    layout_blocks_count: int = 0
+    table_count: int = 0
+    image_count: int = 0
+    bbox_available: bool = False
+    supports_bbox: bool = False
+    supports_confidence: bool = True
+    redacted_preview_available: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+
+
+class PersonalMaterialLiveRunRecord(BaseModel):
+    run_id: str
+    run_type: str
+    provider_id: str
+    case_id: str
+    material_id: str
+    file_name: str
+    file_type: str
+    status: str = "dry_run_completed"
+    dry_run: bool = True
+    would_call_provider: bool = False
+    live_mode_enabled: bool = False
+    live_call_requested: bool = False
+    live_call_executed: bool = False
+    blocked_reason: str | None = None
+    blocked_reasons: list[str] = Field(default_factory=list)
+    provider_adapter_unavailable: bool = False
+    file_metadata_only: bool = True
+    document_metadata: PersonalMaterialLiveMetadataPreview = Field(default_factory=PersonalMaterialLiveMetadataPreview)
+    ocr_metadata: PersonalMaterialLiveMetadataPreview = Field(default_factory=PersonalMaterialLiveMetadataPreview)
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    fact_extraction_triggered: bool = False
+    legal_analysis_triggered: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    source_trace_created: bool = False
+    review_required: bool = True
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveRunList(BaseModel):
+    runs: list[PersonalMaterialLiveRunRecord] = Field(default_factory=list)
+    run_count: int = 0
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    fact_extraction_triggered: bool = False
+    legal_analysis_triggered: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveReviewItem(BaseModel):
+    review_item_id: str
+    run_id: str
+    run_type: str
+    provider_id: str
+    case_id: str
+    material_id: str
+    review_status: str = "pending_review"
+    confidence_summary: str = "metadata_only"
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    redacted_preview_allowed: bool = False
+    raw_content_blocked: bool = True
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveReviewQueue(BaseModel):
+    items: list[PersonalMaterialLiveReviewItem] = Field(default_factory=list)
+    item_count: int = 0
+    pending_review_count: int = 0
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    fact_extraction_triggered: bool = False
+    legal_analysis_triggered: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveReviewActionRequest(BaseModel):
+    action: str
+    actor_id: str = "local_demo_lawyer"
+    explicit_review_confirmation: bool = False
+    raw_content_handling_acknowledged: bool = False
+    no_ai_prompt_injection_acknowledged: bool = False
+
+
+class PersonalMaterialLiveReviewActionResult(BaseModel):
+    review_item_id: str
+    action: str
+    actor_id: str = "redacted_actor"
+    status: str = "review_action_recorded"
+    review_status: str = "pending_review"
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    fact_extraction_triggered: bool = False
+    legal_analysis_triggered: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    blocked_reasons: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveSourceTrace(BaseModel):
+    source_trace_id: str
+    run_id: str
+    run_type: str
+    provider_id: str
+    case_id: str
+    material_id: str
+    source_type: str = "metadata_preview"
+    page_count: int = 0
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    created_at: str
+
+
+class PersonalMaterialLiveSourceTraceList(BaseModel):
+    source_traces: list[PersonalMaterialLiveSourceTrace] = Field(default_factory=list)
+    source_trace_count: int = 0
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    fact_extraction_triggered: bool = False
+    legal_analysis_triggered: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveAuditEvent(BaseModel):
+    event_id: str
+    provider_id: str
+    action: str
+    actor_id: str = "redacted_actor"
+    run_id: str | None = None
+    review_item_id: str | None = None
+    live_call_requested: bool = False
+    live_call_executed: bool = False
+    blocked_reason: str | None = None
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    source_trace_created: bool = False
+    review_required: bool = True
+    page_count: int = 0
+    created_at: str
+
+
+class PersonalMaterialLiveAuditTimeline(BaseModel):
+    events: list[PersonalMaterialLiveAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    fact_extraction_triggered: bool = False
+    legal_analysis_triggered: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PersonalMaterialLiveSafetyStatus(BaseModel):
+    safety: dict[str, bool] = Field(default_factory=dict)
+    all_safety_checks_passed: bool = True
+    live_mode_enabled: bool = False
+    live_call_executed: bool = False
+    api_key_exposed: bool = False
+    raw_content_exposed: bool = False
+    raw_ocr_text_exposed: bool = False
+    ai_prompt_injected: bool = False
+    fact_extraction_triggered: bool = False
+    legal_analysis_triggered: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    external_delivery_triggered: bool = False
+    source_trace_required: bool = True
+    lawyer_review_required: bool = True
+    warnings: list[str] = Field(default_factory=list)

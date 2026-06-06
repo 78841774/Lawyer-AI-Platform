@@ -2,9 +2,9 @@ from personal_case_production.schemas import CaseProductionSafetyStatus
 
 
 SAFETY_CHECKLIST = [
-    "未读取真实案件原文",
+    "未读取案件正文",
     "未调用真实 provider",
-    "未读取 API key",
+    "未读取密钥值",
     "未生成最终法律意见",
     "未生成最终报告",
     "未自动对外交付",

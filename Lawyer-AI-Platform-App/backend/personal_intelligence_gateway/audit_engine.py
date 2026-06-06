@@ -1,8 +1,13 @@
 from uuid import uuid4
 
 from personal_intelligence_gateway.safety_engine import default_safety_flags
-from personal_intelligence_gateway.schemas import PersonalIntelligenceAuditEvent, PersonalIntelligenceAuditTimeline
-from personal_intelligence_gateway.storage import AUDIT_DIR, read_payloads, write_payload
+from personal_intelligence_gateway.schemas import (
+    PersonalIntelligenceAuditEvent,
+    PersonalIntelligenceAuditTimeline,
+    PersonalIntelligenceLiveAuditEvent,
+    PersonalIntelligenceLiveAuditTimeline,
+)
+from personal_intelligence_gateway.storage import AUDIT_DIR, LIVE_AUDIT_DIR, read_payloads, write_payload
 
 
 def record_audit_event(
@@ -42,3 +47,45 @@ def _redact_actor(actor: str) -> str:
     if actor == "system":
         return actor
     return "redacted_reviewer"
+
+
+def record_live_audit_event(
+    *,
+    provider_id: str,
+    action: str,
+    actor_id: str,
+    query_type: str,
+    created_at: str,
+    run_id: str | None = None,
+    review_item_id: str | None = None,
+    live_call_requested: bool = False,
+    live_call_executed: bool = False,
+    blocked_reason: str | None = None,
+    source_trace_created: bool = False,
+) -> None:
+    event_id = f"personal_intelligence_live_audit_{uuid4().hex[:12]}"
+    event = PersonalIntelligenceLiveAuditEvent(
+        event_id=event_id,
+        provider_id=provider_id,
+        action=action,
+        actor_id=_redact_actor(actor_id),
+        query_type=query_type,
+        run_id=run_id,
+        review_item_id=review_item_id,
+        live_call_requested=live_call_requested,
+        live_call_executed=live_call_executed,
+        blocked_reason=blocked_reason,
+        source_trace_created=source_trace_created,
+        created_at=created_at,
+    )
+    write_payload(LIVE_AUDIT_DIR, event_id, event.model_dump())
+
+
+def build_live_audit_timeline() -> dict:
+    events = [PersonalIntelligenceLiveAuditEvent(**payload) for payload in read_payloads(LIVE_AUDIT_DIR)]
+    events = sorted(events, key=lambda event: event.created_at, reverse=True)
+    return PersonalIntelligenceLiveAuditTimeline(
+        events=events,
+        event_count=len(events),
+        warnings=["Live audit records contain metadata only. No provider raw content, API key, local path, final citation, final legal opinion, or final report is returned."],
+    ).model_dump()

@@ -38,7 +38,7 @@ def default_safety_flags() -> dict[str, bool]:
 def build_safety_status() -> dict:
     checklist = [
         "未调用真实 provider",
-        "未读取 API key",
+        "未读取密钥值",
         "未读取真实案件材料",
         "未返回原始内容",
         "未生成最终法律意见",

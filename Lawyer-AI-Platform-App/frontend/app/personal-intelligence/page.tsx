@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
   DiagnosticsPanel,
+  SafeErrorNotice,
   TrustSafetyPanel
 } from "@/components/personal-production/ProductionShowcaseUI";
 import {
@@ -11,22 +12,44 @@ import {
   PersonalEnterpriseQueryResult,
   PersonalIntelligenceAuditTimeline,
   PersonalIntelligenceConfirmationActionResult,
+  PersonalIntelligenceLiveAuditTimeline,
+  PersonalIntelligenceLiveGatewayStatus,
+  PersonalIntelligenceLiveProviderConfigList,
+  PersonalIntelligenceLiveReviewActionResult,
+  PersonalIntelligenceLiveReviewQueue,
+  PersonalIntelligenceLiveRunList,
+  PersonalIntelligenceLiveRunRecord,
+  PersonalIntelligenceLiveSafetyStatus,
+  PersonalIntelligenceLiveSourceTraceList,
   PersonalIntelligenceProviderList,
   PersonalIntelligenceSafetyStatus,
   PersonalIntelligenceSourceTraceList,
   PersonalIntelligenceStatus,
   PersonalLegalSearchList,
   PersonalLegalSearchResult,
+  createPersonalIntelligenceEnterpriseLiveDryRun,
+  createPersonalIntelligenceEnterpriseLiveRun,
+  createPersonalIntelligenceLegalLiveDryRun,
+  createPersonalIntelligenceLegalLiveRun,
   createPersonalEnterpriseQueryMock,
   createPersonalLegalSearchMock,
   getPersonalIntelligenceAudit,
   getPersonalIntelligenceConfirmationQueue,
+  getPersonalIntelligenceLiveAudit,
+  getPersonalIntelligenceLiveProviders,
+  getPersonalIntelligenceLiveReviewQueue,
+  getPersonalIntelligenceLiveSafety,
+  getPersonalIntelligenceLiveStatus,
   getPersonalIntelligenceProviders,
   getPersonalIntelligenceSafety,
   getPersonalIntelligenceStatus,
+  listPersonalIntelligenceEnterpriseLiveRuns,
+  listPersonalIntelligenceLegalLiveRuns,
+  listPersonalIntelligenceLiveSourceTraces,
   listPersonalEnterpriseQuery,
   listPersonalIntelligenceSourceTraces,
   listPersonalLegalSearch,
+  submitPersonalIntelligenceLiveReviewAction,
   submitPersonalIntelligenceConfirmationAction
 } from "@/services/api";
 
@@ -46,6 +69,16 @@ const confirmationActions = [
   { id: "mark_low_confidence", label: "标记低置信度" },
   { id: "mark_not_relevant", label: "标记不相关" }
 ];
+const liveReviewActions = [
+  "approve_metadata_only",
+  "request_manual_review",
+  "reject",
+  "mark_low_confidence",
+  "mark_irrelevant",
+  "request_source_verification",
+  "block_raw_content",
+  "block_ai_prompt_injection"
+];
 
 export default function PersonalIntelligencePage() {
   const [status, setStatus] = useState<PersonalIntelligenceStatus | null>(null);
@@ -56,9 +89,20 @@ export default function PersonalIntelligencePage() {
   const [confirmationQueue, setConfirmationQueue] = useState<PersonalIntelligenceSourceTraceList | null>(null);
   const [audit, setAudit] = useState<PersonalIntelligenceAuditTimeline | null>(null);
   const [safety, setSafety] = useState<PersonalIntelligenceSafetyStatus | null>(null);
+  const [liveStatus, setLiveStatus] = useState<PersonalIntelligenceLiveGatewayStatus | null>(null);
+  const [liveProviders, setLiveProviders] = useState<PersonalIntelligenceLiveProviderConfigList | null>(null);
+  const [legalLiveRuns, setLegalLiveRuns] = useState<PersonalIntelligenceLiveRunList | null>(null);
+  const [enterpriseLiveRuns, setEnterpriseLiveRuns] = useState<PersonalIntelligenceLiveRunList | null>(null);
+  const [liveReviewQueue, setLiveReviewQueue] = useState<PersonalIntelligenceLiveReviewQueue | null>(null);
+  const [liveSourceTraces, setLiveSourceTraces] = useState<PersonalIntelligenceLiveSourceTraceList | null>(null);
+  const [liveAudit, setLiveAudit] = useState<PersonalIntelligenceLiveAuditTimeline | null>(null);
+  const [liveSafety, setLiveSafety] = useState<PersonalIntelligenceLiveSafetyStatus | null>(null);
   const [legalResult, setLegalResult] = useState<PersonalLegalSearchResult | null>(null);
   const [enterpriseResult, setEnterpriseResult] = useState<PersonalEnterpriseQueryResult | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<PersonalIntelligenceConfirmationActionResult | null>(null);
+  const [legalLiveResult, setLegalLiveResult] = useState<PersonalIntelligenceLiveRunRecord | null>(null);
+  const [enterpriseLiveResult, setEnterpriseLiveResult] = useState<PersonalIntelligenceLiveRunRecord | null>(null);
+  const [liveReviewResult, setLiveReviewResult] = useState<PersonalIntelligenceLiveReviewActionResult | null>(null);
   const [caseId, setCaseId] = useState(defaultCaseId);
   const [legalQuery, setLegalQuery] = useState("买卖合同逾期付款责任");
   const [legalArea, setLegalArea] = useState("合同纠纷");
@@ -71,9 +115,15 @@ export default function PersonalIntelligencePage() {
   const [enterpriseScope, setEnterpriseScope] = useState("judicial_risk_preview");
   const [selectedTraceId, setSelectedTraceId] = useState("");
   const [selectedAction, setSelectedAction] = useState("confirm");
+  const [liveLegalProvider, setLiveLegalProvider] = useState("kuaicha365_lawskills_provider");
+  const [liveEnterpriseProvider, setLiveEnterpriseProvider] = useState("tianyancha_ai_provider");
+  const [selectedLiveReviewItemId, setSelectedLiveReviewItemId] = useState("");
+  const [liveReviewAction, setLiveReviewAction] = useState("approve_metadata_only");
   const [legalConfirmed, setLegalConfirmed] = useState(true);
   const [enterpriseConfirmed, setEnterpriseConfirmed] = useState(true);
   const [reviewConfirmed, setReviewConfirmed] = useState(true);
+  const [liveConfirmed, setLiveConfirmed] = useState(false);
+  const [liveReviewConfirmed, setLiveReviewConfirmed] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -81,7 +131,24 @@ export default function PersonalIntelligencePage() {
     setLoading(true);
     setError("");
     try {
-      const [nextStatus, nextProviders, nextLegal, nextEnterprise, nextTraces, nextQueue, nextAudit, nextSafety] =
+      const [
+        nextStatus,
+        nextProviders,
+        nextLegal,
+        nextEnterprise,
+        nextTraces,
+        nextQueue,
+        nextAudit,
+        nextSafety,
+        nextLiveStatus,
+        nextLiveProviders,
+        nextLegalLiveRuns,
+        nextEnterpriseLiveRuns,
+        nextLiveQueue,
+        nextLiveTraces,
+        nextLiveAudit,
+        nextLiveSafety
+      ] =
         await Promise.all([
           getPersonalIntelligenceStatus(),
           getPersonalIntelligenceProviders(),
@@ -90,7 +157,15 @@ export default function PersonalIntelligencePage() {
           listPersonalIntelligenceSourceTraces(),
           getPersonalIntelligenceConfirmationQueue(),
           getPersonalIntelligenceAudit(),
-          getPersonalIntelligenceSafety()
+          getPersonalIntelligenceSafety(),
+          getPersonalIntelligenceLiveStatus(),
+          getPersonalIntelligenceLiveProviders(),
+          listPersonalIntelligenceLegalLiveRuns(),
+          listPersonalIntelligenceEnterpriseLiveRuns(),
+          getPersonalIntelligenceLiveReviewQueue(),
+          listPersonalIntelligenceLiveSourceTraces(),
+          getPersonalIntelligenceLiveAudit(),
+          getPersonalIntelligenceLiveSafety()
         ]);
       setStatus(nextStatus);
       setProviders(nextProviders);
@@ -100,7 +175,18 @@ export default function PersonalIntelligencePage() {
       setConfirmationQueue(nextQueue);
       setAudit(nextAudit);
       setSafety(nextSafety);
+      setLiveStatus(nextLiveStatus);
+      setLiveProviders(nextLiveProviders);
+      setLegalLiveRuns(nextLegalLiveRuns);
+      setEnterpriseLiveRuns(nextEnterpriseLiveRuns);
+      setLiveReviewQueue(nextLiveQueue);
+      setLiveSourceTraces(nextLiveTraces);
+      setLiveAudit(nextLiveAudit);
+      setLiveSafety(nextLiveSafety);
       setSelectedTraceId((current) => current || nextQueue.source_traces[0]?.source_trace_id || "");
+      setLiveLegalProvider((current) => current || nextLiveProviders.providers.find((provider) => provider.provider_type === "legal_search")?.provider_id || "kuaicha365_lawskills_provider");
+      setLiveEnterpriseProvider((current) => current || nextLiveProviders.providers.find((provider) => provider.provider_type === "enterprise_info")?.provider_id || "tianyancha_ai_provider");
+      setSelectedLiveReviewItemId((current) => current || nextLiveQueue.items[0]?.review_item_id || "");
     } catch {
       setError("法律与企业信息网关 API 暂不可用，请确认后端服务已启动。");
     } finally {
@@ -120,7 +206,16 @@ export default function PersonalIntelligencePage() {
     () => providers?.providers.filter((provider) => provider.category === "enterprise_intelligence") ?? [],
     [providers]
   );
+  const liveLegalProviders = useMemo(
+    () => liveProviders?.providers.filter((provider) => provider.provider_type === "legal_search") ?? [],
+    [liveProviders]
+  );
+  const liveEnterpriseProviders = useMemo(
+    () => liveProviders?.providers.filter((provider) => provider.provider_type === "enterprise_info") ?? [],
+    [liveProviders]
+  );
   const activeTraceId = selectedTraceId || confirmationQueue?.source_traces[0]?.source_trace_id || "";
+  const activeLiveReviewItemId = selectedLiveReviewItemId || liveReviewQueue?.items[0]?.review_item_id || "";
 
   async function handleLegalSearch() {
     setError("");
@@ -189,10 +284,100 @@ export default function PersonalIntelligencePage() {
     }
   }
 
+  function buildLivePayload(providerId: string, queryText: string, queryType: string, dryRun: boolean) {
+    return {
+      provider_id: providerId,
+      query_text: queryText,
+      query_type: queryType,
+      case_id: caseId,
+      jurisdiction,
+      actor_id: "local_demo_lawyer",
+      dry_run: dryRun,
+      explicit_live_confirmation: liveConfirmed,
+      query_owner_confirmation: liveConfirmed,
+      raw_content_handling_acknowledged: liveConfirmed,
+      no_ai_prompt_injection_acknowledged: liveConfirmed,
+      lawyer_review_acknowledged: liveConfirmed,
+      draft_only_acknowledged: liveConfirmed,
+      no_final_citation_acknowledged: liveConfirmed
+    };
+  }
+
+  async function handleLegalLiveDryRun() {
+    setError("");
+    setLegalLiveResult(null);
+    try {
+      const result = await createPersonalIntelligenceLegalLiveDryRun(buildLivePayload(liveLegalProvider, legalQuery, legalScope, true));
+      setLegalLiveResult(result);
+      await loadGateway();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Legal live dry-run 未完成。");
+    }
+  }
+
+  async function handleLegalLiveRun() {
+    setError("");
+    setLegalLiveResult(null);
+    try {
+      const result = await createPersonalIntelligenceLegalLiveRun(buildLivePayload(liveLegalProvider, legalQuery, legalScope, false));
+      setLegalLiveResult(result);
+      await loadGateway();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Legal live run 未完成。");
+    }
+  }
+
+  async function handleEnterpriseLiveDryRun() {
+    setError("");
+    setEnterpriseLiveResult(null);
+    try {
+      const result = await createPersonalIntelligenceEnterpriseLiveDryRun(buildLivePayload(liveEnterpriseProvider, companyName, enterpriseScope, true));
+      setEnterpriseLiveResult(result);
+      await loadGateway();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Enterprise live dry-run 未完成。");
+    }
+  }
+
+  async function handleEnterpriseLiveRun() {
+    setError("");
+    setEnterpriseLiveResult(null);
+    try {
+      const result = await createPersonalIntelligenceEnterpriseLiveRun(buildLivePayload(liveEnterpriseProvider, companyName, enterpriseScope, false));
+      setEnterpriseLiveResult(result);
+      await loadGateway();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Enterprise live run 未完成。");
+    }
+  }
+
+  async function handleLiveReviewAction() {
+    setError("");
+    setLiveReviewResult(null);
+    if (!activeLiveReviewItemId) {
+      setError("请先创建 legal / enterprise dry-run metadata，再进行 live review action。");
+      return;
+    }
+    try {
+      const result = await submitPersonalIntelligenceLiveReviewAction(activeLiveReviewItemId, {
+        action: liveReviewAction,
+        actor_id: "local_demo_lawyer",
+        explicit_review_confirmation: liveReviewConfirmed,
+        raw_content_handling_acknowledged: liveReviewConfirmed,
+        no_ai_prompt_injection_acknowledged: liveReviewConfirmed,
+        no_final_citation_acknowledged: liveReviewConfirmed
+      });
+      setLiveReviewResult(result);
+      await loadGateway();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Live review action 未完成。");
+    }
+  }
+
   return (
     <AppShell>
       <div className="space-y-6">
-        {error ? <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div> : null}
+        {error ? <SafeErrorNotice message={error} /> : null}
 
         <section className="overflow-hidden rounded-md border border-slate-800 bg-[#18231f] text-white shadow-sm">
           <div className="grid gap-6 p-6 md:grid-cols-[1.35fr_0.75fr] md:p-8">
@@ -254,6 +439,128 @@ export default function PersonalIntelligencePage() {
             ))}
           </div>
         </Panel>
+
+        <Panel title="法律检索与企业信息 API 受控接入">
+          <div className="grid gap-4">
+            <div className="grid gap-3 md:grid-cols-4">
+              <StatusTile label="Legal live mode" value={liveStatus?.legal_live_mode_enabled ?? false} invert />
+              <StatusTile label="Enterprise live mode" value={liveStatus?.enterprise_live_mode_enabled ?? false} invert />
+              <StatusTile label="API Key 前端可见" value={liveProviders?.api_key_exposed ?? false} invert />
+              <StatusTile label="Citation finalized" value={liveStatus?.citation_finalized ?? false} invert />
+            </div>
+            <div className="rounded-md border border-cyan-200 bg-cyan-50 p-4 text-sm leading-6 text-cyan-950">
+              法律/企业 API 真实接口默认关闭。API Key 仅后端读取，前端不可见；法律检索原文和企业信息原文默认不展示。Citation 仅为候选 metadata，不自动进入 AI Prompt，不自动触发事实抽取或法律分析，不自动作为最终引用。律师复核与来源追踪保持必需。
+            </div>
+            <div className="grid gap-3 md:grid-cols-5">
+              {(liveProviders?.providers ?? []).map((provider) => (
+                <div key={provider.provider_id} className="rounded-md border border-line bg-white p-4">
+                  <div className="text-sm font-semibold text-ink">{provider.display_name}</div>
+                  <div className="mt-1 text-xs text-muted">{provider.provider_id}</div>
+                  <div className="mt-3 grid gap-1 text-xs text-muted">
+                    <span>provider_type: {provider.provider_type}</span>
+                    <span>live_enabled: {String(provider.live_enabled)}</span>
+                    <span>key_loaded: {String(provider.key_loaded)}</span>
+                    <span>key_source: {provider.key_source}</span>
+                    <span>citation_metadata: {String(provider.supports_citation_metadata)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Panel>
+
+        <section className="grid gap-6 xl:grid-cols-2">
+          <Panel title="Legal search dry-run / 法律检索 dry-run">
+            <div className="grid gap-4">
+              <SelectField label="Live provider" value={liveLegalProvider} options={liveLegalProviders.map((provider) => provider.provider_id)} onChange={setLiveLegalProvider} />
+              <SelectField label="query_type" value={legalScope} options={legalScopes} onChange={setLegalScope} />
+              <TextField label="query_text" value={legalQuery} onChange={setLegalQuery} />
+              <ActionButton label="生成法律检索 dry-run metadata" onClick={() => void handleLegalLiveDryRun()} />
+              <ConfirmField label="Gated live confirmations · 不展示原文 · 不进入 AI Prompt · 不作为最终引用" checked={liveConfirmed} onChange={setLiveConfirmed} />
+              <ActionButton label="尝试 gated legal live run" onClick={() => void handleLegalLiveRun()} />
+            </div>
+            {legalLiveResult ? (
+              <ResultPanel title="Legal Live Result">
+                <ResultFlags
+                  flags={{
+                    status: legalLiveResult.status,
+                    dry_run: legalLiveResult.dry_run,
+                    live_call_executed: legalLiveResult.live_call_executed,
+                    legal_raw_content_exposed: legalLiveResult.legal_raw_content_exposed,
+                    ai_prompt_injected: legalLiveResult.ai_prompt_injected,
+                    citation_finalized: legalLiveResult.citation_finalized
+                  }}
+                />
+                <MetadataRow label="query_text_redacted" value={legalLiveResult.metadata_preview.query_text_redacted} />
+                <MetadataRow label="citation_candidate_count" value={String(legalLiveResult.metadata_preview.citation_candidate_count)} />
+              </ResultPanel>
+            ) : null}
+          </Panel>
+
+          <Panel title="Enterprise query dry-run / 企业信息 dry-run">
+            <div className="grid gap-4">
+              <SelectField label="Live provider" value={liveEnterpriseProvider} options={liveEnterpriseProviders.map((provider) => provider.provider_id)} onChange={setLiveEnterpriseProvider} />
+              <SelectField label="query_type" value={enterpriseScope} options={enterpriseScopes} onChange={setEnterpriseScope} />
+              <TextField label="company/query_text" value={companyName} onChange={setCompanyName} />
+              <ActionButton label="生成企业信息 dry-run metadata" onClick={() => void handleEnterpriseLiveDryRun()} />
+              <ConfirmField label="Gated live confirmations · 企业原文不展示 · 不进入 AI Prompt · 不生成最终报告" checked={liveConfirmed} onChange={setLiveConfirmed} />
+              <ActionButton label="尝试 gated enterprise live run" onClick={() => void handleEnterpriseLiveRun()} />
+            </div>
+            {enterpriseLiveResult ? (
+              <ResultPanel title="Enterprise Live Result">
+                <ResultFlags
+                  flags={{
+                    status: enterpriseLiveResult.status,
+                    dry_run: enterpriseLiveResult.dry_run,
+                    live_call_executed: enterpriseLiveResult.live_call_executed,
+                    enterprise_raw_content_exposed: enterpriseLiveResult.enterprise_raw_content_exposed,
+                    ai_prompt_injected: enterpriseLiveResult.ai_prompt_injected,
+                    final_report_generated: enterpriseLiveResult.final_report_generated
+                  }}
+                />
+                <MetadataRow label="query_text_redacted" value={enterpriseLiveResult.metadata_preview.query_text_redacted} />
+                <MetadataRow label="enterprise_candidate_count" value={String(enterpriseLiveResult.metadata_preview.enterprise_candidate_count)} />
+              </ResultPanel>
+            ) : null}
+          </Panel>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-3">
+          <Panel title="Live Review Queue / Live 复核队列">
+            <div className="grid gap-3">
+              <SelectField
+                label="review_item_id"
+                value={activeLiveReviewItemId}
+                options={(liveReviewQueue?.items ?? []).map((item) => item.review_item_id)}
+                onChange={setSelectedLiveReviewItemId}
+              />
+              <SelectField label="action" value={liveReviewAction} options={liveReviewActions} onChange={setLiveReviewAction} />
+              <ConfirmField label="人工复核确认 · 原始内容阻断 · 不进入 AI Prompt · 不最终引用" checked={liveReviewConfirmed} onChange={setLiveReviewConfirmed} />
+              <ActionButton label="提交 live review action" onClick={() => void handleLiveReviewAction()} />
+              {liveReviewResult ? (
+                <ResultFlags flags={{ status: String(liveReviewResult.status), review_status: String(liveReviewResult.review_status) }} />
+              ) : null}
+            </div>
+          </Panel>
+
+          <Panel title="Live Source Trace / Live 来源追踪">
+            <div className="grid gap-3">
+              {(liveSourceTraces?.source_traces ?? []).slice(0, 6).map((trace) => (
+                <MetadataRow key={trace.source_trace_id} label={trace.source_trace_id} value={`${String(trace.source_type)} · final=${String(trace.citation_finalized ?? false)}`} />
+              ))}
+              {liveSourceTraces?.source_traces.length ? null : <EmptyState label="No live source traces yet" />}
+            </div>
+          </Panel>
+
+          <Panel title="Live Audit Timeline / Live 审计 metadata">
+            <div className="grid gap-3">
+              {(liveAudit?.events ?? []).slice(0, 6).map((event) => (
+                <MetadataRow key={String(event.event_id)} label={String(event.action)} value={`${String(event.provider_id)} · live=${String(event.live_call_executed)}`} />
+              ))}
+              {liveAudit?.events.length ? null : <EmptyState label="No live audit events yet" />}
+            </div>
+          </Panel>
+        </section>
 
         <section className="grid gap-6 xl:grid-cols-2">
           <Panel title="模拟法律检索">
@@ -379,7 +686,7 @@ export default function PersonalIntelligencePage() {
         <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
           <TrustSafetyPanel items={safety?.safety_checklist ?? []} title="安全清单" />
 
-          <Panel title="Developer Diagnostics">
+          <Panel title="开发诊断（默认折叠）">
             <DiagnosticsPanel
               data={{
                 status,
@@ -389,7 +696,17 @@ export default function PersonalIntelligencePage() {
                 source_traces: sourceTraces,
                 confirmation_queue: confirmationQueue,
                 audit,
-                safety
+                safety,
+                live_status: liveStatus,
+                live_providers: liveProviders,
+                legal_live_result: legalLiveResult,
+                enterprise_live_result: enterpriseLiveResult,
+                legal_live_runs: legalLiveRuns,
+                enterprise_live_runs: enterpriseLiveRuns,
+                live_review_queue: liveReviewQueue,
+                live_source_traces: liveSourceTraces,
+                live_audit: liveAudit,
+                live_safety: liveSafety
               }}
             />
           </Panel>
@@ -508,6 +825,19 @@ function StatusCard({ label, value }: { label: string; value: boolean }) {
       <div className="mt-3 flex items-center justify-between">
         <div className="text-xl font-semibold text-ink">{value ? "已就绪" : "待确认"}</div>
         <StatusBadge tone={value ? "safe" : "preview"} label={value ? "通过" : "预览"} />
+      </div>
+    </div>
+  );
+}
+
+function StatusTile({ label, value, invert = false }: { label: string; value: boolean; invert?: boolean }) {
+  const positive = invert ? !value : value;
+  return (
+    <div className="rounded-md border border-line bg-white p-4">
+      <div className="text-xs font-medium text-muted">{label}</div>
+      <div className="mt-2 text-xl font-semibold text-ink">{String(value)}</div>
+      <div className="mt-3">
+        <StatusBadge tone={positive ? "safe" : "blocked"} label={positive ? "受控" : "需阻断"} />
       </div>
     </div>
   );

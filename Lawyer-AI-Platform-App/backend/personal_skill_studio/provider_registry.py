@@ -27,10 +27,22 @@ RUNTIME_DEFINITIONS = [
         "capabilities": ["mock evaluation checklist", "scoring metadata", "risk flags", "manual review gate"],
     },
     {
+        "runtime_id": "skill_training_runtime",
+        "display_name": "受控 Skill Training Runtime",
+        "runtime_type": "skill_training",
+        "capabilities": ["脱敏训练样本 metadata", "人工确认门禁", "draft-only training metadata", "no auto publish"],
+    },
+    {
         "runtime_id": "controlled_promotion_gate",
         "display_name": "受控发布门禁",
         "runtime_type": "promotion_gate",
         "capabilities": ["publish readiness metadata", "manual approval required", "no auto publish"],
+    },
+    {
+        "runtime_id": "skill_final_draft_workbench",
+        "display_name": "两个 Skill 最终稿与优化工作台",
+        "runtime_type": "skill_final_draft",
+        "capabilities": ["baseline discovery metadata", "owner-only final draft metadata", "reference-only quality / gate", "no auto publish"],
     },
 ]
 
@@ -41,7 +53,7 @@ def list_runtimes() -> dict:
         runtimes=runtimes,
         runtime_count=len(runtimes),
         live_runtime_count=sum(1 for runtime in runtimes if runtime.live_enabled),
-        warnings=["Skill Studio Runtime 仅生成草案和模拟评估，不会自动发布 Skill。"],
+        warnings=["Skill Studio Runtime 仅生成草案、模拟评估和最终稿 metadata，不会自动发布 Skill。"],
     ).model_dump()
 
 

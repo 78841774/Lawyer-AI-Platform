@@ -44,7 +44,7 @@ def create_mock_experience_package(request: ExperiencePackageMockRequest) -> dic
             "lawyer_review_notes_placeholder": "律师复核记录占位 metadata",
         },
         created_at=created_at,
-        warnings=["仅生成经验包草案 metadata，未读取真实案件原文。"],
+        warnings=["仅生成经验包草案 metadata，未读取案件正文。"],
     )
     write_payload(EXPERIENCE_PACKAGES_DIR, experience_package_id, record.model_dump())
     record_audit_event(action="experience_package_mock_created", actor="system", object_type="experience_package", object_id=experience_package_id, timestamp=created_at)

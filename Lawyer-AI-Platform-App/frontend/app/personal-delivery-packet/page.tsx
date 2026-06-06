@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import {
   DarkSafetyBadge,
   DiagnosticsPanel,
+  SafeErrorNotice,
   ShowcaseStepper,
   TrustSafetyPanel
 } from "@/components/personal-production/ProductionShowcaseUI";
@@ -23,7 +24,7 @@ import {
 } from "@/services/api";
 
 const stepper = [
-  { label: "交付包草案", detail: "metadata-only" },
+  { label: "交付包草案", detail: "仅元数据" },
   { label: "交付项清单", detail: "draft item" },
   { label: "来源追踪", detail: "Source Trace" },
   { label: "律师复核", detail: "review required" },
@@ -31,10 +32,10 @@ const stepper = [
 ];
 
 const safetyChecks = [
-  "未读取真实案件原文",
+  "未读取案件正文",
   "未读取真实案件材料",
   "未调用真实 provider",
-  "未读取 API key",
+  "不展示密钥值",
   "未生成最终法律意见",
   "未生成最终报告",
   "未自动对外交付",
@@ -263,26 +264,28 @@ export default function PersonalDeliveryPacketPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        {error ? <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div> : null}
+        {error ? <SafeErrorNotice message={error} /> : null}
         {actionMessage ? <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{actionMessage}</div> : null}
 
         <section className="overflow-hidden rounded-md border border-slate-800 bg-[#111827] text-white shadow-sm">
           <div className="grid gap-6 p-6 lg:grid-cols-[1.2fr_0.8fr] lg:p-8">
             <div>
               <div className="flex flex-wrap gap-2">
-                {["mock-first", "metadata-only", "律师复核必需", "不自动对外交付"].map((badge) => (
+                {["仅模拟结果", "仅元数据", "律师复核必需", "Final Lock 不触发真实导出", "不自动对外交付"].map((badge) => (
                   <DarkSafetyBadge key={badge} label={badge} />
                 ))}
               </div>
               <h1 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">个人生产交付包</h1>
               <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-300 md:text-base">
-                把 v7.5 受控案件生产工作流 metadata 汇总成受控交付包草案，覆盖交付项清单、来源追踪包、律师复核摘要、导出准备度与最终锁定队列。
+                把 v7.5 受控案件生产工作流 metadata 汇总成受控交付包草案。交付包草案不是最终交付文件，Final Lock 不触发真实导出，仅用于律师复核后的 metadata 门禁展示。
               </p>
               <div className="mt-5 grid gap-2 text-sm text-slate-300 sm:grid-cols-2">
                 <span>不生成最终法律意见</span>
                 <span>不生成最终报告</span>
                 <span>不发送邮件</span>
                 <span>不生成真实 PDF/DOCX</span>
+                <span>不自动对外交付</span>
+                <span>外部交付后置</span>
               </div>
             </div>
             <div className="rounded-md border border-white/10 bg-white/5 p-4">
@@ -380,7 +383,7 @@ export default function PersonalDeliveryPacketPage() {
               <Field label="Linked Object Type" value={itemForm.linked_object_type} onChange={(value) => setItemForm({ ...itemForm, linked_object_type: value })} />
               <Field label="Linked Object ID" value={itemForm.linked_object_id} onChange={(value) => setItemForm({ ...itemForm, linked_object_id: value })} />
               <Field label="Source Trace IDs" value={itemForm.source_trace_ids} onChange={(value) => setItemForm({ ...itemForm, source_trace_ids: value })} />
-              <Confirm checked={itemConfirmed} onChange={setItemConfirmed} label="我确认该交付项仅为草案 metadata，不包含 raw content，不生成最终意见。" />
+              <Confirm checked={itemConfirmed} onChange={setItemConfirmed} label="我确认该交付项仅为草案元数据，不包含原始内容，不生成最终意见。" />
               <button className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-slate-300" disabled={!itemConfirmed || !selectedPacketId}>
                 添加交付项草案
               </button>
@@ -397,7 +400,7 @@ export default function PersonalDeliveryPacketPage() {
               </button>
             </form>
             <div className="mt-5 grid gap-2 text-xs text-muted">
-              <span>raw content excluded: true</span>
+              <span>原始内容已排除：true</span>
               <span>source trace required: true</span>
               <span>confirmed / unconfirmed source count: {String(bundles?.source_bundles?.[0]?.confirmed_source_count ?? 0)} / {String(bundles?.source_bundles?.[0]?.unconfirmed_source_count ?? 0)}</span>
             </div>
@@ -461,7 +464,7 @@ export default function PersonalDeliveryPacketPage() {
           <TrustSafetyPanel items={safety?.safety_checklist?.length ? safety.safety_checklist : safetyChecks} title="安全检查清单" />
         </section>
 
-        <Panel title="Developer Diagnostics">
+        <Panel title="开发诊断（默认折叠）">
           <DiagnosticsPanel data={{ status, runtimes, selectedPacket, readiness, reviewSummary, finalLocks, safety }} />
         </Panel>
       </div>

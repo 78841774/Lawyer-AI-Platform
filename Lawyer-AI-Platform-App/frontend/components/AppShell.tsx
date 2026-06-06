@@ -48,10 +48,16 @@ const navGroups = [
     label: "个人生产",
     items: [
       { href: "/personal-production", label: "个人生产总控台" },
+      { href: "/personal-production-pilot", label: "个人生产实战 Pilot" },
+      { href: "/personal-owner-output-center", label: "用户本人产出下载中心" },
+      { href: "/personal-case-workspace", label: "个人案件与材料工作台" },
       { href: "/personal-showcase-pack", label: "个人生产试点与展示包" },
       { href: "/personal-delivery-packet", label: "个人生产交付包" },
+      { href: "/personal-case-analysis", label: "受控案件分析 Runtime" },
+      { href: "/personal-case-analysis/legal-drafts", label: "法律分析草稿工作台" },
       { href: "/personal-case-production", label: "受控案件生产工作流" },
       { href: "/personal-skill-studio", label: "经验包与技能工作室" },
+      { href: "/personal-skill-studio/final-drafts", label: "Skill 最终稿工作台" },
       { href: "/personal-intelligence", label: "法律与企业信息网关" },
       { href: "/personal-material-runtime", label: "材料解析与 OCR Runtime" },
       { href: "/personal-ai-gateway", label: "AI 网关与草稿 Runtime" }
@@ -82,7 +88,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
             <div>
               <div className="text-lg font-semibold tracking-wide">AIHome.law</div>
-              <div className="mt-1 text-xs text-slate-400">法律 AI 工作空间</div>
+              <div className="mt-1 text-xs text-slate-400">个人版生产验证</div>
             </div>
           </div>
         </div>
@@ -117,7 +123,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="absolute bottom-6 left-5 right-5 rounded-md border border-slate-800 bg-surface p-4">
           <div className="text-xs uppercase tracking-wide text-gold">内测版本</div>
           <div className="mt-2 text-xs leading-5 text-slate-400">
-            面向案件、报告与可复用技能的法律 AI 工作空间基础。
+            当前为模拟元数据展示与受控验证流程；团队版后置，外部交付后置。
           </div>
         </div>
       </aside>
@@ -125,7 +131,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <AppTopbar />
         <div className="border-b border-line bg-white px-5 py-4 md:hidden">
           <div className="text-base font-semibold text-ink">AIHome.law</div>
-          <div className="mt-1 text-xs text-muted">法律 AI 工作空间</div>
+          <div className="mt-1 text-xs text-muted">个人版生产验证</div>
           <nav className="mt-4 flex gap-2 overflow-x-auto text-sm text-muted">
             {navGroups.flatMap((group) =>
               group.items

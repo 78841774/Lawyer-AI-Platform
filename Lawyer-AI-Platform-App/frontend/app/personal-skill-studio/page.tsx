@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import {
   DarkSafetyBadge,
   DiagnosticsPanel,
+  SafeErrorNotice,
   TrustSafetyPanel
 } from "@/components/personal-production/ProductionShowcaseUI";
 import {
@@ -16,6 +17,8 @@ import {
   getPersonalSkillStudioPromotionQueue,
   getPersonalSkillStudioSafety,
   getPersonalSkillStudioStatus,
+  getPersonalSkillSampleRegistry,
+  getPersonalSkillTrainingStatus,
   listPersonalExperiencePackages,
   listPersonalSkillCandidates,
   listPersonalSkillEvaluations,
@@ -45,8 +48,10 @@ export default function PersonalSkillStudioPage() {
   async function loadStudio() {
     setError("");
     try {
-      const [status, runtimes, packages, candidates, testCases, evaluations, queue, traces, audit, safety] = await Promise.all([
+      const [status, trainingStatus, sampleRegistry, runtimes, packages, candidates, testCases, evaluations, queue, traces, audit, safety] = await Promise.all([
         getPersonalSkillStudioStatus(),
+        getPersonalSkillTrainingStatus(),
+        getPersonalSkillSampleRegistry(),
         listPersonalSkillStudioRuntimes(),
         listPersonalExperiencePackages(),
         listPersonalSkillCandidates(),
@@ -57,7 +62,7 @@ export default function PersonalSkillStudioPage() {
         getPersonalSkillStudioAudit(),
         getPersonalSkillStudioSafety()
       ]);
-      setData({ status, runtimes, packages, candidates, testCases, evaluations, queue, traces, audit, safety });
+      setData({ status, trainingStatus, sampleRegistry, runtimes, packages, candidates, testCases, evaluations, queue, traces, audit, safety });
       setExperiencePackageId((current) => current || packages.experience_packages?.[0]?.experience_package_id || "");
       setSkillCandidateId((current) => current || candidates.skill_candidates?.[0]?.skill_candidate_id || "");
       setTestCaseId((current) => current || testCases.test_cases?.[0]?.test_case_id || "");
@@ -143,11 +148,28 @@ export default function PersonalSkillStudioPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        {error ? <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div> : null}
-        <Hero title="经验包与技能工作室" subtitle="沉淀案件经验，生成技能候选草案，人工复核后再进入后续流程" badges={["经验包草案", "技能候选草案", "律师复核必需", "未自动发布"]} />
+        {error ? <SafeErrorNotice message={error} /> : null}
+        <Hero title="经验包与技能工作室" subtitle="受控 Skill Training Runtime：训练样本脱敏、人工确认、仅生成草稿元数据，不自动发布 Skill" badges={["训练样本脱敏", "仅元数据", "草稿状态", "律师复核必需", "未自动发布"]} />
+        <Panel title="v7.22 两个 Skill 最终稿与优化工作台">
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card title="案件事实提炼 Skill" lines={["final draft metadata", "owner-only download", "不自动训练未结案件"]} />
+            <Card title="案件法律分析 Skill" lines={["final draft metadata", "gate reference-only", "不自动发布 Skill"]} />
+            <a className="rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white" href="/personal-skill-studio/final-drafts">
+              打开 Skill 最终稿工作台
+            </a>
+          </div>
+        </Panel>
         <section className="grid gap-4 md:grid-cols-6">
           {["工作室状态", "经验包草案", "技能候选草案", "测试用例", "评估记录", "发布门禁"].map((label) => <StatusCard key={label} label={label} />)}
         </section>
+        <Panel title="Skill Training Runtime / 受控训练状态">
+          <div className="grid gap-3 md:grid-cols-4">
+            <Card title="Runtime" lines={[`status=${String(data.trainingStatus?.status ?? "draft_metadata_ready")}`, `metadata_only=${String(data.trainingStatus?.metadata_only ?? true)}`, `draft_only=${String(data.trainingStatus?.draft_only ?? true)}`]} />
+            <Card title="Training Samples" lines={[`desensitized=${String(data.trainingStatus?.training_samples_desensitized ?? true)}`, `manual_confirmation=${String(data.trainingStatus?.manual_confirmation_required ?? true)}`, `source_trace=${String(data.trainingStatus?.source_trace_required ?? true)}`]} />
+            <Card title="AI / Prompt Boundary" lines={[`live_call_executed=${String(data.trainingStatus?.live_call_executed ?? false)}`, `used_in_ai_prompt=${String(data.trainingStatus?.used_in_ai_prompt ?? false)}`, `provider_gated=${String(data.trainingStatus?.provider_gated ?? true)}`]} />
+            <Card title="Publish Boundary" lines={[`final_skill_published=${String(data.trainingStatus?.final_skill_published ?? false)}`, `auto_publish=${String(data.trainingStatus?.auto_publish_enabled ?? false)}`, `external_delivery=${String(data.trainingStatus?.external_delivery_triggered ?? false)}`]} />
+          </div>
+        </Panel>
         <Panel title="Runtime Cards / 工作室 Runtime">
           <div className="grid gap-3 md:grid-cols-5">
             {(data.runtimes?.runtimes ?? []).map((runtime: any) => <Card key={runtime.runtime_id} title={runtime.display_name} lines={[runtime.runtime_id, `live_enabled=${runtime.live_enabled}`, `auto_publish=${runtime.auto_publish_enabled}`]} />)}
@@ -193,11 +215,34 @@ export default function PersonalSkillStudioPage() {
             <Button label="提交发布门禁动作" onClick={() => void submitPromotion()} />
           </FormGrid>
         </Panel>
+        <section className="grid gap-6 xl:grid-cols-3">
+          <Panel title="Skill Candidate Cards / 技能候选草案">
+            <div className="grid gap-3">
+              {(data.candidates?.skill_candidates ?? []).slice(0, 4).map((candidate: any) => (
+                <Card key={candidate.skill_candidate_id} title={candidate.skill_title ?? candidate.skill_candidate_id} lines={[`draft_only=${candidate.draft_only}`, `final_skill_published=${candidate.final_skill_published}`, `lawyer_review=${candidate.lawyer_review_required}`]} />
+              ))}
+            </div>
+          </Panel>
+          <Panel title="Test Case Draft Panel / 测试用例草案">
+            <div className="grid gap-3">
+              {(data.testCases?.test_cases ?? []).slice(0, 4).map((testCase: any) => (
+                <Card key={testCase.test_case_id} title={testCase.test_case_title ?? testCase.test_case_id} lines={[`metadata_only=${testCase.metadata_only}`, `raw_content=${testCase.raw_content_included}`, `source_trace=${testCase.source_trace_required}`]} />
+              ))}
+            </div>
+          </Panel>
+          <Panel title="Evaluation Panel / 模拟评估">
+            <div className="grid gap-3">
+              {(data.evaluations?.evaluations ?? []).slice(0, 4).map((evaluation: any) => (
+                <Card key={evaluation.evaluation_id} title={evaluation.evaluation_id} lines={[`recommendation=${evaluation.recommendation}`, `draft_only=${evaluation.draft_only}`, `final_skill_published=${evaluation.final_skill_published}`]} />
+              ))}
+            </div>
+          </Panel>
+        </section>
         <Panel title="Source Trace / 来源追踪">
           <div className="grid gap-3 md:grid-cols-3">{(data.traces?.source_traces ?? []).slice(0, 6).map((trace: any) => <Card key={trace.source_trace_id} title={trace.source_trace_id} lines={[trace.source_type, trace.source_label, `raw_content_returned=${trace.raw_content_returned}`]} />)}</div>
         </Panel>
         <TrustSafetyPanel items={data.safety?.safety_checklist ?? []} title="安全清单" />
-        <Panel title="Developer Diagnostics">
+        <Panel title="开发诊断（默认折叠）">
           <DiagnosticsPanel data={data} />
         </Panel>
       </div>

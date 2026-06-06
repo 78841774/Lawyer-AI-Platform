@@ -7,16 +7,32 @@ from personal_skill_studio.evaluation_runtime import build_evaluation_list, crea
 from personal_skill_studio.experience_package_runtime import build_experience_package_list, create_mock_experience_package, get_experience_package
 from personal_skill_studio.provider_registry import get_runtime, list_runtimes
 from personal_skill_studio.promotion_gate import build_promotion_queue, submit_promotion_action
-from personal_skill_studio.safety_engine import build_safety_status
+from personal_skill_studio.safety_engine import build_final_drafts_safety_status, build_safety_status
 from personal_skill_studio.schemas import (
     EvaluationMockRequest,
     ExperiencePackageMockRequest,
     PersonalSkillStudioStatus,
     PromotionActionRequest,
     SkillCandidateMockRequest,
+    SkillFinalOwnerDownloadRequest,
     TestCaseMockRequest,
 )
+from personal_skill_studio.skill_baseline_discovery import build_baseline_discovery_metadata
 from personal_skill_studio.skill_candidate_runtime import build_skill_candidate_list, create_mock_skill_candidate, get_skill_candidate
+from personal_skill_studio.skill_final_audit_engine import build_skill_final_audit
+from personal_skill_studio.skill_final_download_engine import (
+    build_skill_final_owner_download_list,
+    create_skill_final_owner_download,
+    get_skill_final_owner_download,
+)
+from personal_skill_studio.skill_final_draft_engine import get_skill_final_draft, list_skill_final_drafts
+from personal_skill_studio.skill_final_gate_engine import build_skill_final_gate
+from personal_skill_studio.skill_final_quality_engine import build_skill_final_quality
+from personal_skill_studio.skill_final_source_trace_engine import build_skill_final_source_traces
+from personal_skill_studio.skill_lineage_engine import build_skill_lineage
+from personal_skill_studio.skill_optimization_engine import build_skill_optimization
+from personal_skill_studio.skill_sample_registry import build_skill_sample_registry
+from personal_skill_studio.skill_training_runtime import build_runtime as build_skill_training_runtime
 from personal_skill_studio.source_trace_engine import build_source_trace_list, get_source_trace
 from personal_skill_studio.test_case_runtime import build_test_case_list, create_mock_test_case, get_test_case
 
@@ -27,7 +43,8 @@ router = APIRouter(prefix="/personal-skill-studio", tags=["personal-skill-studio
 @router.get("/status")
 def status() -> dict[str, Any]:
     return PersonalSkillStudioStatus(
-        warnings=["v7.4 仅生成经验包草案、技能候选草案和模拟评估，不会自动发布 Skill。"],
+        version="v7.22",
+        warnings=["v7.22 增加两个 Skill 最终稿与优化工作台。仅生成 owner-only metadata，不会真实训练或自动发布 Skill。"],
     ).model_dump()
 
 
@@ -42,6 +59,16 @@ def runtime_detail(runtime_id: str) -> dict[str, Any]:
     if runtime is None:
         raise HTTPException(status_code=404, detail="runtime_id 不存在")
     return runtime.model_dump()
+
+
+@router.get("/skill-training/status")
+def skill_training_status() -> dict[str, Any]:
+    return build_skill_training_runtime()
+
+
+@router.get("/skill-training/sample-registry")
+def skill_training_sample_registry() -> dict[str, Any]:
+    return build_skill_sample_registry()
 
 
 @router.post("/experience-packages/mock")
@@ -124,6 +151,99 @@ def promotion_queue() -> dict[str, Any]:
 @router.post("/promotion-queue/{skill_candidate_id}/actions")
 def promotion_action(skill_candidate_id: str, request: PromotionActionRequest) -> dict[str, Any]:
     return submit_promotion_action(skill_candidate_id, request)
+
+
+@router.get("/final-drafts")
+def skill_final_drafts() -> dict[str, Any]:
+    return list_skill_final_drafts()
+
+
+@router.get("/final-drafts/{skill_id}")
+def skill_final_draft_detail(skill_id: str) -> dict[str, Any]:
+    draft = get_skill_final_draft(skill_id)
+    if draft is None:
+        raise HTTPException(status_code=404, detail="skill_id 不存在")
+    return draft.model_dump()
+
+
+@router.get("/final-drafts/{skill_id}/lineage")
+def skill_final_lineage(skill_id: str) -> dict[str, Any]:
+    lineage = build_skill_lineage(skill_id)
+    if lineage is None:
+        raise HTTPException(status_code=404, detail="skill_id 不存在")
+    return lineage.model_dump()
+
+
+@router.get("/final-drafts/{skill_id}/baseline")
+def skill_final_baseline(skill_id: str) -> dict[str, Any]:
+    draft = get_skill_final_draft(skill_id)
+    if draft is None:
+        raise HTTPException(status_code=404, detail="skill_id 不存在")
+    discovery = build_baseline_discovery_metadata()
+    return discovery.model_dump()
+
+
+@router.get("/final-drafts/{skill_id}/quality")
+def skill_final_quality(skill_id: str) -> dict[str, Any]:
+    quality = build_skill_final_quality(skill_id)
+    if quality is None:
+        raise HTTPException(status_code=404, detail="skill_id 不存在")
+    return quality.model_dump()
+
+
+@router.get("/final-drafts/{skill_id}/gate")
+def skill_final_gate(skill_id: str) -> dict[str, Any]:
+    gate = build_skill_final_gate(skill_id)
+    if gate is None:
+        raise HTTPException(status_code=404, detail="skill_id 不存在")
+    return gate.model_dump()
+
+
+@router.get("/final-drafts/{skill_id}/optimization")
+def skill_final_optimization(skill_id: str) -> dict[str, Any]:
+    optimization = build_skill_optimization(skill_id)
+    if optimization is None:
+        raise HTTPException(status_code=404, detail="skill_id 不存在")
+    return optimization.model_dump()
+
+
+@router.get("/final-drafts/{skill_id}/source-traces")
+def skill_final_source_traces(skill_id: str) -> dict[str, Any]:
+    traces = build_skill_final_source_traces(skill_id)
+    if traces is None:
+        raise HTTPException(status_code=404, detail="skill_id 不存在")
+    return traces.model_dump()
+
+
+@router.get("/final-drafts/{skill_id}/audit")
+def skill_final_audit(skill_id: str) -> dict[str, Any]:
+    timeline = build_skill_final_audit(skill_id)
+    if timeline is None:
+        raise HTTPException(status_code=404, detail="skill_id 不存在")
+    return timeline.model_dump()
+
+
+@router.post("/final-drafts/{skill_id}/owner-downloads/mock")
+def skill_final_owner_download_mock(skill_id: str, request: SkillFinalOwnerDownloadRequest) -> dict[str, Any]:
+    return create_skill_final_owner_download(skill_id, request)
+
+
+@router.get("/final-draft-downloads")
+def skill_final_downloads() -> dict[str, Any]:
+    return build_skill_final_owner_download_list()
+
+
+@router.get("/final-draft-downloads/{download_id}")
+def skill_final_download_detail(download_id: str) -> dict[str, Any]:
+    record = get_skill_final_owner_download(download_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="download_id 不存在")
+    return record.model_dump()
+
+
+@router.get("/final-drafts-safety")
+def skill_final_safety() -> dict[str, Any]:
+    return build_final_drafts_safety_status()
 
 
 @router.get("/source-traces")

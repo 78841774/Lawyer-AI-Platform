@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import {
   DarkSafetyBadge,
   DiagnosticsPanel,
+  SafeErrorNotice,
   TrustSafetyPanel
 } from "@/components/personal-production/ProductionShowcaseUI";
 import {
@@ -124,8 +125,8 @@ export default function PersonalCaseProductionPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        {error ? <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div> : null}
-        <Hero title="受控案件生产工作流" subtitle="把材料处理、AI 草稿、信息核验与律师复核串联为 metadata-only 受控生产流程" badges={["受控编排", "仅模拟结果", "律师复核必需", "不自动对外交付"]} />
+        {error ? <SafeErrorNotice message={error} /> : null}
+        <Hero title="受控案件生产工作流" subtitle="把材料处理、AI 草稿、信息核验与律师复核串联为仅元数据的受控生产流程" badges={["受控编排", "仅模拟结果", "律师复核必需", "不自动对外交付"]} />
         <section className="grid gap-4 md:grid-cols-6">{["工作流状态", "案件生产记录", "阶段运行", "准备度检查", "律师复核", "最终门禁"].map((label) => <StatusCard key={label} label={label} />)}</section>
         <Panel title="工作流阶段卡片">
           <div className="grid gap-3 md:grid-cols-4">{(data.stages?.workflow_stages ?? []).map((stage: any) => <Card key={stage.stage_id} title={stage.display_name} lines={[stage.stage_id, `final_gate=${stage.final_gate_required}`, `auto_delivery=${stage.auto_delivery_enabled}`]} />)}</div>
@@ -141,7 +142,7 @@ export default function PersonalCaseProductionPage() {
         <Panel title="律师复核门禁队列"><FormGrid><Select value={reviewAction} options={reviewActions} onChange={setReviewAction} /><Button label="提交复核门禁动作" onClick={() => void submitReview()} /></FormGrid></Panel>
         <Panel title="Source Trace / 来源追踪"><div className="grid gap-3 md:grid-cols-3">{(data.traces?.source_traces ?? []).slice(0, 6).map((trace: any) => <Card key={trace.source_trace_id} title={trace.source_trace_id} lines={[trace.source_type, trace.source_label, `raw_content_returned=${trace.raw_content_returned}`]} />)}</div></Panel>
         <TrustSafetyPanel items={data.safety?.safety_checklist ?? []} title="安全清单" />
-        <Panel title="Developer Diagnostics"><DiagnosticsPanel data={data} /></Panel>
+        <Panel title="开发诊断（默认折叠）"><DiagnosticsPanel data={data} /></Panel>
       </div>
     </AppShell>
   );

@@ -5,6 +5,8 @@ import { AppShell } from "@/components/AppShell";
 import {
   DarkSafetyBadge,
   DiagnosticsPanel,
+  LocalPilotPath,
+  SafeErrorNotice,
   ShowcaseStepper,
   TrustSafetyPanel
 } from "@/components/personal-production/ProductionShowcaseUI";
@@ -34,6 +36,14 @@ const workflowSteps = [
   "事实提炼",
   "法律检索与企业信息核验",
   "草稿分析",
+  "案件与材料工作台",
+  "事实预览与输入纠正",
+  "法律分析草稿",
+  "Skill 最终稿与优化",
+  "用户本人产出下载中心",
+  "受控案件分析",
+  "实战 Pilot 与本人下载",
+  "Pilot Dashboard 增强",
   "律师复核",
   "个人生产交付包",
   "个人生产试点与展示包"
@@ -45,7 +55,29 @@ const safetyMessages = [
   "来源可追踪",
   "受控运行",
   "最终锁定必需",
-  "不自动对外交付"
+  "不自动对外交付",
+  "团队版后置",
+  "外部交付后置"
+];
+
+const nextRoute = [
+  "v7.10 Personal Version Polish & Public Demo Readiness",
+  "v7.11 Personal Production Stability & Local Pilot Hardening",
+  "v7.12 AI Provider Live Gateway 后续受控接入",
+  "v7.13 OCR / Document Provider Live Gateway 后续受控接入",
+  "v7.14 Legal / Enterprise API Live Gateway 后续受控接入",
+  "v7.15 Skill Training 后续受控训练",
+  "v7.16 Controlled Case Analysis 受控案件分析",
+  "v7.17 Personal Production Pilot with Real AI Gated Mode",
+  "v7.18 Case Intake & Material Workspace Hardening",
+  "v7.19 Personal Production Pilot Dashboard Enhancement",
+  "v7.20 Fact Preview & Correction Workbench",
+  "v7.21 Legal Analysis Draft Workbench",
+  "v7.22 Skill Final Draft & Optimization Workbench",
+  "v7.23 Owner-only Output Center",
+  "Final Security Audit for Personal Live Intelligence & Controlled Case Analysis",
+  "Team Workspace deferred / 团队版后置",
+  "External Client Delivery deferred / 外部交付后置"
 ];
 
 export default function PersonalProductionPage() {
@@ -114,6 +146,14 @@ export default function PersonalProductionPage() {
       { label: "法律与企业信息网关", value: Boolean(readiness?.readiness.legal_intelligence_gateway_registered && readiness?.readiness.enterprise_intelligence_gateway_registered) },
       { label: "经验包与技能工作室", value: Boolean(readiness?.readiness.skill_studio_gateway_registered) },
       { label: "受控案件生产工作流", value: Boolean(readiness?.readiness.case_production_gateway_registered) },
+      { label: "受控案件分析 Runtime", value: Boolean(readiness?.readiness.controlled_case_analysis_gateway_registered ?? true) },
+      { label: "法律分析草稿工作台", value: Boolean(readiness?.readiness.legal_analysis_draft_workbench_gateway_registered ?? true) },
+      { label: "Skill 最终稿工作台", value: Boolean(readiness?.readiness.skill_final_draft_workbench_gateway_registered ?? true) },
+      { label: "用户本人产出下载中心", value: Boolean(readiness?.readiness.owner_output_center_ready ?? true) },
+      { label: "个人生产实战 Pilot", value: Boolean(readiness?.readiness.personal_production_pilot_gateway_registered ?? true) },
+      { label: "个人案件与材料工作台", value: Boolean(readiness?.readiness.personal_case_workspace_gateway_registered ?? true) },
+      { label: "Pilot Dashboard 增强", value: Boolean(readiness?.readiness.personal_production_pilot_dashboard_gateway_registered ?? true) },
+      { label: "事实预览与输入纠正", value: Boolean(readiness?.readiness.fact_preview_correction_workbench_gateway_registered ?? true) },
       {
         label: "个人生产交付包",
         value: Boolean(
@@ -141,22 +181,22 @@ export default function PersonalProductionPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        {error ? <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div> : null}
+        {error ? <SafeErrorNotice message={error} /> : null}
 
         <section className="overflow-hidden rounded-md border border-slate-800 bg-[#111827] text-white shadow-sm">
           <div className="grid gap-6 p-6 md:grid-cols-[1.4fr_0.8fr] md:p-8">
             <div>
               <div className="inline-flex items-center rounded-md border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100">
-                {status?.version ?? "v7.8"} · 个人生产总控台
+                {status?.version ?? "v7.22"} · 个人生产验证
               </div>
               <h1 className="mt-5 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-                {showcase?.headline ?? "AIHome.law 个人生产总控台"}
+                AIHome.law 个人生产总控台
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                {showcase?.subheadline ?? "面向个人生产验证的受控运行总览，集中展示 readiness、runtime、来源追踪和律师复核边界。"}
+                面向个人版生产验证和公开演示准备的受控运行总览，集中展示 readiness、runtime、来源追踪、律师复核和安全边界。当前仅为模拟元数据展示，不代表正式案件处理或外部交付。
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {(showcase?.trust_badges ?? ["仅模拟结果", "律师复核必需", "来源可追踪", "受控运行", "最终锁定必需"]).map((badge) => (
+                {["个人生产试点", ...(showcase?.trust_badges ?? ["仅模拟结果", "律师复核必需", "来源可追踪", "受控运行", "最终锁定必需"]), "团队版后置", "外部交付后置"].map((badge) => (
                   <DarkSafetyBadge key={badge} label={badge} />
                 ))}
               </div>
@@ -187,6 +227,8 @@ export default function PersonalProductionPage() {
           ))}
         </section>
 
+        <LocalPilotPath />
+
         <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <Panel title="Runtime 能力矩阵">
             <div className="grid gap-3 md:grid-cols-2">
@@ -205,6 +247,192 @@ export default function PersonalProductionPage() {
           </Panel>
         </section>
 
+        <section className="rounded-md border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.12 AI Provider Live Gateway</div>
+          <h2 className="mt-2 text-lg font-semibold">受控真实接口地基</h2>
+          <p className="mt-2 text-sm leading-6">
+            AI Provider Live Gateway：planned / gated / disabled by default。dry-run ready，live call requires confirmation，输出保持草稿状态，不生成最终法律意见、不自动对外交付。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="ai_live_gateway_status" value={providerCapabilities?.ai_live_gateway_status ?? "planned_gated_disabled_by_default"} />
+            <MetricTile label="live_provider_count" value={String(providerCapabilities?.live_provider_count ?? 0)} />
+            <MetricTile label="key_loaded_count" value={String(providerCapabilities?.key_loaded_count ?? 0)} />
+            <MetricTile label="dry_run_ready" value={String(providerCapabilities?.dry_run_ready ?? true)} />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-emerald-200 bg-emerald-50 p-5 text-emerald-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.13 OCR / Document Provider Live Gateway</div>
+          <h2 className="mt-2 text-lg font-semibold">OCR 与文档解析受控接入地基</h2>
+          <p className="mt-2 text-sm leading-6">
+            OCR / Document Provider Live Gateway：planned / gated / disabled by default。document dry-run 与 OCR dry-run 可用；原始内容默认阻断，AI prompt injection 默认阻断，不自动触发事实抽取、法律分析、最终报告或对外交付。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="ocr_document_live_gateway_status" value={providerCapabilities?.ocr_document_live_gateway_status ?? "planned_gated_disabled_by_default"} />
+            <MetricTile label="material_live_provider_count" value={String(providerCapabilities?.material_live_provider_count ?? 0)} />
+            <MetricTile label="material_key_loaded_count" value={String(providerCapabilities?.material_key_loaded_count ?? 0)} />
+            <MetricTile label="raw_content_blocked_by_default" value={String(providerCapabilities?.raw_content_blocked_by_default ?? true)} />
+            <MetricTile label="document_dry_run_ready" value={String(providerCapabilities?.document_dry_run_ready ?? true)} />
+            <MetricTile label="ocr_dry_run_ready" value={String(providerCapabilities?.ocr_dry_run_ready ?? true)} />
+            <MetricTile label="ai_prompt_injection_blocked" value={String(providerCapabilities?.ai_prompt_injection_blocked_by_default ?? true)} />
+            <MetricTile label="live_call_requires_confirmation" value={String(providerCapabilities?.live_call_requires_confirmation ?? true)} />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-violet-200 bg-violet-50 p-5 text-violet-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.14 Legal / Enterprise API Live Gateway</div>
+          <h2 className="mt-2 text-lg font-semibold">法律检索与企业信息 API 受控接入地基</h2>
+          <p className="mt-2 text-sm leading-6">
+            Legal / Enterprise API Live Gateway：planned / gated / disabled by default。legal dry-run 与 enterprise dry-run 可用；原始内容默认阻断，AI prompt injection 默认阻断，citation finalization 默认阻断。候选结果不是最终引用，不自动触发案件分析或最终报告。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="legal_enterprise_live_gateway_status" value={providerCapabilities?.legal_enterprise_live_gateway_status ?? "planned_gated_disabled_by_default"} />
+            <MetricTile label="intelligence_live_provider_count" value={String(providerCapabilities?.intelligence_live_provider_count ?? 0)} />
+            <MetricTile label="intelligence_key_loaded_count" value={String(providerCapabilities?.intelligence_key_loaded_count ?? 0)} />
+            <MetricTile label="citation_finalization_blocked" value={String(providerCapabilities?.citation_finalization_blocked_by_default ?? true)} />
+            <MetricTile label="legal_dry_run_ready" value={String(providerCapabilities?.legal_dry_run_ready ?? true)} />
+            <MetricTile label="enterprise_dry_run_ready" value={String(providerCapabilities?.enterprise_dry_run_ready ?? true)} />
+            <MetricTile label="raw_content_blocked_by_default" value={String(providerCapabilities?.raw_content_blocked_by_default ?? true)} />
+            <MetricTile label="ai_prompt_injection_blocked" value={String(providerCapabilities?.ai_prompt_injection_blocked_by_default ?? true)} />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.16 Controlled Case Analysis Runtime</div>
+          <h2 className="mt-2 text-lg font-semibold">未结案件实战分析 draft 地基</h2>
+          <p className="mt-2 text-sm leading-6">
+            Controlled Case Analysis Runtime：planned / gated / 草稿状态。实战阶段调用已有 Skill metadata，生成事实分析 draft 与法律分析 draft；训练阶段与实战阶段分离，不产生训练数据，不自动更新或发布 Skill，不生成最终法律意见。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="controlled_case_analysis_status" value={providerCapabilities?.controlled_case_analysis_runtime_status ?? "planned_gated_draft_only"} />
+            <MetricTile label="fact_skill_baseline_detected" value={String(providerCapabilities?.fact_skill_baseline_detected ?? false)} />
+            <MetricTile label="legal_skill_baseline_detected" value={String(providerCapabilities?.legal_analysis_skill_baseline_detected ?? false)} />
+            <MetricTile label="open_case_analysis_draft_ready" value={String(providerCapabilities?.open_case_analysis_draft_ready ?? true)} />
+            <MetricTile label="training_data_generation_disabled" value={String(providerCapabilities?.training_data_generation_disabled ?? true)} />
+            <MetricTile label="skill_auto_update_disabled" value={String(providerCapabilities?.skill_auto_update_disabled ?? true)} />
+            <MetricTile label="evaluation_reference_only" value={String(providerCapabilities?.evaluation_reference_only ?? true)} />
+            <MetricTile label="lawyer_review_required" value="true" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-sky-200 bg-sky-50 p-5 text-sky-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.17 Personal Production Pilot</div>
+          <h2 className="mt-2 text-lg font-semibold">实战 Pilot 与用户本人下载</h2>
+          <p className="mt-2 text-sm leading-6">
+            Personal Production Pilot：ready / gated / owner-download-only。串联 AI / OCR / Legal / Enterprise / Skill / Case Analysis / Delivery Packet；真实 provider 默认关闭，用户本人可下载草稿 metadata，系统不自动邮件、不创建公开链接、不对外交付、不自动定性最终法律意见或正式报告。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="pilot_status" value={providerCapabilities?.personal_production_pilot_status ?? "ready_gated_owner_download_only"} />
+            <MetricTile label="connected_stack" value={String(providerCapabilities?.pilot_ai_ocr_legal_enterprise_skill_case_analysis_connected ?? true)} />
+            <MetricTile label="owner_downloads_ready" value={String(providerCapabilities?.owner_only_downloads_ready ?? true)} />
+            <MetricTile label="external_delivery_disabled" value={String(providerCapabilities?.external_delivery_disabled ?? true)} />
+            <MetricTile label="public_link_disabled" value={String(providerCapabilities?.public_link_disabled ?? true)} />
+            <MetricTile label="email_sending_disabled" value={String(providerCapabilities?.email_sending_disabled ?? true)} />
+            <MetricTile label="final_opinion_auto_disabled" value={String(providerCapabilities?.final_legal_opinion_auto_generation_disabled ?? true)} />
+            <MetricTile label="open_case_training_disabled" value={String(providerCapabilities?.open_case_training_data_generation_disabled ?? true)} />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-teal-200 bg-teal-50 p-5 text-teal-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.18 Case Intake & Material Workspace Hardening</div>
+          <h2 className="mt-2 text-lg font-semibold">个人案件与材料工作台</h2>
+          <p className="mt-2 text-sm leading-6">
+            Case Workspace：用户本人 / 仅元数据。案件与材料列表、OCR 状态、事实输入纠正、来源追踪和审计统一展示；Owner 原文查看需要明确确认，但 API 不返回原始内容、不写训练集、不进入 AI prompt。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="case_workspace_status" value={providerCapabilities?.personal_case_workspace_status ?? "owner_only_metadata_ready"} />
+            <MetricTile label="owner_raw_view_gated" value={String(providerCapabilities?.case_workspace_owner_raw_view_gated ?? true)} />
+            <MetricTile label="source_trace_required" value="true" />
+            <MetricTile label="raw_content_returned" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-indigo-200 bg-indigo-50 p-5 text-indigo-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.19 Personal Production Pilot Dashboard Enhancement</div>
+          <h2 className="mt-2 text-lg font-semibold">Pilot Dashboard 评分、门控与优化建议</h2>
+          <p className="mt-2 text-sm leading-6">
+            Dashboard Enhancement：dashboard metadata ready。每份 Skill / Case Analysis 产出可展示质量评分、参考门控和优化建议；评分不构成法律结论，不阻断下一阶段，不生成最终法律意见或正式报告。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="pilot_dashboard_status" value={providerCapabilities?.personal_production_pilot_dashboard_status ?? "dashboard_metadata_ready"} />
+            <MetricTile label="quality_panels_ready" value={String(providerCapabilities?.pilot_dashboard_quality_panels_ready ?? true)} />
+            <MetricTile label="suggestions_ready" value={String(providerCapabilities?.pilot_dashboard_optimization_suggestions_ready ?? true)} />
+            <MetricTile label="external_delivery_disabled" value={String(providerCapabilities?.external_delivery_disabled ?? true)} />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-rose-200 bg-rose-50 p-5 text-rose-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.20 Fact Preview & Correction Workbench</div>
+          <h2 className="mt-2 text-lg font-semibold">事实预览与输入纠正工作台</h2>
+          <p className="mt-2 text-sm leading-6">
+            Fact Preview & Correction：用户本人 / 草稿状态 / reference gate。用户本人可查看事实预览、纠正事实、查看版本历史、标记法律分析输入和下载本人留存 metadata；不会自动触发法律分析，不写训练集，不更新或发布 Skill，不生成最终事实认定。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="fact_workbench_status" value={providerCapabilities?.fact_preview_correction_workbench_status ?? "fact_preview_correction_metadata_ready"} />
+            <MetricTile label="owner_correction_ready" value={String(providerCapabilities?.fact_preview_owner_correction_ready ?? true)} />
+            <MetricTile label="legal_analysis_input_ready" value={String(providerCapabilities?.fact_preview_legal_analysis_input_ready ?? true)} />
+            <MetricTile label="legal_analysis_auto_triggered" value={String(providerCapabilities?.fact_preview_legal_analysis_auto_triggered ?? false)} />
+            <MetricTile label="gate_reference_only" value={String(providerCapabilities?.fact_preview_gate_reference_only ?? true)} />
+            <MetricTile label="training_data_generated" value="false" />
+            <MetricTile label="skill_published" value="false" />
+            <MetricTile label="final_fact_finding" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-fuchsia-200 bg-fuchsia-50 p-5 text-fuchsia-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.21 Legal Analysis Draft Workbench</div>
+          <h2 className="mt-2 text-lg font-semibold">法律分析草稿工作台</h2>
+          <p className="mt-2 text-sm leading-6">
+            Legal Analysis Draft：基于 v7.20 事实输入 metadata 生成法律分析草稿，展示法律分析摘要、争议焦点、请求权基础、抗辩路径、风险提示和下一步清单。输出仅为 draft metadata，不生成最终法律意见、最终报告或外部交付。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="legal_draft_workbench_status" value={providerCapabilities?.legal_analysis_draft_workbench_status ?? "legal_analysis_draft_metadata_ready"} />
+            <MetricTile label="legal_analysis_draft_only" value={String(providerCapabilities?.legal_analysis_draft_only ?? true)} />
+            <MetricTile label="review_ready" value={String(providerCapabilities?.legal_analysis_draft_review_ready ?? true)} />
+            <MetricTile label="final_opinion_blocked" value={String(providerCapabilities?.legal_analysis_final_opinion_blocked ?? true)} />
+            <MetricTile label="final_report_blocked" value={String(providerCapabilities?.legal_analysis_final_report_blocked ?? true)} />
+            <MetricTile label="owner_download_metadata_ready" value={String(providerCapabilities?.legal_analysis_owner_download_metadata_ready ?? true)} />
+            <MetricTile label="training_data_generated" value="false" />
+            <MetricTile label="external_delivery_triggered" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-emerald-200 bg-emerald-50 p-5 text-emerald-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.22 Skill Final Draft & Optimization Workbench</div>
+          <h2 className="mt-2 text-lg font-semibold">两个 Skill 最终稿与优化工作台</h2>
+          <p className="mt-2 text-sm leading-6">
+            Skill Final Draft：汇总既有 Skill、evaluation、gate、test case 与 prompt template metadata，生成案件事实提炼 Skill 和案件法律分析 Skill 的 final draft metadata。仅用户本人下载，不自动发布 Skill，不自动训练未结案件。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="skill_final_draft_status" value={providerCapabilities?.skill_final_draft_workbench_status ?? "skill_final_draft_metadata_ready"} />
+            <MetricTile label="fact_skill_final_draft_ready" value={String(providerCapabilities?.fact_skill_final_draft_ready ?? true)} />
+            <MetricTile label="legal_skill_final_draft_ready" value={String(providerCapabilities?.legal_analysis_skill_final_draft_ready ?? true)} />
+            <MetricTile label="owner_download_ready" value={String(providerCapabilities?.skill_final_draft_owner_download_ready ?? true)} />
+            <MetricTile label="auto_publish_disabled" value={String(providerCapabilities?.skill_final_draft_auto_publish_disabled ?? true)} />
+            <MetricTile label="open_case_training_disabled" value={String(providerCapabilities?.skill_final_draft_open_case_training_disabled ?? true)} />
+            <MetricTile label="gate_reference_only" value={String(providerCapabilities?.skill_final_draft_gate_reference_only ?? true)} />
+            <MetricTile label="external_delivery_triggered" value="false" />
+          </div>
+        </section>
+
+        <section className="rounded-md border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.23 Owner-only Output Center</div>
+          <h2 className="mt-2 text-lg font-semibold">用户本人产出下载中心</h2>
+          <p className="mt-2 text-sm leading-6">
+            Owner-only Output Center：集中聚合 Skill 最终稿、事实产出、法律分析草稿、Pilot / Delivery 草稿。所有产出仅用户本人查看和下载，不创建公开链接、不发送邮件、不自动对外交付、不自动标记最终法律意见或正式律师报告。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="owner_output_center_status" value={providerCapabilities?.owner_output_center_status ?? "owner_output_center_metadata_ready"} />
+            <MetricTile label="skill_final_drafts_aggregated" value={String(providerCapabilities?.skill_final_drafts_aggregated ?? true)} />
+            <MetricTile label="fact_outputs_aggregated" value={String(providerCapabilities?.fact_outputs_aggregated ?? true)} />
+            <MetricTile label="legal_drafts_aggregated" value={String(providerCapabilities?.legal_drafts_aggregated ?? true)} />
+            <MetricTile label="pilot_delivery_outputs_aggregated" value={String(providerCapabilities?.pilot_delivery_outputs_aggregated ?? true)} />
+            <MetricTile label="owner_download_ready" value={String(providerCapabilities?.owner_output_center_download_ready ?? true)} />
+            <MetricTile label="public_link_disabled" value={String(providerCapabilities?.public_link_disabled ?? true)} />
+            <MetricTile label="external_delivery_disabled" value={String(providerCapabilities?.external_delivery_disabled ?? true)} />
+          </div>
+        </section>
+
         <section className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
           <Panel title="受控工作流 Stepper">
             <ShowcaseStepper
@@ -212,7 +440,7 @@ export default function PersonalProductionPage() {
               steps={workflowSteps.map((step) => ({
                 label: step,
                 detail: "受控运行 · 律师复核",
-                status: "mock metadata"
+                status: "模拟元数据"
               }))}
             />
           </Panel>
@@ -229,15 +457,15 @@ export default function PersonalProductionPage() {
             <div className="mt-4 grid gap-2 text-xs text-muted">
               <span>personal_production_mode: {mode?.personal_production_mode ?? "controlled_ready"}</span>
               <span>manual_final_lock_required: {String(mode?.manual_final_lock_required ?? true)}</span>
-              <span>next_action: {readiness?.next_action ?? "configure_ai_provider_gateway_in_v7_1"}</span>
+              <span>next_action: {readiness?.next_action ?? "v7.11_personal_production_stability_local_pilot_hardening"}</span>
             </div>
           </Panel>
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <Panel title="v7 Roadmap 总览">
+          <Panel title="个人版路线总览">
             <div className="grid gap-3">
-              {(consoleSummary?.next_steps ?? [
+              {[
                 "v7.1 AI Provider Gateway & Prompt Runtime",
                 "v7.2 Controlled Material Parsing & PaddleOCR Runtime",
                 "v7.3 Legal & Enterprise Intelligence Gateway",
@@ -245,11 +473,14 @@ export default function PersonalProductionPage() {
                 "v7.5 Real Case Production Workflow",
                 "v7.6 Personal Delivery Packet",
                 "v7.7 Personal Production Pilot & Showcase Pack",
-                "v7.8 UI Polish & Showcase Hardening"
-              ]).map((step) => (
+                "v7.8 UI Polish & Showcase Hardening",
+                "v7.9 Personal Production Demo Script & Screenshot Pack",
+                ...nextRoute
+              ].map((step) => (
                 <div key={step} className="rounded-md border border-line bg-white px-4 py-3 text-sm font-medium text-ink">
                   {step}
-                  {step.includes("v7.8") ? <span className="ml-2 text-xs text-emerald-700">当前阶段</span> : null}
+                  {step.includes("v7.22") ? <span className="ml-2 text-xs text-emerald-700">当前阶段</span> : null}
+                  {step.includes("后置") || step.includes("deferred") ? <span className="ml-2 text-xs text-amber-700">未进入</span> : null}
                 </div>
               ))}
             </div>
@@ -258,7 +489,7 @@ export default function PersonalProductionPage() {
           <TrustSafetyPanel items={safetyMessages} />
         </section>
 
-        <Panel title="Developer Diagnostics">
+        <Panel title="开发诊断（默认折叠）">
           <DiagnosticsPanel
             data={{
               status,
@@ -317,6 +548,15 @@ function ReadinessCard({ label, ready }: { label: string; ready: boolean }) {
   );
 }
 
+function MetricTile({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-cyan-200 bg-white px-3 py-2">
+      <div className="text-xs font-medium text-cyan-700">{label}</div>
+      <div className="mt-1 break-words text-sm font-semibold text-ink">{value}</div>
+    </div>
+  );
+}
+
 function RuntimeCard({ runtime }: { runtime: { label: string; category: string; status: string; live_enabled: boolean; controlled_available: boolean; production_ready: boolean; gateway_registered?: boolean; target_route?: string } }) {
   const gatewayRuntime = ["ai", "ocr", "material_parser", "legal_search", "enterprise_intelligence", "skill_studio", "case_production", "delivery_packet", "showcase_pack"].includes(runtime.category);
   return (
@@ -337,9 +577,11 @@ function RuntimeCard({ runtime }: { runtime: { label: string; category: string; 
         {runtime.category === "material_parser" ? <span>MinerU / Docling placeholder: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "legal_search" ? <span>快查 365 LawSkills placeholder: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "enterprise_intelligence" ? <span>天眼查 AI placeholder: {String(Boolean(runtime.gateway_registered))}</span> : null}
-        {runtime.category === "skill_studio" ? <span>Skill Studio draft-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "skill_studio" ? <span>Skill Studio 草稿状态: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "case_production" ? <span>Case Production controlled: {String(Boolean(runtime.gateway_registered))}</span> : null}
-        {runtime.category === "delivery_packet" ? <span>Delivery Packet metadata-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "case_analysis" ? <span>Case Analysis 草稿状态: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "production_pilot" ? <span>Owner download only: {String(Boolean(runtime.gateway_registered))}</span> : null}
+        {runtime.category === "delivery_packet" ? <span>Delivery Packet 仅元数据: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {runtime.category === "showcase_pack" ? <span>Showcase Pack synthetic-only: {String(Boolean(runtime.gateway_registered))}</span> : null}
         {gatewayRuntime ? <span>target_route: {runtime.target_route}</span> : null}
       </div>

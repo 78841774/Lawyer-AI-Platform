@@ -37,13 +37,20 @@ assert_skill_studio_safe() {
   assert_metadata_safe "${body}" "${label}"
   assert_absent "${body}" "${label}" '已自动发布'
   assert_absent "${body}" "${label}" '发布成功'
+  assert_absent "${body}" "${label}" 'API_KEY[[:space:]]*[:=]'
+  assert_absent "${body}" "${label}" 'SECRET|TOKEN|PASSWORD|BEGIN PRIVATE KEY|sk-[A-Za-z0-9_-]+'
+  assert_absent "${body}" "${label}" '/Users/'
+  assert_absent "${body}" "${label}" 'raw_sample_content'
   assert_absent "${body}" "${label}" '替代律师'
   assert_absent "${body}" "${label}" '保证准确'
   assert_field_false_if_present "${body}" "${label}" "raw_content_included"
   assert_field_false_if_present "${body}" "${label}" "raw_content_returned"
   assert_field_false_if_present "${body}" "${label}" "live_ai_call_executed"
+  assert_field_false_if_present "${body}" "${label}" "live_call_executed"
+  assert_field_false_if_present "${body}" "${label}" "used_in_ai_prompt"
   assert_field_false_if_present "${body}" "${label}" "auto_publish_enabled"
   assert_field_false_if_present "${body}" "${label}" "published_to_registry"
+  assert_field_false_if_present "${body}" "${label}" "final_skill_published"
   assert_field_false_if_present "${body}" "${label}" "final_legal_opinion_generated"
   assert_field_false_if_present "${body}" "${label}" "final_report_generated"
 }
@@ -52,6 +59,8 @@ section "Personal Skill Studio APIs"
 
 endpoints=(
   "/personal-skill-studio/status"
+  "/personal-skill-studio/skill-training/status"
+  "/personal-skill-studio/skill-training/sample-registry"
   "/personal-skill-studio/runtimes"
   "/personal-skill-studio/runtimes/experience_package_studio_runtime"
   "/personal-skill-studio/runtimes/skill_candidate_studio_runtime"
@@ -96,10 +105,15 @@ package_body="$(
 assert_skill_studio_safe "${package_body}" "experience-packages/mock"
 assert_field_false_required "${package_body}" "experience-packages/mock" "raw_content_included"
 assert_field_false_required "${package_body}" "experience-packages/mock" "auto_publish_enabled"
+assert_field_false_required "${package_body}" "experience-packages/mock" "live_call_executed"
+assert_field_false_required "${package_body}" "experience-packages/mock" "used_in_ai_prompt"
+assert_field_false_required "${package_body}" "experience-packages/mock" "final_skill_published"
 assert_field_false_required "${package_body}" "experience-packages/mock" "final_legal_opinion_generated"
 assert_field_false_required "${package_body}" "experience-packages/mock" "final_report_generated"
 require_true_field "${package_body}" "experience-packages/mock" "requires_lawyer_review"
 require_true_field "${package_body}" "experience-packages/mock" "source_trace_required"
+require_true_field "${package_body}" "experience-packages/mock" "metadata_only"
+require_true_field "${package_body}" "experience-packages/mock" "draft_only"
 
 experience_package_id="$(printf '%s' "${package_body}" | sed -n 's/.*"experience_package_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
 if [ -z "${experience_package_id}" ]; then
@@ -138,7 +152,12 @@ candidate_body="$(
 assert_skill_studio_safe "${candidate_body}" "skill-candidates/mock"
 assert_field_false_required "${candidate_body}" "skill-candidates/mock" "auto_publish_enabled"
 assert_field_false_required "${candidate_body}" "skill-candidates/mock" "published_to_registry"
+assert_field_false_required "${candidate_body}" "skill-candidates/mock" "final_skill_published"
+assert_field_false_required "${candidate_body}" "skill-candidates/mock" "used_in_ai_prompt"
 require_true_field "${candidate_body}" "skill-candidates/mock" "requires_lawyer_review"
+require_true_field "${candidate_body}" "skill-candidates/mock" "source_trace_required"
+require_true_field "${candidate_body}" "skill-candidates/mock" "metadata_only"
+require_true_field "${candidate_body}" "skill-candidates/mock" "draft_only"
 
 skill_candidate_id="$(printf '%s' "${candidate_body}" | sed -n 's/.*"skill_candidate_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
 if [ -z "${skill_candidate_id}" ]; then
@@ -171,6 +190,10 @@ test_case_body="$(
 )"
 assert_skill_studio_safe "${test_case_body}" "test-cases/mock"
 assert_field_false_required "${test_case_body}" "test-cases/mock" "raw_content_included"
+assert_field_false_required "${test_case_body}" "test-cases/mock" "final_skill_published"
+assert_field_false_required "${test_case_body}" "test-cases/mock" "used_in_ai_prompt"
+require_true_field "${test_case_body}" "test-cases/mock" "metadata_only"
+require_true_field "${test_case_body}" "test-cases/mock" "draft_only"
 
 test_case_id="$(printf '%s' "${test_case_body}" | sed -n 's/.*"test_case_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
 if [ -z "${test_case_id}" ]; then
@@ -197,8 +220,12 @@ evaluation_body="$(
 assert_skill_studio_safe "${evaluation_body}" "evaluations/mock"
 assert_field_false_required "${evaluation_body}" "evaluations/mock" "auto_publish_enabled"
 assert_field_false_required "${evaluation_body}" "evaluations/mock" "published_to_registry"
+assert_field_false_required "${evaluation_body}" "evaluations/mock" "final_skill_published"
+assert_field_false_required "${evaluation_body}" "evaluations/mock" "used_in_ai_prompt"
 require_true_field "${evaluation_body}" "evaluations/mock" "requires_manual_review"
 require_true_field "${evaluation_body}" "evaluations/mock" "requires_lawyer_review"
+require_true_field "${evaluation_body}" "evaluations/mock" "metadata_only"
+require_true_field "${evaluation_body}" "evaluations/mock" "draft_only"
 
 evaluation_id="$(printf '%s' "${evaluation_body}" | sed -n 's/.*"evaluation_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
 if [ -z "${evaluation_id}" ]; then
@@ -225,8 +252,12 @@ promotion_body="$(
 assert_skill_studio_safe "${promotion_body}" "promotion action"
 assert_field_false_required "${promotion_body}" "promotion action" "auto_publish_enabled"
 assert_field_false_required "${promotion_body}" "promotion action" "published_to_registry"
+assert_field_false_required "${promotion_body}" "promotion action" "final_skill_published"
+assert_field_false_required "${promotion_body}" "promotion action" "used_in_ai_prompt"
 assert_field_false_required "${promotion_body}" "promotion action" "final_legal_opinion_generated"
 assert_field_false_required "${promotion_body}" "promotion action" "final_report_generated"
+require_true_field "${promotion_body}" "promotion action" "metadata_only"
+require_true_field "${promotion_body}" "promotion action" "draft_only"
 
 expect_request_failure "promotion invalid action" "/personal-skill-studio/promotion-queue/${skill_candidate_id}/actions" '{
   "action":"invalid_action",

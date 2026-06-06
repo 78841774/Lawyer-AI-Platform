@@ -4,11 +4,18 @@ import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import {
   DiagnosticsPanel,
+  SafeErrorNotice,
   TrustSafetyPanel
 } from "@/components/personal-production/ProductionShowcaseUI";
 import {
   PersonalAIAuditTimeline,
   PersonalAIGatewayStatus,
+  PersonalAILiveAuditTimeline,
+  PersonalAILiveGatewayStatus,
+  PersonalAILiveProviderConfigList,
+  PersonalAILiveRunList,
+  PersonalAILiveRunRecord,
+  PersonalAILiveSafetyStatus,
   PersonalAIMockRunResult,
   PersonalAIProviderList,
   PersonalAIPromptRenderPreviewResult,
@@ -16,13 +23,20 @@ import {
   PersonalAIRunList,
   PersonalAISafetyStatus,
   PersonalAITokenUsageSummary,
+  createPersonalAILiveDryRun,
+  createPersonalAILiveRun,
   createPersonalAIMockRun,
   getPersonalAIAudit,
   getPersonalAIGatewayStatus,
+  getPersonalAILiveAudit,
+  getPersonalAILiveProviders,
+  getPersonalAILiveSafety,
+  getPersonalAILiveStatus,
   getPersonalAIProviders,
   getPersonalAIPromptTemplates,
   getPersonalAISafety,
   getPersonalAITokenUsageSummary,
+  listPersonalAILiveRuns,
   listPersonalAIRuns,
   renderPersonalAIPromptPreview
 } from "@/services/api";
@@ -38,10 +52,19 @@ export default function PersonalAIGatewayPage() {
   const [audit, setAudit] = useState<PersonalAIAuditTimeline | null>(null);
   const [tokenUsage, setTokenUsage] = useState<PersonalAITokenUsageSummary | null>(null);
   const [safety, setSafety] = useState<PersonalAISafetyStatus | null>(null);
+  const [liveStatus, setLiveStatus] = useState<PersonalAILiveGatewayStatus | null>(null);
+  const [liveProviders, setLiveProviders] = useState<PersonalAILiveProviderConfigList | null>(null);
+  const [liveRuns, setLiveRuns] = useState<PersonalAILiveRunList | null>(null);
+  const [liveAudit, setLiveAudit] = useState<PersonalAILiveAuditTimeline | null>(null);
+  const [liveSafety, setLiveSafety] = useState<PersonalAILiveSafetyStatus | null>(null);
   const [previewResult, setPreviewResult] = useState<PersonalAIPromptRenderPreviewResult | null>(null);
   const [mockRunResult, setMockRunResult] = useState<PersonalAIMockRunResult | null>(null);
+  const [liveRunResult, setLiveRunResult] = useState<PersonalAILiveRunRecord | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState("fact_summary_draft");
   const [selectedProvider, setSelectedProvider] = useState("openai_provider");
+  const [selectedLiveProvider, setSelectedLiveProvider] = useState("openai");
+  const [selectedLiveModel, setSelectedLiveModel] = useState("gpt-4.1-mini");
+  const [liveConfirmed, setLiveConfirmed] = useState(false);
   const [caseId, setCaseId] = useState(defaultCaseId);
   const [variablesText, setVariablesText] = useState(defaultVariables);
   const [previewConfirmed, setPreviewConfirmed] = useState(true);
@@ -53,7 +76,20 @@ export default function PersonalAIGatewayPage() {
     setLoading(true);
     setError("");
     try {
-      const [nextStatus, nextProviders, nextTemplates, nextRuns, nextAudit, nextTokenUsage, nextSafety] =
+      const [
+        nextStatus,
+        nextProviders,
+        nextTemplates,
+        nextRuns,
+        nextAudit,
+        nextTokenUsage,
+        nextSafety,
+        nextLiveStatus,
+        nextLiveProviders,
+        nextLiveRuns,
+        nextLiveAudit,
+        nextLiveSafety
+      ] =
         await Promise.all([
           getPersonalAIGatewayStatus(),
           getPersonalAIProviders(),
@@ -61,7 +97,12 @@ export default function PersonalAIGatewayPage() {
           listPersonalAIRuns(),
           getPersonalAIAudit(),
           getPersonalAITokenUsageSummary(),
-          getPersonalAISafety()
+          getPersonalAISafety(),
+          getPersonalAILiveStatus(),
+          getPersonalAILiveProviders(),
+          listPersonalAILiveRuns(),
+          getPersonalAILiveAudit(),
+          getPersonalAILiveSafety()
         ]);
       setStatus(nextStatus);
       setProviders(nextProviders);
@@ -70,8 +111,15 @@ export default function PersonalAIGatewayPage() {
       setAudit(nextAudit);
       setTokenUsage(nextTokenUsage);
       setSafety(nextSafety);
+      setLiveStatus(nextLiveStatus);
+      setLiveProviders(nextLiveProviders);
+      setLiveRuns(nextLiveRuns);
+      setLiveAudit(nextLiveAudit);
+      setLiveSafety(nextLiveSafety);
       setSelectedTemplate((current) => current || nextTemplates.templates[0]?.template_id || "fact_summary_draft");
       setSelectedProvider((current) => current || nextProviders.providers[0]?.provider_id || "openai_provider");
+      setSelectedLiveProvider((current) => current || nextLiveProviders.providers[0]?.provider_id || "openai");
+      setSelectedLiveModel((current) => current || nextLiveProviders.providers[0]?.model_options[0] || "gpt-4.1-mini");
     } catch {
       setError("AI Gateway API 暂不可用，请确认后端服务已启动。");
     } finally {
@@ -129,10 +177,56 @@ export default function PersonalAIGatewayPage() {
     }
   }
 
+  async function handleLiveDryRun() {
+    setError("");
+    setLiveRunResult(null);
+    try {
+      const result = await createPersonalAILiveDryRun(buildLivePayload(true));
+      setLiveRunResult(result);
+      await loadGateway();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "AI Live dry-run 未完成。");
+    }
+  }
+
+  async function handleLiveRun() {
+    setError("");
+    setLiveRunResult(null);
+    try {
+      const result = await createPersonalAILiveRun(buildLivePayload(false));
+      setLiveRunResult(result);
+      await loadGateway();
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "AI Live run 未完成。");
+    }
+  }
+
+  function buildLivePayload(dryRun: boolean) {
+    return {
+      provider_id: selectedLiveProvider,
+      model: selectedLiveModel,
+      prompt_template_id: selectedTemplate,
+      prompt_purpose: selectedTemplateRecord?.purpose ?? "fact_summary_draft",
+      case_id: caseId,
+      source_trace_ids: ["trace_ai_live_demo"],
+      dry_run: dryRun,
+      actor_id: "local_demo_lawyer",
+      explicit_live_confirmation: liveConfirmed,
+      lawyer_review_acknowledged: liveConfirmed,
+      draft_only_acknowledged: liveConfirmed,
+      no_final_opinion_acknowledged: liveConfirmed,
+      no_final_report_acknowledged: liveConfirmed,
+      no_external_delivery_acknowledged: liveConfirmed,
+      raw_content_included: false,
+      final_legal_opinion_requested: false,
+      final_report_requested: false
+    };
+  }
+
   return (
     <AppShell>
       <div className="space-y-6">
-        {error ? <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div> : null}
+        {error ? <SafeErrorNotice message={error} /> : null}
 
         <section className="overflow-hidden rounded-md border border-slate-800 bg-[#0f172a] text-white shadow-sm">
           <div className="grid gap-6 p-6 md:grid-cols-[1.35fr_0.75fr] md:p-8">
@@ -144,10 +238,10 @@ export default function PersonalAIGatewayPage() {
                 AIHome.law AI 网关与草稿 Runtime
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                受控 prompt runtime 仅用于草稿流程验证。真实 provider 调用保持关闭，provider secret 不展示，输出始终保持 draft-only。
+                受控 prompt runtime 仅用于草稿流程验证。真实 provider 调用保持关闭，provider 密钥值不展示，输出始终保持草稿状态。
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {["mock-first", "draft-only", "律师复核必需", "来源可追踪", "不生成最终法律意见"].map((badge) => (
+                {["仅模拟结果", "受控草稿", "律师复核必需", "来源可追踪", "不生成最终法律意见"].map((badge) => (
                   <SafetyBadge key={badge} label={badge} />
                 ))}
               </div>
@@ -217,6 +311,103 @@ export default function PersonalAIGatewayPage() {
           </Panel>
         </section>
 
+        <section className="rounded-md border border-slate-800 bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">v7.12 AI Live Gateway</div>
+              <h2 className="mt-2 text-lg font-semibold text-ink">AI Live Gateway 受控接入</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
+                真实 AI 接口默认关闭。API Key 仅后端读取，前端不可见。Live Call 需要显式确认，输出类型仅为 AI 草稿 metadata，不是最终法律意见。
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["live provider disabled", "API Key 前端不可见", "Live Call 需要显式确认", "AI 草稿，不是最终法律意见", "律师复核必需", "来源追踪必需"].map((item) => (
+                <span key={item} className="rounded-md border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-800">{item}</span>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-4">
+            <MetricCard label="live_mode_enabled" value={String(liveStatus?.live_mode_enabled ?? false)} />
+            <MetricCard label="provider_count" value={String(liveStatus?.provider_count ?? 0)} />
+            <MetricCard label="key_loaded_count" value={String(liveStatus?.key_loaded_count ?? 0)} />
+            <MetricCard label="live_call_executed" value={String(liveStatus?.live_call_executed ?? false)} />
+          </div>
+
+          <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_1fr]">
+            <div>
+              <h3 className="text-sm font-semibold text-ink">Provider Cards / 真实接口状态</h3>
+              <div className="mt-3 grid gap-3 md:grid-cols-3">
+                {(liveProviders?.providers ?? []).map((provider) => (
+                  <div key={provider.provider_id} className="rounded-md border border-line bg-slate-50 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-semibold text-ink">{provider.display_name}</div>
+                        <div className="mt-1 text-xs text-muted">{provider.provider_id}</div>
+                      </div>
+                      <StatusBadge tone={provider.live_enabled ? "safe" : "preview"} label={provider.live_enabled ? "gated" : "disabled"} />
+                    </div>
+                    <div className="mt-4 grid gap-2 text-xs text-muted">
+                      <span>key_required: {String(provider.key_required)}</span>
+                      <span>key_loaded: {String(provider.key_loaded)}</span>
+                      <span>key_source: {provider.key_source}</span>
+                      <span>api_key_exposed: {String(provider.api_key_exposed)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-ink">Dry-run / Gated Live Run</h3>
+              <div className="mt-3 grid gap-3">
+                <label className="grid gap-2 text-sm text-ink">
+                  <span className="font-medium">Live Provider</span>
+                  <select className="rounded-md border border-line bg-white px-3 py-2 text-sm" value={selectedLiveProvider} onChange={(event) => setSelectedLiveProvider(event.target.value)}>
+                    {(liveProviders?.providers ?? []).map((provider) => <option key={provider.provider_id} value={provider.provider_id}>{provider.display_name}</option>)}
+                  </select>
+                </label>
+                <label className="grid gap-2 text-sm text-ink">
+                  <span className="font-medium">Model</span>
+                  <input className="rounded-md border border-line bg-white px-3 py-2 text-sm" value={selectedLiveModel} onChange={(event) => setSelectedLiveModel(event.target.value)} />
+                </label>
+                <label className="flex items-start gap-3 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-sm text-cyan-900">
+                  <input className="mt-1" type="checkbox" checked={liveConfirmed} onChange={(event) => setLiveConfirmed(event.target.checked)} />
+                  <span>我确认：显式 live gate、律师复核必需、草稿状态、不生成最终法律意见、不生成最终报告、不自动对外交付。</span>
+                </label>
+                <div className="grid gap-2 md:grid-cols-2">
+                  <button type="button" onClick={() => void handleLiveDryRun()} className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white">执行 dry-run</button>
+                  <button type="button" onClick={() => void handleLiveRun()} className="rounded-md border border-line bg-white px-4 py-2 text-sm font-semibold text-ink">提交 gated live run</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {liveRunResult ? (
+            <ResultPanel title="AI Live Gateway Result">
+              <ResultFlags
+                flags={{
+                  status: liveRunResult.status,
+                  dry_run: liveRunResult.dry_run,
+                  would_call_provider: liveRunResult.would_call_provider,
+                  live_call_requested: liveRunResult.live_call_requested,
+                  live_call_executed: liveRunResult.live_call_executed,
+                  api_key_exposed: liveRunResult.api_key_exposed,
+                  raw_content_included: liveRunResult.raw_content_included,
+                  draft_only: liveRunResult.draft_only,
+                  final_legal_opinion_generated: liveRunResult.final_legal_opinion_generated,
+                  final_report_generated: liveRunResult.final_report_generated,
+                  external_delivery_triggered: liveRunResult.external_delivery_triggered
+                }}
+              />
+              {liveRunResult.blocked_reason ? <BlockedReasons reasons={[liveRunResult.blocked_reason]} /> : null}
+              <div className="rounded-md border border-line bg-white p-4 text-sm leading-6 text-ink">
+                {liveRunResult.draft_output_metadata?.ai_draft ?? "No draft metadata returned."}
+              </div>
+            </ResultPanel>
+          ) : null}
+        </section>
+
         <section className="grid gap-6 xl:grid-cols-2">
           <Panel title="Prompt Render Preview / 草稿预览">
             <GatewayForm
@@ -226,7 +417,7 @@ export default function PersonalAIGatewayPage() {
               selectedTemplate={selectedTemplate}
               caseId={caseId}
               variablesText={variablesText}
-              confirmationLabel="Mock data only · no raw content · manual review confirmed"
+              confirmationLabel="仅模拟数据 · 不含原始内容 · 已确认人工复核"
               confirmed={previewConfirmed}
               showProvider={false}
               onProviderChange={setSelectedProvider}
@@ -264,7 +455,7 @@ export default function PersonalAIGatewayPage() {
               selectedTemplate={selectedTemplate}
               caseId={caseId}
               variablesText={variablesText}
-              confirmationLabel="Manual approval · draft-only · lawyer review · no final report"
+              confirmationLabel="人工批准 · 草稿状态 · 律师复核 · 不生成最终报告"
               confirmed={mockRunConfirmed}
               showProvider
               onProviderChange={setSelectedProvider}
@@ -327,10 +518,29 @@ export default function PersonalAIGatewayPage() {
           </Panel>
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
-          <TrustSafetyPanel title="Safety Panel / 安全边界" />
+        <section className="grid gap-6 xl:grid-cols-2">
+          <Panel title="Live Audit Timeline / 受控调用审计">
+            <div className="grid gap-3">
+              {(liveAudit?.events ?? []).slice(0, 5).map((event) => (
+                <MetadataRow key={event.event_id} label={event.event_id} value={`${event.action} · live_call_executed=${String(event.live_call_executed)}`} />
+              ))}
+              {liveAudit?.events.length ? null : <EmptyState label="No live audit events yet" />}
+            </div>
+          </Panel>
+          <Panel title="Live Run Metadata / 草稿输出记录">
+            <div className="grid gap-3">
+              {(liveRuns?.runs ?? []).slice(0, 5).map((run) => (
+                <MetadataRow key={run.run_id} label={run.run_id} value={`${run.status} · ${run.provider_id} · draft_only=${String(run.draft_only)}`} />
+              ))}
+              {liveRuns?.runs.length ? null : <EmptyState label="No live gateway runs yet" />}
+            </div>
+          </Panel>
+        </section>
 
-          <Panel title="Developer Diagnostics">
+        <section className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
+          <TrustSafetyPanel title="信任与安全面板" />
+
+          <Panel title="开发诊断（默认折叠）">
             <DiagnosticsPanel
               data={{
                 status,
@@ -339,6 +549,12 @@ export default function PersonalAIGatewayPage() {
                 selected_template: selectedTemplateRecord,
                 preview_result: previewResult,
                 mock_run_result: mockRunResult,
+                live_status: liveStatus,
+                live_providers: liveProviders,
+                live_run_result: liveRunResult,
+                live_runs: liveRuns,
+                live_audit: liveAudit,
+                live_safety: liveSafety,
                 runs,
                 audit,
                 token_usage: tokenUsage,

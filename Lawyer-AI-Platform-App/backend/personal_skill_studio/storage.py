@@ -10,6 +10,11 @@ EVALUATIONS_DIR = RUNTIME_ROOT / "evaluations"
 PROMOTION_QUEUE_DIR = RUNTIME_ROOT / "promotion_queue"
 SOURCE_TRACES_DIR = RUNTIME_ROOT / "source_traces"
 AUDIT_DIR = RUNTIME_ROOT / "audit"
+SKILL_TRAINING_ROOT = RUNTIME_ROOT / "skill_training"
+SKILL_TRAINING_AUDIT_DIR = SKILL_TRAINING_ROOT / "audit"
+SKILL_TRAINING_SOURCE_TRACES_DIR = SKILL_TRAINING_ROOT / "source_traces"
+SKILL_TRAINING_CONFIRMATION_QUEUE_DIR = SKILL_TRAINING_ROOT / "confirmation_queue"
+SKILL_FINAL_DRAFT_DOWNLOADS_DIR = RUNTIME_ROOT / "skill_final_draft_downloads"
 
 
 def write_payload(directory: Path, record_id: str, payload: dict) -> None:

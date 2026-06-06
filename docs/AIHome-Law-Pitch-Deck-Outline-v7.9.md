@@ -40,7 +40,11 @@ v7.0-v7.8 已完成 Personal Production runtime foundation、AI Gateway、Materi
 
 可选路线：
 
-- v7.10 Public README & Landing Page Polish。
-- v8.0 Team Workspace Foundation Planning。
+- v7.10 Personal Version Polish & Public Demo Readiness。
+- v7.11 Personal Production Stability & Local Pilot Hardening。
+- AI Provider Live Gateway、OCR / Document Provider Live Gateway、Legal / Enterprise API Live Gateway、Skill Training、Controlled Case Analysis 后续受控推进。
+- v7.11-v7.17 作为连续大阶段推进，最后统一做完整安全审计。
+- Team Workspace 后置。
+- External Client Delivery 后置。
 
 下一阶段不应自动进入团队版开发，需等待用户确认。

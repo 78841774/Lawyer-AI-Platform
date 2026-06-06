@@ -163,6 +163,14 @@ import type {
   PersonalAlphaWorkspaceStatus,
   PersonalAIAuditTimeline,
   PersonalAIGatewayStatus,
+  PersonalAILiveAuditTimeline,
+  PersonalAILiveGatewayStatus,
+  PersonalAILiveProviderConfig,
+  PersonalAILiveProviderConfigList,
+  PersonalAILiveRunList,
+  PersonalAILiveRunRecord,
+  PersonalAILiveRunRequest,
+  PersonalAILiveSafetyStatus,
   PersonalAIMockRunRequest,
   PersonalAIMockRunResult,
   PersonalAIProvider,
@@ -176,6 +184,18 @@ import type {
   PersonalAISafetyStatus,
   PersonalAITokenUsageSummary,
   PersonalMaterialAuditTimeline,
+  PersonalMaterialLiveAuditTimeline,
+  PersonalMaterialLiveGatewayStatus,
+  PersonalMaterialLiveProviderConfig,
+  PersonalMaterialLiveProviderConfigList,
+  PersonalMaterialLiveReviewActionRequest,
+  PersonalMaterialLiveReviewActionResult,
+  PersonalMaterialLiveReviewQueue,
+  PersonalMaterialLiveRunList,
+  PersonalMaterialLiveRunRecord,
+  PersonalMaterialLiveRunRequest,
+  PersonalMaterialLiveSafetyStatus,
+  PersonalMaterialLiveSourceTraceList,
   PersonalMaterialParseJobList,
   PersonalMaterialParseJobRecord,
   PersonalMaterialParseJobRequest,
@@ -188,9 +208,81 @@ import type {
   PersonalEnterpriseQueryList,
   PersonalEnterpriseQueryMockRequest,
   PersonalEnterpriseQueryResult,
+  CaseAnalysisAuditTimeline,
+  CaseAnalysisEvaluation,
+  CaseAnalysisEvaluationList,
+  CaseAnalysisGate,
+  CaseAnalysisGateList,
+  CaseAnalysisReviewActionRequest,
+  CaseAnalysisReviewActionResult,
+  CaseAnalysisReviewQueue,
+  CaseAnalysisRuntime,
+  CaseAnalysisRuntimeList,
+  CaseAnalysisRunList,
+  CaseAnalysisRunMockRequest,
+  CaseAnalysisRunRecord,
+  CaseAnalysisSafetyStatus,
+  CaseAnalysisSourceTrace,
+  CaseAnalysisSourceTraceList,
+  FactAnalysisDraft,
+  FactAnalysisDraftList,
+  FactDraftMockRequest,
+  LegalAnalysisDraft,
+  LegalAnalysisDraftList,
+  LegalDraftMockRequest,
+  PersonalCaseAnalysisStatus,
+  SkillBaselineReport,
+  ExportBoundary,
+  OwnerDownloadList,
+  OwnerDownloadMockRequest,
+  OwnerDownloadRecord,
+  OwnerOutputAuditTimeline,
+  OwnerOutputDownloadList,
+  OwnerOutputDownloadRecord,
+  OwnerOutputDownloadRequest,
+  OwnerOutputGate,
+  OwnerOutputList,
+  OwnerOutputOptimization,
+  OwnerOutputQuality,
+  OwnerOutputRecord,
+  OwnerOutputSafetyStatus,
+  OwnerOutputSourceTraceList,
+  OwnerOutputStatus,
+  PilotAuditTimeline,
+  PilotOutputList,
+  PilotOutputMockRequest,
+  PilotOutputRecord,
+  PilotReadiness,
+  PilotReviewActionRequest,
+  PilotReviewActionResult,
+  PilotReviewQueue,
+  PilotRunList,
+  PilotRunMockRequest,
+  PilotRunRecord,
+  PilotRuntimeList,
+  PilotSafetyStatus,
+  PilotSourceTraceList,
+  PilotStatus,
+  PilotWorkflow,
+  ProviderGateSummary,
+  SkillFinalDraft,
+  SkillFinalDraftList,
   PersonalIntelligenceAuditTimeline,
   PersonalIntelligenceConfirmationActionRequest,
   PersonalIntelligenceConfirmationActionResult,
+  PersonalIntelligenceLiveAuditTimeline,
+  PersonalIntelligenceLiveGatewayStatus,
+  PersonalIntelligenceLiveProviderConfig,
+  PersonalIntelligenceLiveProviderConfigList,
+  PersonalIntelligenceLiveReviewActionRequest,
+  PersonalIntelligenceLiveReviewActionResult,
+  PersonalIntelligenceLiveReviewQueue,
+  PersonalIntelligenceLiveRunList,
+  PersonalIntelligenceLiveRunRecord,
+  PersonalIntelligenceLiveRunRequest,
+  PersonalIntelligenceLiveSafetyStatus,
+  PersonalIntelligenceLiveSourceTrace,
+  PersonalIntelligenceLiveSourceTraceList,
   PersonalIntelligenceProvider,
   PersonalIntelligenceProviderList,
   PersonalIntelligenceSafetyStatus,
@@ -248,7 +340,18 @@ import type {
   SkillCandidateMockRequest,
   SkillEvaluationDraft,
   SkillEvaluationDraftList,
+  SkillSampleRegistry,
+  SkillTrainingRuntimeStatus,
   SkillStudioAuditTimeline,
+  SkillStudioBaselineDiscovery,
+  SkillStudioFinalDraft,
+  SkillStudioFinalDraftList,
+  SkillStudioFinalGate,
+  SkillStudioFinalOptimization,
+  SkillStudioFinalOwnerDownload,
+  SkillStudioFinalOwnerDownloadList,
+  SkillStudioFinalOwnerDownloadRequest,
+  SkillStudioFinalQuality,
   SkillStudioSafetyStatus,
   SkillStudioSourceTrace,
   SkillStudioSourceTraceList,
@@ -329,6 +432,7 @@ import type {
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8001";
 const TOKEN_STORAGE_KEY = "lawyer_ai_access_token";
 const DEFAULT_LOCAL_DEV_TOKEN = "dev-local-token";
+const SAFE_API_ERROR_MESSAGE = "请求未完成。请确认本地后端 8001 已启动，并保持 mock-first、provider-gated、律师复核必需。";
 
 export type {
   AuthStatus,
@@ -494,6 +598,14 @@ export type {
   PersonalAlphaWorkspaceStatus,
   PersonalAIAuditTimeline,
   PersonalAIGatewayStatus,
+  PersonalAILiveAuditTimeline,
+  PersonalAILiveGatewayStatus,
+  PersonalAILiveProviderConfig,
+  PersonalAILiveProviderConfigList,
+  PersonalAILiveRunList,
+  PersonalAILiveRunRecord,
+  PersonalAILiveRunRequest,
+  PersonalAILiveSafetyStatus,
   PersonalAIMockRunRequest,
   PersonalAIMockRunResult,
   PersonalAIProvider,
@@ -507,6 +619,18 @@ export type {
   PersonalAISafetyStatus,
   PersonalAITokenUsageSummary,
   PersonalMaterialAuditTimeline,
+  PersonalMaterialLiveAuditTimeline,
+  PersonalMaterialLiveGatewayStatus,
+  PersonalMaterialLiveProviderConfig,
+  PersonalMaterialLiveProviderConfigList,
+  PersonalMaterialLiveReviewActionRequest,
+  PersonalMaterialLiveReviewActionResult,
+  PersonalMaterialLiveReviewQueue,
+  PersonalMaterialLiveRunList,
+  PersonalMaterialLiveRunRecord,
+  PersonalMaterialLiveRunRequest,
+  PersonalMaterialLiveSafetyStatus,
+  PersonalMaterialLiveSourceTraceList,
   PersonalMaterialParseJobList,
   PersonalMaterialParseJobRecord,
   PersonalMaterialParseJobRequest,
@@ -522,6 +646,19 @@ export type {
   PersonalIntelligenceAuditTimeline,
   PersonalIntelligenceConfirmationActionRequest,
   PersonalIntelligenceConfirmationActionResult,
+  PersonalIntelligenceLiveAuditTimeline,
+  PersonalIntelligenceLiveGatewayStatus,
+  PersonalIntelligenceLiveProviderConfig,
+  PersonalIntelligenceLiveProviderConfigList,
+  PersonalIntelligenceLiveReviewActionRequest,
+  PersonalIntelligenceLiveReviewActionResult,
+  PersonalIntelligenceLiveReviewQueue,
+  PersonalIntelligenceLiveRunList,
+  PersonalIntelligenceLiveRunRecord,
+  PersonalIntelligenceLiveRunRequest,
+  PersonalIntelligenceLiveSafetyStatus,
+  PersonalIntelligenceLiveSourceTrace,
+  PersonalIntelligenceLiveSourceTraceList,
   PersonalIntelligenceProvider,
   PersonalIntelligenceProviderList,
   PersonalIntelligenceSafetyStatus,
@@ -579,6 +716,8 @@ export type {
   SkillCandidateMockRequest,
   SkillEvaluationDraft,
   SkillEvaluationDraftList,
+  SkillSampleRegistry,
+  SkillTrainingRuntimeStatus,
   SkillStudioAuditTimeline,
   SkillStudioSafetyStatus,
   SkillStudioSourceTrace,
@@ -807,14 +946,14 @@ async function postForm<T>(path: string, formData: FormData): Promise<T> {
 
 async function buildErrorMessage(response: Response, path: string) {
   try {
-    const payload = await response.json();
-    if (typeof payload.detail === "string") {
-      return payload.detail;
-    }
+    await response.json();
   } catch {
-    // Fall through to the generic message.
+    // Do not surface backend stack traces, local paths, or provider details in the UI.
   }
-  return `API request failed: ${path}`;
+  if (response.status >= 400 && response.status < 500) {
+    return `${SAFE_API_ERROR_MESSAGE} 当前请求未通过受控校验（HTTP ${response.status}）。`;
+  }
+  return `${SAFE_API_ERROR_MESSAGE} 服务状态异常（HTTP ${response.status}，endpoint=${path}）。`;
 }
 
 function buildAuthHeaders(): Record<string, string> {
@@ -1476,7 +1615,20 @@ export const personalAIGatewayApi = {
     request<PersonalAIRunRecord>(`/personal-ai-gateway/runs/${encodeURIComponent(aiRunId)}`),
   getAudit: () => request<PersonalAIAuditTimeline>("/personal-ai-gateway/audit"),
   getTokenUsageSummary: () => request<PersonalAITokenUsageSummary>("/personal-ai-gateway/token-usage/summary"),
-  getSafety: () => request<PersonalAISafetyStatus>("/personal-ai-gateway/safety")
+  getSafety: () => request<PersonalAISafetyStatus>("/personal-ai-gateway/safety"),
+  getLiveStatus: () => request<PersonalAILiveGatewayStatus>("/personal-ai-gateway/live/status"),
+  getLiveProviders: () => request<PersonalAILiveProviderConfigList>("/personal-ai-gateway/live/providers"),
+  getLiveProvider: (providerId: string) =>
+    request<PersonalAILiveProviderConfig>(`/personal-ai-gateway/live/providers/${encodeURIComponent(providerId)}`),
+  createLiveDryRun: (payload: PersonalAILiveRunRequest) =>
+    postJson<PersonalAILiveRunRecord>("/personal-ai-gateway/live/dry-run", payload),
+  createLiveRun: (payload: PersonalAILiveRunRequest) =>
+    postJson<PersonalAILiveRunRecord>("/personal-ai-gateway/live/runs", payload),
+  listLiveRuns: () => request<PersonalAILiveRunList>("/personal-ai-gateway/live/runs"),
+  getLiveRun: (runId: string) =>
+    request<PersonalAILiveRunRecord>(`/personal-ai-gateway/live/runs/${encodeURIComponent(runId)}`),
+  getLiveAudit: () => request<PersonalAILiveAuditTimeline>("/personal-ai-gateway/live/audit"),
+  getLiveSafety: () => request<PersonalAILiveSafetyStatus>("/personal-ai-gateway/live/safety")
 };
 
 export const personalMaterialRuntimeApi = {
@@ -1504,7 +1656,34 @@ export const personalMaterialRuntimeApi = {
     ),
   getSourceTraces: () => request<PersonalMaterialSourceTraceList>("/personal-material-runtime/source-traces"),
   getAudit: () => request<PersonalMaterialAuditTimeline>("/personal-material-runtime/audit"),
-  getSafety: () => request<PersonalMaterialSafetyStatus>("/personal-material-runtime/safety")
+  getSafety: () => request<PersonalMaterialSafetyStatus>("/personal-material-runtime/safety"),
+  getLiveStatus: () => request<PersonalMaterialLiveGatewayStatus>("/personal-material-runtime/live/status"),
+  getLiveProviders: () => request<PersonalMaterialLiveProviderConfigList>("/personal-material-runtime/live/providers"),
+  getLiveProvider: (providerId: string) =>
+    request<PersonalMaterialLiveProviderConfig>(`/personal-material-runtime/live/providers/${encodeURIComponent(providerId)}`),
+  createDocumentLiveDryRun: (payload: PersonalMaterialLiveRunRequest) =>
+    postJson<PersonalMaterialLiveRunRecord>("/personal-material-runtime/live/document/dry-run", payload),
+  createDocumentLiveRun: (payload: PersonalMaterialLiveRunRequest) =>
+    postJson<PersonalMaterialLiveRunRecord>("/personal-material-runtime/live/document/runs", payload),
+  listDocumentLiveRuns: () => request<PersonalMaterialLiveRunList>("/personal-material-runtime/live/document/runs"),
+  getDocumentLiveRun: (runId: string) =>
+    request<PersonalMaterialLiveRunRecord>(`/personal-material-runtime/live/document/runs/${encodeURIComponent(runId)}`),
+  createOCRLiveDryRun: (payload: PersonalMaterialLiveRunRequest) =>
+    postJson<PersonalMaterialLiveRunRecord>("/personal-material-runtime/live/ocr/dry-run", payload),
+  createOCRLiveRun: (payload: PersonalMaterialLiveRunRequest) =>
+    postJson<PersonalMaterialLiveRunRecord>("/personal-material-runtime/live/ocr/runs", payload),
+  listOCRLiveRuns: () => request<PersonalMaterialLiveRunList>("/personal-material-runtime/live/ocr/runs"),
+  getOCRLiveRun: (runId: string) =>
+    request<PersonalMaterialLiveRunRecord>(`/personal-material-runtime/live/ocr/runs/${encodeURIComponent(runId)}`),
+  getLiveReviewQueue: () => request<PersonalMaterialLiveReviewQueue>("/personal-material-runtime/live/review-queue"),
+  submitLiveReviewAction: (reviewItemId: string, payload: PersonalMaterialLiveReviewActionRequest) =>
+    postJson<PersonalMaterialLiveReviewActionResult>(
+      `/personal-material-runtime/live/review-queue/${encodeURIComponent(reviewItemId)}/actions`,
+      payload
+    ),
+  getLiveSourceTraces: () => request<PersonalMaterialLiveSourceTraceList>("/personal-material-runtime/live/source-traces"),
+  getLiveAudit: () => request<PersonalMaterialLiveAuditTimeline>("/personal-material-runtime/live/audit"),
+  getLiveSafety: () => request<PersonalMaterialLiveSafetyStatus>("/personal-material-runtime/live/safety")
 };
 
 export const personalIntelligenceApi = {
@@ -1532,11 +1711,42 @@ export const personalIntelligenceApi = {
       payload
     ),
   getAudit: () => request<PersonalIntelligenceAuditTimeline>("/personal-intelligence/audit"),
-  getSafety: () => request<PersonalIntelligenceSafetyStatus>("/personal-intelligence/safety")
+  getSafety: () => request<PersonalIntelligenceSafetyStatus>("/personal-intelligence/safety"),
+  getLiveStatus: () => request<PersonalIntelligenceLiveGatewayStatus>("/personal-intelligence/live/status"),
+  getLiveProviders: () => request<PersonalIntelligenceLiveProviderConfigList>("/personal-intelligence/live/providers"),
+  getLiveProvider: (providerId: string) =>
+    request<PersonalIntelligenceLiveProviderConfig>(`/personal-intelligence/live/providers/${encodeURIComponent(providerId)}`),
+  createLegalLiveDryRun: (payload: PersonalIntelligenceLiveRunRequest) =>
+    postJson<PersonalIntelligenceLiveRunRecord>("/personal-intelligence/live/legal-search/dry-run", payload),
+  createLegalLiveRun: (payload: PersonalIntelligenceLiveRunRequest) =>
+    postJson<PersonalIntelligenceLiveRunRecord>("/personal-intelligence/live/legal-search/runs", payload),
+  listLegalLiveRuns: () => request<PersonalIntelligenceLiveRunList>("/personal-intelligence/live/legal-search/runs"),
+  getLegalLiveRun: (runId: string) =>
+    request<PersonalIntelligenceLiveRunRecord>(`/personal-intelligence/live/legal-search/runs/${encodeURIComponent(runId)}`),
+  createEnterpriseLiveDryRun: (payload: PersonalIntelligenceLiveRunRequest) =>
+    postJson<PersonalIntelligenceLiveRunRecord>("/personal-intelligence/live/enterprise-query/dry-run", payload),
+  createEnterpriseLiveRun: (payload: PersonalIntelligenceLiveRunRequest) =>
+    postJson<PersonalIntelligenceLiveRunRecord>("/personal-intelligence/live/enterprise-query/runs", payload),
+  listEnterpriseLiveRuns: () => request<PersonalIntelligenceLiveRunList>("/personal-intelligence/live/enterprise-query/runs"),
+  getEnterpriseLiveRun: (runId: string) =>
+    request<PersonalIntelligenceLiveRunRecord>(`/personal-intelligence/live/enterprise-query/runs/${encodeURIComponent(runId)}`),
+  getLiveReviewQueue: () => request<PersonalIntelligenceLiveReviewQueue>("/personal-intelligence/live/review-queue"),
+  submitLiveReviewAction: (reviewItemId: string, payload: PersonalIntelligenceLiveReviewActionRequest) =>
+    postJson<PersonalIntelligenceLiveReviewActionResult>(
+      `/personal-intelligence/live/review-queue/${encodeURIComponent(reviewItemId)}/actions`,
+      payload
+    ),
+  listLiveSourceTraces: () => request<PersonalIntelligenceLiveSourceTraceList>("/personal-intelligence/live/source-traces"),
+  getLiveSourceTrace: (sourceTraceId: string) =>
+    request<PersonalIntelligenceLiveSourceTrace>(`/personal-intelligence/live/source-traces/${encodeURIComponent(sourceTraceId)}`),
+  getLiveAudit: () => request<PersonalIntelligenceLiveAuditTimeline>("/personal-intelligence/live/audit"),
+  getLiveSafety: () => request<PersonalIntelligenceLiveSafetyStatus>("/personal-intelligence/live/safety")
 };
 
 export const personalSkillStudioApi = {
   getStatus: () => request<PersonalSkillStudioStatus>("/personal-skill-studio/status"),
+  getSkillTrainingStatus: () => request<SkillTrainingRuntimeStatus>("/personal-skill-studio/skill-training/status"),
+  getSkillSampleRegistry: () => request<SkillSampleRegistry>("/personal-skill-studio/skill-training/sample-registry"),
   listRuntimes: () => request<PersonalSkillStudioRuntimeList>("/personal-skill-studio/runtimes"),
   getRuntime: (runtimeId: string) =>
     request<PersonalSkillStudioRuntime>(`/personal-skill-studio/runtimes/${encodeURIComponent(runtimeId)}`),
@@ -1557,6 +1767,28 @@ export const personalSkillStudioApi = {
   getPromotionQueue: () => request<SkillCandidateDraftList>("/personal-skill-studio/promotion-queue"),
   submitPromotionAction: (skillCandidateId: string, payload: PromotionActionRequest) =>
     postJson<PromotionActionResult>(`/personal-skill-studio/promotion-queue/${encodeURIComponent(skillCandidateId)}/actions`, payload),
+  listFinalDrafts: () => request<SkillStudioFinalDraftList>("/personal-skill-studio/final-drafts"),
+  getFinalDraft: (skillId: string) => request<SkillStudioFinalDraft>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}`),
+  getFinalDraftLineage: (skillId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}/lineage`),
+  getFinalDraftBaseline: (skillId: string) =>
+    request<SkillStudioBaselineDiscovery>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}/baseline`),
+  getFinalDraftQuality: (skillId: string) =>
+    request<SkillStudioFinalQuality>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}/quality`),
+  getFinalDraftGate: (skillId: string) =>
+    request<SkillStudioFinalGate>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}/gate`),
+  getFinalDraftOptimization: (skillId: string) =>
+    request<SkillStudioFinalOptimization>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}/optimization`),
+  getFinalDraftSourceTraces: (skillId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}/source-traces`),
+  getFinalDraftAudit: (skillId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}/audit`),
+  createFinalDraftOwnerDownload: (skillId: string, payload: SkillStudioFinalOwnerDownloadRequest) =>
+    postJson<SkillStudioFinalOwnerDownload>(`/personal-skill-studio/final-drafts/${encodeURIComponent(skillId)}/owner-downloads/mock`, payload),
+  listFinalDraftOwnerDownloads: () => request<SkillStudioFinalOwnerDownloadList>("/personal-skill-studio/final-draft-downloads"),
+  getFinalDraftOwnerDownload: (downloadId: string) =>
+    request<SkillStudioFinalOwnerDownload>(`/personal-skill-studio/final-draft-downloads/${encodeURIComponent(downloadId)}`),
+  getFinalDraftSafety: () => request<SkillStudioSafetyStatus>("/personal-skill-studio/final-drafts-safety"),
   listSourceTraces: () => request<SkillStudioSourceTraceList>("/personal-skill-studio/source-traces"),
   getSourceTrace: (id: string) => request<SkillStudioSourceTrace>(`/personal-skill-studio/source-traces/${encodeURIComponent(id)}`),
   getAudit: () => request<SkillStudioAuditTimeline>("/personal-skill-studio/audit"),
@@ -1586,6 +1818,156 @@ export const personalCaseProductionApi = {
   getSourceTrace: (id: string) => request<CaseProductionSourceTrace>(`/personal-case-production/source-traces/${encodeURIComponent(id)}`),
   getAudit: () => request<CaseProductionAuditTimeline>("/personal-case-production/audit"),
   getSafety: () => request<CaseProductionSafetyStatus>("/personal-case-production/safety")
+};
+
+export const personalCaseAnalysisApi = {
+  getStatus: () => request<PersonalCaseAnalysisStatus>("/personal-case-analysis/status"),
+  listRuntimes: () => request<CaseAnalysisRuntimeList>("/personal-case-analysis/runtimes"),
+  getRuntime: (runtimeId: string) =>
+    request<CaseAnalysisRuntime>(`/personal-case-analysis/runtimes/${encodeURIComponent(runtimeId)}`),
+  getSkillBaselines: () => request<SkillBaselineReport>("/personal-case-analysis/skill-baselines"),
+  createRun: (payload: CaseAnalysisRunMockRequest) => postJson<CaseAnalysisRunRecord>("/personal-case-analysis/runs/mock", payload),
+  createControlledRun: (payload: CaseAnalysisRunMockRequest) => postJson<CaseAnalysisRunRecord>("/personal-case-analysis/runs", payload),
+  listRuns: () => request<CaseAnalysisRunList>("/personal-case-analysis/runs"),
+  getRun: (runId: string) => request<CaseAnalysisRunRecord>(`/personal-case-analysis/runs/${encodeURIComponent(runId)}`),
+  createFactDraft: (payload: FactDraftMockRequest) => postJson<FactAnalysisDraft>("/personal-case-analysis/fact-drafts/mock", payload),
+  listFactDrafts: () => request<FactAnalysisDraftList>("/personal-case-analysis/fact-drafts"),
+  getFactDraft: (draftId: string) =>
+    request<FactAnalysisDraft>(`/personal-case-analysis/fact-drafts/${encodeURIComponent(draftId)}`),
+  createLegalDraft: (payload: LegalDraftMockRequest) => postJson<LegalAnalysisDraft>("/personal-case-analysis/legal-drafts/mock", payload),
+  listLegalDrafts: () => request<LegalAnalysisDraftList>("/personal-case-analysis/legal-drafts"),
+  getLegalDraft: (draftId: string) =>
+    request<LegalAnalysisDraft>(`/personal-case-analysis/legal-drafts/${encodeURIComponent(draftId)}`),
+  listLegalDraftVersions: (draftId: string) =>
+    request<Record<string, unknown>>(`/personal-case-analysis/legal-drafts/${encodeURIComponent(draftId)}/versions`),
+  createLegalDraftVersion: (draftId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-case-analysis/legal-drafts/${encodeURIComponent(draftId)}/versions/mock`, payload),
+  getLegalDraftQuality: (draftId: string) =>
+    request<Record<string, unknown>>(`/personal-case-analysis/legal-drafts/${encodeURIComponent(draftId)}/quality`),
+  getLegalDraftGate: (draftId: string) =>
+    request<Record<string, unknown>>(`/personal-case-analysis/legal-drafts/${encodeURIComponent(draftId)}/gate`),
+  confirmLegalDraftForReview: (draftId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-case-analysis/legal-drafts/${encodeURIComponent(draftId)}/confirm-for-review/mock`, payload),
+  getReviewQueue: () => request<CaseAnalysisReviewQueue>("/personal-case-analysis/review-queue"),
+  submitReviewAction: (reviewItemId: string, payload: CaseAnalysisReviewActionRequest) =>
+    postJson<CaseAnalysisReviewActionResult>(
+      `/personal-case-analysis/review-queue/${encodeURIComponent(reviewItemId)}/actions`,
+      payload,
+    ),
+  listEvaluations: () => request<CaseAnalysisEvaluationList>("/personal-case-analysis/evaluations"),
+  getEvaluation: (evaluationId: string) =>
+    request<CaseAnalysisEvaluation>(`/personal-case-analysis/evaluations/${encodeURIComponent(evaluationId)}`),
+  listGates: () => request<CaseAnalysisGateList>("/personal-case-analysis/gates"),
+  getGate: (gateId: string) => request<CaseAnalysisGate>(`/personal-case-analysis/gates/${encodeURIComponent(gateId)}`),
+  listSourceTraces: () => request<CaseAnalysisSourceTraceList>("/personal-case-analysis/source-traces"),
+  getSourceTrace: (sourceTraceId: string) =>
+    request<CaseAnalysisSourceTrace>(`/personal-case-analysis/source-traces/${encodeURIComponent(sourceTraceId)}`),
+  getAudit: () => request<CaseAnalysisAuditTimeline>("/personal-case-analysis/audit"),
+  getSafety: () => request<CaseAnalysisSafetyStatus>("/personal-case-analysis/safety")
+};
+
+export const personalCaseWorkspaceApi = {
+  getStatus: () => request<Record<string, unknown>>("/personal-case-workspace/status"),
+  listCases: () => request<Record<string, unknown>>("/personal-case-workspace/cases"),
+  getCase: (caseId: string) => request<Record<string, unknown>>(`/personal-case-workspace/cases/${encodeURIComponent(caseId)}`),
+  listMaterials: (caseId: string) => request<Record<string, unknown>>(`/personal-case-workspace/cases/${encodeURIComponent(caseId)}/materials`),
+  getMaterial: (materialId: string) => request<Record<string, unknown>>(`/personal-case-workspace/materials/${encodeURIComponent(materialId)}`),
+  createOwnerRawView: (materialId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-case-workspace/materials/${encodeURIComponent(materialId)}/owner-raw-view`, payload),
+  getOCRStatus: (materialId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/materials/${encodeURIComponent(materialId)}/ocr-status`),
+  getMaterialSourceTraces: (materialId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/materials/${encodeURIComponent(materialId)}/source-traces`),
+  getFactInput: (materialId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/materials/${encodeURIComponent(materialId)}/fact-input`),
+  createFactCorrection: (materialId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-case-workspace/materials/${encodeURIComponent(materialId)}/fact-input/corrections/mock`, payload),
+  listSourceTraces: () => request<Record<string, unknown>>("/personal-case-workspace/source-traces"),
+  getAudit: () => request<Record<string, unknown>>("/personal-case-workspace/audit"),
+  getSafety: () => request<Record<string, unknown>>("/personal-case-workspace/safety"),
+  listFactPreviews: () => request<Record<string, unknown>>("/personal-case-workspace/fact-previews"),
+  createFactPreview: (payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>("/personal-case-workspace/fact-previews/mock", payload),
+  getFactPreview: (factPreviewId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}`),
+  createFactPreviewCorrection: (factPreviewId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}/corrections/mock`, payload),
+  listFactPreviewCorrections: (factPreviewId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}/corrections`),
+  getFactCorrection: (correctionId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/fact-corrections/${encodeURIComponent(correctionId)}`),
+  listFactPreviewVersions: (factPreviewId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}/versions`),
+  createFactPreviewVersion: (factPreviewId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}/versions/mock`, payload),
+  getFactPreviewQuality: (factPreviewId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}/quality`),
+  getFactPreviewGate: (factPreviewId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}/gate`),
+  getFactPreviewSourceTraces: (factPreviewId: string) =>
+    request<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}/source-traces`),
+  confirmFactPreviewForLegalAnalysis: (factPreviewId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-case-workspace/fact-previews/${encodeURIComponent(factPreviewId)}/confirm-for-legal-analysis/mock`, payload),
+  getFactInputReadiness: () => request<Record<string, unknown>>("/personal-case-workspace/fact-input-readiness"),
+  getFactAudit: () => request<Record<string, unknown>>("/personal-case-workspace/fact-audit"),
+  getFactSafety: () => request<Record<string, unknown>>("/personal-case-workspace/fact-safety")
+};
+
+export const personalProductionPilotApi = {
+  getStatus: () => request<PilotStatus>("/personal-production-pilot/status"),
+  getReadiness: () => request<PilotReadiness>("/personal-production-pilot/readiness"),
+  getWorkflow: () => request<PilotWorkflow>("/personal-production-pilot/workflow"),
+  listRuntimes: () => request<PilotRuntimeList>("/personal-production-pilot/runtimes"),
+  getProviderGates: () => request<ProviderGateSummary>("/personal-production-pilot/provider-gates"),
+  getSafety: () => request<PilotSafetyStatus>("/personal-production-pilot/safety"),
+  createRun: (payload: PilotRunMockRequest) => postJson<PilotRunRecord>("/personal-production-pilot/runs/mock", payload),
+  createControlledRun: (payload: PilotRunMockRequest) => postJson<PilotRunRecord>("/personal-production-pilot/runs", payload),
+  listRuns: () => request<PilotRunList>("/personal-production-pilot/runs"),
+  getRun: (runId: string) => request<PilotRunRecord>(`/personal-production-pilot/runs/${encodeURIComponent(runId)}`),
+  getCaseAnalysisSummary: () => request<Record<string, unknown>>("/personal-production-pilot/case-analysis-summary"),
+  listSkillFinalDrafts: () => request<SkillFinalDraftList>("/personal-production-pilot/skill-final-drafts"),
+  getSkillFinalDraft: (draftId: string) =>
+    request<SkillFinalDraft>(`/personal-production-pilot/skill-final-drafts/${encodeURIComponent(draftId)}`),
+  createOutput: (payload: PilotOutputMockRequest) => postJson<PilotOutputRecord>("/personal-production-pilot/outputs/mock", payload),
+  listOutputs: () => request<PilotOutputList>("/personal-production-pilot/outputs"),
+  getOutput: (outputId: string) => request<PilotOutputRecord>(`/personal-production-pilot/outputs/${encodeURIComponent(outputId)}`),
+  createOwnerDownload: (outputId: string, payload: OwnerDownloadMockRequest) =>
+    postJson<OwnerDownloadRecord>(`/personal-production-pilot/outputs/${encodeURIComponent(outputId)}/owner-downloads/mock`, payload),
+  listOwnerDownloads: () => request<OwnerDownloadList>("/personal-production-pilot/owner-downloads"),
+  getOwnerDownload: (downloadId: string) =>
+    request<OwnerDownloadRecord>(`/personal-production-pilot/owner-downloads/${encodeURIComponent(downloadId)}`),
+  getReviewQueue: () => request<PilotReviewQueue>("/personal-production-pilot/review-queue"),
+  submitReviewAction: (reviewItemId: string, payload: PilotReviewActionRequest) =>
+    postJson<PilotReviewActionResult>(`/personal-production-pilot/review-queue/${encodeURIComponent(reviewItemId)}/actions`, payload),
+  listSourceTraces: () => request<PilotSourceTraceList>("/personal-production-pilot/source-traces"),
+  getAudit: () => request<PilotAuditTimeline>("/personal-production-pilot/audit"),
+  getExportBoundary: () => request<ExportBoundary>("/personal-production-pilot/export-boundary"),
+  getDashboardStatus: () => request<Record<string, unknown>>("/personal-production-pilot/dashboard/status"),
+  getDashboardMetrics: () => request<Record<string, unknown>>("/personal-production-pilot/dashboard/metrics"),
+  getDashboardQuality: () => request<Record<string, unknown>>("/personal-production-pilot/dashboard/quality"),
+  getDashboardSafety: () => request<Record<string, unknown>>("/personal-production-pilot/dashboard/safety")
+};
+
+export const personalOwnerOutputCenterApi = {
+  getStatus: () => request<OwnerOutputStatus>("/personal-owner-output-center/status"),
+  listOutputs: () => request<OwnerOutputList>("/personal-owner-output-center/outputs"),
+  getOutput: (outputId: string) =>
+    request<OwnerOutputRecord>(`/personal-owner-output-center/outputs/${encodeURIComponent(outputId)}`),
+  getOutputQuality: (outputId: string) =>
+    request<OwnerOutputQuality>(`/personal-owner-output-center/outputs/${encodeURIComponent(outputId)}/quality`),
+  getOutputGate: (outputId: string) =>
+    request<OwnerOutputGate>(`/personal-owner-output-center/outputs/${encodeURIComponent(outputId)}/gate`),
+  getOutputOptimization: (outputId: string) =>
+    request<OwnerOutputOptimization>(`/personal-owner-output-center/outputs/${encodeURIComponent(outputId)}/optimization`),
+  getOutputSourceTraces: (outputId: string) =>
+    request<OwnerOutputSourceTraceList>(`/personal-owner-output-center/outputs/${encodeURIComponent(outputId)}/source-traces`),
+  createDownload: (outputId: string, payload: OwnerOutputDownloadRequest) =>
+    postJson<OwnerOutputDownloadRecord>(`/personal-owner-output-center/outputs/${encodeURIComponent(outputId)}/downloads/mock`, payload),
+  listDownloads: () => request<OwnerOutputDownloadList>("/personal-owner-output-center/downloads"),
+  getDownload: (downloadId: string) =>
+    request<OwnerOutputDownloadRecord>(`/personal-owner-output-center/downloads/${encodeURIComponent(downloadId)}`),
+  getAudit: () => request<OwnerOutputAuditTimeline>("/personal-owner-output-center/audit"),
+  getSafety: () => request<OwnerOutputSafetyStatus>("/personal-owner-output-center/safety")
 };
 
 export const personalDeliveryPacketApi = {
@@ -1779,6 +2161,15 @@ export const getPersonalAIRun = personalAIGatewayApi.getRun;
 export const getPersonalAIAudit = personalAIGatewayApi.getAudit;
 export const getPersonalAITokenUsageSummary = personalAIGatewayApi.getTokenUsageSummary;
 export const getPersonalAISafety = personalAIGatewayApi.getSafety;
+export const getPersonalAILiveStatus = personalAIGatewayApi.getLiveStatus;
+export const getPersonalAILiveProviders = personalAIGatewayApi.getLiveProviders;
+export const getPersonalAILiveProvider = personalAIGatewayApi.getLiveProvider;
+export const createPersonalAILiveDryRun = personalAIGatewayApi.createLiveDryRun;
+export const createPersonalAILiveRun = personalAIGatewayApi.createLiveRun;
+export const listPersonalAILiveRuns = personalAIGatewayApi.listLiveRuns;
+export const getPersonalAILiveRun = personalAIGatewayApi.getLiveRun;
+export const getPersonalAILiveAudit = personalAIGatewayApi.getLiveAudit;
+export const getPersonalAILiveSafety = personalAIGatewayApi.getLiveSafety;
 export const getPersonalMaterialRuntimeStatus = personalMaterialRuntimeApi.getStatus;
 export const getPersonalMaterialRuntimeProviders = personalMaterialRuntimeApi.getProviders;
 export const getPersonalMaterialRuntimeProvider = personalMaterialRuntimeApi.getProvider;
@@ -1794,6 +2185,22 @@ export const submitPersonalOCRReviewAction = personalMaterialRuntimeApi.submitOC
 export const getPersonalMaterialSourceTraces = personalMaterialRuntimeApi.getSourceTraces;
 export const getPersonalMaterialAudit = personalMaterialRuntimeApi.getAudit;
 export const getPersonalMaterialSafety = personalMaterialRuntimeApi.getSafety;
+export const getPersonalMaterialLiveStatus = personalMaterialRuntimeApi.getLiveStatus;
+export const getPersonalMaterialLiveProviders = personalMaterialRuntimeApi.getLiveProviders;
+export const getPersonalMaterialLiveProvider = personalMaterialRuntimeApi.getLiveProvider;
+export const createPersonalMaterialDocumentLiveDryRun = personalMaterialRuntimeApi.createDocumentLiveDryRun;
+export const createPersonalMaterialDocumentLiveRun = personalMaterialRuntimeApi.createDocumentLiveRun;
+export const listPersonalMaterialDocumentLiveRuns = personalMaterialRuntimeApi.listDocumentLiveRuns;
+export const getPersonalMaterialDocumentLiveRun = personalMaterialRuntimeApi.getDocumentLiveRun;
+export const createPersonalMaterialOCRLiveDryRun = personalMaterialRuntimeApi.createOCRLiveDryRun;
+export const createPersonalMaterialOCRLiveRun = personalMaterialRuntimeApi.createOCRLiveRun;
+export const listPersonalMaterialOCRLiveRuns = personalMaterialRuntimeApi.listOCRLiveRuns;
+export const getPersonalMaterialOCRLiveRun = personalMaterialRuntimeApi.getOCRLiveRun;
+export const getPersonalMaterialLiveReviewQueue = personalMaterialRuntimeApi.getLiveReviewQueue;
+export const submitPersonalMaterialLiveReviewAction = personalMaterialRuntimeApi.submitLiveReviewAction;
+export const getPersonalMaterialLiveSourceTraces = personalMaterialRuntimeApi.getLiveSourceTraces;
+export const getPersonalMaterialLiveAudit = personalMaterialRuntimeApi.getLiveAudit;
+export const getPersonalMaterialLiveSafety = personalMaterialRuntimeApi.getLiveSafety;
 export const getPersonalIntelligenceStatus = personalIntelligenceApi.getStatus;
 export const getPersonalIntelligenceProviders = personalIntelligenceApi.getProviders;
 export const getPersonalIntelligenceProvider = personalIntelligenceApi.getProvider;
@@ -1809,7 +2216,26 @@ export const getPersonalIntelligenceConfirmationQueue = personalIntelligenceApi.
 export const submitPersonalIntelligenceConfirmationAction = personalIntelligenceApi.submitConfirmationAction;
 export const getPersonalIntelligenceAudit = personalIntelligenceApi.getAudit;
 export const getPersonalIntelligenceSafety = personalIntelligenceApi.getSafety;
+export const getPersonalIntelligenceLiveStatus = personalIntelligenceApi.getLiveStatus;
+export const getPersonalIntelligenceLiveProviders = personalIntelligenceApi.getLiveProviders;
+export const getPersonalIntelligenceLiveProvider = personalIntelligenceApi.getLiveProvider;
+export const createPersonalIntelligenceLegalLiveDryRun = personalIntelligenceApi.createLegalLiveDryRun;
+export const createPersonalIntelligenceLegalLiveRun = personalIntelligenceApi.createLegalLiveRun;
+export const listPersonalIntelligenceLegalLiveRuns = personalIntelligenceApi.listLegalLiveRuns;
+export const getPersonalIntelligenceLegalLiveRun = personalIntelligenceApi.getLegalLiveRun;
+export const createPersonalIntelligenceEnterpriseLiveDryRun = personalIntelligenceApi.createEnterpriseLiveDryRun;
+export const createPersonalIntelligenceEnterpriseLiveRun = personalIntelligenceApi.createEnterpriseLiveRun;
+export const listPersonalIntelligenceEnterpriseLiveRuns = personalIntelligenceApi.listEnterpriseLiveRuns;
+export const getPersonalIntelligenceEnterpriseLiveRun = personalIntelligenceApi.getEnterpriseLiveRun;
+export const getPersonalIntelligenceLiveReviewQueue = personalIntelligenceApi.getLiveReviewQueue;
+export const submitPersonalIntelligenceLiveReviewAction = personalIntelligenceApi.submitLiveReviewAction;
+export const listPersonalIntelligenceLiveSourceTraces = personalIntelligenceApi.listLiveSourceTraces;
+export const getPersonalIntelligenceLiveSourceTrace = personalIntelligenceApi.getLiveSourceTrace;
+export const getPersonalIntelligenceLiveAudit = personalIntelligenceApi.getLiveAudit;
+export const getPersonalIntelligenceLiveSafety = personalIntelligenceApi.getLiveSafety;
 export const getPersonalSkillStudioStatus = personalSkillStudioApi.getStatus;
+export const getPersonalSkillTrainingStatus = personalSkillStudioApi.getSkillTrainingStatus;
+export const getPersonalSkillSampleRegistry = personalSkillStudioApi.getSkillSampleRegistry;
 export const listPersonalSkillStudioRuntimes = personalSkillStudioApi.listRuntimes;
 export const createPersonalExperiencePackage = personalSkillStudioApi.createExperiencePackage;
 export const listPersonalExperiencePackages = personalSkillStudioApi.listExperiencePackages;
@@ -1821,6 +2247,19 @@ export const createPersonalSkillEvaluation = personalSkillStudioApi.createEvalua
 export const listPersonalSkillEvaluations = personalSkillStudioApi.listEvaluations;
 export const getPersonalSkillStudioPromotionQueue = personalSkillStudioApi.getPromotionQueue;
 export const submitPersonalSkillStudioPromotionAction = personalSkillStudioApi.submitPromotionAction;
+export const listPersonalSkillFinalDrafts = personalSkillStudioApi.listFinalDrafts;
+export const getPersonalSkillFinalDraft = personalSkillStudioApi.getFinalDraft;
+export const getPersonalSkillFinalDraftLineage = personalSkillStudioApi.getFinalDraftLineage;
+export const getPersonalSkillFinalDraftBaseline = personalSkillStudioApi.getFinalDraftBaseline;
+export const getPersonalSkillFinalDraftQuality = personalSkillStudioApi.getFinalDraftQuality;
+export const getPersonalSkillFinalDraftGate = personalSkillStudioApi.getFinalDraftGate;
+export const getPersonalSkillFinalDraftOptimization = personalSkillStudioApi.getFinalDraftOptimization;
+export const getPersonalSkillFinalDraftSourceTraces = personalSkillStudioApi.getFinalDraftSourceTraces;
+export const getPersonalSkillFinalDraftAudit = personalSkillStudioApi.getFinalDraftAudit;
+export const createPersonalSkillFinalDraftOwnerDownload = personalSkillStudioApi.createFinalDraftOwnerDownload;
+export const listPersonalSkillFinalDraftOwnerDownloads = personalSkillStudioApi.listFinalDraftOwnerDownloads;
+export const getPersonalSkillFinalDraftOwnerDownload = personalSkillStudioApi.getFinalDraftOwnerDownload;
+export const getPersonalSkillFinalDraftSafety = personalSkillStudioApi.getFinalDraftSafety;
 export const listPersonalSkillStudioSourceTraces = personalSkillStudioApi.listSourceTraces;
 export const getPersonalSkillStudioAudit = personalSkillStudioApi.getAudit;
 export const getPersonalSkillStudioSafety = personalSkillStudioApi.getSafety;
@@ -1839,6 +2278,103 @@ export const submitPersonalCaseProductionReviewGateAction = personalCaseProducti
 export const listPersonalCaseProductionSourceTraces = personalCaseProductionApi.listSourceTraces;
 export const getPersonalCaseProductionAudit = personalCaseProductionApi.getAudit;
 export const getPersonalCaseProductionSafety = personalCaseProductionApi.getSafety;
+export const getPersonalCaseAnalysisStatus = personalCaseAnalysisApi.getStatus;
+export const listPersonalCaseAnalysisRuntimes = personalCaseAnalysisApi.listRuntimes;
+export const getPersonalCaseAnalysisRuntime = personalCaseAnalysisApi.getRuntime;
+export const getPersonalCaseAnalysisSkillBaselines = personalCaseAnalysisApi.getSkillBaselines;
+export const createPersonalCaseAnalysisRun = personalCaseAnalysisApi.createRun;
+export const createPersonalCaseAnalysisControlledRun = personalCaseAnalysisApi.createControlledRun;
+export const listPersonalCaseAnalysisRuns = personalCaseAnalysisApi.listRuns;
+export const getPersonalCaseAnalysisRun = personalCaseAnalysisApi.getRun;
+export const createPersonalCaseAnalysisFactDraft = personalCaseAnalysisApi.createFactDraft;
+export const listPersonalCaseAnalysisFactDrafts = personalCaseAnalysisApi.listFactDrafts;
+export const getPersonalCaseAnalysisFactDraft = personalCaseAnalysisApi.getFactDraft;
+export const createPersonalCaseAnalysisLegalDraft = personalCaseAnalysisApi.createLegalDraft;
+export const listPersonalCaseAnalysisLegalDrafts = personalCaseAnalysisApi.listLegalDrafts;
+export const getPersonalCaseAnalysisLegalDraft = personalCaseAnalysisApi.getLegalDraft;
+export const listPersonalCaseAnalysisLegalDraftVersions = personalCaseAnalysisApi.listLegalDraftVersions;
+export const createPersonalCaseAnalysisLegalDraftVersion = personalCaseAnalysisApi.createLegalDraftVersion;
+export const getPersonalCaseAnalysisLegalDraftQuality = personalCaseAnalysisApi.getLegalDraftQuality;
+export const getPersonalCaseAnalysisLegalDraftGate = personalCaseAnalysisApi.getLegalDraftGate;
+export const confirmPersonalCaseAnalysisLegalDraftForReview = personalCaseAnalysisApi.confirmLegalDraftForReview;
+export const getPersonalCaseAnalysisReviewQueue = personalCaseAnalysisApi.getReviewQueue;
+export const submitPersonalCaseAnalysisReviewAction = personalCaseAnalysisApi.submitReviewAction;
+export const listPersonalCaseAnalysisEvaluations = personalCaseAnalysisApi.listEvaluations;
+export const getPersonalCaseAnalysisEvaluation = personalCaseAnalysisApi.getEvaluation;
+export const listPersonalCaseAnalysisGates = personalCaseAnalysisApi.listGates;
+export const getPersonalCaseAnalysisGate = personalCaseAnalysisApi.getGate;
+export const listPersonalCaseAnalysisSourceTraces = personalCaseAnalysisApi.listSourceTraces;
+export const getPersonalCaseAnalysisSourceTrace = personalCaseAnalysisApi.getSourceTrace;
+export const getPersonalCaseAnalysisAudit = personalCaseAnalysisApi.getAudit;
+export const getPersonalCaseAnalysisSafety = personalCaseAnalysisApi.getSafety;
+export const getPersonalCaseWorkspaceStatus = personalCaseWorkspaceApi.getStatus;
+export const listPersonalCaseWorkspaceCases = personalCaseWorkspaceApi.listCases;
+export const getPersonalCaseWorkspaceCase = personalCaseWorkspaceApi.getCase;
+export const listPersonalCaseWorkspaceMaterials = personalCaseWorkspaceApi.listMaterials;
+export const getPersonalCaseWorkspaceMaterial = personalCaseWorkspaceApi.getMaterial;
+export const createPersonalCaseWorkspaceOwnerRawView = personalCaseWorkspaceApi.createOwnerRawView;
+export const getPersonalCaseWorkspaceOCRStatus = personalCaseWorkspaceApi.getOCRStatus;
+export const getPersonalCaseWorkspaceMaterialSourceTraces = personalCaseWorkspaceApi.getMaterialSourceTraces;
+export const getPersonalCaseWorkspaceFactInput = personalCaseWorkspaceApi.getFactInput;
+export const createPersonalCaseWorkspaceFactCorrection = personalCaseWorkspaceApi.createFactCorrection;
+export const listPersonalCaseWorkspaceSourceTraces = personalCaseWorkspaceApi.listSourceTraces;
+export const getPersonalCaseWorkspaceAudit = personalCaseWorkspaceApi.getAudit;
+export const getPersonalCaseWorkspaceSafety = personalCaseWorkspaceApi.getSafety;
+export const listPersonalCaseWorkspaceFactPreviews = personalCaseWorkspaceApi.listFactPreviews;
+export const createPersonalCaseWorkspaceFactPreview = personalCaseWorkspaceApi.createFactPreview;
+export const getPersonalCaseWorkspaceFactPreview = personalCaseWorkspaceApi.getFactPreview;
+export const createPersonalCaseWorkspaceFactPreviewCorrection = personalCaseWorkspaceApi.createFactPreviewCorrection;
+export const listPersonalCaseWorkspaceFactPreviewCorrections = personalCaseWorkspaceApi.listFactPreviewCorrections;
+export const getPersonalCaseWorkspaceFactCorrection = personalCaseWorkspaceApi.getFactCorrection;
+export const listPersonalCaseWorkspaceFactPreviewVersions = personalCaseWorkspaceApi.listFactPreviewVersions;
+export const createPersonalCaseWorkspaceFactPreviewVersion = personalCaseWorkspaceApi.createFactPreviewVersion;
+export const getPersonalCaseWorkspaceFactPreviewQuality = personalCaseWorkspaceApi.getFactPreviewQuality;
+export const getPersonalCaseWorkspaceFactPreviewGate = personalCaseWorkspaceApi.getFactPreviewGate;
+export const getPersonalCaseWorkspaceFactPreviewSourceTraces = personalCaseWorkspaceApi.getFactPreviewSourceTraces;
+export const confirmPersonalCaseWorkspaceFactPreviewForLegalAnalysis = personalCaseWorkspaceApi.confirmFactPreviewForLegalAnalysis;
+export const getPersonalCaseWorkspaceFactInputReadiness = personalCaseWorkspaceApi.getFactInputReadiness;
+export const getPersonalCaseWorkspaceFactAudit = personalCaseWorkspaceApi.getFactAudit;
+export const getPersonalCaseWorkspaceFactSafety = personalCaseWorkspaceApi.getFactSafety;
+export const getPersonalProductionPilotStatus = personalProductionPilotApi.getStatus;
+export const getPersonalProductionPilotReadiness = personalProductionPilotApi.getReadiness;
+export const getPersonalProductionPilotWorkflow = personalProductionPilotApi.getWorkflow;
+export const listPersonalProductionPilotRuntimes = personalProductionPilotApi.listRuntimes;
+export const getPersonalProductionPilotProviderGates = personalProductionPilotApi.getProviderGates;
+export const getPersonalProductionPilotSafety = personalProductionPilotApi.getSafety;
+export const createPersonalProductionPilotRun = personalProductionPilotApi.createRun;
+export const createPersonalProductionPilotControlledRun = personalProductionPilotApi.createControlledRun;
+export const listPersonalProductionPilotRuns = personalProductionPilotApi.listRuns;
+export const getPersonalProductionPilotRun = personalProductionPilotApi.getRun;
+export const getPersonalProductionPilotCaseAnalysisSummary = personalProductionPilotApi.getCaseAnalysisSummary;
+export const listPersonalProductionPilotSkillFinalDrafts = personalProductionPilotApi.listSkillFinalDrafts;
+export const getPersonalProductionPilotSkillFinalDraft = personalProductionPilotApi.getSkillFinalDraft;
+export const createPersonalProductionPilotOutput = personalProductionPilotApi.createOutput;
+export const listPersonalProductionPilotOutputs = personalProductionPilotApi.listOutputs;
+export const getPersonalProductionPilotOutput = personalProductionPilotApi.getOutput;
+export const createPersonalProductionPilotOwnerDownload = personalProductionPilotApi.createOwnerDownload;
+export const listPersonalProductionPilotOwnerDownloads = personalProductionPilotApi.listOwnerDownloads;
+export const getPersonalProductionPilotOwnerDownload = personalProductionPilotApi.getOwnerDownload;
+export const getPersonalProductionPilotReviewQueue = personalProductionPilotApi.getReviewQueue;
+export const submitPersonalProductionPilotReviewAction = personalProductionPilotApi.submitReviewAction;
+export const listPersonalProductionPilotSourceTraces = personalProductionPilotApi.listSourceTraces;
+export const getPersonalProductionPilotAudit = personalProductionPilotApi.getAudit;
+export const getPersonalProductionPilotExportBoundary = personalProductionPilotApi.getExportBoundary;
+export const getPersonalProductionPilotDashboardStatus = personalProductionPilotApi.getDashboardStatus;
+export const getPersonalProductionPilotDashboardMetrics = personalProductionPilotApi.getDashboardMetrics;
+export const getPersonalProductionPilotDashboardQuality = personalProductionPilotApi.getDashboardQuality;
+export const getPersonalProductionPilotDashboardSafety = personalProductionPilotApi.getDashboardSafety;
+export const getPersonalOwnerOutputCenterStatus = personalOwnerOutputCenterApi.getStatus;
+export const listPersonalOwnerOutputCenterOutputs = personalOwnerOutputCenterApi.listOutputs;
+export const getPersonalOwnerOutputCenterOutput = personalOwnerOutputCenterApi.getOutput;
+export const getPersonalOwnerOutputCenterOutputQuality = personalOwnerOutputCenterApi.getOutputQuality;
+export const getPersonalOwnerOutputCenterOutputGate = personalOwnerOutputCenterApi.getOutputGate;
+export const getPersonalOwnerOutputCenterOutputOptimization = personalOwnerOutputCenterApi.getOutputOptimization;
+export const getPersonalOwnerOutputCenterOutputSourceTraces = personalOwnerOutputCenterApi.getOutputSourceTraces;
+export const createPersonalOwnerOutputCenterDownload = personalOwnerOutputCenterApi.createDownload;
+export const listPersonalOwnerOutputCenterDownloads = personalOwnerOutputCenterApi.listDownloads;
+export const getPersonalOwnerOutputCenterDownload = personalOwnerOutputCenterApi.getDownload;
+export const getPersonalOwnerOutputCenterAudit = personalOwnerOutputCenterApi.getAudit;
+export const getPersonalOwnerOutputCenterSafety = personalOwnerOutputCenterApi.getSafety;
 export const getControlledMaterialStatus = controlledMaterialApi.status;
 export const runControlledMaterialReadConfirmed = controlledMaterialApi.readConfirmed;
 export const runControlledLocalReadPreview = controlledMaterialApi.localReadPreview;

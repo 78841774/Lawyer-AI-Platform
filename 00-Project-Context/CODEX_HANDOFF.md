@@ -23,14 +23,283 @@ Before starting a new Codex session, read these files:
 - Keep AI output draft-only unless a target version explicitly changes it.
 - Run the regression suite before committing.
 
+## Codex Surgical Handoff Rules
+
+Codex must use the following rules when continuing this project.
+
+### 1. Read Before Acting
+
+Before any code change, Codex must read:
+
+- `AGENTS.md`
+- `00-Project-Context/CURRENT_STATE.md`
+- `00-Project-Context/ROADMAP.md`
+- `00-Project-Context/PROVIDER_ROADMAP.md`
+- `00-Project-Context/NEXT_TASK.md`
+- `00-Project-Context/CODEX_HANDOFF.md`
+- Relevant `docs/*.md`
+- Relevant `09-Change-Logs/*.md`
+- Existing backend module, frontend page, API client, type definitions, and regression scripts for the current task
+
+Codex must not guess project rules from memory when repository context exists.
+
+### 2. Current Task Only
+
+Codex must only implement the explicitly requested current task.
+
+Codex must not:
+
+- Continue to the next version without instruction.
+- Add unrelated runtime modules.
+- Refactor unrelated files.
+- Add new provider behavior unless requested.
+- Add team workspace or external client delivery features during personal-version work.
+- Convert draft workflows into final legal opinion or formal report workflows.
+
+### 3. Surgical Change Discipline
+
+Codex must prefer small, direct changes:
+
+- Reuse existing modules and shared components.
+- Extend existing schemas and routers only where needed.
+- Keep API field naming consistent with existing patterns.
+- Keep frontend Chinese product copy consistent with existing personal-production pages.
+- Avoid broad rewrites.
+- Avoid formatting churn.
+
+### 4. Skill Work Rules
+
+For any Skill-related task, Codex must first discover existing baselines:
+
+- Skill files
+- Legacy Skill files
+- Skill Candidates
+- Experience Packages
+- Evaluations
+- Gates
+- Test cases
+- Prompt templates
+- Fact patterns
+- Legal analysis patterns
+- Reasoning templates
+
+For the two core personal Skills:
+
+- `case_fact_extraction_skill`
+- `case_legal_analysis_skill`
+
+Codex must preserve lineage and must not overwrite old Skills. New final drafts or candidates must include source metadata such as:
+
+- `source_skill_id`
+- `source_package_id`
+- `derived_from`
+- `source_evaluation_files`
+- `source_gate_files`
+- `source_test_case_files`
+
+If a baseline is incomplete, Codex must report `baseline_complete=false` and generate a missing-baseline report rather than pretending the Skill is complete.
+
+### 5. Training vs Practical Case Analysis
+
+Codex must keep these flows separate:
+
+#### Training
+
+- Uses closed cases.
+- May produce training samples, Skill Candidates, Experience Packages, evaluations, gates, and final Skill drafts.
+- Must follow the project's training material processing and redaction rules.
+- Must not automatically publish Skills.
+
+#### Practical Case Analysis
+
+- Uses open/unresolved cases.
+- Calls existing Skill metadata and runtime capabilities.
+- Produces owner-only drafts and analysis materials.
+- Must not produce training data.
+- Must not write to training sets.
+- Must not update or publish Skills automatically.
+
+Required fields for open-case practical outputs include:
+
+- `training_data_generated=false`
+- `writes_to_training_set=false`
+- `skill_updated=false`
+- `skill_published=false`
+
+### 6. Evaluation and Gate Rules
+
+Evaluation and gates are quality references for the current stage.
+
+They must provide:
+
+- Score
+- Gate status
+- Dimension scores
+- Optimization suggestions
+- Source/baseline references where available
+
+They must not block the next stage by default.
+
+Required fields:
+
+- `gate_reference_only=true`
+- `blocks_next_stage=false`
+- `quality_reference_only=true`
+
+### 7. OCR, Raw Material, and Privacy Boundaries
+
+For practical open-case work:
+
+- The user/authorized lawyer may view raw materials and OCR text inside the system.
+- AI may use OCR/raw material through controlled internal analysis flows.
+- Raw materials and OCR text must not leak outside the system.
+
+Codex must ensure raw material or OCR text is not written to:
+
+- Git
+- docs
+- changelog
+- README
+- Project Context
+- AGENTS
+- Developer Diagnostics
+- regression stdout
+- error stack
+- browser console
+- public showcase pages
+
+Owner-visible raw views must be explicitly scoped as internal owner/lawyer case work and must write audit metadata only, not raw content.
+
+### 8. Owner-only Output Rules
+
+Generated outputs, including two Skill final drafts and practical case analysis documents, are owner-only by default.
+
+Allowed:
+
+- Owner views output inside the system.
+- Owner manually downloads Markdown / JSON / PDF draft / DOCX draft when supported.
+- Owner decides independently how to use downloaded documents.
+
+Forbidden:
+
+- Automatic email sending.
+- Automatic client delivery.
+- Automatic third-party upload.
+- Automatic public-link creation.
+- Automatic court or platform submission.
+- Automatic marking as final legal opinion.
+- Automatic marking as formal lawyer report.
+
+Required fields include:
+
+- `owner_only=true`
+- `downloadable_by_owner_only=true`
+- `public_link_created=false`
+- `email_sent=false`
+- `external_delivery_triggered=false`
+- `third_party_share_enabled=false`
+- `client_auto_delivery=false`
+- `final_legal_opinion_auto_generated=false`
+- `final_report_auto_generated=false`
+
+### 9. Provider and API Key Boundaries
+
+Provider live behavior must remain gated.
+
+Codex must not:
+
+- Read API key values.
+- Print API key values.
+- Store API key values in docs, logs, diagnostics, regression output, or frontend.
+- Add provider live calls unless the current task explicitly requires controlled live integration.
+
+Allowed metadata:
+
+- `key_loaded=true/false`
+- `key_source=env/unavailable/not_required`
+- `provider_gated=true`
+- `live_default_enabled=false`
+
+### 10. UI and Product Design Rules
+
+For personal-production UI work:
+
+- Prefer existing shared components such as `SafetyBadge`, `StatusCard`, `RuntimeCard`, `ShowcaseStepper`, `TrustSafetyPanel`, `DiagnosticsPanel`, and related personal-production UI components.
+- Use Chinese user-facing copy.
+- Keep legal-tech style: professional legal tone, clean layout, blue/gray technology palette, clear safety badges, score/gate/optimization cards.
+- Developer Diagnostics must remain collapsed by default.
+- Diagnostics must not contain raw content, local paths, secrets, or API keys.
+
+### 11. Validation Rules
+
+Codex must run only the checks required by the current task unless explicitly asked for final validation.
+
+Common lightweight checks:
+
+- `git diff --check`
+- empty Markdown check
+- runtime ignore check
+- sensitive path check
+- backend compileall when Python changes
+- frontend `npm run build` when frontend changes
+- relevant API smoke/regression scripts when endpoints change
+
+Full Personal Alpha regression and full Codex Security audit must be reserved for explicit final validation or release preparation.
+
+### 12. Completion Report Rules
+
+At the end of each task, Codex must report:
+
+1. Files changed.
+2. Summary of implementation.
+3. What was intentionally not changed.
+4. Safety boundaries preserved.
+5. Checks run and results.
+6. Current `git status --short`.
+7. Whether commit/tag/push was performed.
+8. Recommended next step.
+
 ## Commit Boundary
 
 Each version commit should include code, tests, docs, changelog, and project context updates that are part of that version.
 
 ## Current Handoff
 
-- Stable baseline: `v7.8-ui-polish-showcase-hardening` at commit `b7ce642`.
-- Active local worktree scope: v7.9 Personal Production Demo Script & Screenshot Pack.
-- v7.9 must remain mock-first, metadata-only, draft-only, lawyer-review-required, final-lock-required, source-trace-required, and provider-gated.
-- v7.9 does not introduce a new backend runtime, live provider mode, real final document generation, email sending, or external delivery.
-- Do not commit, tag, or push v7.9 until validation is complete and the user explicitly approves commit and release work.
+- Stable baseline: `v7.9-personal-production-demo-pack` at commit `c59e137`.
+- Active local worktree scope: v7.10-v7.24 Personal Live Intelligence & Controlled Case Analysis large stage is implemented locally and awaiting user-confirmed continuation or unified validation, final security audit, and release handling.
+- v7.10-v7.11 must remain mock-first, metadata-only, draft-only, lawyer-review-required, final-lock-required, source-trace-required, and provider-gated.
+- v7.10-v7.11 do not introduce Team Workspace, multi-user collaboration, external client delivery, live provider mode, Skill Training runtime, Controlled Case Analysis runtime, real final document generation, email sending, or external delivery.
+- The planned cadence is one continuous v7.10-v7.24 large stage: Personal Live Intelligence & Controlled Case Analysis. Run basic checks at each sub-stage and defer full Codex Security audit to the final large-stage audit.
+- Do not commit, tag, or push the v7.10-v7.24 large stage until large-stage validation, final security audit, and explicit user approval.
+- v7.11 adds local pilot startup, safe fallback states, API error-message hardening, and lightweight local pilot regression while keeping live providers disabled.
+- v7.12 adds AI live provider metadata, dry-run, gated live run metadata, prompt/response boundary, usage metadata, audit metadata, and frontend controlled access UI. Live mode remains disabled by default and API key values must never be returned.
+- v7.13 adds OCR / Document live provider metadata, document dry-run, OCR dry-run, gated live run metadata, raw content and AI prompt boundary, metadata-only review queue, source trace metadata, audit metadata, and frontend controlled access UI. OCR and document live modes remain disabled by default. Raw OCR text and raw document content must never be returned or injected into AI prompts.
+- v7.14 adds Legal / Enterprise API live provider metadata, legal dry-run, enterprise dry-run, gated live run metadata, raw content / AI prompt / citation boundary, metadata-only review queue, source trace metadata, audit metadata, and frontend controlled access UI. Legal and enterprise live modes remain disabled by default.
+- v7.15 adds controlled Skill Training Runtime metadata, desensitized sample registry, draft-only Skill output metadata, and no-auto-publish boundaries. Skill training must never trigger AI prompts, final Skill publishing, final legal opinions, final reports, or external delivery.
+- v7.16 adds Controlled Case Analysis Runtime metadata for open-case execution. It references existing v7.15 Skill metadata, creates fact analysis and legal analysis draft metadata, keeps evaluation / gate reference-only, and must never generate training data, write to training sets, update or publish Skills, create final legal opinions, final reports, real files, email, or external delivery.
+- v7.17 adds Personal Production Pilot with Real AI Gated Mode metadata. It connects AI, OCR / document, legal / enterprise, Skill Training, Controlled Case Analysis, Delivery Packet, and owner-only download metadata into one gated pilot. Live providers remain disabled by default; provider adapter gaps return gated / adapter-unavailable metadata. Owner downloads remain owner-only Markdown / JSON / PDF draft / DOCX draft metadata. Open cases must not create training data, write to training sets, update Skills, or publish Skills. No public links, email, third-party upload, client delivery, final legal opinion, or final report may be generated automatically.
+- v7.18 adds Case Intake & Material Workspace Hardening metadata. It provides `/personal-case-workspace` for owner-only case metadata, material metadata, OCR status metadata, owner raw view gate metadata, fact correction metadata, source trace metadata, audit metadata, and safety metadata. Owner raw view does not return raw content, and the workspace must not read real case materials or trigger AI prompts.
+- v7.19 adds Personal Production Pilot Dashboard Enhancement metadata. It enhances `/personal-production-pilot` with dashboard metrics, reference-only quality score cards, gate status, optimization suggestions, source trace summary, export boundary, and unified Trust / Safety panel. Scores and suggestions must not be described as legal conclusions, correctness guarantees, final opinions, final reports, or delivery readiness.
+- v7.20 adds Fact Preview & Correction Workbench metadata. It enhances `/personal-case-workspace` with fact preview drafts, owner correction metadata, version history, quality reports, reference-only gates, fact source traces, fact audit, fact safety, and legal-analysis-input readiness. It must not auto-trigger legal analysis, generate final fact findings, train on open cases, write training sets, update Skills, publish Skills, create final opinions, final reports, real files, email, public links, or external delivery.
+- v7.21 adds Legal Analysis Draft Workbench metadata. It adds `/personal-case-analysis/legal-drafts` for legal analysis summary, dispute focus, claim basis, defense path, risk notes, next step checklist, version history, quality reports, reference-only gates, review confirmation, source traces, audit, safety, and owner-only download boundary. It must not generate final legal opinions, final reports, training data, Skill updates, Skill publishing, real files, email, public links, or external delivery.
+- v7.22 adds Skill Final Draft & Optimization Workbench metadata. It adds `/personal-skill-studio/final-drafts` for `case_fact_extraction_skill` and `case_legal_analysis_skill`, baseline discovery, lineage, quality, gate, optimization, source trace, audit, safety, and owner-only download metadata. It must not invent a new evaluation system, auto-publish Skills, train on open cases, write training sets, create public links, send email, generate final legal opinions, generate final reports, create real files, or trigger external delivery.
+- v7.23 adds Owner-only Output Center metadata. It adds `/personal-owner-output-center` for Skill final drafts, fact outputs, legal analysis drafts, and Pilot / Delivery drafts, with owner-only download metadata, quality / gate / optimization references, source trace, audit, and safety. It must not create real export files, public links, email, third-party upload, client delivery, final legal opinions, formal lawyer reports, Skill publishing, open-case training data, training-set writes, or external delivery.
+- v7.24 adds Legal-Tech UI/UX Polish. It upgrades shared Personal Production frontend components, target page visible copy, five standard safety badges, folded diagnostics, final-stage Stepper wording, and UI regression coverage. It must not add provider calls, backend business logic, final legal opinions, final reports, real files, email, public links, Skill publishing, or external delivery.
+
+## Next Handoff Step
+
+Run unified v7.10-v7.24 validation and final comprehensive security audit before any combined commit, tag, push, or release, or continue to a later personal-version sub-stage only after explicit user instruction. Do not start Team Workspace or External Client Delivery until the user explicitly confirms the next development direction.
+
+## Product Design Handoff Rule
+
+For any UI / Showcase / promotional / Demo / Landing / screenshot / recording work, Product Design must be a closed loop:
+
+- Product Design get-context / ideation / prototype brief when available.
+- 2-3 design directions and an explicit chosen direction.
+- React / TypeScript / Tailwind implementation of the chosen direction.
+- Prefer shared component upgrades over isolated page-only styling.
+- Visible web UI change required before claiming implementation.
+- Browser or Computer Use validation required when local services can run.
+- Report Product Design availability, chosen direction, changed components, pages with visible changes, browser validation result, and remaining UI issues.
+
+If Product Design is not callable in the current Codex environment, state that clearly and proceed with a local design audit. Do not say Product Design was completed unless the selected design is reflected in the page code and visually verified.

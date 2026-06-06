@@ -1,5 +1,10 @@
-from personal_material_runtime.schemas import PersonalMaterialSourceTrace, PersonalMaterialSourceTraceList
-from personal_material_runtime.storage import SOURCE_TRACES_DIR, read_payloads, write_payload
+from personal_material_runtime.schemas import (
+    PersonalMaterialLiveSourceTrace,
+    PersonalMaterialLiveSourceTraceList,
+    PersonalMaterialSourceTrace,
+    PersonalMaterialSourceTraceList,
+)
+from personal_material_runtime.storage import LIVE_SOURCE_TRACES_DIR, SOURCE_TRACES_DIR, read_payloads, write_payload
 
 
 def create_source_traces(
@@ -43,4 +48,40 @@ def build_source_trace_list() -> dict:
         source_traces=traces,
         source_trace_count=len(traces),
         warnings=["Source traces are mock metadata only and do not expose recognized source text or local file paths."],
+    ).model_dump()
+
+
+def create_live_source_trace(
+    *,
+    run_id: str,
+    run_type: str,
+    provider_id: str,
+    case_id: str,
+    material_id: str,
+    created_at: str,
+    page_count: int,
+) -> PersonalMaterialLiveSourceTrace:
+    source_trace_id = f"personal_material_live_source_trace_{run_id}"
+    trace = PersonalMaterialLiveSourceTrace(
+        source_trace_id=source_trace_id,
+        run_id=run_id,
+        run_type=run_type,
+        provider_id=provider_id,
+        case_id=case_id,
+        material_id=material_id,
+        source_type=f"{run_type}_metadata_preview",
+        page_count=page_count,
+        created_at=created_at,
+    )
+    write_payload(LIVE_SOURCE_TRACES_DIR, source_trace_id, trace.model_dump())
+    return trace
+
+
+def build_live_source_trace_list() -> dict:
+    traces = [PersonalMaterialLiveSourceTrace(**payload) for payload in read_payloads(LIVE_SOURCE_TRACES_DIR)]
+    traces = sorted(traces, key=lambda trace: trace.created_at, reverse=True)
+    return PersonalMaterialLiveSourceTraceList(
+        source_traces=traces,
+        source_trace_count=len(traces),
+        warnings=["Live source traces are metadata-only and never include OCR text or document content."],
     ).model_dump()
