@@ -57,6 +57,8 @@
 - v7.35 Training Dataset Builder & Training Gate is complete at the `v7.37` tag target and tag `v7.35`; it does not add provider live behavior. It builds metadata-only dataset manifests, examples, task plans, and gate reports from ready improvement candidates without provider calls or key value reads.
 - v7.36 Codex Skill Training Dry Run is complete at the `v7.37` tag target and tag `v7.36`; it does not add provider live behavior. It runs an internal dry-run simulation only and does not call providers, trigger real training, replace packages, or publish Skills.
 - v7.37 Codex Skill Internal Training Run is complete at the `v7.37` tag target and tag `v7.37`; it does not add provider live behavior. It records internal training run metadata, metrics, logs, audit, source trace, and gate reports without external provider training, key value reads, package replacement, or Skill publishing.
+- v7.35a-v7.38 safe callable Training Skill chain is complete in the current uncommitted worktree. It adds provider spec metadata for `OCR_API`, `Legal_API`, and `Enterprise_API` using credential aliases, `credential_loaded` boolean state, and gate requirements only. Adapter placeholders may check credential alias presence in backend runtime, but they do not return credential values or execute live provider calls in this stage.
+- v7.38b Codex Panel Training Skill Packaging is complete in the current uncommitted worktree. It adds `.agents/skills/lawyer-ai-training-skill/` for Codex workflow loading only and does not add provider live behavior, key value access, provider calls, Skill publication, or runtime package replacement.
 
 ## Boundary
 

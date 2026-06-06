@@ -1,0 +1,30 @@
+# Regression Checklist
+
+Keep these training and safety regressions passing when changing the training chain:
+
+- check_personal_training_artifact_loader_apis.sh
+- check_personal_codex_training_runs_apis.sh
+- check_personal_real_closed_case_training_intake_apis.sh
+- check_personal_training_experience_pipeline_v731b_apis.sh
+- check_personal_codex_skill_experience_pool_v731c_apis.sh
+- check_personal_codex_skill_package_v731d_apis.sh
+- check_personal_internal_training_v731e_apis.sh
+- check_personal_practice_load_review_v731f_apis.sh
+- check_personal_practice_runtime_loading_v731g_apis.sh
+- check_personal_practice_feedback_v731h_apis.sh
+- check_personal_practice_feedback_candidate_pack_v731i_apis.sh
+- check_personal_next_experience_package_v731j_apis.sh
+- check_personal_experience_lifecycle_v732_apis.sh
+- check_personal_case_analysis_workbench_v733_apis.sh
+- check_personal_case_analysis_improvement_v734_apis.sh
+- check_personal_training_dataset_v735_apis.sh
+- check_personal_codex_training_dryrun_v736_apis.sh
+- check_personal_codex_training_run_v737_apis.sh
+- check_personal_raw_training_material_v735a_apis.sh
+- check_personal_redacted_experience_output_v735b_apis.sh
+- check_personal_training_dataset_v736_apis.sh
+- check_personal_codex_training_skill_v737_apis.sh
+- check_personal_codex_skill_training_run_v738_apis.sh
+- run_personal_alpha_regression.sh
+
+Run the focused scripts first while developing. Run the full personal alpha regression before completion reporting when feasible.

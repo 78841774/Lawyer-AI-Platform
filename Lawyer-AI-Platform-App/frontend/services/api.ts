@@ -2401,6 +2401,115 @@ export const personalSkillStudioApi = {
     request<CodexInternalTrainingLogList>("/personal-skill-studio/training-artifacts/training-run/logs"),
   getCodexInternalTrainingGateReport: () =>
     request<CodexInternalTrainingGateReport>("/personal-skill-studio/training-artifacts/training-run/gate-report"),
+  getRawTrainingMaterialBoundaryStatus: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/raw-boundary/status"),
+  registerTrainingMaterial: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/register", {
+      material_kind: "lawyer_work_product",
+      material_label: "受控训练基础材料 metadata"
+    }),
+  listTrainingMaterials: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials"),
+  getTrainingMaterial: (trainingMaterialId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/${encodeURIComponent(trainingMaterialId)}`),
+  runTrainingMaterialOCR: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/ocr-jobs/run", {}),
+  listTrainingMaterialOCRJobs: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/ocr-jobs"),
+  getTrainingMaterialOCRJob: (ocrJobId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/ocr-jobs/${encodeURIComponent(ocrJobId)}`),
+  runTrainingMaterialDocumentParse: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/document-parse-jobs/run", {}),
+  listTrainingMaterialDocumentParseJobs: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/document-parse-jobs"),
+  getTrainingMaterialDocumentParseJob: (parseJobId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/document-parse-jobs/${encodeURIComponent(parseJobId)}`),
+  runTrainingMaterialStructureJob: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/structure-jobs/run", {}),
+  listJudgmentStructures: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/judgment-structures"),
+  listWorkProductStructures: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/work-product-structures"),
+  listEvidenceIndexes: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/evidence-indexes"),
+  runTrainingMaterialLegalRetrieval: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/legal-retrieval-jobs/run", {}),
+  listTrainingMaterialLegalRetrievalJobs: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/legal-retrieval-jobs"),
+  runTrainingMaterialRuleAlignment: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/rule-alignment/run", {}),
+  listTrainingMaterialRuleAlignments: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/rule-alignments"),
+  runTrainingMaterialParseQualityGate: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/parse-quality-gate/run", {}),
+  getTrainingMaterialParseQualityGate: (materialBatchId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/parse-quality-gate/${encodeURIComponent(materialBatchId)}`),
+  getV735aStatus: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/v7-35a/status"),
+  buildRawBasedExperienceCandidates: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/experience-candidates/build", {}),
+  listRawBasedExperienceCandidates: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/experience-candidates"),
+  getRawBasedExperienceCandidate: (candidateId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/experience-candidates/${encodeURIComponent(candidateId)}`),
+  buildRedactedExperiencePackage: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/redacted-experience-packages/build", {}),
+  listRedactedExperiencePackages: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/training-materials/redacted-experience-packages"),
+  getRedactedExperiencePackage: (packageId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/redacted-experience-packages/${encodeURIComponent(packageId)}`),
+  getRedactedExperiencePackageRedactionReport: (packageId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/redacted-experience-packages/${encodeURIComponent(packageId)}/redaction-report`),
+  getRedactedExperiencePackageAudit: (packageId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/redacted-experience-packages/${encodeURIComponent(packageId)}/audit`),
+  getRedactedExperiencePackageSourceTrace: (packageId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/training-materials/redacted-experience-packages/${encodeURIComponent(packageId)}/source-trace`),
+  getV735bStatus: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/v7-35b/status"),
+  getCodexTrainingSkillInterfaceDoc: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/codex-training-skills/interface-doc"),
+  listCodexTrainingSkillProviderAdapters: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/codex-training-skills/provider-adapters"),
+  getCodexTrainingSkillProviderAdapterStatus: (providerType: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-training-skills/provider-adapters/${encodeURIComponent(providerType)}`),
+  generateCodexTrainingSkill: () =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/codex-training-skills/generate", {
+      skill_target: "case_analysis_skill"
+    }),
+  listCodexTrainingSkills: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/codex-training-skills"),
+  getCodexTrainingSkill: (trainingSkillId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-training-skills/${encodeURIComponent(trainingSkillId)}`),
+  runCodexTrainingSkillGate: (trainingSkillId: string) =>
+    postJson<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-training-skills/${encodeURIComponent(trainingSkillId)}/gate/run`, {}),
+  getCodexTrainingSkillGateReport: (trainingSkillId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-training-skills/${encodeURIComponent(trainingSkillId)}/gate-report`),
+  callCodexTrainingSkillProviderMock: (trainingSkillId: string, providerType: string, methodName?: string) =>
+    postJson<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-training-skills/${encodeURIComponent(trainingSkillId)}/provider-call/mock`, {
+      provider_type: providerType,
+      method_name: methodName
+    }),
+  getV737TrainingSkillStatus: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/v7-37/status"),
+  startCodexSkillTrainingRun: (trainingSkillId?: string) =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/codex-skill-training-runs/start", {
+      training_skill_id: trainingSkillId,
+      run_mode: "dry_run"
+    }),
+  listCodexSkillTrainingRuns: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/codex-skill-training-runs"),
+  getCodexSkillTrainingRun: (trainingRunId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-skill-training-runs/${encodeURIComponent(trainingRunId)}`),
+  getCodexSkillTrainingRunLogs: (trainingRunId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-skill-training-runs/${encodeURIComponent(trainingRunId)}/logs`),
+  getCodexSkillTrainingMetrics: (trainingRunId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-skill-training-runs/${encodeURIComponent(trainingRunId)}/metrics`),
+  getCodexSkillTrainingGateReport: (trainingRunId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-skill-training-runs/${encodeURIComponent(trainingRunId)}/gate-report`),
+  getCodexSkillTrainingArtifact: (trainingRunId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-skill-training-runs/${encodeURIComponent(trainingRunId)}/artifact`),
+  getV738Status: () =>
+    request<Record<string, unknown>>("/personal-skill-studio/training-artifacts/v7-38/status"),
   listSourceTraces: () => request<SkillStudioSourceTraceList>("/personal-skill-studio/source-traces"),
   getSourceTrace: (id: string) => request<SkillStudioSourceTrace>(`/personal-skill-studio/source-traces/${encodeURIComponent(id)}`),
   getAudit: () => request<SkillStudioAuditTimeline>("/personal-skill-studio/audit"),
@@ -3142,6 +3251,55 @@ export const startPersonalCodexInternalTrainingRun = personalSkillStudioApi.star
 export const getPersonalCodexInternalTrainingStatus = personalSkillStudioApi.getCodexInternalTrainingStatus;
 export const listPersonalCodexInternalTrainingLogs = personalSkillStudioApi.listCodexInternalTrainingLogs;
 export const getPersonalCodexInternalTrainingGateReport = personalSkillStudioApi.getCodexInternalTrainingGateReport;
+export const getPersonalRawTrainingMaterialBoundaryStatus = personalSkillStudioApi.getRawTrainingMaterialBoundaryStatus;
+export const registerPersonalTrainingMaterial = personalSkillStudioApi.registerTrainingMaterial;
+export const listPersonalTrainingMaterials = personalSkillStudioApi.listTrainingMaterials;
+export const getPersonalTrainingMaterial = personalSkillStudioApi.getTrainingMaterial;
+export const runPersonalTrainingMaterialOCR = personalSkillStudioApi.runTrainingMaterialOCR;
+export const listPersonalTrainingMaterialOCRJobs = personalSkillStudioApi.listTrainingMaterialOCRJobs;
+export const getPersonalTrainingMaterialOCRJob = personalSkillStudioApi.getTrainingMaterialOCRJob;
+export const runPersonalTrainingMaterialDocumentParse = personalSkillStudioApi.runTrainingMaterialDocumentParse;
+export const listPersonalTrainingMaterialDocumentParseJobs = personalSkillStudioApi.listTrainingMaterialDocumentParseJobs;
+export const getPersonalTrainingMaterialDocumentParseJob = personalSkillStudioApi.getTrainingMaterialDocumentParseJob;
+export const runPersonalTrainingMaterialStructureJob = personalSkillStudioApi.runTrainingMaterialStructureJob;
+export const listPersonalJudgmentStructures = personalSkillStudioApi.listJudgmentStructures;
+export const listPersonalWorkProductStructures = personalSkillStudioApi.listWorkProductStructures;
+export const listPersonalEvidenceIndexes = personalSkillStudioApi.listEvidenceIndexes;
+export const runPersonalTrainingMaterialLegalRetrieval = personalSkillStudioApi.runTrainingMaterialLegalRetrieval;
+export const listPersonalTrainingMaterialLegalRetrievalJobs = personalSkillStudioApi.listTrainingMaterialLegalRetrievalJobs;
+export const runPersonalTrainingMaterialRuleAlignment = personalSkillStudioApi.runTrainingMaterialRuleAlignment;
+export const listPersonalTrainingMaterialRuleAlignments = personalSkillStudioApi.listTrainingMaterialRuleAlignments;
+export const runPersonalTrainingMaterialParseQualityGate = personalSkillStudioApi.runTrainingMaterialParseQualityGate;
+export const getPersonalTrainingMaterialParseQualityGate = personalSkillStudioApi.getTrainingMaterialParseQualityGate;
+export const getPersonalV735aStatus = personalSkillStudioApi.getV735aStatus;
+export const buildPersonalRawBasedExperienceCandidates = personalSkillStudioApi.buildRawBasedExperienceCandidates;
+export const listPersonalRawBasedExperienceCandidates = personalSkillStudioApi.listRawBasedExperienceCandidates;
+export const getPersonalRawBasedExperienceCandidate = personalSkillStudioApi.getRawBasedExperienceCandidate;
+export const buildPersonalRedactedExperiencePackage = personalSkillStudioApi.buildRedactedExperiencePackage;
+export const listPersonalRedactedExperiencePackages = personalSkillStudioApi.listRedactedExperiencePackages;
+export const getPersonalRedactedExperiencePackage = personalSkillStudioApi.getRedactedExperiencePackage;
+export const getPersonalRedactedExperiencePackageRedactionReport = personalSkillStudioApi.getRedactedExperiencePackageRedactionReport;
+export const getPersonalRedactedExperiencePackageAudit = personalSkillStudioApi.getRedactedExperiencePackageAudit;
+export const getPersonalRedactedExperiencePackageSourceTrace = personalSkillStudioApi.getRedactedExperiencePackageSourceTrace;
+export const getPersonalV735bStatus = personalSkillStudioApi.getV735bStatus;
+export const getPersonalCodexTrainingSkillInterfaceDoc = personalSkillStudioApi.getCodexTrainingSkillInterfaceDoc;
+export const listPersonalCodexTrainingSkillProviderAdapters = personalSkillStudioApi.listCodexTrainingSkillProviderAdapters;
+export const getPersonalCodexTrainingSkillProviderAdapterStatus = personalSkillStudioApi.getCodexTrainingSkillProviderAdapterStatus;
+export const generatePersonalCodexTrainingSkill = personalSkillStudioApi.generateCodexTrainingSkill;
+export const listPersonalCodexTrainingSkills = personalSkillStudioApi.listCodexTrainingSkills;
+export const getPersonalCodexTrainingSkill = personalSkillStudioApi.getCodexTrainingSkill;
+export const runPersonalCodexTrainingSkillGate = personalSkillStudioApi.runCodexTrainingSkillGate;
+export const getPersonalCodexTrainingSkillGateReport = personalSkillStudioApi.getCodexTrainingSkillGateReport;
+export const callPersonalCodexTrainingSkillProviderMock = personalSkillStudioApi.callCodexTrainingSkillProviderMock;
+export const getPersonalV737TrainingSkillStatus = personalSkillStudioApi.getV737TrainingSkillStatus;
+export const startPersonalCodexSkillTrainingRun = personalSkillStudioApi.startCodexSkillTrainingRun;
+export const listPersonalCodexSkillTrainingRuns = personalSkillStudioApi.listCodexSkillTrainingRuns;
+export const getPersonalCodexSkillTrainingRun = personalSkillStudioApi.getCodexSkillTrainingRun;
+export const getPersonalCodexSkillTrainingRunLogs = personalSkillStudioApi.getCodexSkillTrainingRunLogs;
+export const getPersonalCodexSkillTrainingMetrics = personalSkillStudioApi.getCodexSkillTrainingMetrics;
+export const getPersonalCodexSkillTrainingGateReport = personalSkillStudioApi.getCodexSkillTrainingGateReport;
+export const getPersonalCodexSkillTrainingArtifact = personalSkillStudioApi.getCodexSkillTrainingArtifact;
+export const getPersonalV738Status = personalSkillStudioApi.getV738Status;
 export const listPersonalSkillStudioSourceTraces = personalSkillStudioApi.listSourceTraces;
 export const getPersonalSkillStudioAudit = personalSkillStudioApi.getAudit;
 export const getPersonalSkillStudioSafety = personalSkillStudioApi.getSafety;

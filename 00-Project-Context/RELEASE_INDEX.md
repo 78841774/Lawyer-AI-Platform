@@ -49,8 +49,11 @@
 - v7.33 commit: `01259cf`
 - v7.34 commit: see tag `v7.37`
 - v7.35 commit: see tag `v7.37`
+- v7.35a commit: pending (local uncommitted worktree)
+- v7.35b commit: pending (local uncommitted worktree)
 - v7.36 commit: see tag `v7.37`
 - v7.37 commit: see tag `v7.37`
+- v7.38 commit: pending (local uncommitted worktree)
 
 ## Known Tags
 
@@ -119,8 +122,12 @@
 - `v7.33-case-analysis-skill-output-schema-workbench`: pending
 - `v7.34-case-analysis-output-feedback-improvement-candidate`: pending
 - `v7.35`: detected
+- `v7.35a-raw-training-material-controlled-parsing`: pending
+- `v7.35b-redacted-experience-output`: pending
 - `v7.36`: detected
 - `v7.37`: detected
+- `v7.38-safe-codex-skill-training-chain`: pending
+- `v7.38b-codex-panel-training-skill-packaging`: pending
 - `v7.17-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.19-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.20-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
@@ -135,4 +142,5 @@
 - v7.25-v7.31a are complete at commit `86a0246` and tag `v7.31a`.
 - v7.31b-v7.33 are complete through commits `e22281f` and `01259cf`; v7.32 and v7.33 tags are detected.
 - v7.34-v7.37 are complete at the `v7.37` tag target; v7.35, v7.36, and v7.37 tags are detected.
+- v7.35a-v7.38b are complete in the current uncommitted worktree and have no commit/tag/release yet.
 - Further release handling beyond commit/tag/push remains pending until explicit user instruction.

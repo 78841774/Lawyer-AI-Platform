@@ -28,6 +28,7 @@
 - v7.35 Training Dataset Builder & Training Gate is complete at the `v7.37` tag target and tag `v7.35`.
 - v7.36 Codex Skill Training Dry Run is complete at the `v7.37` tag target and tag `v7.36`.
 - v7.37 Codex Skill Internal Training Run is complete at the `v7.37` tag target and tag `v7.37`.
+- v7.35a-v7.38 corrected raw-material-to-safe-training-skill chain is complete in the current uncommitted worktree.
 
 ## v7.25-v7.29 Practical Trial And Provider Alignment Cadence
 
@@ -73,6 +74,18 @@ v7.36 runs a Codex Skill Training Dry Run simulation over v7.35 dataset and gate
 
 v7.37 starts a controlled Codex Skill Internal Training Run metadata flow, records metrics, logs, dry-run comparison, audit, source trace, and gate report metadata, and keeps any generated run artifacts internal and metadata-only.
 
+v7.35a adds controlled private parsing metadata for training materials, OCR/document parse checks, legal retrieval checks, rule alignment, and parse quality gates.
+
+v7.35b generates redacted / abstracted experience packages with legal point summary, common fact extraction framework, case-cause-specific fact points, fact summary, diff readiness, audit, and source trace metadata.
+
+v7.36 keeps compatibility aliases for the corrected Training Dataset Builder & Gate stage while preserving the completed v7.35 implementation.
+
+v7.37 add-on generates a safe callable Training Skill Spec with OCR / Legal / Enterprise provider specs, credential aliases, `credential_loaded` state, gate requirements, output schema, prompt strategy, differentiated fact extraction experience package, audit, and source trace. Credential values are never stored in the Skill.
+
+v7.38 connects the safe Training Skill Spec into dry-run / internal simulation metadata and produces a non-publishable, non-runtime-loadable artifact carrying the differentiated experience package, facts diff check, legal summary check, readiness, audit, and source trace.
+
+v7.38b adds the Codex Panel Training Skill at `.agents/skills/lawyer-ai-training-skill/`. This is an agent workflow Skill for Codex training development and validation, not a business-system Training Skill Spec, production legal analysis Skill, runtime package, or registry-published Skill.
+
 ## Product Design Cadence
 
 UI / Showcase / promotional / Demo / Landing / screenshot / recording work must use a Product Design closed loop. Product Design ideation or prototype brief is planning only until the chosen direction is implemented in React / TypeScript / Tailwind, produces a visible UI change, and is browser-validated when the environment permits.
@@ -84,4 +97,4 @@ UI / Showcase / promotional / Demo / Landing / screenshot / recording work must 
 
 ## Current Priority
 
-Current execution priority is complete through v7.37 at the `v7.37` tag target. The next recommended action is an explicitly scoped next personal-version sub-stage. Do not repeat v7.27-v7.37 implementations. Do not start Team Workspace or External Client Delivery before the user explicitly approves that direction.
+Current execution priority is complete through v7.38b in the current uncommitted worktree. The next recommended action is lightweight validation / release preparation after explicit approval, or an explicitly scoped next personal-version sub-stage. Do not repeat v7.27-v7.38b implementations. Do not start Team Workspace or External Client Delivery before the user explicitly approves that direction.

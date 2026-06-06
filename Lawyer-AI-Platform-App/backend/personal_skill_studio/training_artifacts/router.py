@@ -66,6 +66,27 @@ from personal_skill_studio.training_artifacts.codex_training_run_registry import
     list_codex_internal_training_logs,
     start_codex_internal_training_run,
 )
+from personal_skill_studio.training_artifacts.codex_training_skill_runtime import (
+    build_v737_training_skill_status,
+    build_v738_status,
+    generate_training_skill,
+    get_skill_training_artifact,
+    get_skill_training_audit,
+    get_skill_training_gate_report,
+    get_skill_training_logs,
+    get_skill_training_metrics,
+    get_skill_training_run,
+    get_skill_training_source_trace,
+    get_training_skill,
+    get_training_skill_audit,
+    get_training_skill_gate_report,
+    get_training_skill_interface_doc,
+    get_training_skill_source_trace,
+    list_skill_training_runs,
+    list_training_skills,
+    run_training_skill_gate,
+    start_skill_training_run,
+)
 from personal_skill_studio.training_artifacts.experience_candidate_registry import (
     build_candidates,
     get_candidate,
@@ -272,6 +293,44 @@ from personal_skill_studio.training_artifacts.training_run_engine import (
     create_training_run_load_dry_run,
     get_training_run,
     list_training_runs,
+)
+from personal_skill_studio.training_artifacts.training_material_runtime import (
+    boundary_status as raw_training_material_boundary_status,
+    build_experience_candidates as build_raw_based_experience_candidates,
+    build_redacted_experience_package,
+    build_v735a_status,
+    build_v735b_status,
+    get_document_parse_job as get_training_material_document_parse_job,
+    get_experience_candidate as get_raw_based_experience_candidate,
+    get_material as get_training_material,
+    get_ocr_job as get_training_material_ocr_job,
+    get_parse_quality_gate as get_training_material_parse_quality_gate,
+    get_redacted_experience_package,
+    list_document_parse_jobs as list_training_material_document_parse_jobs,
+    list_evidence_indexes,
+    list_experience_candidates as list_raw_based_experience_candidates,
+    list_judgment_structures,
+    list_legal_retrieval_jobs as list_training_material_legal_retrieval_jobs,
+    list_materials as list_training_materials,
+    list_ocr_jobs as list_training_material_ocr_jobs,
+    list_redacted_experience_packages,
+    list_rule_alignments as list_training_material_rule_alignments,
+    list_work_product_structures,
+    package_audit as get_redacted_experience_package_audit,
+    package_source_trace as get_redacted_experience_package_source_trace,
+    redaction_report as get_redacted_experience_package_redaction_report,
+    register_material as register_training_material,
+    run_document_parse_job,
+    run_legal_retrieval as run_training_material_legal_retrieval,
+    run_ocr_job as run_training_material_ocr,
+    run_parse_quality_gate as run_training_material_parse_quality_gate,
+    run_rule_alignment as run_training_material_rule_alignment,
+    run_structure_jobs as run_training_material_structure_jobs,
+)
+from personal_skill_studio.training_artifacts.safe_provider_adapter_runtime import (
+    call_provider_placeholder,
+    list_provider_adapters,
+    provider_adapter_status,
 )
 
 
@@ -1286,6 +1345,333 @@ def training_run_logs() -> dict[str, Any]:
 @router.get("/training-run/gate-report")
 def training_run_gate_report() -> dict[str, Any]:
     return get_codex_internal_training_gate_report()
+
+
+@router.get("/training-materials/raw-boundary/status")
+def training_materials_raw_boundary_status() -> dict[str, Any]:
+    return raw_training_material_boundary_status()
+
+
+@router.post("/training-materials/register")
+async def training_materials_register(request: Request) -> dict[str, Any]:
+    return register_training_material(await _safe_request_payload(request))
+
+
+@router.get("/training-materials")
+def training_materials() -> dict[str, Any]:
+    return list_training_materials()
+
+
+@router.post("/training-materials/ocr-jobs/run")
+async def training_material_ocr_jobs_run(request: Request) -> dict[str, Any]:
+    return run_training_material_ocr(await _safe_request_payload(request))
+
+
+@router.get("/training-materials/ocr-jobs")
+def training_material_ocr_jobs() -> dict[str, Any]:
+    return list_training_material_ocr_jobs()
+
+
+@router.get("/training-materials/ocr-jobs/{ocr_job_id}")
+def training_material_ocr_job_detail(ocr_job_id: str) -> dict[str, Any]:
+    return _ensure(get_training_material_ocr_job(ocr_job_id))
+
+
+@router.post("/training-materials/document-parse-jobs/run")
+async def training_material_document_parse_jobs_run(request: Request) -> dict[str, Any]:
+    return run_document_parse_job(await _safe_request_payload(request))
+
+
+@router.get("/training-materials/document-parse-jobs")
+def training_material_document_parse_jobs() -> dict[str, Any]:
+    return list_training_material_document_parse_jobs()
+
+
+@router.get("/training-materials/document-parse-jobs/{parse_job_id}")
+def training_material_document_parse_job_detail(parse_job_id: str) -> dict[str, Any]:
+    return _ensure(get_training_material_document_parse_job(parse_job_id))
+
+
+@router.post("/training-materials/structure-jobs/run")
+async def training_material_structure_jobs_run(request: Request) -> dict[str, Any]:
+    return run_training_material_structure_jobs(await _safe_request_payload(request))
+
+
+@router.get("/training-materials/judgment-structures")
+def training_material_judgment_structures() -> dict[str, Any]:
+    return list_judgment_structures()
+
+
+@router.get("/training-materials/work-product-structures")
+def training_material_work_product_structures() -> dict[str, Any]:
+    return list_work_product_structures()
+
+
+@router.get("/training-materials/evidence-indexes")
+def training_material_evidence_indexes() -> dict[str, Any]:
+    return list_evidence_indexes()
+
+
+@router.post("/training-materials/legal-retrieval-jobs/run")
+async def training_material_legal_retrieval_jobs_run(request: Request) -> dict[str, Any]:
+    return run_training_material_legal_retrieval(await _safe_request_payload(request))
+
+
+@router.get("/training-materials/legal-retrieval-jobs")
+def training_material_legal_retrieval_jobs() -> dict[str, Any]:
+    return list_training_material_legal_retrieval_jobs()
+
+
+@router.post("/training-materials/rule-alignment/run")
+async def training_material_rule_alignment_run(request: Request) -> dict[str, Any]:
+    return run_training_material_rule_alignment(await _safe_request_payload(request))
+
+
+@router.get("/training-materials/rule-alignments")
+def training_material_rule_alignments() -> dict[str, Any]:
+    return list_training_material_rule_alignments()
+
+
+@router.post("/training-materials/parse-quality-gate/run")
+async def training_material_parse_quality_gate_run(request: Request) -> dict[str, Any]:
+    return run_training_material_parse_quality_gate(await _safe_request_payload(request))
+
+
+@router.get("/training-materials/parse-quality-gate/{material_batch_id}")
+def training_material_parse_quality_gate_detail(material_batch_id: str) -> dict[str, Any]:
+    return _ensure(get_training_material_parse_quality_gate(material_batch_id))
+
+
+@router.get("/v7-35a/status")
+def v735a_status() -> dict[str, Any]:
+    return build_v735a_status()
+
+
+@router.post("/training-materials/experience-candidates/build")
+async def training_material_experience_candidates_build(request: Request) -> dict[str, Any]:
+    return build_raw_based_experience_candidates(await _safe_request_payload(request))
+
+
+@router.get("/training-materials/experience-candidates")
+def training_material_experience_candidates() -> dict[str, Any]:
+    return list_raw_based_experience_candidates()
+
+
+@router.get("/training-materials/experience-candidates/{candidate_id}")
+def training_material_experience_candidate_detail(candidate_id: str) -> dict[str, Any]:
+    return _ensure(get_raw_based_experience_candidate(candidate_id))
+
+
+@router.post("/training-materials/redacted-experience-packages/build")
+async def training_material_redacted_experience_package_build(request: Request) -> dict[str, Any]:
+    return build_redacted_experience_package(await _safe_request_payload(request))
+
+
+@router.get("/training-materials/redacted-experience-packages")
+def training_material_redacted_experience_packages() -> dict[str, Any]:
+    return list_redacted_experience_packages()
+
+
+@router.get("/training-materials/redacted-experience-packages/{package_id}")
+def training_material_redacted_experience_package_detail(package_id: str) -> dict[str, Any]:
+    return _ensure(get_redacted_experience_package(package_id))
+
+
+@router.get("/training-materials/redacted-experience-packages/{package_id}/redaction-report")
+def training_material_redacted_experience_package_redaction_report(package_id: str) -> dict[str, Any]:
+    return _ensure(get_redacted_experience_package_redaction_report(package_id))
+
+
+@router.get("/training-materials/redacted-experience-packages/{package_id}/audit")
+def training_material_redacted_experience_package_audit(package_id: str) -> dict[str, Any]:
+    return _ensure(get_redacted_experience_package_audit(package_id))
+
+
+@router.get("/training-materials/redacted-experience-packages/{package_id}/source-trace")
+def training_material_redacted_experience_package_source_trace(package_id: str) -> dict[str, Any]:
+    return _ensure(get_redacted_experience_package_source_trace(package_id))
+
+
+@router.get("/v7-35b/status")
+def v735b_status() -> dict[str, Any]:
+    return build_v735b_status()
+
+
+@router.get("/training-materials/{training_material_id}")
+def training_material_detail(training_material_id: str) -> dict[str, Any]:
+    return _ensure(get_training_material(training_material_id))
+
+
+@router.post("/training-datasets/build")
+async def training_datasets_build_alias(request: Request) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = TrainingDatasetBuildRequest(**payload)
+    return build_training_dataset(action)
+
+
+@router.get("/training-datasets")
+def training_datasets_alias() -> dict[str, Any]:
+    from personal_skill_studio.training_artifacts.training_dataset_builder import list_training_dataset_manifests
+
+    return list_training_dataset_manifests()
+
+
+@router.get("/training-datasets/{training_dataset_id}")
+def training_dataset_detail_alias(training_dataset_id: str) -> dict[str, Any]:
+    from personal_skill_studio.training_artifacts.training_dataset_builder import list_training_dataset_manifests
+
+    manifests = list_training_dataset_manifests().get("manifests", [])
+    return _ensure(next((item for item in manifests if item.get("dataset_id") == training_dataset_id), None))
+
+
+@router.get("/training-datasets/{training_dataset_id}/examples")
+def training_dataset_examples_alias(training_dataset_id: str) -> dict[str, Any]:
+    return list_training_dataset_examples()
+
+
+@router.get("/training-datasets/{training_dataset_id}/task-plan")
+def training_dataset_task_plan_alias(training_dataset_id: str) -> dict[str, Any]:
+    dataset = training_dataset_detail_alias(training_dataset_id)
+    return _ensure(dataset.get("task_plan"))
+
+
+@router.post("/training-datasets/{training_dataset_id}/gate/run")
+def training_dataset_gate_run_alias(training_dataset_id: str) -> dict[str, Any]:
+    return get_training_gate_report()
+
+
+@router.get("/training-datasets/{training_dataset_id}/gate-report")
+def training_dataset_gate_report_alias(training_dataset_id: str) -> dict[str, Any]:
+    return get_training_gate_report()
+
+
+@router.get("/training-datasets/{training_dataset_id}/audit")
+def training_dataset_audit_alias(training_dataset_id: str) -> dict[str, Any]:
+    return {"dataset_id": training_dataset_id, "audit_id": f"{training_dataset_id}_audit", "events": [{"event": "dataset_metadata_built", "status": "metadata_only"}], "event_count": 1}
+
+
+@router.get("/training-datasets/{training_dataset_id}/source-trace")
+def training_dataset_source_trace_alias(training_dataset_id: str) -> dict[str, Any]:
+    return {"dataset_id": training_dataset_id, "source_trace_id": f"{training_dataset_id}_source_trace", "trace_status": "complete_metadata_only"}
+
+
+@router.get("/v7-36/status")
+def v736_dataset_status_alias() -> dict[str, Any]:
+    return get_training_dataset_status()
+
+
+@router.get("/codex-training-skills/interface-doc")
+def codex_training_skill_interface_doc() -> dict[str, Any]:
+    return get_training_skill_interface_doc()
+
+
+@router.get("/codex-training-skills/provider-adapters")
+def codex_training_skill_provider_adapters() -> dict[str, Any]:
+    return list_provider_adapters()
+
+
+@router.get("/codex-training-skills/provider-adapters/{provider_type}")
+def codex_training_skill_provider_adapter_status(provider_type: str) -> dict[str, Any]:
+    return _ensure(provider_adapter_status(provider_type))
+
+
+@router.post("/codex-training-skills/generate")
+async def codex_training_skills_generate(request: Request) -> dict[str, Any]:
+    return generate_training_skill(await _safe_request_payload(request))
+
+
+@router.get("/codex-training-skills")
+def codex_training_skills() -> dict[str, Any]:
+    return list_training_skills()
+
+
+@router.get("/codex-training-skills/{training_skill_id}")
+def codex_training_skill_detail(training_skill_id: str) -> dict[str, Any]:
+    return _ensure(get_training_skill(training_skill_id))
+
+
+@router.post("/codex-training-skills/{training_skill_id}/gate/run")
+def codex_training_skill_gate_run(training_skill_id: str) -> dict[str, Any]:
+    return _ensure(run_training_skill_gate(training_skill_id))
+
+
+@router.get("/codex-training-skills/{training_skill_id}/gate-report")
+def codex_training_skill_gate_report(training_skill_id: str) -> dict[str, Any]:
+    return _ensure(get_training_skill_gate_report(training_skill_id))
+
+
+@router.get("/codex-training-skills/{training_skill_id}/audit")
+def codex_training_skill_audit(training_skill_id: str) -> dict[str, Any]:
+    return _ensure(get_training_skill_audit(training_skill_id))
+
+
+@router.get("/codex-training-skills/{training_skill_id}/source-trace")
+def codex_training_skill_source_trace(training_skill_id: str) -> dict[str, Any]:
+    return _ensure(get_training_skill_source_trace(training_skill_id))
+
+
+@router.post("/codex-training-skills/{training_skill_id}/provider-call/mock")
+async def codex_training_skill_provider_call_mock(training_skill_id: str, request: Request) -> dict[str, Any]:
+    _ensure(get_training_skill(training_skill_id))
+    payload = await _safe_request_payload(request)
+    provider_type = str(payload.get("provider_type") or "OCR_API")
+    method_name = payload.get("method_name")
+    return _ensure(call_provider_placeholder(provider_type, str(method_name) if method_name else None))
+
+
+@router.get("/v7-37/status")
+def v737_training_skill_status_alias() -> dict[str, Any]:
+    return build_v737_training_skill_status()
+
+
+@router.post("/codex-skill-training-runs/start")
+async def codex_skill_training_runs_start(request: Request) -> dict[str, Any]:
+    return start_skill_training_run(await _safe_request_payload(request))
+
+
+@router.get("/codex-skill-training-runs")
+def codex_skill_training_runs() -> dict[str, Any]:
+    return list_skill_training_runs()
+
+
+@router.get("/codex-skill-training-runs/{training_run_id}")
+def codex_skill_training_run_detail(training_run_id: str) -> dict[str, Any]:
+    return _ensure(get_skill_training_run(training_run_id))
+
+
+@router.get("/codex-skill-training-runs/{training_run_id}/logs")
+def codex_skill_training_run_logs(training_run_id: str) -> dict[str, Any]:
+    return _ensure(get_skill_training_logs(training_run_id))
+
+
+@router.get("/codex-skill-training-runs/{training_run_id}/metrics")
+def codex_skill_training_run_metrics(training_run_id: str) -> dict[str, Any]:
+    return _ensure(get_skill_training_metrics(training_run_id))
+
+
+@router.get("/codex-skill-training-runs/{training_run_id}/gate-report")
+def codex_skill_training_run_gate_report(training_run_id: str) -> dict[str, Any]:
+    return _ensure(get_skill_training_gate_report(training_run_id))
+
+
+@router.get("/codex-skill-training-runs/{training_run_id}/artifact")
+def codex_skill_training_run_artifact(training_run_id: str) -> dict[str, Any]:
+    return _ensure(get_skill_training_artifact(training_run_id))
+
+
+@router.get("/codex-skill-training-runs/{training_run_id}/audit")
+def codex_skill_training_run_audit(training_run_id: str) -> dict[str, Any]:
+    return _ensure(get_skill_training_audit(training_run_id))
+
+
+@router.get("/codex-skill-training-runs/{training_run_id}/source-trace")
+def codex_skill_training_run_source_trace(training_run_id: str) -> dict[str, Any]:
+    return _ensure(get_skill_training_source_trace(training_run_id))
+
+
+@router.get("/v7-38/status")
+def v738_status() -> dict[str, Any]:
+    return build_v738_status()
 
 
 async def _safe_request_payload(request: Request) -> dict[str, Any]:

@@ -94,6 +94,46 @@ import {
   getPersonalCodexInternalTrainingStatus,
   listPersonalCodexInternalTrainingLogs,
   getPersonalCodexInternalTrainingGateReport,
+  getPersonalRawTrainingMaterialBoundaryStatus,
+  registerPersonalTrainingMaterial,
+  listPersonalTrainingMaterials,
+  runPersonalTrainingMaterialOCR,
+  listPersonalTrainingMaterialOCRJobs,
+  runPersonalTrainingMaterialDocumentParse,
+  listPersonalTrainingMaterialDocumentParseJobs,
+  runPersonalTrainingMaterialStructureJob,
+  listPersonalJudgmentStructures,
+  listPersonalWorkProductStructures,
+  listPersonalEvidenceIndexes,
+  runPersonalTrainingMaterialLegalRetrieval,
+  listPersonalTrainingMaterialLegalRetrievalJobs,
+  runPersonalTrainingMaterialRuleAlignment,
+  listPersonalTrainingMaterialRuleAlignments,
+  runPersonalTrainingMaterialParseQualityGate,
+  getPersonalV735aStatus,
+  buildPersonalRawBasedExperienceCandidates,
+  listPersonalRawBasedExperienceCandidates,
+  buildPersonalRedactedExperiencePackage,
+  listPersonalRedactedExperiencePackages,
+  getPersonalRedactedExperiencePackageRedactionReport,
+  getPersonalRedactedExperiencePackageAudit,
+  getPersonalRedactedExperiencePackageSourceTrace,
+  getPersonalV735bStatus,
+  getPersonalCodexTrainingSkillInterfaceDoc,
+  listPersonalCodexTrainingSkillProviderAdapters,
+  callPersonalCodexTrainingSkillProviderMock,
+  generatePersonalCodexTrainingSkill,
+  listPersonalCodexTrainingSkills,
+  runPersonalCodexTrainingSkillGate,
+  getPersonalCodexTrainingSkillGateReport,
+  getPersonalV737TrainingSkillStatus,
+  startPersonalCodexSkillTrainingRun,
+  listPersonalCodexSkillTrainingRuns,
+  getPersonalCodexSkillTrainingRunLogs,
+  getPersonalCodexSkillTrainingMetrics,
+  getPersonalCodexSkillTrainingGateReport,
+  getPersonalCodexSkillTrainingArtifact,
+  getPersonalV738Status,
   listPersonalCaseAnalysisOutputFeedback,
   listPersonalCaseAnalysisOutputRiskEvents,
   listPersonalCaseAnalysisWorkbenchViews,
@@ -203,6 +243,14 @@ export default function PersonalTrainingArtifactsPage() {
   const [trainingDryRunArtifacts, setTrainingDryRunArtifacts] = useState<Record<string, any>>({});
   const [internalTrainingResult, setInternalTrainingResult] = useState<Record<string, any> | null>(null);
   const [internalTrainingArtifacts, setInternalTrainingArtifacts] = useState<Record<string, any>>({});
+  const [rawTrainingMaterialResult, setRawTrainingMaterialResult] = useState<Record<string, any> | null>(null);
+  const [rawTrainingMaterialArtifacts, setRawTrainingMaterialArtifacts] = useState<Record<string, any>>({});
+  const [redactedExperienceResult, setRedactedExperienceResult] = useState<Record<string, any> | null>(null);
+  const [redactedExperienceArtifacts, setRedactedExperienceArtifacts] = useState<Record<string, any>>({});
+  const [codexTrainingSkillResult, setCodexTrainingSkillResult] = useState<Record<string, any> | null>(null);
+  const [codexTrainingSkillArtifacts, setCodexTrainingSkillArtifacts] = useState<Record<string, any>>({});
+  const [codexSkillTrainingRunResult, setCodexSkillTrainingRunResult] = useState<Record<string, any> | null>(null);
+  const [codexSkillTrainingRunArtifacts, setCodexSkillTrainingRunArtifacts] = useState<Record<string, any>>({});
   const [improvementFilter, setImprovementFilter] = useState({
     candidateType: "all",
     changeType: "all",
@@ -283,7 +331,26 @@ export default function PersonalTrainingArtifactsPage() {
         trainingDryRunGateReport,
         internalTrainingStatus,
         internalTrainingLogs,
-        internalTrainingGateReport
+        internalTrainingGateReport,
+        rawTrainingBoundaryStatus,
+        trainingMaterials,
+        trainingMaterialOcrJobs,
+        trainingMaterialParseJobs,
+        judgmentStructures,
+        workProductStructures,
+        evidenceIndexes,
+        trainingMaterialLegalRetrievalJobs,
+        trainingMaterialRuleAlignments,
+        v735aStatus,
+        rawBasedExperienceCandidates,
+        redactedExperiencePackages,
+        v735bStatus,
+        trainingSkillInterfaceDoc,
+        trainingSkillProviderAdapters,
+        codexTrainingSkills,
+        v737TrainingSkillStatus,
+        codexSkillTrainingRuns,
+        v738Status
       ] = await Promise.all([
         getPersonalTrainingArtifactStatus(),
         getPersonalTrainingArtifactScheme(),
@@ -336,7 +403,26 @@ export default function PersonalTrainingArtifactsPage() {
         getPersonalCodexTrainingDryRunGateReport(),
         getPersonalCodexInternalTrainingStatus(),
         listPersonalCodexInternalTrainingLogs(),
-        getPersonalCodexInternalTrainingGateReport()
+        getPersonalCodexInternalTrainingGateReport(),
+        getPersonalRawTrainingMaterialBoundaryStatus(),
+        listPersonalTrainingMaterials(),
+        listPersonalTrainingMaterialOCRJobs(),
+        listPersonalTrainingMaterialDocumentParseJobs(),
+        listPersonalJudgmentStructures(),
+        listPersonalWorkProductStructures(),
+        listPersonalEvidenceIndexes(),
+        listPersonalTrainingMaterialLegalRetrievalJobs(),
+        listPersonalTrainingMaterialRuleAlignments(),
+        getPersonalV735aStatus(),
+        listPersonalRawBasedExperienceCandidates(),
+        listPersonalRedactedExperiencePackages(),
+        getPersonalV735bStatus(),
+        getPersonalCodexTrainingSkillInterfaceDoc(),
+        listPersonalCodexTrainingSkillProviderAdapters(),
+        listPersonalCodexTrainingSkills(),
+        getPersonalV737TrainingSkillStatus(),
+        listPersonalCodexSkillTrainingRuns(),
+        getPersonalV738Status()
       ]);
       setData({
         status,
@@ -390,7 +476,26 @@ export default function PersonalTrainingArtifactsPage() {
         trainingDryRunGateReport,
         internalTrainingStatus,
         internalTrainingLogs,
-        internalTrainingGateReport
+        internalTrainingGateReport,
+        rawTrainingBoundaryStatus,
+        trainingMaterials,
+        trainingMaterialOcrJobs,
+        trainingMaterialParseJobs,
+        judgmentStructures,
+        workProductStructures,
+        evidenceIndexes,
+        trainingMaterialLegalRetrievalJobs,
+        trainingMaterialRuleAlignments,
+        v735aStatus,
+        rawBasedExperienceCandidates,
+        redactedExperiencePackages,
+        v735bStatus,
+        trainingSkillInterfaceDoc,
+        trainingSkillProviderAdapters,
+        codexTrainingSkills,
+        v737TrainingSkillStatus,
+        codexSkillTrainingRuns,
+        v738Status
       });
       const lifecycleId = experienceLifecycles.lifecycles?.[0]?.lifecycle_id;
       if (lifecycleId) {
@@ -1030,6 +1135,82 @@ export default function PersonalTrainingArtifactsPage() {
     setData((current) => ({ ...current, internalTrainingStatus: status, internalTrainingLogs: logs, internalTrainingGateReport: gateReport }));
   }
 
+  async function runRawTrainingMaterialPipeline() {
+    const material = await registerPersonalTrainingMaterial();
+    const [ocrJob, parseJob, structures, legalRetrieval, ruleAlignment, parseGate] = await Promise.all([
+      runPersonalTrainingMaterialOCR(),
+      runPersonalTrainingMaterialDocumentParse(),
+      runPersonalTrainingMaterialStructureJob(),
+      runPersonalTrainingMaterialLegalRetrieval(),
+      runPersonalTrainingMaterialRuleAlignment(),
+      runPersonalTrainingMaterialParseQualityGate()
+    ]);
+    const [status, materials, ocrJobs, parseJobs, judgmentStructures, workProductStructures, evidenceIndexes, legalRetrievalJobs, ruleAlignments] = await Promise.all([
+      getPersonalV735aStatus(),
+      listPersonalTrainingMaterials(),
+      listPersonalTrainingMaterialOCRJobs(),
+      listPersonalTrainingMaterialDocumentParseJobs(),
+      listPersonalJudgmentStructures(),
+      listPersonalWorkProductStructures(),
+      listPersonalEvidenceIndexes(),
+      listPersonalTrainingMaterialLegalRetrievalJobs(),
+      listPersonalTrainingMaterialRuleAlignments()
+    ]);
+    setRawTrainingMaterialResult({ material, ocrJob, parseJob, structures, legalRetrieval, ruleAlignment, parseGate });
+    setRawTrainingMaterialArtifacts({ status, materials, ocrJobs, parseJobs, judgmentStructures, workProductStructures, evidenceIndexes, legalRetrievalJobs, ruleAlignments });
+    setData((current) => ({ ...current, v735aStatus: status, trainingMaterials: materials, trainingMaterialOcrJobs: ocrJobs, trainingMaterialParseJobs: parseJobs, judgmentStructures, workProductStructures, evidenceIndexes, trainingMaterialLegalRetrievalJobs: legalRetrievalJobs, trainingMaterialRuleAlignments: ruleAlignments }));
+  }
+
+  async function buildRedactedExperienceOutput() {
+    const candidates = await buildPersonalRawBasedExperienceCandidates();
+    const packageResult = await buildPersonalRedactedExperiencePackage();
+    const packageId = String(packageResult.redacted_experience_package_id ?? "");
+    const [status, candidateList, packageList, redactionReport, audit, sourceTrace] = await Promise.all([
+      getPersonalV735bStatus(),
+      listPersonalRawBasedExperienceCandidates(),
+      listPersonalRedactedExperiencePackages(),
+      packageId ? getPersonalRedactedExperiencePackageRedactionReport(packageId) : Promise.resolve(null),
+      packageId ? getPersonalRedactedExperiencePackageAudit(packageId) : Promise.resolve(null),
+      packageId ? getPersonalRedactedExperiencePackageSourceTrace(packageId) : Promise.resolve(null)
+    ]);
+    setRedactedExperienceResult(packageResult);
+    setRedactedExperienceArtifacts({ candidates, status, candidateList, packageList, redactionReport, audit, sourceTrace });
+    setData((current) => ({ ...current, v735bStatus: status, rawBasedExperienceCandidates: candidateList, redactedExperiencePackages: packageList }));
+  }
+
+  async function generateTrainingSkillSpec() {
+    const result = await generatePersonalCodexTrainingSkill();
+    const skillId = String(result.training_skill_id ?? "");
+    const [interfaceDoc, adapters, gateReport, providerCall, status, skillList] = await Promise.all([
+      getPersonalCodexTrainingSkillInterfaceDoc(),
+      listPersonalCodexTrainingSkillProviderAdapters(),
+      skillId ? runPersonalCodexTrainingSkillGate(skillId) : Promise.resolve(null),
+      skillId ? callPersonalCodexTrainingSkillProviderMock(skillId, "OCR_API", "submit_ocr_job") : Promise.resolve(null),
+      getPersonalV737TrainingSkillStatus(),
+      listPersonalCodexTrainingSkills()
+    ]);
+    setCodexTrainingSkillResult(result);
+    setCodexTrainingSkillArtifacts({ interfaceDoc, adapters, gateReport, providerCall, status, skillList });
+    setData((current) => ({ ...current, trainingSkillInterfaceDoc: interfaceDoc, trainingSkillProviderAdapters: adapters, v737TrainingSkillStatus: status, codexTrainingSkills: skillList }));
+  }
+
+  async function startCodexSkillTrainingRun() {
+    const skillId = codexTrainingSkillResult?.training_skill_id ?? data.codexTrainingSkills?.training_skills?.[0]?.training_skill_id;
+    const result = await startPersonalCodexSkillTrainingRun(skillId);
+    const runId = String(result.training_run_id ?? "");
+    const [status, runList, logs, metrics, gateReport, artifact] = await Promise.all([
+      getPersonalV738Status(),
+      listPersonalCodexSkillTrainingRuns(),
+      runId ? getPersonalCodexSkillTrainingRunLogs(runId) : Promise.resolve(null),
+      runId ? getPersonalCodexSkillTrainingMetrics(runId) : Promise.resolve(null),
+      runId ? getPersonalCodexSkillTrainingGateReport(runId) : Promise.resolve(null),
+      runId ? getPersonalCodexSkillTrainingArtifact(runId) : Promise.resolve(null)
+    ]);
+    setCodexSkillTrainingRunResult(result);
+    setCodexSkillTrainingRunArtifacts({ status, runList, logs, metrics, gateReport, artifact });
+    setData((current) => ({ ...current, v738Status: status, codexSkillTrainingRuns: runList }));
+  }
+
   const taxonomyNodes = (data.taxonomy?.nodes ?? []) as CaseCauseNode[];
   const lifecycle = experienceLifecycleArtifacts.lifecycle ?? data.experienceLifecycles?.lifecycles?.[0];
   const lifecycleEvents = (experienceLifecycleArtifacts.state?.stage_events ?? lifecycle?.stage_events ?? []) as Record<string, any>[];
@@ -1068,6 +1249,33 @@ export default function PersonalTrainingArtifactsPage() {
   const internalTrainingLogs = internalTrainingArtifacts.logs?.logs ?? data.internalTrainingLogs?.logs ?? internalTrainingResult?.logs ?? [];
   const internalTrainingGateReport = internalTrainingArtifacts.gateReport ?? data.internalTrainingGateReport;
   const internalTrainingMetrics = internalTrainingResult?.metrics ?? internalTrainingGateReport?.metrics_summary;
+  const rawMaterialStatus = rawTrainingMaterialArtifacts.status ?? data.v735aStatus;
+  const trainingMaterialList = rawTrainingMaterialArtifacts.materials?.training_materials ?? data.trainingMaterials?.training_materials ?? [];
+  const rawOcrJobs = rawTrainingMaterialArtifacts.ocrJobs?.ocr_jobs ?? data.trainingMaterialOcrJobs?.ocr_jobs ?? [];
+  const rawParseJobs = rawTrainingMaterialArtifacts.parseJobs?.document_parse_jobs ?? data.trainingMaterialParseJobs?.document_parse_jobs ?? [];
+  const rawLegalJobs = rawTrainingMaterialArtifacts.legalRetrievalJobs?.legal_retrieval_jobs ?? data.trainingMaterialLegalRetrievalJobs?.legal_retrieval_jobs ?? [];
+  const rawRuleAlignments = rawTrainingMaterialArtifacts.ruleAlignments?.rule_alignments ?? data.trainingMaterialRuleAlignments?.rule_alignments ?? [];
+  const redactedStatus = redactedExperienceArtifacts.status ?? data.v735bStatus;
+  const rawBasedCandidates = redactedExperienceArtifacts.candidateList?.candidates ?? data.rawBasedExperienceCandidates?.candidates ?? [];
+  const redactedPackages = redactedExperienceArtifacts.packageList?.redacted_experience_packages ?? data.redactedExperiencePackages?.redacted_experience_packages ?? [];
+  const trainingSkillInterfaceDoc = codexTrainingSkillArtifacts.interfaceDoc ?? data.trainingSkillInterfaceDoc;
+  const trainingSkillAdapters = codexTrainingSkillArtifacts.adapters?.provider_specs ?? data.trainingSkillProviderAdapters?.provider_specs ?? [];
+  const trainingSkillList = codexTrainingSkillArtifacts.skillList?.training_skills ?? data.codexTrainingSkills?.training_skills ?? [];
+  const trainingSkillGateReport = codexTrainingSkillArtifacts.gateReport;
+  const trainingSkillProviderCall = codexTrainingSkillArtifacts.providerCall;
+  const v737TrainingSkillStatus = codexTrainingSkillArtifacts.status ?? data.v737TrainingSkillStatus;
+  const trainingSkillExperiencePackage = codexTrainingSkillResult?.differentiated_fact_extraction_experience_package ?? trainingSkillList[0]?.differentiated_fact_extraction_experience_package;
+  const trainingSkillCaseCauseSummaries = trainingSkillExperiencePackage?.case_cause_specific_fact_summaries ?? [];
+  const trainingSkillCaseCauseProfiles = trainingSkillExperiencePackage?.case_cause_profiles ?? [];
+  const trainingSkillSubstantiveProfiles = trainingSkillExperiencePackage?.substantive_experience_profiles ?? trainingSkillCaseCauseProfiles.flatMap((item: any) => item.substantive_experience_profiles ?? []);
+  const trainingSkillProceduralProfiles = trainingSkillExperiencePackage?.procedural_experience_profiles ?? trainingSkillCaseCauseProfiles.flatMap((item: any) => item.procedural_experience_profiles ?? item.procedural_profiles ?? []);
+  const codexSkillRunList = codexSkillTrainingRunArtifacts.runList?.training_runs ?? data.codexSkillTrainingRuns?.training_runs ?? [];
+  const codexSkillRunMetrics = codexSkillTrainingRunArtifacts.metrics ?? codexSkillTrainingRunResult?.metrics;
+  const codexSkillRunGate = codexSkillTrainingRunArtifacts.gateReport;
+  const codexSkillArtifact = codexSkillTrainingRunArtifacts.artifact ?? codexSkillTrainingRunResult?.artifact;
+  const codexSkillGeneratedPackage = codexSkillArtifact?.generated_experience_package ?? codexSkillTrainingRunResult?.artifact?.generated_experience_package;
+  const codexSkillGeneratedSubstantiveProfiles = codexSkillGeneratedPackage?.substantive_experience_profiles ?? [];
+  const codexSkillGeneratedProfiles = codexSkillGeneratedPackage?.procedural_experience_profiles ?? (codexSkillGeneratedPackage?.case_cause_profiles ?? []).flatMap((item: any) => item.procedural_experience_profiles ?? item.procedural_profiles ?? []);
   const candidateTypes = unique(improvementCandidates.map((candidate) => candidate.candidate_type));
   const changeTypes = unique(improvementCandidates.map((candidate) => candidate.proposed_change_type));
   const candidateSeverities = unique(improvementCandidates.map((candidate) => candidate.candidate_severity));
@@ -1776,6 +1984,89 @@ export default function PersonalTrainingArtifactsPage() {
           </div>
         </Panel>
 
+        <Panel title="v7.35a Raw Training Material Boundary / 未脱敏基础材料受控解析">
+          <div className="grid gap-4 md:grid-cols-5">
+            <StatusCard label="Boundary" value={rawMaterialStatus?.latest_gate_status ?? data.rawTrainingBoundaryStatus?.controlled_zone_status ?? "ready"} detail="controlled zone" tone="safe" />
+            <StatusCard label="Materials" value={trainingMaterialList.length || rawMaterialStatus?.material_count || 0} detail="metadata only" tone="info" />
+            <StatusCard label="OCR" value={rawOcrJobs.length || rawMaterialStatus?.ocr_job_count || 0} detail="no text display" tone="safe" />
+            <StatusCard label="Legal" value={rawLegalJobs.length || rawMaterialStatus?.legal_retrieval_job_count || 0} detail="mock / gated" tone="warning" />
+            <StatusCard label="Gate" value={rawTrainingMaterialResult?.parseGate?.gate_status ?? rawMaterialStatus?.latest_gate_status ?? "not_run"} detail="parse quality" tone="info" />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void runRawTrainingMaterialPipeline()}>
+              运行受控解析链路
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void loadArtifacts()}>
+              刷新 v7.35a
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <Info title="Material Registry" items={[
+              `material_count=${trainingMaterialList.length || 0}`,
+              `latest_material=${rawTrainingMaterialResult?.material?.training_material_id ?? trainingMaterialList[0]?.training_material_id ?? "pending"}`,
+              `source_zone=${rawTrainingMaterialResult?.material?.source_zone_status ?? trainingMaterialList[0]?.source_zone_status ?? "controlled_private_processing"}`,
+              "frontend_source_display_allowed=false"
+            ]} />
+            <Info title="Parse Jobs" items={[
+              `ocr_jobs=${rawOcrJobs.length}`,
+              `parse_jobs=${rawParseJobs.length}`,
+              `judgment_structures=${rawTrainingMaterialArtifacts.judgmentStructures?.structure_count ?? data.judgmentStructures?.structure_count ?? 0}`,
+              `evidence_indexes=${rawTrainingMaterialArtifacts.evidenceIndexes?.index_count ?? data.evidenceIndexes?.index_count ?? 0}`
+            ]} />
+            <Info title="Retrieval & Alignment" items={[
+              `legal_retrieval_jobs=${rawLegalJobs.length}`,
+              `rule_alignments=${rawRuleAlignments.length}`,
+              `quality_score=${rawTrainingMaterialResult?.parseGate?.quality_score ?? "pending"}`,
+              "provider_call_executed=false"
+            ]} />
+          </div>
+
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            未脱敏基础材料只允许在 controlled raw training material zone 内处理；前端/API/训练产物只展示脱敏摘要、质量分、audit/source trace 与状态，不展示材料原文或 OCR 原文。
+          </div>
+        </Panel>
+
+        <Panel title="v7.35b Redacted Experience Output / 脱敏经验包生成">
+          <div className="grid gap-4 md:grid-cols-5">
+            <StatusCard label="Candidates" value={rawBasedCandidates.length || redactedStatus?.candidate_count || 0} detail="abstracted" tone="info" />
+            <StatusCard label="Packages" value={redactedPackages.length || redactedStatus?.redacted_package_count || 0} detail="redacted" tone="safe" />
+            <StatusCard label="Ready" value={redactedStatus?.ready_for_training_dataset_count ?? 0} detail="dataset input" tone="safe" />
+            <StatusCard label="Redaction" value={redactedExperienceArtifacts.redactionReport?.source_payload_absent ?? true} detail="payload absent" tone="safe" />
+            <StatusCard label="Audit" value={redactedExperienceArtifacts.audit?.event_count ?? 0} detail="traceable" tone="info" />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void buildRedactedExperienceOutput()}>
+              生成脱敏经验输出
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void loadArtifacts()}>
+              刷新 v7.35b
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <Info title="Experience Candidates" items={(rawBasedCandidates.length ? rawBasedCandidates.slice(0, 4).map((item: any) => `${item.candidate_type}: ${item.redaction_status}`) : ["暂无候选；请先运行 v7.35a 并生成候选。"])} />
+            <Info title="Redacted Package" items={[
+              `package_id=${redactedExperienceResult?.redacted_experience_package_id ?? redactedPackages[0]?.redacted_experience_package_id ?? "pending"}`,
+              `status=${redactedExperienceResult?.package_status ?? redactedPackages[0]?.package_status ?? "pending"}`,
+              `cards=${redactedExperienceResult?.experience_cards?.length ?? redactedPackages[0]?.experience_cards?.length ?? 0}`,
+              `source_candidates=${redactedExperienceResult?.source_candidate_ids?.length ?? 0}`
+            ]} />
+            <Info title="Safety Gate" items={[
+              `source_payload_absent=${redactedExperienceArtifacts.redactionReport?.source_payload_absent ?? true}`,
+              `provider_payload_absent=${redactedExperienceArtifacts.redactionReport?.provider_payload_absent ?? true}`,
+              `source_trace_complete=${redactedExperienceArtifacts.redactionReport?.source_trace_complete ?? true}`,
+              `audit_complete=${redactedExperienceArtifacts.redactionReport?.audit_complete ?? true}`
+            ]} />
+          </div>
+
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            原始基础材料不进入经验包；经验候选、经验包、Training Dataset、Skill Spec 和 runtime loading 内容均保持脱敏、抽象化、metadata-safe。
+          </div>
+        </Panel>
+
         <Panel title="v7.35 Training Dataset Builder & Training Gate / 训练数据集与 Gate">
           <div className="grid gap-4 md:grid-cols-5">
             <StatusCard label="Ready Candidates" value={data.trainingDatasetStatus?.ready_candidate_count ?? data.caseImprovementStatus?.ready_for_training_dataset_build_count ?? 0} detail="v7.34 input only" tone="safe" />
@@ -1892,6 +2183,129 @@ export default function PersonalTrainingArtifactsPage() {
 
           <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
             v7.37 启动的是 owner-only internal training run metadata：可记录 internal/local CPU/GPU 模式的 metrics、log、audit 与 source trace；不调用外部 provider、不读取 key value、不替换 runtime package、不发布 Skill、不生成正式法律意见/报告/文件/邮件/公开链接。
+          </div>
+        </Panel>
+
+        <Panel title="Safe Callable Training Skill / 安全可调用接口训练 Skill">
+          <div className="grid gap-4 md:grid-cols-5">
+            <StatusCard label="Skill Spec" value={codexTrainingSkillResult?.skill_status ?? v737TrainingSkillStatus?.status ?? "ready"} detail={codexTrainingSkillResult?.training_skill_id ?? "pending"} tone="info" />
+            <StatusCard label="Baselines" value={codexTrainingSkillResult?.target_skill_ids?.length ?? trainingSkillInterfaceDoc?.baseline_skill_ids?.length ?? 2} detail="fact + legal" tone="safe" />
+            <StatusCard label="Adapters" value={trainingSkillAdapters.length} detail="provider specs" tone="info" />
+            <StatusCard label="Gate" value={trainingSkillGateReport?.gate_status ?? "not_run"} detail="callable boundary" tone="warning" />
+            <StatusCard label="Credential" value={trainingSkillProviderCall?.credential_value_returned ?? false} detail="not returned" tone="safe" />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void generateTrainingSkillSpec()}>
+              生成安全 Training Skill
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void loadArtifacts()}>
+              刷新 Skill Spec
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <Info title="Baseline Skills" items={[
+              ...(trainingSkillInterfaceDoc?.baseline_skill_ids ?? ["case_fact_extraction_skill", "case_legal_analysis_skill"]),
+              ...(codexTrainingSkillResult?.source_package_ids ?? trainingSkillInterfaceDoc?.legacy_package_refs ?? []).slice(0, 2)
+            ]} />
+            <Info title="Provider Specs" items={(trainingSkillAdapters.length ? trainingSkillAdapters.map((item: any) => `${item.provider_type}: ${item.credential_alias} loaded=${item.credential_loaded}`) : ["OCR_API / Legal_API / Enterprise_API 等待生成或刷新。"])} />
+            <Info title="Gate & Call Placeholder" items={[
+              `provider_call_gate=${trainingSkillGateReport?.provider_specs_available ?? false}`,
+              `adapter_contract=${trainingSkillGateReport?.adapter_contract_defined ?? false}`,
+              `facts_diff_ready=${trainingSkillGateReport?.case_cause_differentiation_ready ?? false}`,
+              `procedure_stage_ready=${trainingSkillGateReport?.procedural_stage_differentiation_ready ?? false}`,
+              `substantive_impact=${trainingSkillGateReport?.substantive_impact_ready ?? false}`,
+              `legal_summary_ready=${trainingSkillGateReport?.legal_summary_ready ?? false}`,
+              `mock_call=${trainingSkillProviderCall?.gate_status ?? "not_run"}`,
+              `live_call_executed=${trainingSkillProviderCall?.live_call_executed ?? false}`
+            ]} />
+            <Info title="Facts Experience Package" items={[
+              `framework_items=${trainingSkillExperiencePackage?.common_fact_extraction_framework?.length ?? 0}`,
+              `case_cause_count=${trainingSkillExperiencePackage?.case_cause_count ?? trainingSkillCaseCauseSummaries.length}`,
+              `substantive_profiles=${trainingSkillExperiencePackage?.substantive_experience_profile_count ?? trainingSkillSubstantiveProfiles.length}`,
+              `procedural_profiles=${trainingSkillExperiencePackage?.procedural_profile_count ?? trainingSkillProceduralProfiles.length}`,
+              trainingSkillExperiencePackage?.diff_summary ?? "等待生成差异化事实提炼经验包。"
+            ]} />
+            <Info title="Case Cause Points" items={(trainingSkillCaseCauseSummaries.length ? trainingSkillCaseCauseSummaries.slice(0, 4).map((item: any) => `${item.case_cause_name}: ${(item.case_cause_specific_fact_points ?? []).join(" / ")}`) : ["等待 Codex 从脱敏训练材料 metadata 中总结案由差异化事实点。"])} />
+            <Info title="Procedural Profiles" items={(trainingSkillProceduralProfiles.length ? trainingSkillProceduralProfiles.slice(0, 6).map((item: any) => `${item.profile_key}: ${item.procedure_type}/${item.procedure_stage} · ${(item.required_material_patterns ?? []).slice(0, 2).join(" / ")}`) : ["等待按案由 + 程序 + 阶段生成 profile。"])} />
+            <Info title="Substantive References" items={(trainingSkillSubstantiveProfiles.length ? trainingSkillSubstantiveProfiles.slice(0, 4).map((item: any) => `${item.experience_type}: ${item.source_procedure_stage} -> ${item.runtime_reference_type} · ${item.audit_id} · ${item.source_trace_id}`) : ["等待生成可跨程序参考的实体经验。"])} />
+            <Info title="Procedural Exact Match" items={(trainingSkillProceduralProfiles.length ? trainingSkillProceduralProfiles.slice(0, 4).map((item: any) => `${item.experience_type}: ${item.source_procedure_stage} -> ${item.runtime_reference_type} · cross=${String(item.cross_stage_reference_allowed ?? false)} · ${item.audit_id}`) : ["等待生成严格匹配的程序经验。"])} />
+            <Info title="Loading Contract" items={[
+              `substantive=${(trainingSkillExperiencePackage?.profile_loading_contract?.substantive_match_keys ?? ["case_cause_code", "substantive_issue", "fact_pattern", "evidence_pattern"]).join(" + ")}`,
+              `procedural=${(trainingSkillExperiencePackage?.profile_loading_contract?.procedural_match_keys ?? ["procedure_type", "procedure_stage"]).join(" + ")}`,
+              `loads=${(trainingSkillExperiencePackage?.profile_loading_contract?.loads ?? ["facts", "legal", "materials", "substantive_impact"]).join(" / ")}`,
+              `missing=${trainingSkillExperiencePackage?.profile_loading_contract?.missing_profile_action ?? "manual_confirmation_review_queue"}`
+            ]} />
+            <Info title="Legal Summary" items={[
+              trainingSkillExperiencePackage?.legal_summary ?? "等待生成法律要点 summary。",
+              `audit=${trainingSkillExperiencePackage?.audit_required ?? true}`,
+              `source_trace=${trainingSkillExperiencePackage?.source_trace_required ?? true}`
+            ]} />
+          </div>
+
+          <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
+            Training Skill 可记录 OCR_API / Legal_API / Enterprise_API 的 provider_type、credential alias、credential_loaded 与 gate_requirements；真实凭证只由后端 provider-gated adapter 在运行时加载，Skill、前端、日志、回归和文档都不保存或返回凭证值。
+          </div>
+        </Panel>
+
+        <Panel title="v7.38 Codex Skill Training Run / 安全 Skill 内部训练链路">
+          <div className="grid gap-4 md:grid-cols-5">
+            <StatusCard label="Run" value={codexSkillTrainingRunResult?.run_status ?? data.v738Status?.status ?? "ready"} detail={codexSkillTrainingRunResult?.training_run_id ?? "pending"} tone="info" />
+            <StatusCard label="Runs" value={codexSkillRunList.length || data.v738Status?.training_run_count || 0} detail="metadata only" tone="safe" />
+            <StatusCard label="Readiness" value={codexSkillRunMetrics?.readiness_score ?? 0} detail="simulation" tone="info" />
+            <StatusCard label="Artifact" value={codexSkillArtifact?.artifact_status ?? "pending"} detail="not publishable" tone="safe" />
+            <StatusCard label="Review" value={codexSkillArtifact?.requires_practice_load_review ?? true} detail="required" tone="warning" />
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" onClick={() => void startCodexSkillTrainingRun()}>
+              启动 v7.38 training run
+            </button>
+            <button type="button" className="rounded-md border border-line px-3 py-2 text-xs font-semibold text-ink" onClick={() => void loadArtifacts()}>
+              刷新 v7.38
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <Info title="Metrics" items={[
+              `examples=${codexSkillRunMetrics?.examples_count ?? 0}`,
+              `schema_alignment=${codexSkillRunMetrics?.schema_alignment_score ?? 0}`,
+              `safety=${codexSkillRunMetrics?.safety_score ?? 0}`,
+              `traceability=${codexSkillRunMetrics?.traceability_score ?? 0}`
+            ]} />
+            <Info title="Run Gate" items={[
+              `gate_status=${codexSkillRunGate?.gate_status ?? "pending"}`,
+              `facts_diff=${codexSkillRunGate?.facts_output_diff_check_passed ?? false}`,
+              `procedure_diff=${codexSkillRunGate?.procedural_stage_diff_check_passed ?? false}`,
+              `impact=${codexSkillRunGate?.substantive_impact_check_passed ?? false}`,
+              `legal_summary=${codexSkillRunGate?.legal_summary_check_passed ?? false}`,
+              `artifact_not_publishable=${codexSkillRunGate?.artifact_not_publishable ?? true}`,
+              `artifact_not_runtime_loadable=${codexSkillRunGate?.artifact_not_runtime_loadable ?? true}`,
+              `practice_load_review_required=${codexSkillRunGate?.practice_load_review_required ?? true}`
+            ]} />
+            <Info title="Artifact" items={[
+              `artifact_id=${codexSkillArtifact?.trained_artifact_id ?? "pending"}`,
+              `kind=${codexSkillArtifact?.artifact_kind ?? "training_skill_artifact_metadata"}`,
+              `diff_validated=${codexSkillArtifact?.case_cause_differentiation_validated ?? false}`,
+              `procedure_validated=${codexSkillArtifact?.procedural_stage_differentiation_validated ?? false}`,
+              `impact_validated=${codexSkillArtifact?.substantive_impact_validated ?? false}`,
+              `legal_validated=${codexSkillArtifact?.legal_summary_validated ?? false}`,
+              `not_publishable=${codexSkillArtifact?.not_publishable ?? true}`,
+              `not_runtime_loadable=${codexSkillArtifact?.not_runtime_loadable ?? true}`
+            ]} />
+            <Info title="Generated Experience" items={[
+              codexSkillGeneratedPackage?.package_title ?? "等待 internal training simulation 生成经验包 metadata。",
+              `framework=${codexSkillGeneratedPackage?.common_fact_extraction_framework?.length ?? 0}`,
+              `case_cause_count=${codexSkillGeneratedPackage?.case_cause_count ?? 0}`,
+              `substantive=${codexSkillGeneratedPackage?.substantive_experience_profile_count ?? codexSkillGeneratedSubstantiveProfiles.length}`,
+              `procedural_profiles=${codexSkillGeneratedPackage?.procedural_profile_count ?? codexSkillGeneratedProfiles.length}`,
+              codexSkillGeneratedPackage?.readiness_status ?? "pending"
+            ]} />
+          </div>
+
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            v7.38 只执行 dry run / internal training simulation metadata；产物不可发布、不可 runtime load，后续必须进入 Practice Load Review，不自动替换实战系统 package。
           </div>
         </Panel>
 
@@ -2036,7 +2450,7 @@ export default function PersonalTrainingArtifactsPage() {
           note="v7.30-v7.31e 只处理合成或脱敏 metadata；不读取真实案件原文、不读取密钥、不调用 provider、不训练未结案件、不自动发布 Skill。"
           items={data.safety?.safety_checklist ?? []}
         />
-        <DiagnosticsPanel data={{ matchResult, dryRun, trainingTaskResult, trainingPackageResult, practiceLoadResult, experienceLifecycleArtifacts, caseWorkbenchArtifacts, caseImprovementArtifacts, trainingDatasetResult, trainingDatasetArtifacts, trainingDryRunResult, trainingDryRunArtifacts, internalTrainingResult, internalTrainingArtifacts, ...data }} />
+        <DiagnosticsPanel data={{ matchResult, dryRun, trainingTaskResult, trainingPackageResult, practiceLoadResult, experienceLifecycleArtifacts, caseWorkbenchArtifacts, caseImprovementArtifacts, trainingDatasetResult, trainingDatasetArtifacts, trainingDryRunResult, trainingDryRunArtifacts, internalTrainingResult, internalTrainingArtifacts, rawTrainingMaterialResult, rawTrainingMaterialArtifacts, redactedExperienceResult, redactedExperienceArtifacts, codexTrainingSkillResult, codexTrainingSkillArtifacts, codexSkillTrainingRunResult, codexSkillTrainingRunArtifacts, ...data }} />
       </div>
     </AppShell>
   );
