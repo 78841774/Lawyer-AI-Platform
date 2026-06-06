@@ -59,7 +59,7 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: v7.31d Skill Package Versioning & Pre-Publish Gate after v7.31b Raw Work-Product Controlled Processing Experience Pipeline and v7.31c Skill Experience Pool & Codex Skill Draft Builder. Do not continue provider gateway stacking; v7.27 OCR / Document Provider Live Connection, v7.28 Unified Personal Live Connection Dashboard, v7.29 Legal / Enterprise API Live Connection, v7.30 Codex Training Scheme & Artifact Loader, v7.31 Execute Codex Training on Closed Case Samples, v7.31a Real Closed-Case Training Intake & Redaction Pipeline, v7.31b, and v7.31c already exist in the current local worktree. Do not commit, tag, push, or release until the user explicitly approves release handling.
+Next Task: v7.34 Case Analysis Output Feedback to Experience Improvement Loop after v7.33 Case Analysis Skill Output Schema Driven Workbench Integration. Do not continue provider gateway stacking; v7.27 OCR / Document Provider Live Connection, v7.28 Unified Personal Live Connection Dashboard, v7.29 Legal / Enterprise API Live Connection, v7.30 Codex Training Scheme & Artifact Loader, v7.31 Execute Codex Training on Closed Case Samples, v7.31a Real Closed-Case Training Intake & Redaction Pipeline, v7.31b, v7.31c, v7.31d, v7.31e, v7.31f, v7.31g, v7.31h, v7.31i, v7.31j, v7.32, and v7.33 already exist in the current local worktree. Do not commit, tag, push, or release until the user explicitly approves release handling.
 
 ## Codex Surgical Development Rules
 
@@ -351,7 +351,85 @@ Every Codex task must end with a concise report containing:
 - v7.31c imports approved v7.31b experience candidates into the Skill Experience Pool, creates bindings, and generates non-publishable Codex Skill draft metadata.
 - Pending, rejected, changes-requested, non-redacted, or missing-source-trace candidates must not be imported.
 - Draft review may confirm draft structure metadata only; it must not publish Skills, write formal training sets, trigger real Codex training, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
-- The next planned sub-stage is v7.31d Skill Package Versioning & Pre-Publish Gate.
+
+## v7.31d Skill Package Versioning & System Validation Gate Notes
+
+- v7.31d packages only confirmed v7.31c Skill Draft metadata into versioned Skill Package metadata.
+- Package input must be approved, redacted, source-traced, audited experience metadata.
+- System Validation Gate checks redaction, approved experience, source trace, audit, draft structure, manifest generation, sensitive metadata scan, and package state.
+- Training output manual review is not applicable in v7.31d; practice runtime load review is deferred to v7.31f.
+- v7.31d must not package unconfirmed drafts, unapproved experience, non-redacted experience, missing source trace, incomplete audit metadata, raw content, provider responses, API keys, real training output, or Skill publication artifacts.
+- v7.31d must not call providers, read API keys, trigger real training, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- v7.31e Internal Training / Experience Package Builder is the next implemented local stage.
+
+## v7.31e Internal Training / Experience Package Builder Notes
+
+- v7.31e builds internal training task metadata and experience package metadata only from v7.31d `system_validated` Skill Packages.
+- Training samples are structured prompt / input-output pair metadata with source package, source draft, source experience, source trace, and audit lineage.
+- Training-output manual review remains `not_applicable` in v7.31e.
+- Experience packages must enter `pending_practice_load_review`; the only practice-load human review point is v7.31f.
+- v7.31e must not use non-system-validated packages, unapproved experience, unredacted experience, missing source trace, incomplete audit metadata, raw content, provider responses, API keys, real training output, or Skill publication artifacts.
+- v7.31e must not call providers, read API keys, trigger real training, write formal training sets, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- v7.31f Practice Runtime Load Review Gate is the next implemented local stage.
+
+## v7.31f Practice Runtime Load Review Gate Notes
+
+- v7.31f reviews only v7.31e `pending_practice_load_review` experience package metadata before future practice runtime loading.
+- `generated_experience_package` must remain read-only and preserved.
+- Lawyers may edit experience text, applicable scenarios, non-applicable scenarios, risk warnings, usage boundaries, and gray-load metadata.
+- Saved edits must produce `lawyer_approved_experience_package` metadata and require system revalidation.
+- System revalidation checks metadata safety, source trace, audit, sensitive-field scan, and generated-package preservation.
+- `approved_for_practice_load` means future loading candidate only; v7.31f does not actually load the package into practice runtime.
+- v7.31f must not call providers, read API keys, trigger real training, write formal training sets, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- The next planned sub-stage is v7.31g Practice Runtime Controlled Loading & Monitoring.
+
+## v7.31g Practice Runtime Controlled Loading & Monitoring Notes
+
+- v7.31g loads only v7.31f `approved_for_practice_load` lawyer-approved package metadata into the controlled practice runtime registry.
+- It supports disabled / gray / active loading, scope controls, policy evaluation, usage monitoring, risk events, audit, source trace, disable, and rollback.
+- Feedback and output observation must not automatically mutate loaded packages in v7.31g.
+- v7.31g must not call providers, read API keys, read source materials, trigger real training, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- The next planned sub-stage is v7.31h Practice Runtime Output Observation & Lawyer Feedback Loop.
+
+## v7.31h Practice Runtime Output Observation & Lawyer Feedback Loop Notes
+
+- v7.31h records redacted output observation metadata, lawyer feedback metadata, feedback risk event metadata, rule-based classification, summary, source trace, and audit.
+- Feedback may recommend disable, rollback, or iteration candidates, but it must not automatically execute those actions.
+- Disable and rollback remain manual v7.31g runtime controls.
+- v7.31h must not call providers, read API keys, record raw output/raw materials/OCR text, mutate loaded packages, trigger real training, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- The next planned sub-stage is v7.31i Practice Feedback Candidate Pack & Next Experience Package Iteration.
+
+## v7.31i Practice Feedback Candidate Pack & Next Experience Package Iteration Notes
+
+- v7.31i builds next-iteration candidate pack metadata only from triaged v7.31h feedback, risk, and observation metadata.
+- Candidate packs are preparation metadata for later rebuild only.
+- v7.31i must not mutate loaded packages, lawyer-approved packages, runtime policy, Skills, training artifacts, or delivery state.
+- v7.31i must not call providers, read API keys, trigger real training, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- The next planned sub-stage is v7.31j Feedback Candidate Pack to Next Experience Package Rebuild.
+
+## v7.31j Feedback Candidate Pack to Next Experience Package Rebuild Notes
+
+- v7.31j rebuilds next experience package draft metadata only from v7.31i `ready_for_next_experience_build` candidate packs.
+- The next package draft may be marked `pending_practice_load_review`, but that state does not load it into practice runtime.
+- v7.31j must not replace loaded packages, mutate lawyer-approved packages, change runtime policy, update Skills, trigger real training, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- The next planned sub-stage is v7.32 Experience Lifecycle Consolidation.
+
+## v7.32 Experience Lifecycle Consolidation Notes
+
+- v7.32 consolidates v7.31b-v7.31j experience metadata into lifecycle status, state, graph, audit timeline, source trace, integrity, and safety views.
+- Lifecycle recompute is view-level only and must not mutate source packages, loaded packages, lawyer-approved packages, next package drafts, runtime policy, Skills, or training artifacts.
+- v7.32 must not read raw materials, OCR text, provider responses, local paths, or API keys.
+- v7.32 must not call providers, trigger real training, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- The next planned sub-stage is v7.33 Case Analysis Skill Output Schema Driven Workbench Integration.
+
+## v7.33 Case Analysis Skill Output Schema Driven Workbench Notes
+
+- v7.33 adds a schema-driven practical case-analysis workbench for fact extraction and legal analysis output metadata.
+- Frontend output display must be driven by backend `CaseAnalysisSkillOutputSchema.output_groups`; frontend must not hardcode output names, output counts, legal-analysis report names, or output groups.
+- Feedback, risk events, audit, and source trace records are metadata-only and must not mutate packages, runtime policy, Skills, training artifacts, or delivery state.
+- v7.33 must not process unredacted lawyer work product, raw case material, OCR text, provider raw responses, local paths, or key values.
+- v7.33 must not call providers, trigger training, publish Skills, auto-generate next packages, generate final legal opinions, generate formal reports, create real PDF/DOCX files, create public links, send email, or trigger external delivery.
+- The next recommended sub-stage is v7.34 Case Analysis Output Feedback to Experience Improvement Loop.
 
 ## Product Design Closed Loop
 

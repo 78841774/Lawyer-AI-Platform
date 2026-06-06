@@ -81,6 +81,6 @@ Prefix: `/personal-skill-studio/training-artifacts`
 
 Added `scripts/regression/check_personal_codex_training_runs_apis.sh` and connected it to `scripts/regression/run_personal_alpha_regression.sh`.
 
-## Next
+## Later Superseded Chain
 
-Next planned sub-stage: v7.32 Training Artifact Load & Skill Context Runtime.
+The later local chain continued through v7.31a-v7.33. v7.32 is now Experience Lifecycle Consolidation, after the v7.31b-v7.31j experience pipeline stages.

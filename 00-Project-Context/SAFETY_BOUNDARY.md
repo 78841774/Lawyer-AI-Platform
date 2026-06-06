@@ -34,6 +34,20 @@ The project safety posture is:
 - v7.31a real closed-case training intake may prepare authorized closed-case metadata only and must complete redaction before future real closed-case Codex training
 - v7.31b controlled experience candidates must be redacted, source-traced, audited, and manually reviewed before any v7.31c import
 - v7.31c Skill drafts are non-publishable metadata and require a later pre-publish gate before any package publication path exists
+- v7.31d Skill Packages may include only confirmed v7.31c draft metadata built from approved, redacted, source-traced, audited experience metadata
+- v7.31d system validation is not manual training-output review; practice runtime load review is deferred to v7.31f
+- v7.31e internal training tasks and experience packages may use only v7.31d system-validated Skill Package metadata
+- v7.31e experience packages must remain `pending_practice_load_review`; practice runtime loading requires v7.31f lawyer review
+- v7.31f practice load review may use only v7.31e `pending_practice_load_review` experience package metadata
+- v7.31f approval creates a future loading candidate only; actual controlled runtime loading is deferred to v7.31g
+- v7.31g practice runtime loading may use only v7.31f `approved_for_practice_load` lawyer-approved package metadata
+- v7.31g policy evaluation, monitoring, disable, and rollback must remain metadata-only and must not read source materials or mutate loaded package content automatically
+- v7.31h output observation, lawyer feedback, feedback classification, and risk event records must remain metadata-only and must not automatically mutate loaded packages, disable, rollback, update Skills, or trigger training
+- v7.31i feedback candidate packs must remain metadata-only and must not automatically mutate loaded packages, lawyer-approved packages, runtime policy, Skills, or training artifacts
+- v7.31j next package drafts must remain draft metadata only and must not load into practice runtime without a later load review boundary
+- v7.32 lifecycle consolidation must remain view-level metadata only and must not mutate packages, runtime policy, Skills, or training artifacts during recompute
+- v7.33 case-analysis workbench must render backend Skill Output Schema metadata only; frontend must not hardcode output names, counts, or groups
+- v7.33 feedback, risk events, audit, and source trace records must remain metadata-only and must not automatically update Skills, trigger training, rebuild packages, load packages, or generate final legal output
 - open or unresolved cases must not be written into training sets
 
 ## Forbidden By Default
@@ -63,4 +77,16 @@ The project safety posture is:
 - Do not let v7.31a real closed-case intake execute Codex training, read or return raw content, use open/unresolved cases, write training sets, call providers, read key values, expose local paths, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
 - Do not let v7.31b experience candidates enter a Skill pool before redaction, source trace, audit, and `approved_for_skill_experience` manual review.
 - Do not let v7.31c import pending/rejected/changes-requested candidates, write formal training sets, trigger real Codex training, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- Do not let v7.31d package unconfirmed Skill drafts, unapproved experience, non-redacted experience, missing source trace, incomplete audit metadata, raw content, provider responses, API keys, real training output, or Skill publication artifacts.
+- Do not let v7.31d manual-review training output; that review is not applicable until later practice runtime load review in v7.31f.
+- Do not let v7.31e build training tasks from non-system-validated Skill Packages, unapproved experience, non-redacted experience, missing source trace, incomplete audit metadata, raw content, provider responses, API keys, real training output, or Skill publication artifacts.
+- Do not let v7.31e call providers, read API keys, trigger real training, write formal training sets, publish Skills, generate final legal opinions, generate final reports, create public links, send email, trigger external delivery, or load packages into practice runtime before v7.31f review.
+- Do not let v7.31f review non-pending experience packages, overwrite generated experience package metadata, approve packages without system revalidation, expose raw materials, expose provider responses, read API keys, trigger real training, write formal training sets, publish Skills, generate final legal opinions, generate final reports, create public links, send email, trigger external delivery, or execute practice runtime loading.
+- Do not let v7.31g load non-approved packages, system-revalidation-failed packages, generated-only packages, packages without source trace/audit, source content, provider responses, API keys, or raw materials; do not let it auto-update Skills/packages, trigger real training, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- Do not let v7.31h record raw output, raw case material, OCR text, source content, provider responses, API keys, local paths, or secrets; do not let feedback automatically mutate loaded packages, auto-disable, auto-rollback, replace runtime packages, update Skills, trigger training, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- Do not let v7.31i candidate packs auto-apply diffs, mutate loaded packages, mutate lawyer-approved packages, change runtime policy, update Skills, trigger training, publish Skills, or trigger external delivery.
+- Do not let v7.31j next package drafts replace loaded packages, skip practice load review, change runtime policy, update Skills, trigger training, publish Skills, generate final legal opinions, generate final reports, create real files, create public links, send email, or trigger external delivery.
+- Do not let v7.32 lifecycle recompute mutate package content, runtime state, Skills, training artifacts, delivery state, or expose raw materials, OCR text, local paths, provider responses, API keys, or secrets.
+- Do not let v7.33 frontend invent output definitions; it must render backend `output_groups` and `outputs` only.
+- Do not let v7.33 case-analysis workbench process unredacted work product, expose raw case material, OCR text, provider responses, local paths, API keys, or secrets, or generate final legal opinions, formal reports, real PDF/DOCX files, public links, email, Skill publishing, training, package replacement, or external delivery.
 - Do not let practical open-case outputs generate training data, write training sets, update Skills, or publish Skills automatically.

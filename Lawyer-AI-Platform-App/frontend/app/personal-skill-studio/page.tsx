@@ -189,13 +189,15 @@ export default function PersonalSkillStudioPage() {
             </a>
           </div>
         </Panel>
-        <Panel title="v7.31b / v7.31c 经验候选与 Skill 草案工作台">
-          <div className="grid gap-4 md:grid-cols-4">
+        <Panel title="v7.31b / v7.31c / v7.31d / v7.31e / v7.31f 经验候选、Skill 草案、Package、内部训练经验包与加载前复核">
+          <div className="grid gap-4 md:grid-cols-6">
             <Card title="v7.31b Experience Candidates" lines={["受控 OCR/文档解析", "法律检索 metadata", "脱敏后人工复核"]} />
             <Card title="v7.31c Experience Pool" lines={["仅导入 approved_for_skill_experience", "source trace required", "audit required"]} />
-            <Card title="Skill Draft Boundary" lines={["requires_manual_confirmation", "not_publishable", "确认不发布 Skill"]} />
+            <Card title="v7.31d Skill Package" lines={["版本化 metadata 封装", "System Validation Gate", "不发布 Skill / 不训练"]} />
+            <Card title="v7.31e Internal Training" lines={["system_validated package only", "training task + experience package", "pending_practice_load_review"]} />
+            <Card title="v7.31f Load Review" lines={["律师编辑经验文本", "重新校验 source trace / audit", "批准为加载候选"]} />
             <a className="rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white" href="/personal-skill-studio/training-artifacts">
-              打开经验池与草案工作台
+              打开复核与经验包工作台
             </a>
           </div>
         </Panel>

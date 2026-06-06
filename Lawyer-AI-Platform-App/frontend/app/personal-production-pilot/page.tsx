@@ -68,7 +68,14 @@ import {
   getPersonalV731bTrainingExperiencePipelineStatus,
   getPersonalSkillExperiencePoolStatus,
   getPersonalV731cSkillExperiencePipelineStatus,
+  getPersonalV731dPipelineStatus,
+  getPersonalV731ePipelineStatus,
+  getPersonalV731fPipelineStatus,
   listPersonalCodexSkillDrafts,
+  listPersonalSkillPackages,
+  listPersonalTrainingPackages,
+  listPersonalTrainingTasks,
+  listPersonalPracticeLoadPackages,
   listPersonalSkillFinalDrafts,
   listPersonalOwnerOutputCenterDownloads,
   listPersonalOwnerOutputCenterOutputs,
@@ -162,7 +169,14 @@ export default function PersonalProductionPilotPage() {
         v731bTrainingExperienceStatus,
         skillExperiencePoolStatus,
         v731cSkillExperienceStatus,
-        codexSkillDrafts
+        codexSkillDrafts,
+        v731dSkillPackageStatus,
+        skillPackages,
+        v731eTrainingStatus,
+        trainingTasks,
+        trainingPackages,
+        v731fPracticeLoadStatus,
+        practiceLoadPackages
       ] =
         await Promise.all([
           getPersonalProductionPilotStatus(),
@@ -228,7 +242,14 @@ export default function PersonalProductionPilotPage() {
           getPersonalV731bTrainingExperiencePipelineStatus(),
           getPersonalSkillExperiencePoolStatus(),
           getPersonalV731cSkillExperiencePipelineStatus(),
-          listPersonalCodexSkillDrafts()
+          listPersonalCodexSkillDrafts(),
+          getPersonalV731dPipelineStatus(),
+          listPersonalSkillPackages(),
+          getPersonalV731ePipelineStatus(),
+          listPersonalTrainingTasks(),
+          listPersonalTrainingPackages(),
+          getPersonalV731fPipelineStatus(),
+          listPersonalPracticeLoadPackages()
         ]);
       setData({
         status,
@@ -294,7 +315,14 @@ export default function PersonalProductionPilotPage() {
         v731bTrainingExperienceStatus,
         skillExperiencePoolStatus,
         v731cSkillExperienceStatus,
-        codexSkillDrafts
+        codexSkillDrafts,
+        v731dSkillPackageStatus,
+        skillPackages,
+        v731eTrainingStatus,
+        trainingTasks,
+        trainingPackages,
+        v731fPracticeLoadStatus,
+        practiceLoadPackages
       });
       setOutputId((current) => current || outputs.outputs?.[0]?.output_id || "");
     } catch {
@@ -560,25 +588,33 @@ export default function PersonalProductionPilotPage() {
             <StatusCard label="Open Case Used" value={String(data.realClosedCaseIntakeStatus?.open_case_data_used ?? false)} detail="open_case_data_used=false" tone="safe" />
           </div>
           <div className="mt-4 rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-xs leading-5 text-sky-900">
-            Pilot 只展示真实闭案训练材料 intake readiness；原文不返回，未结案件不参与训练，后续 v7.31b 进入受控经验候选管线，v7.31c 才生成待人工确认的 Skill 草案。
+            Pilot 只展示真实闭案训练材料 intake readiness；原文不返回，未结案件不参与训练，后续 v7.31b 进入受控经验候选管线，v7.31c 生成待人工确认的 Skill 草案，v7.31d 做版本化 package 与系统校验，v7.31e 构建内部训练经验包并等待 v7.31f 实战加载前复核。
           </div>
         </Panel>
 
-        <Panel title="v7.31b / v7.31c 经验候选、经验池与 Skill 草案">
-          <div className="grid gap-4 md:grid-cols-4">
+        <Panel title="v7.31b / v7.31c / v7.31d / v7.31e / v7.31f 经验候选、经验池、Skill 草案、Package、内部训练经验包与加载前复核">
+          <div className="grid gap-4 md:grid-cols-5">
             <StatusCard label="v7.31b Candidates" value={data.v731bTrainingExperienceStatus?.experience_candidate_count ?? 0} detail="脱敏/复核前候选" tone="info" />
             <StatusCard label="Experience Pool" value={data.skillExperiencePoolStatus?.experience_count ?? data.v731cSkillExperienceStatus?.experience_count ?? 0} detail="approved only" tone="safe" />
             <StatusCard label="Drafts" value={data.codexSkillDrafts?.draft_count ?? data.v731cSkillExperienceStatus?.draft_count ?? 0} detail="manual confirmation" tone="info" />
+            <StatusCard label="Skill Packages" value={data.skillPackages?.package_count ?? data.v731dSkillPackageStatus?.package_count ?? 0} detail="system validation" tone="safe" />
             <StatusCard label="Skill Publish" value={String(data.v731cSkillExperienceStatus?.skill_published ?? false)} detail="skill_published=false" tone="safe" />
           </div>
-          <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <div className="mt-4 grid gap-3 md:grid-cols-5">
             <StatusCard label="Provider Call" value={String(data.v731cSkillExperienceStatus?.provider_call_executed ?? false)} detail="未调用 provider" tone="safe" />
             <StatusCard label="Formal Training" value={String(data.v731cSkillExperienceStatus?.formal_training_set_generated ?? false)} detail="未写正式训练集" tone="safe" />
             <StatusCard label="Confirmation" value={data.codexSkillDrafts?.drafts?.[0]?.confirmation_status ?? "pending_confirmation"} detail="人工确认闭环" tone="warning" />
             <StatusCard label="Publishable" value={String(data.codexSkillDrafts?.drafts?.[0]?.skill_publishable ?? false)} detail="not_publishable" tone="safe" />
+            <StatusCard label="Pending Load Review" value={data.trainingPackages?.pending_practice_load_review_count ?? data.v731eTrainingStatus?.pending_practice_load_review_count ?? 0} detail="v7.31f 人工复核前不加载" tone="safe" />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <StatusCard label="Review Packages" value={data.practiceLoadPackages?.package_count ?? data.v731fPracticeLoadStatus?.package_count ?? 0} detail="lawyer editor metadata" tone="info" />
+            <StatusCard label="Revalidated" value={data.v731fPracticeLoadStatus?.system_revalidated_count ?? 0} detail="source trace / audit / scan" tone="safe" />
+            <StatusCard label="Approved Load Candidate" value={data.v731fPracticeLoadStatus?.approved_for_practice_load_count ?? 0} detail="后续 v7.31g 使用" tone="safe" />
+            <StatusCard label="Runtime Loaded" value={String(false)} detail="v7.31f 不执行加载" tone="safe" />
           </div>
           <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
-            Pilot 仅展示 v7.31b 已批准经验进入 v7.31c 经验池后的草案 readiness；结构确认不发布 Skill，不写训练集，不生成最终法律意见或外部交付。
+            Pilot 展示 v7.31b 已批准经验进入 v7.31c 经验池后的草案 readiness、v7.31d 的版本化 package/system validation gate、v7.31e 的 training task / experience package metadata，以及 v7.31f 的律师加载前复核状态；结构确认、系统校验、内部经验包构建和加载前复核都不发布 Skill，不触发真实训练，不生成最终法律意见或外部交付。
           </div>
         </Panel>
 

@@ -1032,3 +1032,1845 @@ class V731cSkillExperiencePipelineStatus(V731cSafetyBase):
     binding_count: int = 0
     draft_count: int = 0
     warnings: list[str] = Field(default_factory=list)
+
+
+class V731dSafetyBase(BaseModel):
+    owner_only: bool = True
+    local_private_processing_only: bool = True
+    approved_experience_only: bool = True
+    redacted_output_only: bool = True
+    abstracted_experience_only: bool = True
+    system_validation_required: bool = True
+    system_validation_only: bool = True
+    final_review_status: str = "not_applicable"
+    practice_load_review_required_later: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    source_content_returned: bool = False
+    source_material_returned: bool = False
+    unreviewed_experience_packaged: bool = False
+    unsafe_experience_packaged: bool = False
+    missing_source_trace_packaged: bool = False
+    formal_training_set_generated: bool = False
+    real_codex_training_triggered: bool = False
+    skill_published: bool = False
+    skill_publishable: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class SkillPackageBuildRequest(BaseModel):
+    source_draft_id: str | None = None
+    package_name: str = "Codex Skill Package v7.31d"
+    package_version: str = "0.1.0-draft"
+    supersedes_package_id: str | None = None
+    explicit_system_validation_gate_confirmation: bool = True
+    explicit_no_manual_training_output_review_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_real_training_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class SkillPackageManifest(V731dSafetyBase):
+    manifest_id: str
+    package_id: str
+    package_name: str
+    package_version: str
+    source_draft_id: str
+    experience_ids: list[str] = Field(default_factory=list)
+    experience_count: int = 0
+    section_count: int = 0
+    manifest_status: str = "generated"
+    package_status: str = "draft_package"
+    validation_requirements: list[str] = Field(default_factory=list)
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillPackageSourceTraceBundle(V731dSafetyBase):
+    source_trace_bundle_id: str
+    package_id: str
+    source_draft_id: str
+    source_trace_ids: list[str] = Field(default_factory=list)
+    experience_ids: list[str] = Field(default_factory=list)
+    trace_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillPackageAuditEvent(BaseModel):
+    event_id: str
+    package_id: str
+    action: str
+    timestamp: str
+    metadata_only: bool = True
+    system_validation_event: bool = True
+    skill_published: bool = False
+    real_training_triggered: bool = False
+
+
+class SkillPackageAudit(V731dSafetyBase):
+    package_id: str
+    events: list[SkillPackageAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillPackageValidationResult(V731dSafetyBase):
+    package_id: str
+    pre_publish_gate_status: str
+    package_status: str
+    gate_passed: bool = False
+    all_experiences_redacted: bool = False
+    all_experiences_approved: bool = False
+    all_source_traces_present: bool = False
+    audit_complete: bool = False
+    draft_structure_confirmed: bool = False
+    manifest_generated: bool = False
+    sensitive_field_scan_passed: bool = False
+    package_status_valid: bool = False
+    ready_for_training_package_build: bool = False
+    validation_errors: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillPackage(V731dSafetyBase):
+    package_id: str
+    package_name: str
+    package_version: str
+    source_draft_id: str
+    experience_ids: list[str] = Field(default_factory=list)
+    experience_count: int = 0
+    manifest_id: str
+    source_trace_bundle_id: str
+    audit_bundle_id: str
+    pre_publish_gate_status: str = "draft"
+    package_status: str = "draft_package"
+    final_review_status: str = "not_applicable"
+    created_at: str
+    updated_at: str
+    supersedes_package_id: str | None = None
+    superseded_by_package_id: str | None = None
+    rollback_available: bool = False
+    manifest: SkillPackageManifest
+    source_trace_bundle: SkillPackageSourceTraceBundle
+    audit_events: list[SkillPackageAuditEvent] = Field(default_factory=list)
+    validation_result: SkillPackageValidationResult | None = None
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillPackageList(V731dSafetyBase):
+    skill_packages: list[SkillPackage] = Field(default_factory=list)
+    package_count: int = 0
+    system_validated_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillPackageBuildResponse(V731dSafetyBase):
+    skill_package: SkillPackage
+    packaged_experience_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731dSkillPackagePipelineStatus(V731dSafetyBase):
+    version: str = "v7.31d"
+    status: str = "skill_package_versioning_system_validation_metadata_ready"
+    skill_package_registry_ready: bool = True
+    skill_package_builder_ready: bool = True
+    manifest_ready: bool = True
+    source_trace_bundle_ready: bool = True
+    audit_bundle_ready: bool = True
+    system_validation_gate_ready: bool = True
+    package_count: int = 0
+    system_validated_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731eSafetyBase(BaseModel):
+    owner_only: bool = True
+    local_private_processing_only: bool = True
+    system_validated_package_required: bool = True
+    approved_experience_only: bool = True
+    redacted_output_only: bool = True
+    abstracted_experience_only: bool = True
+    structured_training_metadata_only: bool = True
+    practice_load_review_required_later: bool = True
+    training_output_manual_review_status: str = "not_applicable"
+    practice_load_review_status: str = "pending_practice_load_review"
+    source_trace_required: bool = True
+    audit_required: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    source_content_returned: bool = False
+    source_material_returned: bool = False
+    non_validated_package_used: bool = False
+    unreviewed_experience_used: bool = False
+    unsafe_experience_used: bool = False
+    missing_source_trace_used: bool = False
+    real_codex_training_triggered: bool = False
+    formal_training_set_written: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+    skill_publishable: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class TrainingTaskBuildRequest(BaseModel):
+    source_skill_package_id: str | None = None
+    task_name: str = "Internal Training Task v7.31e"
+    explicit_system_validated_package_confirmation: bool = True
+    explicit_no_manual_training_output_review_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_real_training_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class ExperiencePackageBuildRequest(BaseModel):
+    source_training_task_id: str | None = None
+    source_skill_package_id: str | None = None
+    package_name: str = "Internal Experience Package v7.31e"
+    package_version: str = "v7.31e.0"
+    explicit_pending_practice_load_review_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_real_training_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class TrainingSample(V731eSafetyBase):
+    sample_id: str
+    source_skill_package_id: str
+    source_draft_id: str
+    source_experience_id: str
+    source_trace_ids: list[str] = Field(default_factory=list)
+    prompt_template: str
+    input_metadata: dict[str, str | list[str]] = Field(default_factory=dict)
+    expected_output_metadata: dict[str, str | list[str]] = Field(default_factory=dict)
+    input_output_pair_id: str
+    sample_status: str = "training_completed"
+    created_at: str
+
+
+class TrainingPackageAuditEvent(BaseModel):
+    event_id: str
+    artifact_id: str
+    action: str
+    timestamp: str
+    metadata_only: bool = True
+    provider_call_executed: bool = False
+    real_training_triggered: bool = False
+    skill_published: bool = False
+
+
+class TrainingPackageSourceTraceBundle(V731eSafetyBase):
+    source_trace_bundle_id: str
+    artifact_id: str
+    source_skill_package_id: str
+    source_training_task_id: str | None = None
+    source_trace_ids: list[str] = Field(default_factory=list)
+    source_experience_ids: list[str] = Field(default_factory=list)
+    source_draft_id: str
+    trace_count: int = 0
+    trace_status: str = "source_trace_ready"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingTask(V731eSafetyBase):
+    training_task_id: str
+    task_name: str
+    source_skill_package_id: str
+    source_draft_id: str
+    source_manifest_id: str
+    source_trace_bundle_id: str
+    source_audit_bundle_id: str
+    source_experience_ids: list[str] = Field(default_factory=list)
+    sample_count: int = 0
+    training_task_status: str = "training_completed"
+    lifecycle_statuses: list[str] = Field(default_factory=lambda: ["training_task_created", "training_completed"])
+    samples: list[TrainingSample] = Field(default_factory=list)
+    audit_events: list[TrainingPackageAuditEvent] = Field(default_factory=list)
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingTaskList(V731eSafetyBase):
+    training_tasks: list[TrainingTask] = Field(default_factory=list)
+    task_count: int = 0
+    training_completed_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingTaskBuildResponse(V731eSafetyBase):
+    training_task: TrainingTask
+    sample_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperiencePackage(V731eSafetyBase):
+    package_id: str
+    package_name: str
+    package_version: str
+    source_training_task_id: str
+    source_skill_package_id: str
+    source_draft_id: str
+    source_experience_ids: list[str] = Field(default_factory=list)
+    source_trace_bundle_id: str
+    audit_bundle_id: str
+    training_task_status: str = "training_completed"
+    build_status: str = "experience_package_built"
+    package_status: str = "pending_practice_load_review"
+    experience_package_status: str = "pending_practice_load_review"
+    sample_count: int = 0
+    samples: list[TrainingSample] = Field(default_factory=list)
+    source_trace_bundle: TrainingPackageSourceTraceBundle
+    audit_events: list[TrainingPackageAuditEvent] = Field(default_factory=list)
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperiencePackageList(V731eSafetyBase):
+    training_packages: list[ExperiencePackage] = Field(default_factory=list)
+    package_count: int = 0
+    pending_practice_load_review_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperiencePackageBuildResponse(V731eSafetyBase):
+    training_package: ExperiencePackage
+    sample_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class TrainingPackageAudit(V731eSafetyBase):
+    package_id: str
+    events: list[TrainingPackageAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731eTrainingPipelineStatus(V731eSafetyBase):
+    version: str = "v7.31e"
+    status: str = "internal_training_experience_package_metadata_ready"
+    training_task_builder_ready: bool = True
+    experience_package_builder_ready: bool = True
+    training_package_registry_ready: bool = True
+    training_task_count: int = 0
+    training_package_count: int = 0
+    pending_practice_load_review_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731fSafetyBase(BaseModel):
+    owner_only: bool = True
+    local_private_processing_only: bool = True
+    generated_package_read_only: bool = True
+    lawyer_review_required: bool = True
+    practice_load_review_required: bool = True
+    approved_for_practice_load_required: bool = True
+    redacted_output_only: bool = True
+    abstracted_experience_only: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    sensitive_field_scan_required: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    source_content_returned: bool = False
+    source_material_returned: bool = False
+    unreviewed_package_loaded: bool = False
+    unredacted_content_loaded: bool = False
+    non_pending_review_package_loaded: bool = False
+    missing_source_trace_loaded: bool = False
+    real_codex_training_triggered: bool = False
+    formal_training_set_written: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class ExperienceCard(BaseModel):
+    card_id: str
+    source_sample_id: str
+    source_experience_id: str
+    title: str
+    generated_experience_text: str
+    lawyer_experience_text: str
+    applicable_scenarios: list[str] = Field(default_factory=list)
+    not_applicable_scenarios: list[str] = Field(default_factory=list)
+    risk_warnings: list[str] = Field(default_factory=list)
+    usage_boundaries: list[str] = Field(default_factory=list)
+    gray_load_enabled: bool = False
+    review_status: str = "pending_practice_load_review"
+    metadata_safe: bool = True
+
+
+class PracticeLoadReviewAuditEvent(BaseModel):
+    event_id: str
+    package_id: str
+    action: str
+    timestamp: str
+    reviewer_id: str | None = None
+    reviewer_note: str | None = None
+    metadata_only: bool = True
+    provider_call_executed: bool = False
+    real_training_triggered: bool = False
+    skill_published: bool = False
+    practice_runtime_loaded: bool = False
+
+
+class PracticeLoadReviewSourceTraceBundle(V731fSafetyBase):
+    source_trace_bundle_id: str
+    package_id: str
+    source_training_package_id: str
+    source_training_task_id: str
+    source_skill_package_id: str
+    source_trace_ids: list[str] = Field(default_factory=list)
+    source_experience_ids: list[str] = Field(default_factory=list)
+    trace_count: int = 0
+    trace_status: str = "source_trace_ready"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeLoadRevalidationResult(V731fSafetyBase):
+    package_id: str
+    validation_status: str = "system_revalidated"
+    revalidation_passed: bool = True
+    all_cards_metadata_safe: bool = True
+    source_trace_complete: bool = True
+    audit_complete: bool = True
+    sensitive_field_scan_passed: bool = True
+    generated_package_preserved: bool = True
+    lawyer_approved_package_ready: bool = True
+    validation_errors: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeLoadReviewEditRequest(BaseModel):
+    reviewer_id: str = "local_demo_lawyer"
+    reviewer_note: str = "practice load review editing started"
+    explicit_lawyer_review_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_raw_content_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class ExperienceCardEdit(BaseModel):
+    card_id: str
+    title: str
+    lawyer_experience_text: str
+    applicable_scenarios: list[str] = Field(default_factory=list)
+    not_applicable_scenarios: list[str] = Field(default_factory=list)
+    risk_warnings: list[str] = Field(default_factory=list)
+    usage_boundaries: list[str] = Field(default_factory=list)
+    gray_load_enabled: bool = False
+
+
+class PracticeLoadReviewSaveRequest(BaseModel):
+    reviewer_id: str = "local_demo_lawyer"
+    reviewer_note: str = "lawyer experience edits saved"
+    edited_cards: list[ExperienceCardEdit] = Field(default_factory=list)
+    gray_load_enabled: bool = False
+    explicit_lawyer_review_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_raw_content_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class PracticeLoadReviewDecisionRequest(BaseModel):
+    reviewer_id: str = "local_demo_lawyer"
+    reviewer_note: str = "practice load review decision metadata"
+    gray_load_enabled: bool = False
+    explicit_lawyer_review_confirmation: bool = True
+    explicit_system_revalidated_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_real_training_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class PracticeLoadReviewPackage(V731fSafetyBase):
+    package_id: str
+    source_training_package_id: str
+    source_training_task_id: str
+    source_skill_package_id: str
+    package_name: str
+    package_version: str = "v7.31f.0"
+    review_status: str = "pending_practice_load_review"
+    load_gate_status: str = "pending_practice_load_review"
+    validation_status: str = "system_revalidation_required"
+    can_load_to_practice_runtime: bool = False
+    gray_load_enabled: bool = False
+    generated_experience_package: dict[str, str | int | bool | list[str]] = Field(default_factory=dict)
+    lawyer_approved_experience_package: dict[str, str | int | bool | list[str]] | None = None
+    experience_cards: list[ExperienceCard] = Field(default_factory=list)
+    source_trace_bundle: PracticeLoadReviewSourceTraceBundle
+    audit_events: list[PracticeLoadReviewAuditEvent] = Field(default_factory=list)
+    revalidation_result: PracticeLoadRevalidationResult | None = None
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeLoadReviewPackageList(V731fSafetyBase):
+    packages: list[PracticeLoadReviewPackage] = Field(default_factory=list)
+    package_count: int = 0
+    pending_practice_load_review_count: int = 0
+    approved_for_practice_load_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeLoadReviewPackageAudit(V731fSafetyBase):
+    package_id: str
+    events: list[PracticeLoadReviewAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731fPracticeLoadPipelineStatus(V731fSafetyBase):
+    version: str = "v7.31f"
+    status: str = "practice_load_review_gate_metadata_ready"
+    review_gate_ready: bool = True
+    lawyer_experience_editor_ready: bool = True
+    system_revalidation_ready: bool = True
+    package_count: int = 0
+    pending_practice_load_review_count: int = 0
+    system_revalidated_count: int = 0
+    approved_for_practice_load_count: int = 0
+    rejected_for_practice_load_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731gSafetyBase(BaseModel):
+    owner_only: bool = True
+    local_private_processing_only: bool = True
+    lawyer_approved_package_only: bool = True
+    metadata_safe: bool = True
+    redacted_abstracted_experience_only: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    runtime_monitoring_required: bool = True
+    rollback_available: bool = True
+    controlled_runtime_loading_only: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    source_content_returned: bool = False
+    source_material_returned: bool = False
+    unreviewed_package_loaded: bool = False
+    system_revalidation_failed_package_loaded: bool = False
+    generated_only_package_loaded: bool = False
+    unredacted_content_loaded: bool = False
+    automatic_training_triggered: bool = False
+    formal_training_set_written: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+    feedback_auto_mutates_loaded_package: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class PracticeRuntimeLoadRequest(BaseModel):
+    experience_package_id: str
+    loaded_by: str = "local_demo_lawyer"
+    rollout_mode: str = "disabled"
+    rollout_percentage: int = 0
+    allowed_case_causes: list[str] = Field(default_factory=list)
+    allowed_workspaces: list[str] = Field(default_factory=list)
+    allowed_runtime_modes: list[str] = Field(default_factory=lambda: ["assistive_draft"])
+    allowed_task_types: list[str] = Field(default_factory=lambda: ["fact_review", "legal_analysis_draft"])
+    usage_limit_per_day: int = 20
+    emergency_disable_enabled: bool = True
+    explicit_lawyer_approved_package_confirmation: bool = True
+    explicit_system_revalidated_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_source_content_confirmation: bool = True
+    explicit_no_final_opinion_confirmation: bool = True
+
+
+class PracticeRuntimeRolloutRequest(BaseModel):
+    operator_id: str = "local_demo_lawyer"
+    operator_note: str = "practice runtime rollout metadata update"
+    rollout_percentage: int = 10
+    usage_limit_per_day: int | None = None
+    explicit_manual_control_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_external_delivery_confirmation: bool = True
+
+
+class PracticeRuntimeDisableRequest(BaseModel):
+    operator_id: str = "local_demo_lawyer"
+    operator_note: str = "practice runtime load disabled"
+    mark_blocked: bool = False
+    explicit_manual_control_confirmation: bool = True
+    explicit_no_package_delete_confirmation: bool = True
+
+
+class PracticeRuntimeRollbackRequest(BaseModel):
+    operator_id: str = "local_demo_lawyer"
+    operator_note: str = "practice runtime rollback metadata"
+    rollback_to_load_id: str | None = None
+    explicit_manual_rollback_confirmation: bool = True
+    explicit_no_package_delete_confirmation: bool = True
+    explicit_no_external_delivery_confirmation: bool = True
+
+
+class PracticeRuntimePolicyEvaluateRequest(BaseModel):
+    case_cause: str = "买卖合同纠纷"
+    workspace_id: str = "owner_workspace"
+    user_id: str = "local_demo_lawyer"
+    runtime_mode: str = "assistive_draft"
+    requested_task_type: str = "legal_analysis_draft"
+    request_context_metadata: dict[str, str | int | bool | list[str]] = Field(default_factory=dict)
+
+
+class PracticeRuntimeAuditEvent(BaseModel):
+    event_id: str
+    runtime_load_id: str
+    action: str
+    timestamp: str
+    operator_id: str | None = None
+    operator_note: str | None = None
+    metadata_only: bool = True
+    provider_call_executed: bool = False
+    source_content_returned: bool = False
+    package_deleted: bool = False
+    external_delivery_triggered: bool = False
+
+
+class PracticeRuntimeSourceTraceBundle(V731gSafetyBase):
+    source_trace_bundle_id: str
+    runtime_load_id: str
+    experience_package_id: str
+    lawyer_approved_package_id: str
+    source_review_package_id: str
+    source_training_package_id: str
+    source_skill_package_id: str
+    inherited_source_trace_ids: list[str] = Field(default_factory=list)
+    source_experience_ids: list[str] = Field(default_factory=list)
+    trace_status: str = "runtime_source_trace_ready"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeRuntimeSafetyReport(V731gSafetyBase):
+    safety_report_id: str
+    runtime_load_id: str
+    load_allowed: bool = False
+    safety_status: str = "blocked"
+    approval_status_valid: bool = False
+    lawyer_approved_package_exists: bool = False
+    system_revalidated: bool = False
+    source_trace_exists: bool = False
+    audit_exists: bool = False
+    sensitive_scan_passed: bool = False
+    generated_package_preserved: bool = False
+    provider_call_absent: bool = True
+    source_content_absent: bool = True
+    blocked_reasons: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeRuntimeLoadRecord(V731gSafetyBase):
+    runtime_load_id: str
+    experience_package_id: str
+    lawyer_approved_package_id: str
+    package_name: str
+    package_version: str
+    load_status: str = "pending_load"
+    load_scope: dict[str, list[str] | str | int | bool] = Field(default_factory=dict)
+    enabled_case_causes: list[str] = Field(default_factory=list)
+    enabled_workspaces: list[str] = Field(default_factory=list)
+    enabled_runtime_modes: list[str] = Field(default_factory=list)
+    enabled_task_types: list[str] = Field(default_factory=list)
+    rollout_mode: str = "disabled"
+    rollout_percentage: int = 0
+    usage_limit_per_day: int = 20
+    emergency_disable_enabled: bool = True
+    loaded_at: str
+    loaded_by: str
+    disabled_at: str | None = None
+    rollback_from_load_id: str | None = None
+    rollback_to_load_id: str | None = None
+    source_trace_bundle_id: str
+    audit_bundle_id: str
+    safety_report_id: str
+    source_trace_bundle: PracticeRuntimeSourceTraceBundle
+    safety_report: PracticeRuntimeSafetyReport
+    audit_events: list[PracticeRuntimeAuditEvent] = Field(default_factory=list)
+    usage_count_today: int = 0
+    blocked_reasons: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeRuntimeLoadList(V731gSafetyBase):
+    runtime_loads: list[PracticeRuntimeLoadRecord] = Field(default_factory=list)
+    load_count: int = 0
+    loaded_disabled_count: int = 0
+    loaded_gray_count: int = 0
+    loaded_active_count: int = 0
+    disabled_count: int = 0
+    rolled_back_count: int = 0
+    blocked_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeRuntimeUsageEvent(V731gSafetyBase):
+    usage_event_id: str
+    package_id: str
+    package_version: str
+    runtime_load_id: str
+    runtime_mode: str
+    case_cause: str
+    task_type: str
+    user_id: str
+    owner_id: str = "owner"
+    workspace_id: str
+    timestamp: str
+    allowed: bool = False
+    block_reason: str | None = None
+    safety_flags: list[str] = Field(default_factory=list)
+    audit_id: str
+
+
+class PracticeRuntimeRiskEvent(V731gSafetyBase):
+    risk_event_id: str
+    usage_event_id: str
+    runtime_load_id: str
+    package_id: str
+    severity: str = "medium"
+    risk_type: str = "policy_block"
+    risk_summary: str = "Practice runtime request was blocked by metadata policy."
+    immediate_action_required: bool = False
+    suggested_action: str = "Review load scope or keep package disabled."
+    created_at: str
+    audit_id: str
+
+
+class PracticeRuntimeUsageList(V731gSafetyBase):
+    usage_events: list[PracticeRuntimeUsageEvent] = Field(default_factory=list)
+    usage_event_count: int = 0
+    risk_events: list[PracticeRuntimeRiskEvent] = Field(default_factory=list)
+    risk_event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeRuntimePolicyEvaluateResult(V731gSafetyBase):
+    allowed: bool = False
+    blocked_reason: str | None = None
+    matched_package_ids: list[str] = Field(default_factory=list)
+    active_package_versions: list[str] = Field(default_factory=list)
+    usage_boundary: dict[str, str | int | bool | list[str]] = Field(default_factory=dict)
+    safety_notice: str = "仅可作为律师复核前的实战辅助经验提示，不生成最终法律意见。"
+    audit_id: str
+    usage_event: PracticeRuntimeUsageEvent
+
+
+class PracticeRuntimeLoadAudit(V731gSafetyBase):
+    runtime_load_id: str
+    events: list[PracticeRuntimeAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731gPracticeRuntimeStatus(V731gSafetyBase):
+    version: str = "v7.31g"
+    status: str = "practice_runtime_controlled_loading_monitoring_ready"
+    loader_ready: bool = True
+    registry_ready: bool = True
+    policy_engine_ready: bool = True
+    monitor_ready: bool = True
+    rollback_engine_ready: bool = True
+    runtime_load_count: int = 0
+    loaded_gray_count: int = 0
+    loaded_active_count: int = 0
+    disabled_count: int = 0
+    blocked_count: int = 0
+    usage_event_count: int = 0
+    risk_event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731hSafetyBase(BaseModel):
+    owner_only: bool = True
+    metadata_only: bool = True
+    local_private_processing_only: bool = True
+    lawyer_approved_package_only: bool = True
+    redacted_abstracted_experience_only: bool = True
+    output_observation_metadata_only: bool = True
+    lawyer_feedback_metadata_only: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    source_content_returned: bool = False
+    source_material_returned: bool = False
+    full_output_returned: bool = False
+    case_material_returned: bool = False
+    feedback_auto_mutates_loaded_package: bool = False
+    candidate_pack_auto_mutates_loaded_package: bool = False
+    package_auto_disabled_by_feedback: bool = False
+    package_auto_rolled_back_by_feedback: bool = False
+    practice_runtime_package_auto_replaced: bool = False
+    automatic_training_triggered: bool = False
+    formal_training_set_written: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class PracticeOutputObservationRequest(BaseModel):
+    usage_event_id: str
+    output_category: str = "analysis_suggestion"
+    output_summary_redacted: str = "脱敏后的实战输出摘要 metadata"
+    observed_issue_summary: str = "暂无明显问题，仅记录观察 metadata"
+    observed_by: str = "local_demo_lawyer"
+    safety_flags: list[str] = Field(default_factory=lambda: ["metadata_only", "source_trace_required", "lawyer_review_required"])
+    explicit_no_raw_output_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_package_mutation_confirmation: bool = True
+
+
+class PracticeLawyerFeedbackRequest(BaseModel):
+    observation_id: str
+    feedback_type: str = "useful"
+    feedback_summary: str = "律师反馈摘要 metadata"
+    suggested_change: str = "保持当前经验提示，仅作为后续迭代参考。"
+    severity: str = "low"
+    applies_to_experience_card_id: str | None = None
+    applies_to_usage_boundary: str | None = None
+    created_by: str = "local_demo_lawyer"
+    explicit_no_auto_disable_confirmation: bool = True
+    explicit_no_auto_rollback_confirmation: bool = True
+    explicit_no_package_mutation_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+
+
+class PracticeRiskEventRequest(BaseModel):
+    observation_id: str
+    severity: str = "medium"
+    risk_type: str = "output_quality_issue"
+    risk_summary: str = "实战输出观察风险 metadata"
+    immediate_action_required: bool = False
+    suggested_action: str = "进入律师反馈 triage，不自动禁用或回滚。"
+    created_by: str = "local_demo_lawyer"
+    explicit_no_auto_disable_confirmation: bool = True
+    explicit_no_auto_rollback_confirmation: bool = True
+    explicit_no_package_mutation_confirmation: bool = True
+
+
+class PracticeFeedbackTriageRequest(BaseModel):
+    triaged_by: str = "local_demo_lawyer"
+    feedback_status: str = "triaged"
+    triage_note: str = "规则分类后保留为后续迭代候选 metadata。"
+    explicit_no_auto_disable_confirmation: bool = True
+    explicit_no_auto_rollback_confirmation: bool = True
+    explicit_no_package_mutation_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+
+
+class PracticeFeedbackAuditEvent(BaseModel):
+    event_id: str
+    object_id: str
+    object_type: str
+    action: str
+    timestamp: str
+    actor_id: str | None = None
+    actor_note: str | None = None
+    metadata_only: bool = True
+    provider_call_executed: bool = False
+    full_output_returned: bool = False
+    source_content_returned: bool = False
+    package_mutated: bool = False
+    package_auto_disabled: bool = False
+    package_auto_rolled_back: bool = False
+    training_triggered: bool = False
+    external_delivery_triggered: bool = False
+
+
+class PracticeFeedbackSourceTrace(V731hSafetyBase):
+    source_trace_id: str
+    source_trace_type: str
+    object_id: str
+    usage_event_id: str
+    runtime_load_id: str
+    package_id: str
+    source_usage_event_id: str
+    source_runtime_load_id: str
+    inherited_runtime_source_trace_id: str | None = None
+    trace_status: str = "feedback_source_trace_ready"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeFeedbackClassification(V731hSafetyBase):
+    feedback_category: str = "useful"
+    severity: str = "low"
+    suggested_next_action: str = "keep_as_reference"
+    auto_disable_recommended: bool = False
+    rollback_recommended: bool = False
+    create_iteration_candidate_recommended: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeOutputObservation(V731hSafetyBase):
+    observation_id: str
+    usage_event_id: str
+    runtime_load_id: str
+    package_id: str
+    package_version: str
+    case_cause: str
+    task_type: str
+    runtime_mode: str
+    output_category: str
+    output_summary_redacted: str
+    observed_issue_summary: str
+    safety_flags: list[str] = Field(default_factory=list)
+    generated_at: str
+    observed_by: str
+    audit_id: str
+    source_trace_id: str
+    audit_events: list[PracticeFeedbackAuditEvent] = Field(default_factory=list)
+    source_trace: PracticeFeedbackSourceTrace
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeOutputObservationList(V731hSafetyBase):
+    observations: list[PracticeOutputObservation] = Field(default_factory=list)
+    observation_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeLawyerFeedback(V731hSafetyBase):
+    feedback_id: str
+    observation_id: str
+    usage_event_id: str
+    runtime_load_id: str
+    package_id: str
+    package_version: str
+    feedback_type: str
+    feedback_status: str = "submitted"
+    feedback_summary: str
+    suggested_change: str
+    severity: str
+    applies_to_experience_card_id: str | None = None
+    applies_to_usage_boundary: str | None = None
+    created_by: str
+    created_at: str
+    audit_id: str
+    source_trace_id: str
+    classification: PracticeFeedbackClassification
+    audit_events: list[PracticeFeedbackAuditEvent] = Field(default_factory=list)
+    source_trace: PracticeFeedbackSourceTrace
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeLawyerFeedbackList(V731hSafetyBase):
+    feedback_items: list[PracticeLawyerFeedback] = Field(default_factory=list)
+    feedback_count: int = 0
+    submitted_count: int = 0
+    triaged_count: int = 0
+    accepted_as_candidate_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeFeedbackRiskEvent(V731hSafetyBase):
+    risk_event_id: str
+    observation_id: str
+    usage_event_id: str
+    runtime_load_id: str
+    package_id: str
+    package_version: str
+    severity: str
+    risk_type: str
+    risk_summary: str
+    immediate_action_required: bool = False
+    suggested_action: str
+    created_at: str
+    audit_id: str
+    source_trace_id: str
+    audit_events: list[PracticeFeedbackAuditEvent] = Field(default_factory=list)
+    source_trace: PracticeFeedbackSourceTrace
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeFeedbackRiskEventList(V731hSafetyBase):
+    risk_events: list[PracticeFeedbackRiskEvent] = Field(default_factory=list)
+    risk_event_count: int = 0
+    high_severity_count: int = 0
+    immediate_action_required_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeFeedbackSummary(V731hSafetyBase):
+    observation_count: int = 0
+    feedback_count: int = 0
+    risk_event_count: int = 0
+    triaged_feedback_count: int = 0
+    iteration_candidate_recommended_count: int = 0
+    auto_disable_recommended_count: int = 0
+    rollback_recommended_count: int = 0
+    immediate_action_required_count: int = 0
+    package_ids: list[str] = Field(default_factory=list)
+    runtime_load_ids: list[str] = Field(default_factory=list)
+    feedback_type_counts: dict[str, int] = Field(default_factory=dict)
+    risk_type_counts: dict[str, int] = Field(default_factory=dict)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731hPracticeFeedbackStatus(V731hSafetyBase):
+    version: str = "v7.31h"
+    status: str = "practice_output_observation_lawyer_feedback_ready"
+    observation_registry_ready: bool = True
+    lawyer_feedback_registry_ready: bool = True
+    risk_event_registry_ready: bool = True
+    feedback_classifier_ready: bool = True
+    feedback_summary_ready: bool = True
+    observation_count: int = 0
+    feedback_count: int = 0
+    risk_event_count: int = 0
+    triaged_feedback_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731iSafetyBase(BaseModel):
+    owner_only: bool = True
+    metadata_only: bool = True
+    local_private_processing_only: bool = True
+    feedback_candidate_pack_only: bool = True
+    next_iteration_candidate_only: bool = True
+    redacted_abstracted_experience_only: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    feedback_auto_mutates_loaded_package: bool = False
+    candidate_pack_auto_mutates_loaded_package: bool = False
+    loaded_package_mutated: bool = False
+    lawyer_approved_package_mutated: bool = False
+    runtime_policy_changed: bool = False
+    package_auto_disabled: bool = False
+    package_auto_rolled_back: bool = False
+    next_package_draft_auto_loaded: bool = False
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    source_content_returned: bool = False
+    source_material_returned: bool = False
+    full_output_returned: bool = False
+    case_material_returned: bool = False
+    automatic_training_triggered: bool = False
+    formal_training_set_written: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class PracticeFeedbackCandidatePackBuildRequest(BaseModel):
+    source_package_id: str | None = None
+    source_runtime_load_id: str | None = None
+    proposed_next_package_name: str | None = None
+    proposed_next_package_version: str | None = None
+    build_requested_by: str = "local_demo_lawyer"
+    explicit_triaged_feedback_only_confirmation: bool = True
+    explicit_no_loaded_package_mutation_confirmation: bool = True
+    explicit_no_lawyer_approved_package_mutation_confirmation: bool = True
+    explicit_no_runtime_policy_change_confirmation: bool = True
+    explicit_no_auto_disable_confirmation: bool = True
+    explicit_no_auto_rollback_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class PracticeFeedbackCandidatePackActionRequest(BaseModel):
+    actor_id: str = "local_demo_lawyer"
+    actor_note: str = "候选包状态更新 metadata，不自动改包或加载。"
+    explicit_no_loaded_package_mutation_confirmation: bool = True
+    explicit_no_lawyer_approved_package_mutation_confirmation: bool = True
+    explicit_no_runtime_policy_change_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+
+
+class IterationCandidateAuditEvent(BaseModel):
+    event_id: str
+    object_id: str
+    object_type: str
+    action: str
+    timestamp: str
+    actor_id: str | None = None
+    actor_note: str | None = None
+    metadata_only: bool = True
+    provider_call_executed: bool = False
+    loaded_package_mutated: bool = False
+    lawyer_approved_package_mutated: bool = False
+    runtime_policy_changed: bool = False
+    package_auto_disabled: bool = False
+    package_auto_rolled_back: bool = False
+    training_triggered: bool = False
+    external_delivery_triggered: bool = False
+
+
+class IterationCandidateSourceTrace(V731iSafetyBase):
+    source_trace_id: str
+    source_trace_type: str
+    object_id: str
+    source_package_id: str
+    source_package_version: str
+    source_runtime_load_id: str
+    source_feedback_ids: list[str] = Field(default_factory=list)
+    source_risk_event_ids: list[str] = Field(default_factory=list)
+    source_observation_ids: list[str] = Field(default_factory=list)
+    inherited_runtime_source_trace_id: str | None = None
+    trace_status: str = "iteration_candidate_source_trace_ready"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceIterationCandidate(V731iSafetyBase):
+    iteration_candidate_id: str
+    candidate_pack_id: str
+    change_type: str
+    target_experience_card_id: str | None = None
+    current_text_summary: str = "当前经验摘要 metadata"
+    proposed_change_summary: str
+    proposed_lawyer_review_text: str
+    reason_from_feedback: str
+    risk_basis: str
+    source_feedback_ids: list[str] = Field(default_factory=list)
+    source_risk_event_ids: list[str] = Field(default_factory=list)
+    severity: str = "medium"
+    suggested_action: str = "prepare_for_next_experience_build"
+    status: str = "candidate"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceIterationDiff(V731iSafetyBase):
+    candidate_pack_id: str
+    added_cards: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    revised_cards: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    removed_cards: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    narrowed_boundaries: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    expanded_boundaries: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    added_risk_warnings: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    rollback_recommendations: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    disable_recommendations: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    next_version_recommendation: bool = False
+    proposed_changes_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeFeedbackCandidatePack(V731iSafetyBase):
+    candidate_pack_id: str
+    source_package_id: str
+    source_package_version: str
+    source_runtime_load_id: str
+    feedback_ids: list[str] = Field(default_factory=list)
+    risk_event_ids: list[str] = Field(default_factory=list)
+    observation_ids: list[str] = Field(default_factory=list)
+    candidate_status: str = "draft_candidate_pack"
+    proposed_next_package_name: str
+    proposed_next_package_version: str
+    proposed_changes_count: int = 0
+    created_at: str
+    audit_id: str
+    source_trace_id: str
+    iteration_candidates: list[ExperienceIterationCandidate] = Field(default_factory=list)
+    diff: ExperienceIterationDiff
+    audit_events: list[IterationCandidateAuditEvent] = Field(default_factory=list)
+    source_trace: IterationCandidateSourceTrace
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeFeedbackCandidatePackList(V731iSafetyBase):
+    candidate_packs: list[PracticeFeedbackCandidatePack] = Field(default_factory=list)
+    candidate_pack_count: int = 0
+    draft_count: int = 0
+    ready_count: int = 0
+    blocked_count: int = 0
+    archived_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class PracticeFeedbackCandidatePackAudit(V731iSafetyBase):
+    candidate_pack_id: str
+    events: list[IterationCandidateAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731iPracticeFeedbackCandidatePackStatus(V731iSafetyBase):
+    version: str = "v7.31i"
+    status: str = "practice_feedback_candidate_pack_iteration_ready"
+    candidate_pack_registry_ready: bool = True
+    iteration_candidate_builder_ready: bool = True
+    diff_engine_ready: bool = True
+    next_package_proposal_registry_ready: bool = True
+    candidate_pack_count: int = 0
+    ready_for_next_build_count: int = 0
+    triaged_feedback_count: int = 0
+    risk_event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731jSafetyBase(BaseModel):
+    owner_only: bool = True
+    metadata_only: bool = True
+    local_private_processing_only: bool = True
+    next_experience_package_draft_only: bool = True
+    candidate_pack_required: bool = True
+    ready_candidate_pack_required: bool = True
+    practice_load_review_required: bool = True
+    redacted_abstracted_experience_only: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    loaded_package_mutated: bool = False
+    lawyer_approved_package_mutated: bool = False
+    runtime_package_replaced: bool = False
+    runtime_policy_changed: bool = False
+    next_package_draft_auto_loaded: bool = False
+    package_auto_disabled: bool = False
+    package_auto_rolled_back: bool = False
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    source_content_returned: bool = False
+    source_material_returned: bool = False
+    full_output_returned: bool = False
+    case_material_returned: bool = False
+    automatic_training_triggered: bool = False
+    formal_training_set_written: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class NextExperiencePackageRebuildRequest(BaseModel):
+    candidate_pack_id: str | None = None
+    rebuilt_by: str = "local_demo_lawyer"
+    next_package_name: str | None = None
+    next_package_version: str | None = None
+    explicit_ready_candidate_pack_confirmation: bool = True
+    explicit_no_loaded_package_mutation_confirmation: bool = True
+    explicit_no_lawyer_approved_package_mutation_confirmation: bool = True
+    explicit_no_runtime_policy_change_confirmation: bool = True
+    explicit_no_auto_load_confirmation: bool = True
+    explicit_practice_load_review_required_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class NextExperiencePackageActionRequest(BaseModel):
+    actor_id: str = "local_demo_lawyer"
+    actor_note: str = "下一版经验包草案状态更新 metadata。"
+    explicit_no_auto_load_confirmation: bool = True
+    explicit_practice_load_review_required_confirmation: bool = True
+    explicit_no_loaded_package_mutation_confirmation: bool = True
+    explicit_no_lawyer_approved_package_mutation_confirmation: bool = True
+
+
+class NextPackageAuditEvent(BaseModel):
+    event_id: str
+    next_package_id: str
+    action: str
+    timestamp: str
+    actor_id: str | None = None
+    actor_note: str | None = None
+    metadata_only: bool = True
+    provider_call_executed: bool = False
+    loaded_package_mutated: bool = False
+    lawyer_approved_package_mutated: bool = False
+    runtime_package_replaced: bool = False
+    runtime_policy_changed: bool = False
+    practice_runtime_loaded: bool = False
+    training_triggered: bool = False
+    external_delivery_triggered: bool = False
+
+
+class NextPackageSourceTrace(V731jSafetyBase):
+    source_trace_id: str
+    next_package_id: str
+    source_package_id: str
+    source_package_version: str
+    candidate_pack_id: str
+    source_feedback_ids: list[str] = Field(default_factory=list)
+    source_risk_event_ids: list[str] = Field(default_factory=list)
+    source_observation_ids: list[str] = Field(default_factory=list)
+    source_iteration_candidate_ids: list[str] = Field(default_factory=list)
+    inherited_candidate_pack_source_trace_id: str | None = None
+    trace_status: str = "next_package_source_trace_ready"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class NextPackageLawyerReviewView(V731jSafetyBase):
+    lawyer_review_view_id: str
+    next_package_id: str
+    candidate_pack_id: str
+    change_summary: str
+    added_experience_cards: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    revised_experience_cards: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    removed_experience_cards: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    usage_boundary_changes: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    risk_warning_changes: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    feedback_summary: list[str] = Field(default_factory=list)
+    risk_event_summary: list[str] = Field(default_factory=list)
+    current_next_comparison: str = "下一版草案仅应用候选 diff metadata，不修改当前已加载包。"
+    suggested_load_review_action: str = "进入 v7.31f Practice Load Review Gate 重新复核。"
+    final_lawyer_confirmation_required: bool = True
+    warnings: list[str] = Field(default_factory=list)
+
+
+class NextPackageManifest(V731jSafetyBase):
+    manifest_id: str
+    next_package_id: str
+    candidate_pack_id: str
+    source_package_id: str
+    source_package_version: str
+    next_package_name: str
+    next_package_version: str
+    draft_status: str
+    applied_candidate_ids: list[str] = Field(default_factory=list)
+    pending_practice_load_review_required: bool = True
+    load_executed: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class NextPackageValidationResult(V731jSafetyBase):
+    validation_id: str
+    next_package_id: str
+    validation_status: str = "metadata_validated"
+    ready_for_practice_load_review: bool = True
+    candidate_pack_ready: bool = True
+    source_trace_complete: bool = True
+    audit_complete: bool = True
+    sensitive_scan_passed: bool = True
+    loaded_package_preserved: bool = True
+    validation_errors: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class NextExperiencePackageDraft(V731jSafetyBase):
+    next_package_id: str
+    source_package_id: str
+    source_package_version: str
+    candidate_pack_id: str
+    next_package_name: str
+    next_package_version: str
+    draft_status: str = "draft_rebuilt"
+    applied_candidate_ids: list[str] = Field(default_factory=list)
+    added_experience_cards: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    revised_experience_cards: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    removed_experience_cards: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    usage_boundary_changes: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    risk_warning_changes: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    rollback_recommendations: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    disable_recommendations: list[dict[str, str | list[str] | bool]] = Field(default_factory=list)
+    lawyer_review_view_id: str
+    manifest_id: str
+    audit_id: str
+    source_trace_id: str
+    created_at: str
+    lawyer_review_view: NextPackageLawyerReviewView
+    manifest: NextPackageManifest
+    validation_result: NextPackageValidationResult
+    audit_events: list[NextPackageAuditEvent] = Field(default_factory=list)
+    source_trace: NextPackageSourceTrace
+    warnings: list[str] = Field(default_factory=list)
+
+
+class NextExperiencePackageDraftList(V731jSafetyBase):
+    next_packages: list[NextExperiencePackageDraft] = Field(default_factory=list)
+    next_package_count: int = 0
+    draft_rebuilt_count: int = 0
+    pending_practice_load_review_count: int = 0
+    blocked_count: int = 0
+    archived_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class NextExperiencePackageAudit(V731jSafetyBase):
+    next_package_id: str
+    events: list[NextPackageAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731jNextExperiencePackageStatus(V731jSafetyBase):
+    version: str = "v7.31j"
+    status: str = "next_experience_package_rebuild_ready"
+    next_package_rebuilder_ready: bool = True
+    candidate_pack_apply_engine_ready: bool = True
+    lawyer_review_view_regenerator_ready: bool = True
+    manifest_builder_ready: bool = True
+    validation_engine_ready: bool = True
+    next_package_count: int = 0
+    ready_candidate_pack_count: int = 0
+    pending_practice_load_review_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V732SafetyBase(BaseModel):
+    owner_only: bool = True
+    metadata_only: bool = True
+    lifecycle_view_only: bool = True
+    redacted_abstracted_experience_only: bool = True
+    lawyer_approval_required_for_runtime_load: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    feedback_does_not_mutate_loaded_package: bool = True
+    candidate_pack_does_not_mutate_loaded_package: bool = True
+    next_package_requires_load_review: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    source_content_returned: bool = False
+    source_material_returned: bool = False
+    full_output_returned: bool = False
+    case_material_returned: bool = False
+    loaded_package_mutated: bool = False
+    next_package_draft_auto_loaded: bool = False
+    automatic_training_triggered: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class ExperienceLifecycleStageEvent(V732SafetyBase):
+    stage_event_id: str
+    lifecycle_id: str
+    stage_name: str
+    stage_status: str
+    linked_object_type: str
+    linked_object_id: str | None = None
+    previous_stage_event_id: str | None = None
+    next_stage_candidates: list[str] = Field(default_factory=list)
+    allowed_actions: list[str] = Field(default_factory=list)
+    blocked_reason: str | None = None
+    safety_flags: list[str] = Field(default_factory=list)
+    audit_id: str
+    source_trace_id: str
+    created_at: str
+
+
+class ExperienceLifecycleRecord(V732SafetyBase):
+    lifecycle_id: str
+    root_material_batch_id: str | None = None
+    current_stage: str
+    current_status: str
+    case_cause_scope: list[str] = Field(default_factory=list)
+    source_candidate_ids: list[str] = Field(default_factory=list)
+    experience_ids: list[str] = Field(default_factory=list)
+    skill_draft_ids: list[str] = Field(default_factory=list)
+    skill_package_ids: list[str] = Field(default_factory=list)
+    training_task_ids: list[str] = Field(default_factory=list)
+    experience_package_ids: list[str] = Field(default_factory=list)
+    practice_load_review_ids: list[str] = Field(default_factory=list)
+    runtime_load_ids: list[str] = Field(default_factory=list)
+    usage_event_ids: list[str] = Field(default_factory=list)
+    observation_ids: list[str] = Field(default_factory=list)
+    feedback_ids: list[str] = Field(default_factory=list)
+    risk_event_ids: list[str] = Field(default_factory=list)
+    candidate_pack_ids: list[str] = Field(default_factory=list)
+    next_package_ids: list[str] = Field(default_factory=list)
+    latest_loaded_package_id: str | None = None
+    latest_lawyer_approved_package_id: str | None = None
+    latest_next_package_draft_id: str | None = None
+    blocked_reason: str | None = None
+    safety_flags: list[str] = Field(default_factory=list)
+    source_trace_root_id: str
+    audit_timeline_id: str
+    stage_events: list[ExperienceLifecycleStageEvent] = Field(default_factory=list)
+    next_allowed_actions: list[str] = Field(default_factory=list)
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperiencePackageLineage(V732SafetyBase):
+    lineage_id: str
+    root_package_id: str
+    package_id: str
+    package_version: str
+    package_kind: str
+    parent_package_id: str | None = None
+    supersedes_package_id: str | None = None
+    superseded_by_package_id: str | None = None
+    derived_from_candidate_pack_id: str | None = None
+    derived_from_feedback_ids: list[str] = Field(default_factory=list)
+    derived_from_risk_event_ids: list[str] = Field(default_factory=list)
+    loaded_runtime_load_ids: list[str] = Field(default_factory=list)
+    rollback_from_load_id: str | None = None
+    rollback_to_load_id: str | None = None
+    lineage_status: str
+    created_at: str
+
+
+class ExperienceLifecycleGraphNode(V732SafetyBase):
+    id: str
+    type: str
+    label: str
+    status: str
+    version: str | None = None
+    created_at: str | None = None
+    safety_status: str = "metadata_safe"
+
+
+class ExperienceLifecycleGraphEdge(BaseModel):
+    from_id: str
+    to_id: str
+    relation: str
+    created_at: str | None = None
+
+
+class ExperienceLifecycleGraph(V732SafetyBase):
+    lifecycle_id: str
+    nodes: list[ExperienceLifecycleGraphNode] = Field(default_factory=list)
+    edges: list[ExperienceLifecycleGraphEdge] = Field(default_factory=list)
+    lineage: list[ExperiencePackageLineage] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceLifecycleAuditEventView(V732SafetyBase):
+    audit_event_id: str
+    lifecycle_id: str
+    event_type: str
+    stage_name: str
+    linked_object_type: str
+    linked_object_id: str | None = None
+    actor: str | None = None
+    timestamp: str
+    summary: str
+    safety_flags: list[str] = Field(default_factory=list)
+    source_trace_id: str | None = None
+
+
+class ExperienceLifecycleAuditTimeline(V732SafetyBase):
+    audit_timeline_id: str
+    lifecycle_id: str
+    events: list[ExperienceLifecycleAuditEventView] = Field(default_factory=list)
+    events_count: int = 0
+    latest_event_at: str | None = None
+    risk_events_count: int = 0
+    blocked_events_count: int = 0
+    manual_load_review_events_count: int = 0
+    runtime_events_count: int = 0
+    feedback_events_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceLifecycleSourceTraceView(V732SafetyBase):
+    source_trace_view_id: str
+    lifecycle_id: str
+    root_source_trace_id: str
+    material_trace_summary: list[str] = Field(default_factory=list)
+    ocr_trace_summary: list[str] = Field(default_factory=list)
+    legal_retrieval_trace_summary: list[str] = Field(default_factory=list)
+    experience_candidate_trace_summary: list[str] = Field(default_factory=list)
+    skill_draft_trace_summary: list[str] = Field(default_factory=list)
+    skill_package_trace_summary: list[str] = Field(default_factory=list)
+    training_package_trace_summary: list[str] = Field(default_factory=list)
+    practice_load_trace_summary: list[str] = Field(default_factory=list)
+    runtime_usage_trace_summary: list[str] = Field(default_factory=list)
+    feedback_trace_summary: list[str] = Field(default_factory=list)
+    next_package_trace_summary: list[str] = Field(default_factory=list)
+    missing_trace_warnings: list[str] = Field(default_factory=list)
+    created_at: str
+
+
+class ExperienceLifecycleIntegrityCheck(V732SafetyBase):
+    integrity_check_id: str
+    lifecycle_id: str
+    status: str
+    passed_checks: list[str] = Field(default_factory=list)
+    failed_checks: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    blocked_reason: str | None = None
+    recommended_actions: list[str] = Field(default_factory=list)
+    created_at: str
+
+
+class ExperienceLifecycleSafetySummary(V732SafetyBase):
+    lifecycle_id: str
+    raw_content_absent: bool = True
+    ocr_payload_absent: bool = True
+    filesystem_location_absent: bool = True
+    credential_value_absent: bool = True
+    provider_payload_absent: bool = True
+    lawyer_approval_required_for_runtime_load: bool = True
+    loaded_package_is_lawyer_approved: bool = True
+    feedback_does_not_mutate_loaded_package: bool = True
+    next_package_requires_load_review: bool = True
+    overall_safety_status: str = "passed"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceLifecycleList(V732SafetyBase):
+    lifecycles: list[ExperienceLifecycleRecord] = Field(default_factory=list)
+    lifecycle_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V732ExperienceLifecycleStatus(V732SafetyBase):
+    version: str = "v7.32"
+    status: str = "experience_lifecycle_consolidation_ready"
+    lifecycle_registry_ready: bool = True
+    state_machine_ready: bool = True
+    lineage_graph_ready: bool = True
+    audit_timeline_ready: bool = True
+    source_trace_view_ready: bool = True
+    integrity_check_ready: bool = True
+    safety_summary_ready: bool = True
+    lifecycle_count: int = 0
+    stage_event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V733SafetyBase(BaseModel):
+    owner_only: bool = True
+    metadata_only: bool = True
+    schema_driven_output_only: bool = True
+    redacted_abstracted_output_only: bool = True
+    frontend_output_definition_forbidden: bool = True
+    lawyer_review_required: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_payload_returned: bool = False
+    source_content_returned: bool = False
+    case_material_returned: bool = False
+    loaded_package_mutated: bool = False
+    next_package_auto_generated: bool = False
+    training_triggered: bool = False
+    skill_published: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class CaseAnalysisOutputFeedbackRequest(BaseModel):
+    reviewer_id: str = "owner_lawyer"
+    feedback_type: str = "improvement_suggestion"
+    feedback_summary: str = "建议优化该项输出的事实边界与风险提示。"
+    severity: str = "low"
+    explicit_metadata_only_confirmation: bool = True
+    explicit_no_training_confirmation: bool = True
+
+
+class CaseAnalysisOutputRiskEventRequest(BaseModel):
+    reporter_id: str = "owner_lawyer"
+    risk_level: str = "medium"
+    risk_summary: str = "该项输出需要律师复核后再作为实战参考。"
+    mitigation_note: str = "保留为辅助提示，不作为最终法律意见。"
+    explicit_metadata_only_confirmation: bool = True
+    explicit_no_external_delivery_confirmation: bool = True
+
+
+class CaseAnalysisOutputGroup(V733SafetyBase):
+    group_id: str
+    group_title: str
+    group_type: str
+    expected_count: int
+    actual_count: int
+    display_order: int
+    description: str
+    outputs: list["CaseAnalysisRuntimeOutput"] = Field(default_factory=list)
+
+
+class CaseAnalysisSkillOutputSchema(V733SafetyBase):
+    skill_id: str
+    skill_name: str
+    skill_version: str
+    schema_version: str = "v7.33"
+    package_id: str
+    package_version: str
+    runtime_load_id: str
+    output_groups: list[CaseAnalysisOutputGroup] = Field(default_factory=list)
+    created_at: str
+    audit_id: str
+    source_trace_id: str
+    safety_flags: dict[str, bool] = Field(default_factory=dict)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisRuntimeOutput(V733SafetyBase):
+    output_id: str
+    group_id: str
+    output_type: str
+    output_title: str
+    output_order: int
+    output_status: str = "visible"
+    output_summary_redacted: str
+    output_detail_redacted: str
+    risk_level: str = "low"
+    confidence_label: str = "schema_defined_demo"
+    source_experience_ids: list[str] = Field(default_factory=list)
+    source_runtime_load_id: str
+    source_usage_event_id: str | None = None
+    source_trace_id: str
+    audit_id: str
+    feedback_count: int = 0
+    risk_event_count: int = 0
+    allowed_actions: list[str] = Field(default_factory=list)
+    created_at: str
+    updated_at: str
+
+
+class CaseAnalysisSummaryMetrics(V733SafetyBase):
+    total_outputs: int = 0
+    fact_output_count: int = 0
+    legal_analysis_output_count: int = 0
+    risk_flagged_count: int = 0
+    feedback_count: int = 0
+    high_risk_count: int = 0
+    reviewed_count: int = 0
+
+
+class CaseAnalysisWorkbenchView(V733SafetyBase):
+    view_id: str
+    case_id: str
+    case_cause_name: str
+    package_id: str
+    package_version: str
+    runtime_load_id: str
+    runtime_load_status: str
+    skill_id: str
+    skill_name: str
+    skill_version: str
+    output_groups: list[CaseAnalysisOutputGroup] = Field(default_factory=list)
+    summary_metrics: CaseAnalysisSummaryMetrics
+    safety_summary: dict[str, bool | str] = Field(default_factory=dict)
+    audit_id: str
+    source_trace_id: str
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisWorkbenchViewList(V733SafetyBase):
+    views: list[CaseAnalysisWorkbenchView] = Field(default_factory=list)
+    view_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisRuntimeOutputList(V733SafetyBase):
+    outputs: list[CaseAnalysisRuntimeOutput] = Field(default_factory=list)
+    output_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisOutputFeedback(V733SafetyBase):
+    feedback_id: str
+    output_id: str
+    reviewer_id: str
+    feedback_type: str
+    feedback_summary: str
+    severity: str
+    feedback_status: str = "submitted"
+    source_trace_id: str
+    audit_id: str
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisOutputFeedbackList(V733SafetyBase):
+    output_id: str
+    feedback: list[CaseAnalysisOutputFeedback] = Field(default_factory=list)
+    feedback_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisOutputRiskEvent(V733SafetyBase):
+    risk_event_id: str
+    output_id: str
+    reporter_id: str
+    risk_level: str
+    risk_summary: str
+    mitigation_note: str
+    risk_status: str = "logged_for_lawyer_review"
+    source_trace_id: str
+    audit_id: str
+    created_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisOutputRiskEventList(V733SafetyBase):
+    output_id: str
+    risk_events: list[CaseAnalysisOutputRiskEvent] = Field(default_factory=list)
+    risk_event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisOutputAudit(V733SafetyBase):
+    output_id: str
+    audit_id: str
+    events: list[dict[str, str]] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CaseAnalysisOutputSourceTrace(V733SafetyBase):
+    output_id: str
+    source_trace_id: str
+    source_experience_ids: list[str] = Field(default_factory=list)
+    source_runtime_load_id: str
+    source_usage_event_id: str | None = None
+    trace_status: str = "complete"
+    trace_summary: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V733CaseAnalysisWorkbenchStatus(V733SafetyBase):
+    version: str = "v7.33"
+    status: str = "case_analysis_schema_driven_workbench_ready"
+    skill_output_schema_ready: bool = True
+    runtime_output_registry_ready: bool = True
+    output_view_builder_ready: bool = True
+    feedback_engine_ready: bool = True
+    risk_event_engine_ready: bool = True
+    view_count: int = 0
+    output_count: int = 0
+    fact_group_count: int = 0
+    legal_analysis_group_count: int = 0
+    feedback_count: int = 0
+    risk_event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)

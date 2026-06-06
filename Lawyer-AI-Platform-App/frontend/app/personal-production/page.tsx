@@ -49,6 +49,9 @@ const workflowSteps = [
   "Codex 训练产物加载器",
   "已结案件 Codex 训练执行",
   "真实已结案件训练材料导入与脱敏",
+  "Skill Package 版本化封装与系统校验",
+  "Internal Training / Experience Package Builder",
+  "Practice Runtime Load Review Gate",
   "受控案件分析",
   "实战 Pilot 与本人下载",
   "Pilot Dashboard 增强",
@@ -92,6 +95,9 @@ const nextRoute = [
   "v7.31a Real Closed-Case Training Intake & Redaction Pipeline",
   "v7.31b Controlled Experience Extraction Pipeline",
   "v7.31c Skill Experience Pool & Codex Skill Draft Builder",
+  "v7.31d Skill Package Versioning & System Validation Gate",
+  "v7.31e Internal Training / Experience Package Builder",
+  "v7.31f Practice Runtime Load Review Gate",
   "Final Security Audit for Personal Live Intelligence & Controlled Case Analysis",
   "Team Workspace deferred / 团队版后置",
   "External Client Delivery deferred / 外部交付后置"
@@ -176,6 +182,8 @@ export default function PersonalProductionPage() {
       { label: "已结案件 Codex 训练", value: Boolean(readiness?.readiness.codex_training_run_gateway_registered ?? true) },
       { label: "真实闭案 intake", value: Boolean(readiness?.readiness.real_closed_case_training_intake_gateway_registered ?? true) },
       { label: "Codex Skill 草案", value: Boolean(readiness?.readiness.codex_skill_draft_builder_gateway_registered ?? true) },
+      { label: "内部训练经验包", value: Boolean(readiness?.readiness.internal_training_experience_package_gateway_registered ?? true) },
+      { label: "实战加载前复核", value: Boolean(readiness?.readiness.practice_load_review_gateway_registered ?? true) },
       { label: "个人生产实战 Pilot", value: Boolean(readiness?.readiness.personal_production_pilot_gateway_registered ?? true) },
       { label: "个人案件与材料工作台", value: Boolean(readiness?.readiness.personal_case_workspace_gateway_registered ?? true) },
       { label: "Pilot Dashboard 增强", value: Boolean(readiness?.readiness.personal_production_pilot_dashboard_gateway_registered ?? true) },
@@ -616,10 +624,10 @@ export default function PersonalProductionPage() {
         </section>
 
         <section className="rounded-md border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
-          <div className="text-xs font-semibold uppercase tracking-wide">v7.31b / v7.31c Skill Experience Pipeline</div>
-          <h2 className="mt-2 text-lg font-semibold">受控经验候选进入经验池并生成待确认 Skill 草案</h2>
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.31b / v7.31c / v7.31d / v7.31e / v7.31f Skill Experience Pipeline</div>
+          <h2 className="mt-2 text-lg font-semibold">受控经验候选、Skill 草案、版本化 Package、内部训练经验包与加载前复核</h2>
           <p className="mt-2 text-sm leading-6">
-            v7.31b 负责 OCR/文档解析、法律检索、脱敏经验候选和人工复核；v7.31c 只导入 approved_for_skill_experience，形成 Skill Experience Pool 并生成待人工确认的 Codex Skill 草案。草案不发布 Skill、不写正式训练集、不调用 provider。
+            v7.31b 负责 OCR/文档解析、法律检索、脱敏经验候选和人工复核；v7.31c 形成 Skill Experience Pool 并生成待人工确认的 Codex Skill 草案；v7.31d 将已确认草案封装为版本化 package 并执行系统校验；v7.31e 从 system_validated package 构建内部训练任务和经验包；v7.31f 提供实战加载前律师复核与经验编辑。全程不发布 Skill、不调用 provider、不触发真实训练。
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-4">
             <MetricTile label="draft_builder_status" value={providerCapabilities?.codex_skill_draft_builder_status ?? "codex_skill_draft_builder_metadata_ready"} />
@@ -633,6 +641,16 @@ export default function PersonalProductionPage() {
             <MetricTile label="provider_call" value={String(!(providerCapabilities?.codex_skill_draft_provider_call_disabled ?? true))} />
             <MetricTile label="raw_content_blocked" value={String(providerCapabilities?.codex_skill_draft_raw_content_blocked ?? true)} />
             <MetricTile label="api_key_read" value={String(!(providerCapabilities?.codex_skill_draft_api_key_read_disabled ?? true))} />
+            <MetricTile label="internal_training_status" value={providerCapabilities?.internal_training_experience_package_status ?? "internal_training_experience_package_metadata_ready"} />
+            <MetricTile label="task_builder_ready" value={String(providerCapabilities?.internal_training_task_builder_ready ?? true)} />
+            <MetricTile label="experience_package_builder_ready" value={String(providerCapabilities?.internal_experience_package_builder_ready ?? true)} />
+            <MetricTile label="pending_practice_review" value={String(providerCapabilities?.internal_training_pending_practice_review_ready ?? true)} />
+            <MetricTile label="real_training" value={String(!(providerCapabilities?.internal_training_real_training_disabled ?? true))} />
+            <MetricTile label="skill_publish" value={String(!(providerCapabilities?.internal_training_skill_publish_disabled ?? true))} />
+            <MetricTile label="practice_load_review" value={providerCapabilities?.practice_load_review_status ?? "practice_load_review_gate_metadata_ready"} />
+            <MetricTile label="lawyer_editor_ready" value={String(providerCapabilities?.lawyer_experience_editor_ready ?? true)} />
+            <MetricTile label="revalidation_ready" value={String(providerCapabilities?.practice_load_revalidation_ready ?? true)} />
+            <MetricTile label="runtime_loading_deferred" value={String(providerCapabilities?.practice_runtime_loading_deferred_to_v731g ?? true)} />
             <MetricTile label="external_delivery" value="false" />
           </div>
         </section>
@@ -685,6 +703,10 @@ export default function PersonalProductionPage() {
                   {step}
                   {step.includes("v7.31a") ? <span className="ml-2 text-xs text-emerald-700">已完成</span> : null}
                   {step.includes("v7.31b") ? <span className="ml-2 text-xs text-emerald-700">已接入</span> : null}
+                  {step.includes("v7.31c") ? <span className="ml-2 text-xs text-emerald-700">已接入</span> : null}
+                  {step.includes("v7.31d") ? <span className="ml-2 text-xs text-emerald-700">已接入</span> : null}
+                  {step.includes("v7.31e") ? <span className="ml-2 text-xs text-emerald-700">已接入</span> : null}
+                  {step.includes("v7.31f") ? <span className="ml-2 text-xs text-emerald-700">已接入</span> : null}
                   {step.includes("后置") || step.includes("deferred") ? <span className="ml-2 text-xs text-amber-700">未进入</span> : null}
                 </div>
               ))}

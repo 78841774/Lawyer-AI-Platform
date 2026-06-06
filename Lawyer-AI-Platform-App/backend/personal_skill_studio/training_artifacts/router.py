@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
 from personal_skill_studio.training_artifacts.artifact_registry import (
     build_scheme,
@@ -16,6 +16,21 @@ from personal_skill_studio.training_artifacts.artifact_registry import (
 from personal_skill_studio.training_artifacts.audit_engine import build_audit
 from personal_skill_studio.training_artifacts.case_cause_matcher import match_case_cause
 from personal_skill_studio.training_artifacts.case_cause_taxonomy import build_taxonomy_manifest, get_case_cause_node
+from personal_skill_studio.training_artifacts.case_analysis_workbench_runtime import (
+    build_v733_workbench_status,
+    get_output_audit,
+    get_output_source_trace,
+    get_runtime_output,
+    get_workbench_schema,
+    get_workbench_view,
+    list_output_feedback,
+    list_output_risk_events,
+    list_workbench_outputs,
+    list_workbench_views,
+    mark_output_reviewed,
+    submit_output_feedback,
+    submit_output_risk_event,
+)
 from personal_skill_studio.training_artifacts.codex_skill_draft_registry import (
     create_draft,
     get_draft,
@@ -31,6 +46,18 @@ from personal_skill_studio.training_artifacts.experience_candidate_registry impo
     redact_experience_candidate,
     review_experience_candidate,
 )
+from personal_skill_studio.training_artifacts.experience_lifecycle_registry import (
+    build_v732_status,
+    get_lifecycle,
+    get_lifecycle_audit_timeline,
+    get_lifecycle_graph,
+    get_lifecycle_integrity_check,
+    get_lifecycle_safety_summary,
+    get_lifecycle_source_trace_view,
+    get_lifecycle_state,
+    list_lifecycles,
+    recompute_lifecycle,
+)
 from personal_skill_studio.training_artifacts.experience_candidate_safety_engine import build_v731b_status
 from personal_skill_studio.training_artifacts.legal_retrieval_registry import (
     create_legal_retrieval_job,
@@ -45,6 +72,70 @@ from personal_skill_studio.training_artifacts.load_dry_run_engine import (
     list_skill_contexts,
 )
 from personal_skill_studio.training_artifacts.ocr_job_registry import create_ocr_job, get_ocr_job, list_ocr_jobs
+from personal_skill_studio.training_artifacts.next_experience_package_registry import (
+    archive_next_package,
+    build_v731j_status,
+    get_next_experience_package,
+    get_next_experience_package_audit,
+    get_next_experience_package_lawyer_review_view,
+    get_next_experience_package_manifest,
+    get_next_experience_package_source_trace,
+    list_next_experience_packages,
+    mark_next_package_pending_load_review,
+    rebuild_next_experience_package_record,
+)
+from personal_skill_studio.training_artifacts.practice_feedback_registry import build_feedback_summary, build_v731h_status
+from personal_skill_studio.training_artifacts.practice_feedback_candidate_pack import (
+    archive_candidate_pack,
+    build_practice_feedback_candidate_pack,
+    build_v731i_status,
+    get_practice_feedback_candidate_pack,
+    get_practice_feedback_candidate_pack_audit,
+    get_practice_feedback_candidate_pack_diff,
+    get_practice_feedback_candidate_pack_source_trace,
+    list_practice_feedback_candidate_packs,
+    mark_candidate_pack_ready,
+)
+from personal_skill_studio.training_artifacts.practice_lawyer_feedback import (
+    create_lawyer_feedback,
+    get_lawyer_feedback,
+    list_lawyer_feedback,
+    triage_lawyer_feedback,
+)
+from personal_skill_studio.training_artifacts.practice_load_review_gate import (
+    approve_practice_load_package,
+    build_v731f_status,
+    edit_practice_load_package,
+    get_practice_load_package,
+    get_practice_load_package_audit,
+    get_practice_load_package_source_trace,
+    list_practice_load_packages,
+    reject_practice_load_package,
+    revalidate_practice_load_package,
+    save_practice_load_package,
+)
+from personal_skill_studio.training_artifacts.practice_runtime_loader import load_practice_runtime_package
+from personal_skill_studio.training_artifacts.practice_runtime_monitor import list_practice_runtime_usage
+from personal_skill_studio.training_artifacts.practice_runtime_policy_engine import evaluate_practice_runtime_policy
+from personal_skill_studio.training_artifacts.practice_runtime_registry import (
+    build_v731g_status,
+    get_runtime_load,
+    get_runtime_load_audit,
+    get_runtime_load_source_trace,
+    list_runtime_loads,
+)
+from personal_skill_studio.training_artifacts.practice_runtime_rollback_engine import (
+    disable_runtime_load,
+    enable_runtime_load_active,
+    enable_runtime_load_gray,
+    rollback_runtime_load,
+)
+from personal_skill_studio.training_artifacts.practice_output_observation import (
+    build_output_observation_status,
+    create_output_observation,
+    get_output_observation,
+    list_output_observations,
+)
 from personal_skill_studio.training_artifacts.raw_work_product_boundary import build_raw_work_product_boundary_status
 from personal_skill_studio.training_artifacts.real_closed_case_intake import (
     build_intake_status,
@@ -67,19 +158,45 @@ from personal_skill_studio.training_artifacts.safety_engine import build_safety
 from personal_skill_studio.training_artifacts.schemas import (
     ArtifactListResponse,
     CaseCauseMatchRequest,
+    CaseAnalysisOutputFeedbackRequest,
+    CaseAnalysisOutputRiskEventRequest,
     CodexSkillDraftBuildRequest,
     CodexSkillDraftReviewRequest,
     CodexTrainingRunRequest,
     ExperienceCandidateBuildRequest,
     ExperienceCandidateReviewRequest,
+    ExperiencePackageBuildRequest,
     LegalRetrievalJobRequest,
     LoadDryRunRequest,
+    NextExperiencePackageActionRequest,
+    NextExperiencePackageRebuildRequest,
     OcrJobRequest,
+    PracticeLoadReviewDecisionRequest,
+    PracticeLoadReviewEditRequest,
+    PracticeLoadReviewSaveRequest,
+    PracticeFeedbackCandidatePackActionRequest,
+    PracticeFeedbackCandidatePackBuildRequest,
+    PracticeFeedbackTriageRequest,
+    PracticeLawyerFeedbackRequest,
+    PracticeOutputObservationRequest,
+    PracticeRiskEventRequest,
+    PracticeRuntimeDisableRequest,
+    PracticeRuntimeLoadRequest,
+    PracticeRuntimePolicyEvaluateRequest,
+    PracticeRuntimeRollbackRequest,
+    PracticeRuntimeRolloutRequest,
     RealClosedCaseTrainingIntakeRequest,
+    SkillPackageBuildRequest,
     SkillExperienceBindingRequest,
     SkillExperienceImportRequest,
     TrainingArtifactStatus,
+    TrainingTaskBuildRequest,
     TrainingIntakeReviewActionRequest,
+)
+from personal_skill_studio.training_artifacts.practice_risk_event_registry import (
+    create_practice_risk_event,
+    get_practice_risk_event,
+    list_practice_risk_events,
 )
 from personal_skill_studio.training_artifacts.skill_experience_binding_engine import create_binding, get_binding, list_bindings
 from personal_skill_studio.training_artifacts.skill_experience_pool import (
@@ -89,6 +206,26 @@ from personal_skill_studio.training_artifacts.skill_experience_pool import (
     pool_status,
 )
 from personal_skill_studio.training_artifacts.skill_experience_safety_engine import build_v731c_status
+from personal_skill_studio.training_artifacts.skill_package_registry import (
+    build_package_record,
+    get_package_audit_record,
+    get_package_manifest_record,
+    get_package_record,
+    get_package_source_trace_record,
+    get_v731d_pipeline_status,
+    list_package_records,
+    validate_package_record,
+)
+from personal_skill_studio.training_artifacts.training_package_registry import (
+    build_experience_package_record,
+    build_training_task_record,
+    build_v731e_status,
+    get_experience_package_audit_record,
+    get_experience_package_record,
+    get_experience_package_source_trace_record,
+    list_experience_package_records,
+    list_training_task_records,
+)
 from personal_skill_studio.training_artifacts.training_run_engine import (
     build_training_run_audit,
     build_training_run_safety,
@@ -451,6 +588,526 @@ def codex_skill_draft_audit(draft_id: str) -> dict[str, Any]:
 @router.get("/v7-31c/status")
 def v731c_status() -> dict[str, Any]:
     return build_v731c_status()
+
+
+@router.get("/skill-packages")
+def skill_packages() -> dict[str, Any]:
+    return list_package_records()
+
+
+@router.get("/skill-packages/{package_id}")
+def skill_package_detail(package_id: str) -> dict[str, Any]:
+    return _ensure(get_package_record(package_id))
+
+
+@router.post("/skill-packages/build")
+def skill_packages_build(request: SkillPackageBuildRequest) -> dict[str, Any]:
+    return _ensure(build_package_record(request))
+
+
+@router.post("/skill-packages/{package_id}/validate")
+def skill_package_validate(package_id: str) -> dict[str, Any]:
+    return _ensure(validate_package_record(package_id))
+
+
+@router.get("/skill-packages/{package_id}/manifest")
+def skill_package_manifest(package_id: str) -> dict[str, Any]:
+    return _ensure(get_package_manifest_record(package_id))
+
+
+@router.get("/skill-packages/{package_id}/audit")
+def skill_package_audit(package_id: str) -> dict[str, Any]:
+    return _ensure(get_package_audit_record(package_id))
+
+
+@router.get("/skill-packages/{package_id}/source-trace")
+def skill_package_source_trace(package_id: str) -> dict[str, Any]:
+    return _ensure(get_package_source_trace_record(package_id))
+
+
+@router.get("/v7-31d/status")
+def v731d_status() -> dict[str, Any]:
+    return get_v731d_pipeline_status()
+
+
+@router.get("/training-tasks")
+def training_tasks() -> dict[str, Any]:
+    return list_training_task_records()
+
+
+@router.post("/training-tasks/build")
+def training_tasks_build(request: TrainingTaskBuildRequest) -> dict[str, Any]:
+    return _ensure(build_training_task_record(request))
+
+
+@router.get("/training-packages")
+def training_packages() -> dict[str, Any]:
+    return list_experience_package_records()
+
+
+@router.post("/training-packages/build")
+def training_packages_build(request: ExperiencePackageBuildRequest) -> dict[str, Any]:
+    return _ensure(build_experience_package_record(request))
+
+
+@router.get("/training-packages/{package_id}")
+def training_package_detail(package_id: str) -> dict[str, Any]:
+    return _ensure(get_experience_package_record(package_id))
+
+
+@router.get("/training-packages/{package_id}/audit")
+def training_package_audit(package_id: str) -> dict[str, Any]:
+    return _ensure(get_experience_package_audit_record(package_id))
+
+
+@router.get("/training-packages/{package_id}/source-trace")
+def training_package_source_trace(package_id: str) -> dict[str, Any]:
+    return _ensure(get_experience_package_source_trace_record(package_id))
+
+
+@router.get("/v7-31e/status")
+def v731e_status() -> dict[str, Any]:
+    return build_v731e_status()
+
+
+@router.get("/practice-load-review/packages")
+def practice_load_review_packages() -> dict[str, Any]:
+    return list_practice_load_packages()
+
+
+@router.get("/practice-load-review/packages/{package_id}")
+def practice_load_review_package_detail(package_id: str) -> dict[str, Any]:
+    return _ensure(get_practice_load_package(package_id))
+
+
+@router.post("/practice-load-review/packages/{package_id}/edit")
+def practice_load_review_package_edit(package_id: str, request: PracticeLoadReviewEditRequest) -> dict[str, Any]:
+    return _ensure(edit_practice_load_package(package_id, request))
+
+
+@router.post("/practice-load-review/packages/{package_id}/save")
+def practice_load_review_package_save(package_id: str, request: PracticeLoadReviewSaveRequest) -> dict[str, Any]:
+    return _ensure(save_practice_load_package(package_id, request))
+
+
+@router.post("/practice-load-review/packages/{package_id}/revalidate")
+def practice_load_review_package_revalidate(package_id: str) -> dict[str, Any]:
+    return _ensure(revalidate_practice_load_package(package_id))
+
+
+@router.post("/practice-load-review/packages/{package_id}/approve")
+def practice_load_review_package_approve(package_id: str, request: PracticeLoadReviewDecisionRequest) -> dict[str, Any]:
+    return _ensure(approve_practice_load_package(package_id, request))
+
+
+@router.post("/practice-load-review/packages/{package_id}/reject")
+def practice_load_review_package_reject(package_id: str, request: PracticeLoadReviewDecisionRequest) -> dict[str, Any]:
+    return _ensure(reject_practice_load_package(package_id, request))
+
+
+@router.get("/practice-load-review/packages/{package_id}/audit")
+def practice_load_review_package_audit(package_id: str) -> dict[str, Any]:
+    return _ensure(get_practice_load_package_audit(package_id))
+
+
+@router.get("/practice-load-review/packages/{package_id}/source-trace")
+def practice_load_review_package_source_trace(package_id: str) -> dict[str, Any]:
+    return _ensure(get_practice_load_package_source_trace(package_id))
+
+
+@router.get("/v7-31f/status")
+def v731f_status() -> dict[str, Any]:
+    return build_v731f_status()
+
+
+@router.get("/practice-runtime-loads/status")
+def practice_runtime_loads_status() -> dict[str, Any]:
+    return build_v731g_status()
+
+
+@router.post("/practice-runtime-loads/load")
+def practice_runtime_loads_load(request: PracticeRuntimeLoadRequest) -> dict[str, Any]:
+    return _ensure(load_practice_runtime_package(request))
+
+
+@router.get("/practice-runtime-loads")
+def practice_runtime_loads() -> dict[str, Any]:
+    return list_runtime_loads()
+
+
+@router.get("/practice-runtime-loads/{runtime_load_id}")
+def practice_runtime_load_detail(runtime_load_id: str) -> dict[str, Any]:
+    return _ensure(get_runtime_load(runtime_load_id))
+
+
+@router.post("/practice-runtime-loads/{runtime_load_id}/enable-gray")
+def practice_runtime_load_enable_gray(runtime_load_id: str, request: PracticeRuntimeRolloutRequest) -> dict[str, Any]:
+    return _ensure(enable_runtime_load_gray(runtime_load_id, request))
+
+
+@router.post("/practice-runtime-loads/{runtime_load_id}/enable-active")
+def practice_runtime_load_enable_active(runtime_load_id: str, request: PracticeRuntimeRolloutRequest) -> dict[str, Any]:
+    return _ensure(enable_runtime_load_active(runtime_load_id, request))
+
+
+@router.post("/practice-runtime-loads/{runtime_load_id}/disable")
+def practice_runtime_load_disable(runtime_load_id: str, request: PracticeRuntimeDisableRequest) -> dict[str, Any]:
+    return _ensure(disable_runtime_load(runtime_load_id, request))
+
+
+@router.post("/practice-runtime-loads/{runtime_load_id}/rollback")
+def practice_runtime_load_rollback(runtime_load_id: str, request: PracticeRuntimeRollbackRequest) -> dict[str, Any]:
+    return _ensure(rollback_runtime_load(runtime_load_id, request))
+
+
+@router.post("/practice-runtime-policy/evaluate")
+def practice_runtime_policy_evaluate(request: PracticeRuntimePolicyEvaluateRequest) -> dict[str, Any]:
+    return evaluate_practice_runtime_policy(request)
+
+
+@router.get("/practice-runtime-usage")
+def practice_runtime_usage() -> dict[str, Any]:
+    return list_practice_runtime_usage()
+
+
+@router.get("/practice-runtime-loads/{runtime_load_id}/audit")
+def practice_runtime_load_audit(runtime_load_id: str) -> dict[str, Any]:
+    return _ensure(get_runtime_load_audit(runtime_load_id))
+
+
+@router.get("/practice-runtime-loads/{runtime_load_id}/source-trace")
+def practice_runtime_load_source_trace(runtime_load_id: str) -> dict[str, Any]:
+    return _ensure(get_runtime_load_source_trace(runtime_load_id))
+
+
+@router.get("/v7-31g/status")
+def v731g_status() -> dict[str, Any]:
+    return build_v731g_status()
+
+
+@router.get("/practice-output-observations/status")
+def practice_output_observations_status() -> dict[str, Any]:
+    return build_output_observation_status()
+
+
+@router.post("/practice-output-observations")
+def practice_output_observations_create(request: PracticeOutputObservationRequest) -> dict[str, Any]:
+    return _ensure(create_output_observation(request))
+
+
+@router.get("/practice-output-observations")
+def practice_output_observations() -> dict[str, Any]:
+    return list_output_observations()
+
+
+@router.get("/practice-output-observations/{observation_id}")
+def practice_output_observation_detail(observation_id: str) -> dict[str, Any]:
+    return _ensure(get_output_observation(observation_id))
+
+
+@router.post("/practice-lawyer-feedback")
+def practice_lawyer_feedback_create(request: PracticeLawyerFeedbackRequest) -> dict[str, Any]:
+    return _ensure(create_lawyer_feedback(request))
+
+
+@router.get("/practice-lawyer-feedback")
+def practice_lawyer_feedback_list() -> dict[str, Any]:
+    return list_lawyer_feedback()
+
+
+@router.get("/practice-lawyer-feedback/{feedback_id}")
+def practice_lawyer_feedback_detail(feedback_id: str) -> dict[str, Any]:
+    return _ensure(get_lawyer_feedback(feedback_id))
+
+
+@router.post("/practice-lawyer-feedback/{feedback_id}/triage")
+def practice_lawyer_feedback_triage(feedback_id: str, request: PracticeFeedbackTriageRequest) -> dict[str, Any]:
+    return _ensure(triage_lawyer_feedback(feedback_id, request))
+
+
+@router.post("/practice-risk-events")
+def practice_risk_events_create(request: PracticeRiskEventRequest) -> dict[str, Any]:
+    return _ensure(create_practice_risk_event(request))
+
+
+@router.get("/practice-risk-events")
+def practice_risk_events() -> dict[str, Any]:
+    return list_practice_risk_events()
+
+
+@router.get("/practice-risk-events/{risk_event_id}")
+def practice_risk_event_detail(risk_event_id: str) -> dict[str, Any]:
+    return _ensure(get_practice_risk_event(risk_event_id))
+
+
+@router.get("/practice-feedback-summary")
+def practice_feedback_summary() -> dict[str, Any]:
+    return build_feedback_summary()
+
+
+@router.get("/v7-31h/status")
+def v731h_status() -> dict[str, Any]:
+    return build_v731h_status()
+
+
+@router.get("/practice-feedback-candidate-packs/status")
+def practice_feedback_candidate_packs_status() -> dict[str, Any]:
+    return build_v731i_status()
+
+
+@router.post("/practice-feedback-candidate-packs/build")
+def practice_feedback_candidate_packs_build(request: PracticeFeedbackCandidatePackBuildRequest) -> dict[str, Any]:
+    return _ensure(build_practice_feedback_candidate_pack(request))
+
+
+@router.get("/practice-feedback-candidate-packs")
+def practice_feedback_candidate_packs() -> dict[str, Any]:
+    return list_practice_feedback_candidate_packs()
+
+
+@router.get("/practice-feedback-candidate-packs/{candidate_pack_id}")
+def practice_feedback_candidate_pack_detail(candidate_pack_id: str) -> dict[str, Any]:
+    return _ensure(get_practice_feedback_candidate_pack(candidate_pack_id))
+
+
+@router.get("/practice-feedback-candidate-packs/{candidate_pack_id}/diff")
+def practice_feedback_candidate_pack_diff(candidate_pack_id: str) -> dict[str, Any]:
+    return _ensure(get_practice_feedback_candidate_pack_diff(candidate_pack_id))
+
+
+@router.get("/practice-feedback-candidate-packs/{candidate_pack_id}/audit")
+def practice_feedback_candidate_pack_audit(candidate_pack_id: str) -> dict[str, Any]:
+    return _ensure(get_practice_feedback_candidate_pack_audit(candidate_pack_id))
+
+
+@router.get("/practice-feedback-candidate-packs/{candidate_pack_id}/source-trace")
+def practice_feedback_candidate_pack_source_trace(candidate_pack_id: str) -> dict[str, Any]:
+    return _ensure(get_practice_feedback_candidate_pack_source_trace(candidate_pack_id))
+
+
+@router.post("/practice-feedback-candidate-packs/{candidate_pack_id}/mark-ready")
+def practice_feedback_candidate_pack_mark_ready(
+    candidate_pack_id: str,
+    request: PracticeFeedbackCandidatePackActionRequest,
+) -> dict[str, Any]:
+    return _ensure(mark_candidate_pack_ready(candidate_pack_id, request))
+
+
+@router.post("/practice-feedback-candidate-packs/{candidate_pack_id}/archive")
+def practice_feedback_candidate_pack_archive(
+    candidate_pack_id: str,
+    request: PracticeFeedbackCandidatePackActionRequest,
+) -> dict[str, Any]:
+    return _ensure(archive_candidate_pack(candidate_pack_id, request))
+
+
+@router.get("/v7-31i/status")
+def v731i_status() -> dict[str, Any]:
+    return build_v731i_status()
+
+
+@router.get("/next-experience-packages/status")
+def next_experience_packages_status() -> dict[str, Any]:
+    return build_v731j_status()
+
+
+@router.post("/next-experience-packages/rebuild")
+def next_experience_packages_rebuild(request: NextExperiencePackageRebuildRequest) -> dict[str, Any]:
+    return _ensure(rebuild_next_experience_package_record(request))
+
+
+@router.get("/next-experience-packages")
+def next_experience_packages() -> dict[str, Any]:
+    return list_next_experience_packages()
+
+
+@router.get("/next-experience-packages/{next_package_id}")
+def next_experience_package_detail(next_package_id: str) -> dict[str, Any]:
+    return _ensure(get_next_experience_package(next_package_id))
+
+
+@router.get("/next-experience-packages/{next_package_id}/lawyer-review-view")
+def next_experience_package_lawyer_review_view(next_package_id: str) -> dict[str, Any]:
+    return _ensure(get_next_experience_package_lawyer_review_view(next_package_id))
+
+
+@router.get("/next-experience-packages/{next_package_id}/manifest")
+def next_experience_package_manifest(next_package_id: str) -> dict[str, Any]:
+    return _ensure(get_next_experience_package_manifest(next_package_id))
+
+
+@router.get("/next-experience-packages/{next_package_id}/audit")
+def next_experience_package_audit(next_package_id: str) -> dict[str, Any]:
+    return _ensure(get_next_experience_package_audit(next_package_id))
+
+
+@router.get("/next-experience-packages/{next_package_id}/source-trace")
+def next_experience_package_source_trace(next_package_id: str) -> dict[str, Any]:
+    return _ensure(get_next_experience_package_source_trace(next_package_id))
+
+
+@router.post("/next-experience-packages/{next_package_id}/mark-pending-load-review")
+def next_experience_package_mark_pending_load_review(
+    next_package_id: str,
+    request: NextExperiencePackageActionRequest,
+) -> dict[str, Any]:
+    return _ensure(mark_next_package_pending_load_review(next_package_id, request))
+
+
+@router.post("/next-experience-packages/{next_package_id}/archive")
+def next_experience_package_archive(
+    next_package_id: str,
+    request: NextExperiencePackageActionRequest,
+) -> dict[str, Any]:
+    return _ensure(archive_next_package(next_package_id, request))
+
+
+@router.get("/v7-31j/status")
+def v731j_status() -> dict[str, Any]:
+    return build_v731j_status()
+
+
+@router.get("/experience-lifecycle/status")
+def experience_lifecycle_status() -> dict[str, Any]:
+    return build_v732_status()
+
+
+@router.get("/experience-lifecycles")
+def experience_lifecycles() -> dict[str, Any]:
+    return list_lifecycles()
+
+
+@router.get("/experience-lifecycles/{lifecycle_id}")
+def experience_lifecycle_detail(lifecycle_id: str) -> dict[str, Any]:
+    return _ensure(get_lifecycle(lifecycle_id))
+
+
+@router.get("/experience-lifecycles/{lifecycle_id}/state")
+def experience_lifecycle_state(lifecycle_id: str) -> dict[str, Any]:
+    return _ensure(get_lifecycle_state(lifecycle_id))
+
+
+@router.get("/experience-lifecycles/{lifecycle_id}/graph")
+def experience_lifecycle_graph(lifecycle_id: str) -> dict[str, Any]:
+    return _ensure(get_lifecycle_graph(lifecycle_id))
+
+
+@router.get("/experience-lifecycles/{lifecycle_id}/audit-timeline")
+def experience_lifecycle_audit_timeline(lifecycle_id: str) -> dict[str, Any]:
+    return _ensure(get_lifecycle_audit_timeline(lifecycle_id))
+
+
+@router.get("/experience-lifecycles/{lifecycle_id}/source-trace-view")
+def experience_lifecycle_source_trace_view(lifecycle_id: str) -> dict[str, Any]:
+    return _ensure(get_lifecycle_source_trace_view(lifecycle_id))
+
+
+@router.get("/experience-lifecycles/{lifecycle_id}/integrity-check")
+def experience_lifecycle_integrity_check(lifecycle_id: str) -> dict[str, Any]:
+    return _ensure(get_lifecycle_integrity_check(lifecycle_id))
+
+
+@router.get("/experience-lifecycles/{lifecycle_id}/safety-summary")
+def experience_lifecycle_safety_summary(lifecycle_id: str) -> dict[str, Any]:
+    return _ensure(get_lifecycle_safety_summary(lifecycle_id))
+
+
+@router.post("/experience-lifecycles/{lifecycle_id}/recompute")
+def experience_lifecycle_recompute(lifecycle_id: str) -> dict[str, Any]:
+    return _ensure(recompute_lifecycle(lifecycle_id))
+
+
+@router.get("/v7-32/status")
+def v732_status() -> dict[str, Any]:
+    return build_v732_status()
+
+
+@router.get("/case-analysis-workbench/status")
+def case_analysis_workbench_status() -> dict[str, Any]:
+    return build_v733_workbench_status()
+
+
+@router.get("/case-analysis-workbench/views")
+def case_analysis_workbench_views() -> dict[str, Any]:
+    return list_workbench_views()
+
+
+@router.get("/case-analysis-workbench/views/{view_id}")
+def case_analysis_workbench_view_detail(view_id: str) -> dict[str, Any]:
+    return _ensure(get_workbench_view(view_id))
+
+
+@router.get("/case-analysis-workbench/views/{view_id}/schema")
+def case_analysis_workbench_schema(view_id: str) -> dict[str, Any]:
+    return _ensure(get_workbench_schema(view_id))
+
+
+@router.get("/case-analysis-workbench/views/{view_id}/outputs")
+def case_analysis_workbench_outputs(view_id: str) -> dict[str, Any]:
+    return _ensure(list_workbench_outputs(view_id))
+
+
+@router.get("/case-analysis-workbench/outputs/{output_id}")
+def case_analysis_workbench_output_detail(output_id: str) -> dict[str, Any]:
+    return _ensure(get_runtime_output(output_id))
+
+
+@router.post("/case-analysis-workbench/outputs/{output_id}/mark-reviewed")
+def case_analysis_workbench_output_mark_reviewed(output_id: str) -> dict[str, Any]:
+    return _ensure(mark_output_reviewed(output_id))
+
+
+@router.post("/case-analysis-workbench/outputs/{output_id}/feedback")
+async def case_analysis_workbench_output_feedback(
+    output_id: str,
+    request: Request,
+) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = CaseAnalysisOutputFeedbackRequest(**payload)
+    return _ensure(submit_output_feedback(output_id, action))
+
+
+@router.post("/case-analysis-workbench/outputs/{output_id}/risk-event")
+async def case_analysis_workbench_output_risk_event(
+    output_id: str,
+    request: Request,
+) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    action = CaseAnalysisOutputRiskEventRequest(**payload)
+    return _ensure(submit_output_risk_event(output_id, action))
+
+
+@router.get("/case-analysis-workbench/outputs/{output_id}/feedback")
+def case_analysis_workbench_output_feedback_list(output_id: str) -> dict[str, Any]:
+    return list_output_feedback(output_id)
+
+
+@router.get("/case-analysis-workbench/outputs/{output_id}/risk-events")
+def case_analysis_workbench_output_risk_event_list(output_id: str) -> dict[str, Any]:
+    return list_output_risk_events(output_id)
+
+
+@router.get("/case-analysis-workbench/outputs/{output_id}/audit")
+def case_analysis_workbench_output_audit(output_id: str) -> dict[str, Any]:
+    return _ensure(get_output_audit(output_id))
+
+
+@router.get("/case-analysis-workbench/outputs/{output_id}/source-trace")
+def case_analysis_workbench_output_source_trace(output_id: str) -> dict[str, Any]:
+    return _ensure(get_output_source_trace(output_id))
+
+
+@router.get("/v7-33/status")
+def v733_status() -> dict[str, Any]:
+    return build_v733_workbench_status()
+
+
+async def _safe_request_payload(request: Request) -> dict[str, Any]:
+    try:
+        payload = await request.json()
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
 
 
 @router.get("/training-runs")

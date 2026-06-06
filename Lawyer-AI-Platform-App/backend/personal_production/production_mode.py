@@ -13,6 +13,8 @@ def build_personal_production_status() -> dict:
             "Real provider calls are not enabled in v7.5.",
             "External client delivery is not enabled.",
             "v7.30 registers Codex training scheme and multi-level case-cause artifact loader metadata; no fine-tune training or open-case training is executed.",
+            "v7.31e registers internal training task and experience package metadata; no provider call, real training, or Skill publish is executed.",
+            "v7.31f registers practice load review gate metadata; lawyer approval is required before future runtime loading.",
         ],
     ).model_dump()
 

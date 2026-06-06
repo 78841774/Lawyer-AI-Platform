@@ -427,10 +427,21 @@ import type {
   ExperienceCandidateBuildRequest,
   ExperienceCandidateList,
   ExperienceCandidateReviewRequest,
+  InternalExperiencePackage,
+  ExperiencePackageBuildRequest,
+  ExperiencePackageBuildResponse,
+  ExperiencePackageList,
   LegalRetrievalJobList,
   LegalRetrievalJobRequest,
   OcrJobList,
   OcrJobRequest,
+  PracticeLoadReviewDecisionRequest,
+  PracticeLoadReviewEditRequest,
+  PracticeLoadReviewPackage,
+  PracticeLoadReviewPackageAudit,
+  PracticeLoadReviewPackageList,
+  PracticeLoadReviewSaveRequest,
+  PracticeLoadReviewSourceTraceBundle,
   RawWorkProductBoundaryStatus,
   SkillExperienceBinding,
   SkillExperienceBindingList,
@@ -440,8 +451,46 @@ import type {
   SkillExperiencePoolEntry,
   SkillExperiencePoolList,
   SkillExperiencePoolStatus,
+  SkillPackage,
+  SkillPackageAudit,
+  SkillPackageBuildRequest,
+  SkillPackageBuildResponse,
+  SkillPackageList,
+  SkillPackageManifest,
+  SkillPackageSourceTraceBundle,
+  SkillPackageValidationResult,
+  TrainingPackageAudit,
+  TrainingPackageSourceTraceBundle,
+  TrainingTaskBuildRequest,
+  TrainingTaskBuildResponse,
+  TrainingTaskList,
   V731bTrainingExperiencePipelineStatus,
   V731cSkillExperiencePipelineStatus,
+  V731dSkillPackagePipelineStatus,
+  V731eTrainingPipelineStatus,
+  V731fPracticeLoadPipelineStatus,
+  V732ExperienceLifecycleStatus,
+  ExperienceLifecycleList,
+  ExperienceLifecycleRecord,
+  ExperienceLifecycleGraph,
+  ExperienceLifecycleAuditTimeline,
+  ExperienceLifecycleSourceTraceView,
+  ExperienceLifecycleIntegrityCheck,
+  ExperienceLifecycleSafetySummary,
+  CaseAnalysisSkillOutputSchema,
+  CaseAnalysisWorkbenchView,
+  CaseAnalysisWorkbenchViewList,
+  CaseAnalysisRuntimeOutput,
+  CaseAnalysisRuntimeOutputList,
+  CaseAnalysisOutputFeedback,
+  CaseAnalysisOutputFeedbackList,
+  CaseAnalysisOutputFeedbackRequest,
+  CaseAnalysisOutputRiskEvent,
+  CaseAnalysisOutputRiskEventList,
+  CaseAnalysisOutputRiskEventRequest,
+  CaseAnalysisOutputAudit,
+  CaseAnalysisOutputSourceTrace,
+  V733CaseAnalysisWorkbenchStatus,
   CodexTrainingRun,
   CodexTrainingRunList,
   CodexTrainingRunLoadDryRunResult,
@@ -865,10 +914,21 @@ export type {
   ExperienceCandidateBuildRequest,
   ExperienceCandidateList,
   ExperienceCandidateReviewRequest,
+  InternalExperiencePackage,
+  ExperiencePackageBuildRequest,
+  ExperiencePackageBuildResponse,
+  ExperiencePackageList,
   LegalRetrievalJobList,
   LegalRetrievalJobRequest,
   OcrJobList,
   OcrJobRequest,
+  PracticeLoadReviewDecisionRequest,
+  PracticeLoadReviewEditRequest,
+  PracticeLoadReviewPackage,
+  PracticeLoadReviewPackageAudit,
+  PracticeLoadReviewPackageList,
+  PracticeLoadReviewSaveRequest,
+  PracticeLoadReviewSourceTraceBundle,
   RawWorkProductBoundaryStatus,
   SkillExperienceBinding,
   SkillExperienceBindingList,
@@ -878,8 +938,24 @@ export type {
   SkillExperiencePoolEntry,
   SkillExperiencePoolList,
   SkillExperiencePoolStatus,
+  SkillPackage,
+  SkillPackageAudit,
+  SkillPackageBuildRequest,
+  SkillPackageBuildResponse,
+  SkillPackageList,
+  SkillPackageManifest,
+  SkillPackageSourceTraceBundle,
+  SkillPackageValidationResult,
+  TrainingPackageAudit,
+  TrainingPackageSourceTraceBundle,
+  TrainingTaskBuildRequest,
+  TrainingTaskBuildResponse,
+  TrainingTaskList,
   V731bTrainingExperiencePipelineStatus,
   V731cSkillExperiencePipelineStatus,
+  V731dSkillPackagePipelineStatus,
+  V731eTrainingPipelineStatus,
+  V731fPracticeLoadPipelineStatus,
   CodexTrainingRun,
   CodexTrainingRunList,
   CodexTrainingRunLoadDryRunResult,
@@ -2113,6 +2189,108 @@ export const personalSkillStudioApi = {
     request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-skill-drafts/${encodeURIComponent(draftId)}/audit`),
   getV731cSkillExperiencePipelineStatus: () =>
     request<V731cSkillExperiencePipelineStatus>("/personal-skill-studio/training-artifacts/v7-31c/status"),
+  listSkillPackages: () =>
+    request<SkillPackageList>("/personal-skill-studio/training-artifacts/skill-packages"),
+  getSkillPackageDetail: (packageId: string) =>
+    request<SkillPackage>(`/personal-skill-studio/training-artifacts/skill-packages/${encodeURIComponent(packageId)}`),
+  buildSkillPackage: (payload: SkillPackageBuildRequest) =>
+    postJson<SkillPackageBuildResponse>("/personal-skill-studio/training-artifacts/skill-packages/build", payload),
+  validateSkillPackage: (packageId: string) =>
+    postJson<SkillPackageValidationResult & Record<string, unknown>>(`/personal-skill-studio/training-artifacts/skill-packages/${encodeURIComponent(packageId)}/validate`, {}),
+  getSkillPackageManifest: (packageId: string) =>
+    request<SkillPackageManifest>(`/personal-skill-studio/training-artifacts/skill-packages/${encodeURIComponent(packageId)}/manifest`),
+  getSkillPackageAudit: (packageId: string) =>
+    request<SkillPackageAudit>(`/personal-skill-studio/training-artifacts/skill-packages/${encodeURIComponent(packageId)}/audit`),
+  getSkillPackageSourceTrace: (packageId: string) =>
+    request<SkillPackageSourceTraceBundle>(`/personal-skill-studio/training-artifacts/skill-packages/${encodeURIComponent(packageId)}/source-trace`),
+  getV731dPipelineStatus: () =>
+    request<V731dSkillPackagePipelineStatus>("/personal-skill-studio/training-artifacts/v7-31d/status"),
+  listTrainingTasks: () =>
+    request<TrainingTaskList>("/personal-skill-studio/training-artifacts/training-tasks"),
+  buildTrainingTask: (payload: TrainingTaskBuildRequest) =>
+    postJson<TrainingTaskBuildResponse>("/personal-skill-studio/training-artifacts/training-tasks/build", payload),
+  listTrainingPackages: () =>
+    request<ExperiencePackageList>("/personal-skill-studio/training-artifacts/training-packages"),
+  buildExperiencePackage: (payload: ExperiencePackageBuildRequest) =>
+    postJson<ExperiencePackageBuildResponse>("/personal-skill-studio/training-artifacts/training-packages/build", payload),
+  getTrainingPackage: (packageId: string) =>
+    request<InternalExperiencePackage>(`/personal-skill-studio/training-artifacts/training-packages/${encodeURIComponent(packageId)}`),
+  getExperiencePackageAudit: (packageId: string) =>
+    request<TrainingPackageAudit>(`/personal-skill-studio/training-artifacts/training-packages/${encodeURIComponent(packageId)}/audit`),
+  getExperiencePackageSourceTrace: (packageId: string) =>
+    request<TrainingPackageSourceTraceBundle>(`/personal-skill-studio/training-artifacts/training-packages/${encodeURIComponent(packageId)}/source-trace`),
+  getV731ePipelineStatus: () =>
+    request<V731eTrainingPipelineStatus>("/personal-skill-studio/training-artifacts/v7-31e/status"),
+  listPracticeLoadPackages: () =>
+    request<PracticeLoadReviewPackageList>("/personal-skill-studio/training-artifacts/practice-load-review/packages"),
+  getPracticeLoadPackage: (packageId: string) =>
+    request<PracticeLoadReviewPackage>(`/personal-skill-studio/training-artifacts/practice-load-review/packages/${encodeURIComponent(packageId)}`),
+  editPracticeLoadPackage: (packageId: string, payload: PracticeLoadReviewEditRequest) =>
+    postJson<PracticeLoadReviewPackage>(`/personal-skill-studio/training-artifacts/practice-load-review/packages/${encodeURIComponent(packageId)}/edit`, payload),
+  savePracticeLoadPackage: (packageId: string, payload: PracticeLoadReviewSaveRequest) =>
+    postJson<PracticeLoadReviewPackage>(`/personal-skill-studio/training-artifacts/practice-load-review/packages/${encodeURIComponent(packageId)}/save`, payload),
+  revalidatePracticeLoadPackage: (packageId: string) =>
+    postJson<PracticeLoadReviewPackage>(`/personal-skill-studio/training-artifacts/practice-load-review/packages/${encodeURIComponent(packageId)}/revalidate`, {}),
+  approvePracticeLoadPackage: (packageId: string, payload: PracticeLoadReviewDecisionRequest) =>
+    postJson<PracticeLoadReviewPackage>(`/personal-skill-studio/training-artifacts/practice-load-review/packages/${encodeURIComponent(packageId)}/approve`, payload),
+  rejectPracticeLoadPackage: (packageId: string, payload: PracticeLoadReviewDecisionRequest) =>
+    postJson<PracticeLoadReviewPackage>(`/personal-skill-studio/training-artifacts/practice-load-review/packages/${encodeURIComponent(packageId)}/reject`, payload),
+  getPracticeLoadPackageAudit: (packageId: string) =>
+    request<PracticeLoadReviewPackageAudit>(`/personal-skill-studio/training-artifacts/practice-load-review/packages/${encodeURIComponent(packageId)}/audit`),
+  getPracticeLoadPackageSourceTrace: (packageId: string) =>
+    request<PracticeLoadReviewSourceTraceBundle>(`/personal-skill-studio/training-artifacts/practice-load-review/packages/${encodeURIComponent(packageId)}/source-trace`),
+  getV731fPipelineStatus: () =>
+    request<V731fPracticeLoadPipelineStatus>("/personal-skill-studio/training-artifacts/v7-31f/status"),
+  getExperienceLifecycleStatus: () =>
+    request<V732ExperienceLifecycleStatus>("/personal-skill-studio/training-artifacts/experience-lifecycle/status"),
+  listExperienceLifecycles: () =>
+    request<ExperienceLifecycleList>("/personal-skill-studio/training-artifacts/experience-lifecycles"),
+  getExperienceLifecycle: (lifecycleId: string) =>
+    request<ExperienceLifecycleRecord>(`/personal-skill-studio/training-artifacts/experience-lifecycles/${encodeURIComponent(lifecycleId)}`),
+  getExperienceLifecycleState: (lifecycleId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/experience-lifecycles/${encodeURIComponent(lifecycleId)}/state`),
+  getExperienceLifecycleGraph: (lifecycleId: string) =>
+    request<ExperienceLifecycleGraph>(`/personal-skill-studio/training-artifacts/experience-lifecycles/${encodeURIComponent(lifecycleId)}/graph`),
+  getExperienceLifecycleAuditTimeline: (lifecycleId: string) =>
+    request<ExperienceLifecycleAuditTimeline>(`/personal-skill-studio/training-artifacts/experience-lifecycles/${encodeURIComponent(lifecycleId)}/audit-timeline`),
+  getExperienceLifecycleSourceTraceView: (lifecycleId: string) =>
+    request<ExperienceLifecycleSourceTraceView>(`/personal-skill-studio/training-artifacts/experience-lifecycles/${encodeURIComponent(lifecycleId)}/source-trace-view`),
+  getExperienceLifecycleIntegrityCheck: (lifecycleId: string) =>
+    request<ExperienceLifecycleIntegrityCheck>(`/personal-skill-studio/training-artifacts/experience-lifecycles/${encodeURIComponent(lifecycleId)}/integrity-check`),
+  getExperienceLifecycleSafetySummary: (lifecycleId: string) =>
+    request<ExperienceLifecycleSafetySummary>(`/personal-skill-studio/training-artifacts/experience-lifecycles/${encodeURIComponent(lifecycleId)}/safety-summary`),
+  recomputeExperienceLifecycle: (lifecycleId: string) =>
+    postJson<ExperienceLifecycleRecord>(`/personal-skill-studio/training-artifacts/experience-lifecycles/${encodeURIComponent(lifecycleId)}/recompute`, {}),
+  getV732ExperienceLifecycleStatus: () =>
+    request<V732ExperienceLifecycleStatus>("/personal-skill-studio/training-artifacts/v7-32/status"),
+  getCaseAnalysisWorkbenchStatus: () =>
+    request<V733CaseAnalysisWorkbenchStatus>("/personal-skill-studio/training-artifacts/case-analysis-workbench/status"),
+  listCaseAnalysisWorkbenchViews: () =>
+    request<CaseAnalysisWorkbenchViewList>("/personal-skill-studio/training-artifacts/case-analysis-workbench/views"),
+  getCaseAnalysisWorkbenchView: (viewId: string) =>
+    request<CaseAnalysisWorkbenchView>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/views/${encodeURIComponent(viewId)}`),
+  getCaseAnalysisWorkbenchSchema: (viewId: string) =>
+    request<CaseAnalysisSkillOutputSchema>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/views/${encodeURIComponent(viewId)}/schema`),
+  getCaseAnalysisWorkbenchOutputs: (viewId: string) =>
+    request<CaseAnalysisRuntimeOutputList>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/views/${encodeURIComponent(viewId)}/outputs`),
+  getCaseAnalysisRuntimeOutput: (outputId: string) =>
+    request<CaseAnalysisRuntimeOutput>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}`),
+  markCaseAnalysisOutputReviewed: (outputId: string) =>
+    postJson<CaseAnalysisRuntimeOutput>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/mark-reviewed`, {}),
+  submitCaseAnalysisOutputFeedback: (outputId: string, payload: CaseAnalysisOutputFeedbackRequest) =>
+    postJson<CaseAnalysisOutputFeedback>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/feedback`, payload),
+  submitCaseAnalysisOutputRiskEvent: (outputId: string, payload: CaseAnalysisOutputRiskEventRequest) =>
+    postJson<CaseAnalysisOutputRiskEvent>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/risk-event`, payload),
+  listCaseAnalysisOutputFeedback: (outputId: string) =>
+    request<CaseAnalysisOutputFeedbackList>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/feedback`),
+  listCaseAnalysisOutputRiskEvents: (outputId: string) =>
+    request<CaseAnalysisOutputRiskEventList>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/risk-events`),
+  getCaseAnalysisOutputAudit: (outputId: string) =>
+    request<CaseAnalysisOutputAudit>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/audit`),
+  getCaseAnalysisOutputSourceTrace: (outputId: string) =>
+    request<CaseAnalysisOutputSourceTrace>(`/personal-skill-studio/training-artifacts/case-analysis-workbench/outputs/${encodeURIComponent(outputId)}/source-trace`),
+  getV733CaseAnalysisWorkbenchStatus: () =>
+    request<V733CaseAnalysisWorkbenchStatus>("/personal-skill-studio/training-artifacts/v7-33/status"),
   listSourceTraces: () => request<SkillStudioSourceTraceList>("/personal-skill-studio/source-traces"),
   getSourceTrace: (id: string) => request<SkillStudioSourceTrace>(`/personal-skill-studio/source-traces/${encodeURIComponent(id)}`),
   getAudit: () => request<SkillStudioAuditTimeline>("/personal-skill-studio/audit"),
@@ -2776,6 +2954,57 @@ export const getPersonalCodexSkillDraft = personalSkillStudioApi.getCodexSkillDr
 export const reviewPersonalCodexSkillDraft = personalSkillStudioApi.reviewCodexSkillDraft;
 export const getPersonalCodexSkillDraftAudit = personalSkillStudioApi.getCodexSkillDraftAudit;
 export const getPersonalV731cSkillExperiencePipelineStatus = personalSkillStudioApi.getV731cSkillExperiencePipelineStatus;
+export const listPersonalSkillPackages = personalSkillStudioApi.listSkillPackages;
+export const getPersonalSkillPackageDetail = personalSkillStudioApi.getSkillPackageDetail;
+export const buildPersonalSkillPackage = personalSkillStudioApi.buildSkillPackage;
+export const validatePersonalSkillPackage = personalSkillStudioApi.validateSkillPackage;
+export const getPersonalSkillPackageManifest = personalSkillStudioApi.getSkillPackageManifest;
+export const getPersonalSkillPackageAudit = personalSkillStudioApi.getSkillPackageAudit;
+export const getPersonalSkillPackageSourceTrace = personalSkillStudioApi.getSkillPackageSourceTrace;
+export const getPersonalV731dPipelineStatus = personalSkillStudioApi.getV731dPipelineStatus;
+export const listPersonalTrainingTasks = personalSkillStudioApi.listTrainingTasks;
+export const buildPersonalTrainingTask = personalSkillStudioApi.buildTrainingTask;
+export const listPersonalTrainingPackages = personalSkillStudioApi.listTrainingPackages;
+export const buildPersonalExperiencePackage = personalSkillStudioApi.buildExperiencePackage;
+export const getPersonalTrainingPackage = personalSkillStudioApi.getTrainingPackage;
+export const getPersonalExperiencePackageAudit = personalSkillStudioApi.getExperiencePackageAudit;
+export const getPersonalExperiencePackageSourceTrace = personalSkillStudioApi.getExperiencePackageSourceTrace;
+export const getPersonalV731ePipelineStatus = personalSkillStudioApi.getV731ePipelineStatus;
+export const listPersonalPracticeLoadPackages = personalSkillStudioApi.listPracticeLoadPackages;
+export const getPersonalPracticeLoadPackage = personalSkillStudioApi.getPracticeLoadPackage;
+export const editPersonalPracticeLoadPackage = personalSkillStudioApi.editPracticeLoadPackage;
+export const savePersonalPracticeLoadPackage = personalSkillStudioApi.savePracticeLoadPackage;
+export const revalidatePersonalPracticeLoadPackage = personalSkillStudioApi.revalidatePracticeLoadPackage;
+export const approvePersonalPracticeLoadPackage = personalSkillStudioApi.approvePracticeLoadPackage;
+export const rejectPersonalPracticeLoadPackage = personalSkillStudioApi.rejectPracticeLoadPackage;
+export const getPersonalPracticeLoadPackageAudit = personalSkillStudioApi.getPracticeLoadPackageAudit;
+export const getPersonalPracticeLoadPackageSourceTrace = personalSkillStudioApi.getPracticeLoadPackageSourceTrace;
+export const getPersonalV731fPipelineStatus = personalSkillStudioApi.getV731fPipelineStatus;
+export const getPersonalExperienceLifecycleStatus = personalSkillStudioApi.getExperienceLifecycleStatus;
+export const listPersonalExperienceLifecycles = personalSkillStudioApi.listExperienceLifecycles;
+export const getPersonalExperienceLifecycle = personalSkillStudioApi.getExperienceLifecycle;
+export const getPersonalExperienceLifecycleState = personalSkillStudioApi.getExperienceLifecycleState;
+export const getPersonalExperienceLifecycleGraph = personalSkillStudioApi.getExperienceLifecycleGraph;
+export const getPersonalExperienceLifecycleAuditTimeline = personalSkillStudioApi.getExperienceLifecycleAuditTimeline;
+export const getPersonalExperienceLifecycleSourceTraceView = personalSkillStudioApi.getExperienceLifecycleSourceTraceView;
+export const getPersonalExperienceLifecycleIntegrityCheck = personalSkillStudioApi.getExperienceLifecycleIntegrityCheck;
+export const getPersonalExperienceLifecycleSafetySummary = personalSkillStudioApi.getExperienceLifecycleSafetySummary;
+export const recomputePersonalExperienceLifecycle = personalSkillStudioApi.recomputeExperienceLifecycle;
+export const getPersonalV732ExperienceLifecycleStatus = personalSkillStudioApi.getV732ExperienceLifecycleStatus;
+export const getPersonalCaseAnalysisWorkbenchStatus = personalSkillStudioApi.getCaseAnalysisWorkbenchStatus;
+export const listPersonalCaseAnalysisWorkbenchViews = personalSkillStudioApi.listCaseAnalysisWorkbenchViews;
+export const getPersonalCaseAnalysisWorkbenchView = personalSkillStudioApi.getCaseAnalysisWorkbenchView;
+export const getPersonalCaseAnalysisWorkbenchSchema = personalSkillStudioApi.getCaseAnalysisWorkbenchSchema;
+export const getPersonalCaseAnalysisWorkbenchOutputs = personalSkillStudioApi.getCaseAnalysisWorkbenchOutputs;
+export const getPersonalCaseAnalysisRuntimeOutput = personalSkillStudioApi.getCaseAnalysisRuntimeOutput;
+export const markPersonalCaseAnalysisOutputReviewed = personalSkillStudioApi.markCaseAnalysisOutputReviewed;
+export const submitPersonalCaseAnalysisOutputFeedback = personalSkillStudioApi.submitCaseAnalysisOutputFeedback;
+export const submitPersonalCaseAnalysisOutputRiskEvent = personalSkillStudioApi.submitCaseAnalysisOutputRiskEvent;
+export const listPersonalCaseAnalysisOutputFeedback = personalSkillStudioApi.listCaseAnalysisOutputFeedback;
+export const listPersonalCaseAnalysisOutputRiskEvents = personalSkillStudioApi.listCaseAnalysisOutputRiskEvents;
+export const getPersonalCaseAnalysisOutputAudit = personalSkillStudioApi.getCaseAnalysisOutputAudit;
+export const getPersonalCaseAnalysisOutputSourceTrace = personalSkillStudioApi.getCaseAnalysisOutputSourceTrace;
+export const getPersonalV733CaseAnalysisWorkbenchStatus = personalSkillStudioApi.getV733CaseAnalysisWorkbenchStatus;
 export const listPersonalSkillStudioSourceTraces = personalSkillStudioApi.listSourceTraces;
 export const getPersonalSkillStudioAudit = personalSkillStudioApi.getAudit;
 export const getPersonalSkillStudioSafety = personalSkillStudioApi.getSafety;
