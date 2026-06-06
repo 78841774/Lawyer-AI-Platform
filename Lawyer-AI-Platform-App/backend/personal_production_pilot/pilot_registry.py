@@ -10,6 +10,8 @@ RUNTIME_DEFINITIONS = [
     ("training_artifact_loader_runtime", "Codex Training Artifact Loader", "skill", "/personal-skill-studio/training-artifacts"),
     ("codex_training_run_runtime", "Closed Case Codex Training Run", "skill", "/personal-skill-studio/training-artifacts"),
     ("real_closed_case_training_intake_runtime", "Real Closed-Case Training Intake", "skill", "/personal-skill-studio/training-artifacts"),
+    ("training_experience_pipeline_runtime", "Controlled Training Experience Pipeline", "skill", "/personal-skill-studio/training-artifacts"),
+    ("codex_skill_draft_builder_runtime", "Skill Experience Pool & Codex Skill Draft Builder", "skill", "/personal-skill-studio/training-artifacts"),
     ("controlled_case_analysis_runtime", "Controlled Case Analysis Runtime", "case_analysis", "/personal-case-analysis"),
     ("personal_delivery_packet_runtime", "Personal Delivery Packet", "delivery_packet", "/personal-delivery-packet"),
     ("owner_download_runtime", "Final Lock / Owner Download", "owner_download", "/personal-production-pilot"),

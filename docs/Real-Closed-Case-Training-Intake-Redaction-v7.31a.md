@@ -71,4 +71,4 @@ Prefix: `/personal-skill-studio/training-artifacts`
 
 ## Next
 
-Next planned sub-stage: v7.31b Codex Training on Real Closed Cases.
+Next planned sub-stage: v7.31b Raw Work-Product Controlled Processing Experience Pipeline.

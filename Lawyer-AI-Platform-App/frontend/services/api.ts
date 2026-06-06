@@ -420,6 +420,28 @@ import type {
   TrainingArtifactSkillContext,
   TrainingArtifactSkillContextList,
   TrainingArtifactStatus,
+  CodexSkillDraft,
+  CodexSkillDraftBuildRequest,
+  CodexSkillDraftBuildResponse,
+  CodexSkillDraftList,
+  ExperienceCandidateBuildRequest,
+  ExperienceCandidateList,
+  ExperienceCandidateReviewRequest,
+  LegalRetrievalJobList,
+  LegalRetrievalJobRequest,
+  OcrJobList,
+  OcrJobRequest,
+  RawWorkProductBoundaryStatus,
+  SkillExperienceBinding,
+  SkillExperienceBindingList,
+  SkillExperienceBindingRequest,
+  SkillExperienceImportRequest,
+  SkillExperienceImportResponse,
+  SkillExperiencePoolEntry,
+  SkillExperiencePoolList,
+  SkillExperiencePoolStatus,
+  V731bTrainingExperiencePipelineStatus,
+  V731cSkillExperiencePipelineStatus,
   CodexTrainingRun,
   CodexTrainingRunList,
   CodexTrainingRunLoadDryRunResult,
@@ -836,6 +858,28 @@ export type {
   TrainingArtifactSkillContext,
   TrainingArtifactSkillContextList,
   TrainingArtifactStatus,
+  CodexSkillDraft,
+  CodexSkillDraftBuildRequest,
+  CodexSkillDraftBuildResponse,
+  CodexSkillDraftList,
+  ExperienceCandidateBuildRequest,
+  ExperienceCandidateList,
+  ExperienceCandidateReviewRequest,
+  LegalRetrievalJobList,
+  LegalRetrievalJobRequest,
+  OcrJobList,
+  OcrJobRequest,
+  RawWorkProductBoundaryStatus,
+  SkillExperienceBinding,
+  SkillExperienceBindingList,
+  SkillExperienceBindingRequest,
+  SkillExperienceImportRequest,
+  SkillExperienceImportResponse,
+  SkillExperiencePoolEntry,
+  SkillExperiencePoolList,
+  SkillExperiencePoolStatus,
+  V731bTrainingExperiencePipelineStatus,
+  V731cSkillExperiencePipelineStatus,
   CodexTrainingRun,
   CodexTrainingRunList,
   CodexTrainingRunLoadDryRunResult,
@@ -2015,6 +2059,60 @@ export const personalSkillStudioApi = {
     request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/audit`),
   getRealClosedCaseSafety: (intakeId: string) =>
     request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/real-closed-case-intakes/${encodeURIComponent(intakeId)}/safety`),
+  getRawWorkProductBoundaryStatus: () =>
+    request<RawWorkProductBoundaryStatus>("/personal-skill-studio/training-artifacts/raw-work-product-boundary/status"),
+  createOcrJob: (payload: OcrJobRequest) =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/ocr-jobs", payload),
+  listOcrJobs: () =>
+    request<OcrJobList>("/personal-skill-studio/training-artifacts/ocr-jobs"),
+  getOcrJob: (jobId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/ocr-jobs/${encodeURIComponent(jobId)}`),
+  createLegalRetrievalJob: (payload: LegalRetrievalJobRequest) =>
+    postJson<Record<string, unknown>>("/personal-skill-studio/training-artifacts/legal-retrieval-jobs", payload),
+  listLegalRetrievalJobs: () =>
+    request<LegalRetrievalJobList>("/personal-skill-studio/training-artifacts/legal-retrieval-jobs"),
+  getLegalRetrievalJob: (jobId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/legal-retrieval-jobs/${encodeURIComponent(jobId)}`),
+  buildExperienceCandidates: (payload: ExperienceCandidateBuildRequest) =>
+    postJson<ExperienceCandidateList>("/personal-skill-studio/training-artifacts/experience-candidates/build", payload),
+  listExperienceCandidates: () =>
+    request<ExperienceCandidateList>("/personal-skill-studio/training-artifacts/experience-candidates"),
+  getExperienceCandidate: (candidateId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/experience-candidates/${encodeURIComponent(candidateId)}`),
+  redactExperienceCandidate: (candidateId: string) =>
+    postJson<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/experience-candidates/${encodeURIComponent(candidateId)}/redact`, {}),
+  reviewExperienceCandidate: (candidateId: string, payload: ExperienceCandidateReviewRequest) =>
+    postJson<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/experience-candidates/${encodeURIComponent(candidateId)}/review`, payload),
+  getExperienceCandidateAudit: (candidateId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/experience-candidates/${encodeURIComponent(candidateId)}/audit`),
+  getV731bTrainingExperiencePipelineStatus: () =>
+    request<V731bTrainingExperiencePipelineStatus>("/personal-skill-studio/training-artifacts/v7-31b/status"),
+  getSkillExperiencePoolStatus: () =>
+    request<SkillExperiencePoolStatus>("/personal-skill-studio/training-artifacts/skill-experience-pool/status"),
+  importApprovedSkillExperience: (payload: SkillExperienceImportRequest) =>
+    postJson<SkillExperienceImportResponse>("/personal-skill-studio/training-artifacts/skill-experience-pool/import-approved", payload),
+  listSkillExperiencePool: () =>
+    request<SkillExperiencePoolList>("/personal-skill-studio/training-artifacts/skill-experience-pool"),
+  getSkillExperiencePoolEntry: (experienceId: string) =>
+    request<SkillExperiencePoolEntry>(`/personal-skill-studio/training-artifacts/skill-experience-pool/${encodeURIComponent(experienceId)}`),
+  createSkillExperienceBinding: (payload: SkillExperienceBindingRequest) =>
+    postJson<SkillExperienceBinding>("/personal-skill-studio/training-artifacts/skill-experience-bindings", payload),
+  listSkillExperienceBindings: () =>
+    request<SkillExperienceBindingList>("/personal-skill-studio/training-artifacts/skill-experience-bindings"),
+  getSkillExperienceBinding: (bindingId: string) =>
+    request<SkillExperienceBinding>(`/personal-skill-studio/training-artifacts/skill-experience-bindings/${encodeURIComponent(bindingId)}`),
+  listCodexSkillDrafts: () =>
+    request<CodexSkillDraftList>("/personal-skill-studio/training-artifacts/codex-skill-drafts"),
+  buildCodexSkillDraft: (payload: CodexSkillDraftBuildRequest) =>
+    postJson<CodexSkillDraftBuildResponse>("/personal-skill-studio/training-artifacts/codex-skill-drafts/build", payload),
+  getCodexSkillDraft: (draftId: string) =>
+    request<CodexSkillDraft>(`/personal-skill-studio/training-artifacts/codex-skill-drafts/${encodeURIComponent(draftId)}`),
+  reviewCodexSkillDraft: (draftId: string, payload: Record<string, unknown>) =>
+    postJson<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-skill-drafts/${encodeURIComponent(draftId)}/review`, payload),
+  getCodexSkillDraftAudit: (draftId: string) =>
+    request<Record<string, unknown>>(`/personal-skill-studio/training-artifacts/codex-skill-drafts/${encodeURIComponent(draftId)}/audit`),
+  getV731cSkillExperiencePipelineStatus: () =>
+    request<V731cSkillExperiencePipelineStatus>("/personal-skill-studio/training-artifacts/v7-31c/status"),
   listSourceTraces: () => request<SkillStudioSourceTraceList>("/personal-skill-studio/source-traces"),
   getSourceTrace: (id: string) => request<SkillStudioSourceTrace>(`/personal-skill-studio/source-traces/${encodeURIComponent(id)}`),
   getAudit: () => request<SkillStudioAuditTimeline>("/personal-skill-studio/audit"),
@@ -2651,6 +2749,33 @@ export const submitPersonalRealClosedCaseReviewAction = personalSkillStudioApi.s
 export const getPersonalRealClosedCaseSourceTraces = personalSkillStudioApi.getRealClosedCaseSourceTraces;
 export const getPersonalRealClosedCaseAudit = personalSkillStudioApi.getRealClosedCaseAudit;
 export const getPersonalRealClosedCaseSafety = personalSkillStudioApi.getRealClosedCaseSafety;
+export const getPersonalRawWorkProductBoundaryStatus = personalSkillStudioApi.getRawWorkProductBoundaryStatus;
+export const createPersonalOcrJob = personalSkillStudioApi.createOcrJob;
+export const listPersonalOcrJobs = personalSkillStudioApi.listOcrJobs;
+export const getPersonalOcrJob = personalSkillStudioApi.getOcrJob;
+export const createPersonalLegalRetrievalJob = personalSkillStudioApi.createLegalRetrievalJob;
+export const listPersonalLegalRetrievalJobs = personalSkillStudioApi.listLegalRetrievalJobs;
+export const getPersonalLegalRetrievalJob = personalSkillStudioApi.getLegalRetrievalJob;
+export const buildPersonalExperienceCandidates = personalSkillStudioApi.buildExperienceCandidates;
+export const listPersonalExperienceCandidates = personalSkillStudioApi.listExperienceCandidates;
+export const getPersonalExperienceCandidate = personalSkillStudioApi.getExperienceCandidate;
+export const redactPersonalExperienceCandidate = personalSkillStudioApi.redactExperienceCandidate;
+export const reviewPersonalExperienceCandidate = personalSkillStudioApi.reviewExperienceCandidate;
+export const getPersonalExperienceCandidateAudit = personalSkillStudioApi.getExperienceCandidateAudit;
+export const getPersonalV731bTrainingExperiencePipelineStatus = personalSkillStudioApi.getV731bTrainingExperiencePipelineStatus;
+export const getPersonalSkillExperiencePoolStatus = personalSkillStudioApi.getSkillExperiencePoolStatus;
+export const importPersonalApprovedSkillExperience = personalSkillStudioApi.importApprovedSkillExperience;
+export const listPersonalSkillExperiencePool = personalSkillStudioApi.listSkillExperiencePool;
+export const getPersonalSkillExperiencePoolEntry = personalSkillStudioApi.getSkillExperiencePoolEntry;
+export const createPersonalSkillExperienceBinding = personalSkillStudioApi.createSkillExperienceBinding;
+export const listPersonalSkillExperienceBindings = personalSkillStudioApi.listSkillExperienceBindings;
+export const getPersonalSkillExperienceBinding = personalSkillStudioApi.getSkillExperienceBinding;
+export const listPersonalCodexSkillDrafts = personalSkillStudioApi.listCodexSkillDrafts;
+export const buildPersonalCodexSkillDraft = personalSkillStudioApi.buildCodexSkillDraft;
+export const getPersonalCodexSkillDraft = personalSkillStudioApi.getCodexSkillDraft;
+export const reviewPersonalCodexSkillDraft = personalSkillStudioApi.reviewCodexSkillDraft;
+export const getPersonalCodexSkillDraftAudit = personalSkillStudioApi.getCodexSkillDraftAudit;
+export const getPersonalV731cSkillExperiencePipelineStatus = personalSkillStudioApi.getV731cSkillExperiencePipelineStatus;
 export const listPersonalSkillStudioSourceTraces = personalSkillStudioApi.listSourceTraces;
 export const getPersonalSkillStudioAudit = personalSkillStudioApi.getAudit;
 export const getPersonalSkillStudioSafety = personalSkillStudioApi.getSafety;

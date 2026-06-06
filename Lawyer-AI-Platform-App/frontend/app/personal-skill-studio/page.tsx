@@ -189,6 +189,16 @@ export default function PersonalSkillStudioPage() {
             </a>
           </div>
         </Panel>
+        <Panel title="v7.31b / v7.31c 经验候选与 Skill 草案工作台">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card title="v7.31b Experience Candidates" lines={["受控 OCR/文档解析", "法律检索 metadata", "脱敏后人工复核"]} />
+            <Card title="v7.31c Experience Pool" lines={["仅导入 approved_for_skill_experience", "source trace required", "audit required"]} />
+            <Card title="Skill Draft Boundary" lines={["requires_manual_confirmation", "not_publishable", "确认不发布 Skill"]} />
+            <a className="rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white" href="/personal-skill-studio/training-artifacts">
+              打开经验池与草案工作台
+            </a>
+          </div>
+        </Panel>
         <section className="grid gap-4 md:grid-cols-6">
           {["工作室状态", "经验包草案", "技能候选草案", "测试用例", "评估记录", "发布门禁"].map((label) => <StatusCard key={label} label={label} />)}
         </section>

@@ -32,6 +32,8 @@ The project safety posture is:
 - closed-case training and open-case practical analysis must remain separated
 - v7.31 training runs may use only closed-case or synthetic closed-case samples with redaction completed and raw content excluded
 - v7.31a real closed-case training intake may prepare authorized closed-case metadata only and must complete redaction before future real closed-case Codex training
+- v7.31b controlled experience candidates must be redacted, source-traced, audited, and manually reviewed before any v7.31c import
+- v7.31c Skill drafts are non-publishable metadata and require a later pre-publish gate before any package publication path exists
 - open or unresolved cases must not be written into training sets
 
 ## Forbidden By Default
@@ -59,4 +61,6 @@ The project safety posture is:
 - Do not let v7.30 training artifact loader execute real training, use open cases, write training sets, update Skills, publish Skills, or load raw case content.
 - Do not let v7.31 Codex training runs use open/unresolved cases, raw OCR, real unredacted materials, provider calls, key values, local paths, real identity data, or automatic Skill publishing.
 - Do not let v7.31a real closed-case intake execute Codex training, read or return raw content, use open/unresolved cases, write training sets, call providers, read key values, expose local paths, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- Do not let v7.31b experience candidates enter a Skill pool before redaction, source trace, audit, and `approved_for_skill_experience` manual review.
+- Do not let v7.31c import pending/rejected/changes-requested candidates, write formal training sets, trigger real Codex training, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
 - Do not let practical open-case outputs generate training data, write training sets, update Skills, or publish Skills automatically.

@@ -16,6 +16,27 @@ from personal_skill_studio.training_artifacts.artifact_registry import (
 from personal_skill_studio.training_artifacts.audit_engine import build_audit
 from personal_skill_studio.training_artifacts.case_cause_matcher import match_case_cause
 from personal_skill_studio.training_artifacts.case_cause_taxonomy import build_taxonomy_manifest, get_case_cause_node
+from personal_skill_studio.training_artifacts.codex_skill_draft_registry import (
+    create_draft,
+    get_draft,
+    get_draft_audit,
+    list_drafts,
+    review_draft,
+)
+from personal_skill_studio.training_artifacts.experience_candidate_registry import (
+    build_candidates,
+    get_candidate,
+    get_candidate_audit,
+    list_candidates,
+    redact_experience_candidate,
+    review_experience_candidate,
+)
+from personal_skill_studio.training_artifacts.experience_candidate_safety_engine import build_v731b_status
+from personal_skill_studio.training_artifacts.legal_retrieval_registry import (
+    create_legal_retrieval_job,
+    get_legal_retrieval_job,
+    list_legal_retrieval_jobs,
+)
 from personal_skill_studio.training_artifacts.load_dry_run_engine import (
     create_load_dry_run,
     get_load_dry_run,
@@ -23,6 +44,8 @@ from personal_skill_studio.training_artifacts.load_dry_run_engine import (
     list_load_dry_runs,
     list_skill_contexts,
 )
+from personal_skill_studio.training_artifacts.ocr_job_registry import create_ocr_job, get_ocr_job, list_ocr_jobs
+from personal_skill_studio.training_artifacts.raw_work_product_boundary import build_raw_work_product_boundary_status
 from personal_skill_studio.training_artifacts.real_closed_case_intake import (
     build_intake_status,
     create_intake,
@@ -44,12 +67,28 @@ from personal_skill_studio.training_artifacts.safety_engine import build_safety
 from personal_skill_studio.training_artifacts.schemas import (
     ArtifactListResponse,
     CaseCauseMatchRequest,
+    CodexSkillDraftBuildRequest,
+    CodexSkillDraftReviewRequest,
     CodexTrainingRunRequest,
+    ExperienceCandidateBuildRequest,
+    ExperienceCandidateReviewRequest,
+    LegalRetrievalJobRequest,
     LoadDryRunRequest,
+    OcrJobRequest,
     RealClosedCaseTrainingIntakeRequest,
+    SkillExperienceBindingRequest,
+    SkillExperienceImportRequest,
     TrainingArtifactStatus,
     TrainingIntakeReviewActionRequest,
 )
+from personal_skill_studio.training_artifacts.skill_experience_binding_engine import create_binding, get_binding, list_bindings
+from personal_skill_studio.training_artifacts.skill_experience_pool import (
+    get_pool_entry,
+    import_approved_experience,
+    list_pool_entries,
+    pool_status,
+)
+from personal_skill_studio.training_artifacts.skill_experience_safety_engine import build_v731c_status
 from personal_skill_studio.training_artifacts.training_run_engine import (
     build_training_run_audit,
     build_training_run_safety,
@@ -277,6 +316,141 @@ def real_closed_case_audit(intake_id: str) -> dict[str, Any]:
 @router.get("/real-closed-case-intakes/{intake_id}/safety")
 def real_closed_case_safety(intake_id: str) -> dict[str, Any]:
     return _ensure(get_intake_safety(intake_id))
+
+
+@router.get("/raw-work-product-boundary/status")
+def raw_work_product_boundary_status() -> dict[str, Any]:
+    return build_raw_work_product_boundary_status()
+
+
+@router.post("/ocr-jobs")
+def ocr_jobs_create(request: OcrJobRequest) -> dict[str, Any]:
+    return create_ocr_job(request)
+
+
+@router.get("/ocr-jobs")
+def ocr_jobs() -> dict[str, Any]:
+    return list_ocr_jobs()
+
+
+@router.get("/ocr-jobs/{job_id}")
+def ocr_job_detail(job_id: str) -> dict[str, Any]:
+    return _ensure(get_ocr_job(job_id))
+
+
+@router.post("/legal-retrieval-jobs")
+def legal_retrieval_jobs_create(request: LegalRetrievalJobRequest) -> dict[str, Any]:
+    return create_legal_retrieval_job(request)
+
+
+@router.get("/legal-retrieval-jobs")
+def legal_retrieval_jobs() -> dict[str, Any]:
+    return list_legal_retrieval_jobs()
+
+
+@router.get("/legal-retrieval-jobs/{job_id}")
+def legal_retrieval_job_detail(job_id: str) -> dict[str, Any]:
+    return _ensure(get_legal_retrieval_job(job_id))
+
+
+@router.post("/experience-candidates/build")
+def experience_candidates_build(request: ExperienceCandidateBuildRequest) -> dict[str, Any]:
+    return build_candidates(request)
+
+
+@router.get("/experience-candidates")
+def experience_candidates() -> dict[str, Any]:
+    return list_candidates()
+
+
+@router.get("/experience-candidates/{candidate_id}")
+def experience_candidate_detail(candidate_id: str) -> dict[str, Any]:
+    return _ensure(get_candidate(candidate_id))
+
+
+@router.post("/experience-candidates/{candidate_id}/redact")
+def experience_candidate_redact(candidate_id: str) -> dict[str, Any]:
+    return _ensure(redact_experience_candidate(candidate_id))
+
+
+@router.post("/experience-candidates/{candidate_id}/review")
+def experience_candidate_review(candidate_id: str, request: ExperienceCandidateReviewRequest) -> dict[str, Any]:
+    return _ensure(review_experience_candidate(candidate_id, request))
+
+
+@router.get("/experience-candidates/{candidate_id}/audit")
+def experience_candidate_audit(candidate_id: str) -> dict[str, Any]:
+    return _ensure(get_candidate_audit(candidate_id))
+
+
+@router.get("/v7-31b/status")
+def v731b_status() -> dict[str, Any]:
+    return build_v731b_status()
+
+
+@router.get("/skill-experience-pool/status")
+def skill_experience_pool_status() -> dict[str, Any]:
+    return pool_status()
+
+
+@router.post("/skill-experience-pool/import-approved")
+def skill_experience_pool_import_approved(request: SkillExperienceImportRequest) -> dict[str, Any]:
+    return import_approved_experience(request)
+
+
+@router.get("/skill-experience-pool")
+def skill_experience_pool() -> dict[str, Any]:
+    return list_pool_entries()
+
+
+@router.get("/skill-experience-pool/{experience_id}")
+def skill_experience_pool_detail(experience_id: str) -> dict[str, Any]:
+    return _ensure(get_pool_entry(experience_id))
+
+
+@router.post("/skill-experience-bindings")
+def skill_experience_bindings_create(request: SkillExperienceBindingRequest) -> dict[str, Any]:
+    return create_binding(request)
+
+
+@router.get("/skill-experience-bindings")
+def skill_experience_bindings() -> dict[str, Any]:
+    return list_bindings()
+
+
+@router.get("/skill-experience-bindings/{binding_id}")
+def skill_experience_binding_detail(binding_id: str) -> dict[str, Any]:
+    return _ensure(get_binding(binding_id))
+
+
+@router.post("/codex-skill-drafts/build")
+def codex_skill_drafts_build(request: CodexSkillDraftBuildRequest) -> dict[str, Any]:
+    return create_draft(request)
+
+
+@router.get("/codex-skill-drafts")
+def codex_skill_drafts() -> dict[str, Any]:
+    return list_drafts()
+
+
+@router.get("/codex-skill-drafts/{draft_id}")
+def codex_skill_draft_detail(draft_id: str) -> dict[str, Any]:
+    return _ensure(get_draft(draft_id))
+
+
+@router.post("/codex-skill-drafts/{draft_id}/review")
+def codex_skill_draft_review(draft_id: str, request: CodexSkillDraftReviewRequest) -> dict[str, Any]:
+    return _ensure(review_draft(draft_id, request))
+
+
+@router.get("/codex-skill-drafts/{draft_id}/audit")
+def codex_skill_draft_audit(draft_id: str) -> dict[str, Any]:
+    return _ensure(get_draft_audit(draft_id))
+
+
+@router.get("/v7-31c/status")
+def v731c_status() -> dict[str, Any]:
+    return build_v731c_status()
 
 
 @router.get("/training-runs")

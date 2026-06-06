@@ -35,7 +35,9 @@
 - v7.29 commit: pending (local uncommitted large-stage worktree)
 - v7.30 commit: pending (local uncommitted large-stage worktree)
 - v7.31 commit: pending (local uncommitted large-stage worktree)
-- v7.31a commit: pending (local uncommitted large-stage worktree)
+- v7.31a commit: `86a0246`
+- v7.31b commit: pending (local worktree)
+- v7.31c commit: pending (local worktree)
 
 ## Known Tags
 
@@ -90,7 +92,9 @@
 - `v7.29-legal-enterprise-api-live-connection`: pending
 - `v7.30-codex-training-scheme-artifact-loader`: pending
 - `v7.31-codex-training-closed-case-samples`: pending
-- `v7.31a-real-closed-case-training-intake-redaction`: pending
+- `v7.31a`: detected
+- `v7.31b-raw-work-product-controlled-processing-experience-pipeline`: pending
+- `v7.31c-codex-skill-experience-pool-draft-builder`: pending
 - `v7.17-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.19-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
 - `v7.20-personal-live-intelligence-case-analysis`: superseded as a candidate name by the expanded v7.10-v7.24 large-stage scope
@@ -102,6 +106,7 @@
 ## Current Release Boundary
 
 - Latest released baseline: v7.24 Personal Practical Production Workbench at commit `b4e4bca` and tag `v7.24-personal-practical-production-workbench`.
-- v7.25-v7.31a are current local continuous large-stage work and remain uncommitted.
-- Do not infer or fabricate commits, tags, pushes, or releases for v7.25-v7.31a.
+- v7.25-v7.31a are complete at commit `86a0246` and tag `v7.31a`.
+- v7.31b-v7.31c are current local work and remain uncommitted.
+- Do not infer or fabricate commits, tags, pushes, or releases for v7.31b-v7.31c.
 - Release remains pending until unified validation, final review, and explicit user-approved release handling.

@@ -4261,6 +4261,7 @@ export type PersonalProductionProviderCapabilities = {
   training_artifact_loader_status: string;
   codex_training_run_status: string;
   real_closed_case_training_intake_status: string;
+  codex_skill_draft_builder_status: string;
   owner_output_center_ready: boolean;
   skill_final_drafts_aggregated: boolean;
   fact_outputs_aggregated: boolean;
@@ -4354,6 +4355,16 @@ export type PersonalProductionProviderCapabilities = {
   real_closed_case_open_case_training_disabled: boolean;
   real_closed_case_raw_content_blocked: boolean;
   real_closed_case_ready_for_codex_training: boolean;
+  codex_skill_draft_builder_ready: boolean;
+  codex_skill_draft_eligible_sample_selection_ready: boolean;
+  codex_skill_draft_generation_ready: boolean;
+  codex_skill_draft_manual_review_ready: boolean;
+  codex_skill_draft_source_trace_ready: boolean;
+  codex_skill_draft_audit_ready: boolean;
+  codex_skill_draft_not_publishable: boolean;
+  codex_skill_draft_provider_call_disabled: boolean;
+  codex_skill_draft_raw_content_blocked: boolean;
+  codex_skill_draft_api_key_read_disabled: boolean;
   external_delivery_disabled: boolean;
   public_link_disabled: boolean;
   email_sending_disabled: boolean;
@@ -6643,6 +6654,166 @@ export type RealClosedCaseTrainingIntakeRecord = RealClosedCaseIntakeSafetyBase 
 };
 export type RealClosedCaseTrainingIntakeList = RealClosedCaseIntakeSafetyBase & { intakes: RealClosedCaseTrainingIntake[]; intake_count: number; warnings: string[] };
 export type RealClosedCaseIntakeStatus = RealClosedCaseIntakeSafetyBase & Record<string, unknown> & { status: string; intake_count: number; warnings: string[] };
+export type V731bTrainingExperienceSafetyBase = Record<string, unknown> & {
+  owner_only: boolean;
+  local_private_processing_only: boolean;
+  authorized_case_only: boolean;
+  redacted_output_only: boolean;
+  manual_review_required: boolean;
+  source_trace_required: boolean;
+  audit_required: boolean;
+  provider_call_executed: boolean;
+  skill_published: boolean;
+  final_legal_opinion_generated: boolean;
+  external_delivery_triggered: boolean;
+};
+export type RawWorkProductBoundaryStatus = V731bTrainingExperienceSafetyBase & { status: string; warnings: string[] };
+export type OcrJobRequest = {
+  material_label: string;
+  owner_user_id: string;
+  document_type: string;
+  page_count: number;
+  explicit_authorized_case_confirmation: boolean;
+  explicit_internal_processing_confirmation: boolean;
+  explicit_no_provider_confirmation: boolean;
+  explicit_no_raw_return_confirmation: boolean;
+};
+export type OcrJob = V731bTrainingExperienceSafetyBase & Record<string, unknown> & { job_id: string; parse_status: string; source_trace_id: string; warnings: string[] };
+export type OcrJobList = V731bTrainingExperienceSafetyBase & { ocr_jobs: OcrJob[]; job_count: number; warnings: string[] };
+export type LegalRetrievalJobRequest = {
+  source_ocr_job_id?: string | null;
+  query_label: string;
+  owner_user_id: string;
+  explicit_no_provider_confirmation: boolean;
+  explicit_no_key_value_confirmation: boolean;
+  explicit_demo_safe_confirmation: boolean;
+};
+export type LegalRetrievalJob = V731bTrainingExperienceSafetyBase & Record<string, unknown> & { retrieval_job_id: string; retrieval_status: string; source_trace_id: string; warnings: string[] };
+export type LegalRetrievalJobList = V731bTrainingExperienceSafetyBase & { legal_retrieval_jobs: LegalRetrievalJob[]; job_count: number; warnings: string[] };
+export type ExperienceCandidateBuildRequest = {
+  source_ocr_job_id?: string | null;
+  source_legal_retrieval_job_id?: string | null;
+  owner_user_id: string;
+  explicit_redaction_required_confirmation: boolean;
+  explicit_manual_review_required_confirmation: boolean;
+  explicit_no_skill_publish_confirmation: boolean;
+};
+export type ExperienceCandidate = V731bTrainingExperienceSafetyBase & Record<string, unknown> & {
+  candidate_id: string;
+  candidate_type: string;
+  candidate_status: string;
+  review_status: string;
+  redaction_status: string;
+  skill_experience_ready: boolean;
+  source_trace_id: string;
+  warnings: string[];
+};
+export type ExperienceCandidateList = V731bTrainingExperienceSafetyBase & { candidates: ExperienceCandidate[]; candidate_count: number; approved_for_skill_experience_count: number; warnings: string[] };
+export type ExperienceCandidateReviewRequest = {
+  action: string;
+  reviewer_id: string;
+  reviewer_note: string;
+  explicit_manual_review_confirmation: boolean;
+  explicit_no_raw_return_confirmation: boolean;
+  explicit_no_skill_publish_confirmation: boolean;
+};
+export type V731bTrainingExperiencePipelineStatus = V731bTrainingExperienceSafetyBase & Record<string, unknown> & {
+  status: string;
+  ocr_job_count: number;
+  legal_retrieval_job_count: number;
+  experience_candidate_count: number;
+  warnings: string[];
+};
+export type V731cSafetyBase = Record<string, unknown> & {
+  owner_only: boolean;
+  local_private_processing_only: boolean;
+  authorized_case_only: boolean;
+  redacted_output_only: boolean;
+  abstracted_experience_only: boolean;
+  approved_experience_only: boolean;
+  manual_review_required: boolean;
+  source_trace_required: boolean;
+  audit_required: boolean;
+  provider_call_executed: boolean;
+  formal_training_set_generated: boolean;
+  real_codex_training_triggered: boolean;
+  skill_published: boolean;
+  skill_publishable: boolean;
+  external_delivery_triggered: boolean;
+};
+export type SkillExperienceImportRequest = {
+  source_candidate_ids: string[];
+  owner_user_id: string;
+  explicit_approved_experience_only_confirmation: boolean;
+  explicit_redacted_output_only_confirmation: boolean;
+  explicit_no_skill_publish_confirmation: boolean;
+};
+export type SkillExperiencePoolEntry = V731cSafetyBase & Record<string, unknown> & { experience_id: string; source_candidate_id: string; experience_type: string; source_trace_id: string; skill_binding_status: string; warnings: string[] };
+export type SkillExperiencePoolList = V731cSafetyBase & { experiences: SkillExperiencePoolEntry[]; experience_count: number; rejected_import_count: number; unbound_experience_count: number; warnings: string[] };
+export type SkillExperiencePoolStatus = V731cSafetyBase & Record<string, unknown> & { status: string; experience_count: number; rejected_import_count: number; unbound_experience_count: number; warnings: string[] };
+export type SkillExperienceImportResponse = V731cSafetyBase & { imported_experiences: SkillExperiencePoolEntry[]; imported_count: number; rejected_count: number; rejected_candidate_ids: string[]; warnings: string[] };
+export type SkillExperienceBindingRequest = {
+  experience_ids: string[];
+  skill_domain: string;
+  skill_name_candidate: string;
+  case_cause_scope: string;
+  experience_types: string[];
+  draft_target_id: string;
+};
+export type SkillExperienceBinding = V731cSafetyBase & { binding_id: string; experience_ids: string[]; skill_name_candidate: string; binding_status: string; warnings: string[] };
+export type SkillExperienceBindingList = V731cSafetyBase & { bindings: SkillExperienceBinding[]; binding_count: number; warnings: string[] };
+export type CodexSkillDraftBuildRequest = {
+  experience_ids: string[];
+  binding_id?: string | null;
+  draft_name: string;
+  draft_target_id: string;
+  explicit_approved_experience_only_confirmation: boolean;
+  explicit_no_provider_confirmation: boolean;
+  explicit_no_real_training_confirmation: boolean;
+  explicit_no_skill_publish_confirmation: boolean;
+};
+export type CodexSkillDraftSection = V731cSafetyBase & {
+  section_id: string;
+  section_type: string;
+  title: string;
+  metadata_items: string[];
+  source_experience_ids: string[];
+  source_trace_ids: string[];
+};
+export type CodexSkillDraftAuditEvent = {
+  event_id: string;
+  draft_id: string;
+  action: string;
+  timestamp: string;
+  metadata_only: boolean;
+  skill_published: boolean;
+};
+export type CodexSkillDraft = V731cSafetyBase & {
+  draft_id: string;
+  draft_name: string;
+  draft_version: string;
+  draft_status: string;
+  publish_status: string;
+  training_status: string;
+  confirmation_status: string;
+  created_from_experience_ids: string[];
+  source_candidate_ids: string[];
+  source_trace_ids: string[];
+  sections: CodexSkillDraftSection[];
+  audit_events: CodexSkillDraftAuditEvent[];
+  created_at: string;
+  updated_at: string;
+  warnings: string[];
+};
+export type CodexSkillDraftList = V731cSafetyBase & { drafts: CodexSkillDraft[]; draft_count: number; warnings: string[] };
+export type V731cSkillExperiencePipelineStatus = V731cSafetyBase & Record<string, unknown> & {
+  status: string;
+  experience_count: number;
+  binding_count: number;
+  draft_count: number;
+  warnings: string[];
+};
+export type CodexSkillDraftBuildResponse = V731cSafetyBase & { draft: CodexSkillDraft; included_experience_count: number; warnings: string[] };
 
 export type PersonalCaseProductionStatus = Record<string, unknown>;
 export type WorkflowStage = Record<string, unknown> & { stage_id: string; display_name: string; stage_type: string };

@@ -90,7 +90,8 @@ const nextRoute = [
   "v7.30 Codex Training Scheme & Multi-Level Case-Cause Artifact Loader",
   "v7.31 Execute Codex Training on Closed Case Samples",
   "v7.31a Real Closed-Case Training Intake & Redaction Pipeline",
-  "v7.31b Codex Training on Real Closed Cases",
+  "v7.31b Controlled Experience Extraction Pipeline",
+  "v7.31c Skill Experience Pool & Codex Skill Draft Builder",
   "Final Security Audit for Personal Live Intelligence & Controlled Case Analysis",
   "Team Workspace deferred / 团队版后置",
   "External Client Delivery deferred / 外部交付后置"
@@ -174,6 +175,7 @@ export default function PersonalProductionPage() {
       { label: "训练产物加载器", value: Boolean(readiness?.readiness.training_artifact_loader_gateway_registered ?? true) },
       { label: "已结案件 Codex 训练", value: Boolean(readiness?.readiness.codex_training_run_gateway_registered ?? true) },
       { label: "真实闭案 intake", value: Boolean(readiness?.readiness.real_closed_case_training_intake_gateway_registered ?? true) },
+      { label: "Codex Skill 草案", value: Boolean(readiness?.readiness.codex_skill_draft_builder_gateway_registered ?? true) },
       { label: "个人生产实战 Pilot", value: Boolean(readiness?.readiness.personal_production_pilot_gateway_registered ?? true) },
       { label: "个人案件与材料工作台", value: Boolean(readiness?.readiness.personal_case_workspace_gateway_registered ?? true) },
       { label: "Pilot Dashboard 增强", value: Boolean(readiness?.readiness.personal_production_pilot_dashboard_gateway_registered ?? true) },
@@ -613,6 +615,28 @@ export default function PersonalProductionPage() {
           </div>
         </section>
 
+        <section className="rounded-md border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-wide">v7.31b / v7.31c Skill Experience Pipeline</div>
+          <h2 className="mt-2 text-lg font-semibold">受控经验候选进入经验池并生成待确认 Skill 草案</h2>
+          <p className="mt-2 text-sm leading-6">
+            v7.31b 负责 OCR/文档解析、法律检索、脱敏经验候选和人工复核；v7.31c 只导入 approved_for_skill_experience，形成 Skill Experience Pool 并生成待人工确认的 Codex Skill 草案。草案不发布 Skill、不写正式训练集、不调用 provider。
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricTile label="draft_builder_status" value={providerCapabilities?.codex_skill_draft_builder_status ?? "codex_skill_draft_builder_metadata_ready"} />
+            <MetricTile label="builder_ready" value={String(providerCapabilities?.codex_skill_draft_builder_ready ?? true)} />
+            <MetricTile label="eligible_selection_ready" value={String(providerCapabilities?.codex_skill_draft_eligible_sample_selection_ready ?? true)} />
+            <MetricTile label="draft_generation_ready" value={String(providerCapabilities?.codex_skill_draft_generation_ready ?? true)} />
+            <MetricTile label="manual_review_ready" value={String(providerCapabilities?.codex_skill_draft_manual_review_ready ?? true)} />
+            <MetricTile label="source_trace_ready" value={String(providerCapabilities?.codex_skill_draft_source_trace_ready ?? true)} />
+            <MetricTile label="audit_ready" value={String(providerCapabilities?.codex_skill_draft_audit_ready ?? true)} />
+            <MetricTile label="not_publishable" value={String(providerCapabilities?.codex_skill_draft_not_publishable ?? true)} />
+            <MetricTile label="provider_call" value={String(!(providerCapabilities?.codex_skill_draft_provider_call_disabled ?? true))} />
+            <MetricTile label="raw_content_blocked" value={String(providerCapabilities?.codex_skill_draft_raw_content_blocked ?? true)} />
+            <MetricTile label="api_key_read" value={String(!(providerCapabilities?.codex_skill_draft_api_key_read_disabled ?? true))} />
+            <MetricTile label="external_delivery" value="false" />
+          </div>
+        </section>
+
         <section className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
           <Panel title="受控工作流 Stepper">
             <ShowcaseStepper
@@ -660,7 +684,7 @@ export default function PersonalProductionPage() {
                 <div key={step} className="rounded-md border border-line bg-white px-4 py-3 text-sm font-medium text-ink">
                   {step}
                   {step.includes("v7.31a") ? <span className="ml-2 text-xs text-emerald-700">已完成</span> : null}
-                  {step.includes("v7.31b") ? <span className="ml-2 text-xs text-emerald-700">下一步</span> : null}
+                  {step.includes("v7.31b") ? <span className="ml-2 text-xs text-emerald-700">已接入</span> : null}
                   {step.includes("后置") || step.includes("deferred") ? <span className="ml-2 text-xs text-amber-700">未进入</span> : null}
                 </div>
               ))}

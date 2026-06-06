@@ -209,6 +209,31 @@ RUNTIME_DEFINITIONS = [
         ],
     },
     {
+        "runtime_id": "training_experience_pipeline_runtime",
+        "label": "Controlled Training Experience Pipeline Runtime",
+        "category": "skill_studio",
+        "target_route": "/personal-skill-studio/training-artifacts",
+        "gateway_registered": True,
+        "status": "training_experience_pipeline_metadata_ready",
+        "warnings": [
+            "v7.31b 受控办案底稿解析、OCR/文档解析、法律检索、经验候选、脱敏输出和人工复核管线已注册。",
+            "本阶段不发布 Skill，不写正式训练集，不调用 provider。",
+        ],
+    },
+    {
+        "runtime_id": "codex_skill_draft_builder_runtime",
+        "label": "Skill Experience Pool & Codex Skill Draft Builder Runtime",
+        "category": "skill_studio",
+        "target_route": "/personal-skill-studio/training-artifacts",
+        "gateway_registered": True,
+        "status": "codex_skill_draft_builder_metadata_ready",
+        "warnings": [
+            "v7.31c Skill Experience Pool 与 Codex Skill 草案生成器已注册。",
+            "仅从 v7.31b approved_for_skill_experience 经验 metadata 生成待人工确认 Skill 草案。",
+            "人工确认只代表草案结构通过，不发布 Skill，不写正式训练集。",
+        ],
+    },
+    {
         "runtime_id": "case_production_runtime",
         "label": "Case Production Runtime",
         "category": "case_production",

@@ -65,6 +65,10 @@ import {
   listPersonalCodexTrainingRuns,
   getPersonalRealClosedCaseIntakeStatus,
   listPersonalRealClosedCaseIntakes,
+  getPersonalV731bTrainingExperiencePipelineStatus,
+  getPersonalSkillExperiencePoolStatus,
+  getPersonalV731cSkillExperiencePipelineStatus,
+  listPersonalCodexSkillDrafts,
   listPersonalSkillFinalDrafts,
   listPersonalOwnerOutputCenterDownloads,
   listPersonalOwnerOutputCenterOutputs,
@@ -154,7 +158,11 @@ export default function PersonalProductionPilotPage() {
         trainingArtifactSafety,
         codexTrainingRuns,
         realClosedCaseIntakeStatus,
-        realClosedCaseIntakes
+        realClosedCaseIntakes,
+        v731bTrainingExperienceStatus,
+        skillExperiencePoolStatus,
+        v731cSkillExperienceStatus,
+        codexSkillDrafts
       ] =
         await Promise.all([
           getPersonalProductionPilotStatus(),
@@ -216,7 +224,11 @@ export default function PersonalProductionPilotPage() {
           getPersonalTrainingArtifactSafety(),
           listPersonalCodexTrainingRuns(),
           getPersonalRealClosedCaseIntakeStatus(),
-          listPersonalRealClosedCaseIntakes()
+          listPersonalRealClosedCaseIntakes(),
+          getPersonalV731bTrainingExperiencePipelineStatus(),
+          getPersonalSkillExperiencePoolStatus(),
+          getPersonalV731cSkillExperiencePipelineStatus(),
+          listPersonalCodexSkillDrafts()
         ]);
       setData({
         status,
@@ -278,7 +290,11 @@ export default function PersonalProductionPilotPage() {
         trainingArtifactSafety,
         codexTrainingRuns,
         realClosedCaseIntakeStatus,
-        realClosedCaseIntakes
+        realClosedCaseIntakes,
+        v731bTrainingExperienceStatus,
+        skillExperiencePoolStatus,
+        v731cSkillExperienceStatus,
+        codexSkillDrafts
       });
       setOutputId((current) => current || outputs.outputs?.[0]?.output_id || "");
     } catch {
@@ -544,7 +560,25 @@ export default function PersonalProductionPilotPage() {
             <StatusCard label="Open Case Used" value={String(data.realClosedCaseIntakeStatus?.open_case_data_used ?? false)} detail="open_case_data_used=false" tone="safe" />
           </div>
           <div className="mt-4 rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-xs leading-5 text-sky-900">
-            Pilot 只展示真实闭案训练材料 intake readiness；原文不返回，未结案件不参与训练，后续 v7.31b 才会进入真实闭案 Codex training。
+            Pilot 只展示真实闭案训练材料 intake readiness；原文不返回，未结案件不参与训练，后续 v7.31b 进入受控经验候选管线，v7.31c 才生成待人工确认的 Skill 草案。
+          </div>
+        </Panel>
+
+        <Panel title="v7.31b / v7.31c 经验候选、经验池与 Skill 草案">
+          <div className="grid gap-4 md:grid-cols-4">
+            <StatusCard label="v7.31b Candidates" value={data.v731bTrainingExperienceStatus?.experience_candidate_count ?? 0} detail="脱敏/复核前候选" tone="info" />
+            <StatusCard label="Experience Pool" value={data.skillExperiencePoolStatus?.experience_count ?? data.v731cSkillExperienceStatus?.experience_count ?? 0} detail="approved only" tone="safe" />
+            <StatusCard label="Drafts" value={data.codexSkillDrafts?.draft_count ?? data.v731cSkillExperienceStatus?.draft_count ?? 0} detail="manual confirmation" tone="info" />
+            <StatusCard label="Skill Publish" value={String(data.v731cSkillExperienceStatus?.skill_published ?? false)} detail="skill_published=false" tone="safe" />
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <StatusCard label="Provider Call" value={String(data.v731cSkillExperienceStatus?.provider_call_executed ?? false)} detail="未调用 provider" tone="safe" />
+            <StatusCard label="Formal Training" value={String(data.v731cSkillExperienceStatus?.formal_training_set_generated ?? false)} detail="未写正式训练集" tone="safe" />
+            <StatusCard label="Confirmation" value={data.codexSkillDrafts?.drafts?.[0]?.confirmation_status ?? "pending_confirmation"} detail="人工确认闭环" tone="warning" />
+            <StatusCard label="Publishable" value={String(data.codexSkillDrafts?.drafts?.[0]?.skill_publishable ?? false)} detail="not_publishable" tone="safe" />
+          </div>
+          <div className="mt-4 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-5 text-cyan-900">
+            Pilot 仅展示 v7.31b 已批准经验进入 v7.31c 经验池后的草案 readiness；结构确认不发布 Skill，不写训练集，不生成最终法律意见或外部交付。
           </div>
         </Panel>
 

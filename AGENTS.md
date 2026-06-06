@@ -59,7 +59,7 @@ Before committing, run:
 
 ## Current Next Task
 
-Next Task: v7.31b Codex Training on Real Closed Cases. Do not continue provider gateway stacking; v7.27 OCR / Document Provider Live Connection, v7.28 Unified Personal Live Connection Dashboard, v7.29 Legal / Enterprise API Live Connection, v7.30 Codex Training Scheme & Artifact Loader, v7.31 Execute Codex Training on Closed Case Samples, and v7.31a Real Closed-Case Training Intake & Redaction Pipeline already exist in the current local uncommitted large-stage worktree. Do not commit, tag, push, or release until the user explicitly approves release handling.
+Next Task: v7.31d Skill Package Versioning & Pre-Publish Gate after v7.31b Raw Work-Product Controlled Processing Experience Pipeline and v7.31c Skill Experience Pool & Codex Skill Draft Builder. Do not continue provider gateway stacking; v7.27 OCR / Document Provider Live Connection, v7.28 Unified Personal Live Connection Dashboard, v7.29 Legal / Enterprise API Live Connection, v7.30 Codex Training Scheme & Artifact Loader, v7.31 Execute Codex Training on Closed Case Samples, v7.31a Real Closed-Case Training Intake & Redaction Pipeline, v7.31b, and v7.31c already exist in the current local worktree. Do not commit, tag, push, or release until the user explicitly approves release handling.
 
 ## Codex Surgical Development Rules
 
@@ -339,15 +339,19 @@ Every Codex task must end with a concise report containing:
 - Review, source trace, audit, and safety metadata are required.
 - v7.31a must not use unresolved/open cases, read or return raw OCR/raw content, call providers, read API keys, expose local paths, write training sets, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
 
-## v7.31b Codex Training on Real Closed Cases Notes
+## v7.31b Raw Work-Product Controlled Processing Experience Pipeline Notes
 
-- v7.31b is planned after v7.31a.
-- Do not re-implement the v7.30 loader or v7.31 training run generator.
-- Do not re-implement the v7.31a intake and redaction pipeline.
-- Use only v7.31a-authorized and redacted closed-case training metadata.
-- Codex training remains metadata artifact generation/loading, not model-parameter fine-tuning.
-- Keep closed-case training and open-case practical analysis separated.
-- v7.31b must not use unresolved/open cases for training, read raw OCR, read unredacted real materials, call providers, read API keys, expose local sensitive paths, auto-publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- v7.31b adds raw work-product boundary status, OCR/document parse job metadata, legal retrieval job metadata, experience candidate build/redaction/review, source trace, audit, safety, frontend panels, and regression checks.
+- v7.31b outputs redacted / abstracted experience candidates only.
+- Only candidates with `review_status=approved_for_skill_experience`, `redaction_status=passed`, source trace, and audit metadata may be used by v7.31c.
+- v7.31b must not place experience into a Skill pool, generate Codex Skill drafts, call providers, read API keys, write formal training sets, update Skills, publish Skills, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+
+## v7.31c Skill Experience Pool & Codex Skill Draft Builder Notes
+
+- v7.31c imports approved v7.31b experience candidates into the Skill Experience Pool, creates bindings, and generates non-publishable Codex Skill draft metadata.
+- Pending, rejected, changes-requested, non-redacted, or missing-source-trace candidates must not be imported.
+- Draft review may confirm draft structure metadata only; it must not publish Skills, write formal training sets, trigger real Codex training, generate final legal opinions, generate final reports, create public links, send email, or trigger external delivery.
+- The next planned sub-stage is v7.31d Skill Package Versioning & Pre-Publish Gate.
 
 ## Product Design Closed Loop
 

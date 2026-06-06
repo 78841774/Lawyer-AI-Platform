@@ -31,6 +31,7 @@ class PersonalProductionStatus(BaseModel):
     training_artifact_loader_runtime_registered: bool = True
     codex_training_run_runtime_registered: bool = True
     real_closed_case_training_intake_runtime_registered: bool = True
+    codex_skill_draft_builder_runtime_registered: bool = True
     personal_delivery_packet_runtime_registered: bool = True
     personal_showcase_pack_runtime_registered: bool = True
     delivery_runtime_registered: bool = True
@@ -161,6 +162,7 @@ class PersonalProductionProviderCapabilities(BaseModel):
     training_artifact_loader_status: str = "training_artifact_loader_metadata_ready"
     codex_training_run_status: str = "codex_training_run_metadata_ready"
     real_closed_case_training_intake_status: str = "real_closed_case_training_intake_metadata_ready"
+    codex_skill_draft_builder_status: str = "codex_skill_draft_builder_metadata_ready"
     personal_production_pilot_dashboard_status: str = "dashboard_metadata_ready"
     pilot_ai_ocr_legal_enterprise_skill_case_analysis_connected: bool = True
     case_workspace_owner_raw_view_gated: bool = True
@@ -255,6 +257,16 @@ class PersonalProductionProviderCapabilities(BaseModel):
     real_closed_case_open_case_training_disabled: bool = True
     real_closed_case_raw_content_blocked: bool = True
     real_closed_case_ready_for_codex_training: bool = False
+    codex_skill_draft_builder_ready: bool = True
+    codex_skill_draft_eligible_sample_selection_ready: bool = True
+    codex_skill_draft_generation_ready: bool = True
+    codex_skill_draft_manual_review_ready: bool = True
+    codex_skill_draft_source_trace_ready: bool = True
+    codex_skill_draft_audit_ready: bool = True
+    codex_skill_draft_not_publishable: bool = True
+    codex_skill_draft_provider_call_disabled: bool = True
+    codex_skill_draft_raw_content_blocked: bool = True
+    codex_skill_draft_api_key_read_disabled: bool = True
     external_delivery_disabled: bool = True
     public_link_disabled: bool = True
     email_sending_disabled: bool = True
@@ -321,6 +333,8 @@ class PersonalProductionConsoleSummary(BaseModel):
     v7_30_readiness: dict[str, bool] = Field(default_factory=dict)
     v7_31_readiness: dict[str, bool] = Field(default_factory=dict)
     v7_31a_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_31b_readiness: dict[str, bool] = Field(default_factory=dict)
+    v7_31c_readiness: dict[str, bool] = Field(default_factory=dict)
     mock_or_redacted_only: bool = True
     raw_content_included: bool = False
     final_legal_opinion_generated: bool = False

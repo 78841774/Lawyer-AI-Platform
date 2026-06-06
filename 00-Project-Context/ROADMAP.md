@@ -20,8 +20,10 @@
 - v7.29 Legal / Enterprise API Live Connection is complete in the current uncommitted worktree.
 - v7.30 Codex Training Scheme & Multi-Level Case-Cause Artifact Loader is complete in the current uncommitted worktree.
 - v7.31 Execute Codex Training on Closed Case Samples is complete in the current uncommitted worktree.
-- v7.31a Real Closed-Case Training Intake & Redaction Pipeline is complete in the current uncommitted worktree.
-- v7.31b Codex Training on Real Closed Cases is planned after v7.31a.
+- v7.31a Real Closed-Case Training Intake & Redaction Pipeline is complete at commit `86a0246` and tag `v7.31a`.
+- v7.31b Raw Work-Product Controlled Processing Experience Pipeline is complete in the current local worktree.
+- v7.31c Skill Experience Pool & Codex Skill Draft Builder is complete in the current local worktree.
+- v7.31d Skill Package Versioning & Pre-Publish Gate is planned after v7.31c.
 
 ## v7.25-v7.29 Practical Trial And Provider Alignment Cadence
 
@@ -37,7 +39,9 @@ v7.31 executes Codex training on synthetic closed-case samples and generates loa
 
 v7.31a prepares authorized closed-case training material intake, redaction, case-cause classification, sample segmentation, review, source trace, audit, and safety metadata. It does not execute Codex training.
 
-v7.31b is planned as Codex Training on Real Closed Cases.
+v7.31b adds controlled raw work-product parsing, OCR/document parse metadata, legal retrieval metadata, redacted experience candidates, manual review, source trace, audit, and safety.
+
+v7.31c imports approved v7.31b experience candidates into a Skill Experience Pool, creates bindings, and generates non-publishable Codex Skill draft metadata requiring manual confirmation.
 
 ## Product Design Cadence
 
@@ -50,4 +54,4 @@ UI / Showcase / promotional / Demo / Landing / screenshot / recording work must 
 
 ## Current Priority
 
-Current execution priority is complete through v7.31a. The next planned personal-version sub-stage is v7.31b Codex Training on Real Closed Cases. Do not repeat v7.27-v7.31a implementations. Do not start Team Workspace or External Client Delivery before the user explicitly approves that direction.
+Current execution priority is complete through v7.31c. The next planned personal-version sub-stage is v7.31d Skill Package Versioning & Pre-Publish Gate. Do not repeat v7.27-v7.31c implementations. Do not start Team Workspace or External Client Delivery before the user explicitly approves that direction.

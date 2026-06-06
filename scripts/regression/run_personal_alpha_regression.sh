@@ -47,6 +47,8 @@ checks=(
   "check_personal_training_artifact_loader_apis.sh"
   "check_personal_codex_training_runs_apis.sh"
   "check_personal_real_closed_case_training_intake_apis.sh"
+  "check_personal_training_experience_pipeline_v731b_apis.sh"
+  "check_personal_codex_skill_experience_pool_v731c_apis.sh"
   "check_metadata_only_responses.sh"
   "check_safe_not_found.sh"
   "check_injected_path_inputs.sh"

@@ -578,3 +578,457 @@ class RealClosedCaseIntakeStatus(RealClosedCaseIntakeSafetyBase):
     safety_ready: bool = True
     intake_count: int = 0
     warnings: list[str] = Field(default_factory=list)
+
+
+class V731bSafetyBase(BaseModel):
+    owner_only: bool = True
+    local_private_processing_only: bool = True
+    authorized_case_only: bool = True
+    closed_case_preferred: bool = True
+    work_product_sensitive: bool = True
+    raw_material_controlled: bool = True
+    raw_material_allowed_for_internal_processing: bool = True
+    raw_material_return_allowed: bool = False
+    raw_material_provider_export_allowed: bool = False
+    raw_material_skill_ingest_allowed: bool = False
+    redacted_output_only: bool = True
+    redacted_experience_output_required: bool = True
+    manual_review_required: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_raw_response_returned: bool = False
+    original_material_returned: bool = False
+    open_case_data_used: bool = False
+    formal_training_set_generated: bool = False
+    skill_updated: bool = False
+    skill_published: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class RawWorkProductBoundaryStatus(V731bSafetyBase):
+    version: str = "v7.31b"
+    status: str = "raw_work_product_controlled_boundary_ready"
+    boundary_runtime_ready: bool = True
+    ordinary_frontend_return_blocked: bool = True
+    skill_direct_ingest_blocked: bool = True
+    training_result_direct_ingest_blocked: bool = True
+    provider_export_blocked: bool = True
+    warnings: list[str] = Field(default_factory=list)
+
+
+class OcrJobRequest(BaseModel):
+    material_label: str = "lawyer_work_product_demo_material"
+    owner_user_id: str = "owner_local_demo"
+    document_type: str = "case_work_product"
+    page_count: int = 8
+    explicit_authorized_case_confirmation: bool = True
+    explicit_internal_processing_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_raw_return_confirmation: bool = True
+
+
+class OcrParseSummary(V731bSafetyBase):
+    parse_summary_id: str
+    job_id: str
+    document_type: str
+    page_count: int
+    confidence_score: float = 0.86
+    parse_status: str = "demo_safe_parse_completed"
+    redacted_preview: str = "已脱敏办案底稿结构摘要"
+    structured_summary: list[str] = Field(default_factory=list)
+    section_labels: list[str] = Field(default_factory=list)
+    source_trace_id: str
+    audit_id: str
+
+
+class OcrJob(V731bSafetyBase):
+    job_id: str
+    material_label: str
+    owner_user_id: str
+    document_type: str
+    page_count: int
+    parse_status: str = "demo_safe_parse_completed"
+    parse_summary: OcrParseSummary
+    source_trace_id: str
+    audit_events: list[dict[str, str | bool]] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class OcrJobList(V731bSafetyBase):
+    ocr_jobs: list[OcrJob] = Field(default_factory=list)
+    job_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class LegalRetrievalJobRequest(BaseModel):
+    source_ocr_job_id: str | None = None
+    query_label: str = "contract_dispute_experience_basis"
+    owner_user_id: str = "owner_local_demo"
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_key_value_confirmation: bool = True
+    explicit_demo_safe_confirmation: bool = True
+
+
+class LegalRetrievalCandidate(V731bSafetyBase):
+    candidate_id: str
+    candidate_type: str
+    title: str
+    summary: str
+    source_trace_id: str
+
+
+class LegalRetrievalJob(V731bSafetyBase):
+    retrieval_job_id: str
+    source_ocr_job_id: str | None = None
+    query_label: str
+    retrieval_status: str = "demo_safe_retrieval_completed"
+    retrieval_timestamp: str
+    statute_candidates: list[LegalRetrievalCandidate] = Field(default_factory=list)
+    similar_case_candidates: list[LegalRetrievalCandidate] = Field(default_factory=list)
+    source_trace_id: str
+    audit_events: list[dict[str, str | bool]] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class LegalRetrievalJobList(V731bSafetyBase):
+    legal_retrieval_jobs: list[LegalRetrievalJob] = Field(default_factory=list)
+    job_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceCandidateBuildRequest(BaseModel):
+    source_ocr_job_id: str | None = None
+    source_legal_retrieval_job_id: str | None = None
+    owner_user_id: str = "owner_local_demo"
+    explicit_redaction_required_confirmation: bool = True
+    explicit_manual_review_required_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class ExperienceCandidate(V731bSafetyBase):
+    candidate_id: str
+    candidate_type: str
+    owner_user_id: str
+    source_ocr_job_id: str | None = None
+    source_legal_retrieval_job_id: str | None = None
+    candidate_status: str = "candidate_requires_redaction_review"
+    review_status: str = "pending_review"
+    skill_experience_ready: bool = False
+    redaction_status: str = "requires_redaction"
+    pattern_label: str
+    structured_summary: list[str] = Field(default_factory=list)
+    source_trace_id: str
+    audit_events: list[dict[str, str | bool]] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceCandidateList(V731bSafetyBase):
+    candidates: list[ExperienceCandidate] = Field(default_factory=list)
+    candidate_count: int = 0
+    approved_for_skill_experience_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceCandidateRedaction(V731bSafetyBase):
+    candidate_id: str
+    redaction_status: str = "redacted_output_ready"
+    redacted_summary: str = "已脱敏经验摘要"
+    abstracted_pattern: str = "抽象化办案经验模式"
+    removed_sensitive_fields_count: int = 6
+    redaction_warnings: list[str] = Field(default_factory=list)
+    source_trace_id: str
+    audit_events: list[dict[str, str | bool]] = Field(default_factory=list)
+
+
+class ExperienceCandidateReviewRequest(BaseModel):
+    action: str = "approve"
+    reviewer_id: str = "local_demo_lawyer"
+    reviewer_note: str = "experience candidate metadata review only"
+    explicit_manual_review_confirmation: bool = True
+    explicit_no_raw_return_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class ExperienceCandidateReview(V731bSafetyBase):
+    candidate_id: str
+    action: str
+    review_status: str
+    reviewer_id: str
+    reviewer_note: str
+    approved_for_skill_experience: bool = False
+    skill_experience_ready: bool = False
+    skill_published: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ExperienceCandidateAudit(V731bSafetyBase):
+    candidate_id: str
+    events: list[dict[str, str | bool]] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731bTrainingExperiencePipelineStatus(V731bSafetyBase):
+    version: str = "v7.31b"
+    status: str = "training_experience_pipeline_metadata_ready"
+    raw_work_product_boundary_ready: bool = True
+    ocr_document_parse_ready: bool = True
+    legal_retrieval_ready: bool = True
+    experience_candidate_runtime_ready: bool = True
+    redacted_experience_output_ready: bool = True
+    manual_review_queue_ready: bool = True
+    source_trace_ready: bool = True
+    audit_ready: bool = True
+    safety_ready: bool = True
+    ocr_job_count: int = 0
+    legal_retrieval_job_count: int = 0
+    experience_candidate_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731cSafetyBase(BaseModel):
+    owner_only: bool = True
+    local_private_processing_only: bool = True
+    authorized_case_only: bool = True
+    controlled_material_boundary: bool = True
+    source_content_returned: bool = False
+    redacted_output_only: bool = True
+    abstracted_experience_only: bool = True
+    approved_experience_only: bool = True
+    manual_review_required: bool = True
+    source_trace_required: bool = True
+    audit_required: bool = True
+    provider_call_executed: bool = False
+    key_value_read: bool = False
+    credential_value_returned: bool = False
+    provider_result_payload_returned: bool = False
+    local_sensitive_reference_returned: bool = False
+    unreviewed_experience_imported: bool = False
+    unsafe_experience_imported: bool = False
+    missing_source_trace_imported: bool = False
+    formal_training_set_generated: bool = False
+    real_codex_training_triggered: bool = False
+    skill_published: bool = False
+    skill_publishable: bool = False
+    final_legal_opinion_generated: bool = False
+    final_report_generated: bool = False
+    public_link_created: bool = False
+    email_sent: bool = False
+    external_delivery_triggered: bool = False
+
+
+class SkillExperienceImportRequest(BaseModel):
+    source_candidate_ids: list[str] = Field(default_factory=list)
+    owner_user_id: str = "owner_local_demo"
+    explicit_approved_experience_only_confirmation: bool = True
+    explicit_redacted_output_only_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class SkillExperiencePoolEntry(V731cSafetyBase):
+    experience_id: str
+    source_candidate_id: str
+    case_cause: str = "demo_safe_case_cause_scope"
+    experience_type: str
+    fact_pattern: str
+    issue_pattern: str
+    evidence_pattern: str
+    rule_application_pattern: str
+    argument_strategy_pattern: str
+    drafting_pattern: str
+    risk_warning_pattern: str
+    review_checklist_pattern: str
+    redaction_summary: str
+    abstraction_summary: str
+    source_trace_id: str
+    audit_id: str
+    reviewer_confirmation: str = "approved_for_skill_experience"
+    created_at: str
+    updated_at: str
+    skill_binding_status: str = "unbound"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillExperiencePoolList(V731cSafetyBase):
+    experiences: list[SkillExperiencePoolEntry] = Field(default_factory=list)
+    experience_count: int = 0
+    rejected_import_count: int = 0
+    unbound_experience_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillExperiencePoolStatus(V731cSafetyBase):
+    version: str = "v7.31c"
+    status: str = "skill_experience_pool_metadata_ready"
+    pool_ready: bool = True
+    import_approved_ready: bool = True
+    binding_ready: bool = True
+    skill_draft_builder_ready: bool = True
+    experience_count: int = 0
+    rejected_import_count: int = 0
+    unbound_experience_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillExperienceImportResponse(V731cSafetyBase):
+    imported_experiences: list[SkillExperiencePoolEntry] = Field(default_factory=list)
+    imported_count: int = 0
+    rejected_count: int = 0
+    rejected_candidate_ids: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillExperienceBindingRequest(BaseModel):
+    experience_ids: list[str] = Field(default_factory=list)
+    skill_domain: str = "case_analysis"
+    skill_name_candidate: str = "案件经验提炼 Skill 草案"
+    case_cause_scope: str = "demo_safe_case_cause_scope"
+    experience_types: list[str] = Field(default_factory=list)
+    draft_target_id: str = "codex_skill_draft_target_v731c"
+
+
+class SkillExperienceBinding(V731cSafetyBase):
+    binding_id: str
+    experience_ids: list[str] = Field(default_factory=list)
+    skill_domain: str
+    skill_name_candidate: str
+    case_cause_scope: str
+    experience_types: list[str] = Field(default_factory=list)
+    draft_target_id: str
+    binding_status: str = "bound_to_draft_target"
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class SkillExperienceBindingList(V731cSafetyBase):
+    bindings: list[SkillExperienceBinding] = Field(default_factory=list)
+    binding_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexSkillDraftBuildRequest(BaseModel):
+    experience_ids: list[str] = Field(default_factory=list)
+    binding_id: str | None = None
+    draft_name: str = "Codex Skill 草案 v7.31c"
+    draft_target_id: str = "codex_skill_draft_target_v731c"
+    explicit_approved_experience_only_confirmation: bool = True
+    explicit_no_provider_confirmation: bool = True
+    explicit_no_real_training_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+
+
+class CodexSkillDraftSection(V731cSafetyBase):
+    section_id: str
+    section_type: str
+    title: str
+    metadata_items: list[str] = Field(default_factory=list)
+    source_experience_ids: list[str] = Field(default_factory=list)
+    source_trace_ids: list[str] = Field(default_factory=list)
+
+
+class CodexSkillDraftAuditEvent(BaseModel):
+    event_id: str
+    draft_id: str
+    action: str
+    timestamp: str
+    metadata_only: bool = True
+    skill_published: bool = False
+
+
+class CodexSkillDraftReviewRequest(BaseModel):
+    action: str = "approve_draft_structure"
+    reviewer_id: str = "local_demo_lawyer"
+    reviewer_note: str = "draft structure review only"
+    explicit_manual_confirmation: bool = True
+    explicit_no_skill_publish_confirmation: bool = True
+    explicit_no_real_training_confirmation: bool = True
+
+
+class CodexSkillDraftReviewResponse(V731cSafetyBase):
+    draft_id: str
+    action: str
+    confirmation_status: str
+    reviewer_id: str
+    reviewer_note: str
+    skill_published: bool = False
+    real_training_triggered: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexSkillDraft(V731cSafetyBase):
+    draft_id: str
+    draft_name: str
+    draft_version: str = "v7.31c"
+    draft_status: str = "requires_manual_confirmation"
+    publish_status: str = "not_publishable"
+    training_status: str = "not_training_ready"
+    confirmation_status: str = "pending_confirmation"
+    skill_purpose: str
+    trigger_conditions: list[str] = Field(default_factory=list)
+    input_requirements: list[str] = Field(default_factory=list)
+    workflow_steps: list[str] = Field(default_factory=list)
+    experience_patterns: list[str] = Field(default_factory=list)
+    case_cause_scope: str
+    evidence_handling_rules: list[str] = Field(default_factory=list)
+    legal_retrieval_usage_rules: list[str] = Field(default_factory=list)
+    redaction_rules: list[str] = Field(default_factory=list)
+    source_trace_rules: list[str] = Field(default_factory=list)
+    audit_rules: list[str] = Field(default_factory=list)
+    manual_review_rules: list[str] = Field(default_factory=list)
+    prohibited_usage: list[str] = Field(default_factory=list)
+    quality_checklist: list[str] = Field(default_factory=list)
+    sample_safe_prompts: list[str] = Field(default_factory=list)
+    sample_safe_outputs: list[str] = Field(default_factory=list)
+    created_from_experience_ids: list[str] = Field(default_factory=list)
+    source_candidate_ids: list[str] = Field(default_factory=list)
+    source_trace_ids: list[str] = Field(default_factory=list)
+    not_publishable_reason: str = "v7.31c only creates a draft requiring manual confirmation and pre-publish gate in a later stage."
+    sections: list[CodexSkillDraftSection] = Field(default_factory=list)
+    audit_events: list[CodexSkillDraftAuditEvent] = Field(default_factory=list)
+    created_at: str
+    updated_at: str
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexSkillDraftList(V731cSafetyBase):
+    drafts: list[CodexSkillDraft] = Field(default_factory=list)
+    draft_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexSkillDraftBuildResponse(V731cSafetyBase):
+    draft: CodexSkillDraft
+    included_experience_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CodexSkillDraftAudit(V731cSafetyBase):
+    draft_id: str
+    events: list[CodexSkillDraftAuditEvent] = Field(default_factory=list)
+    event_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
+
+
+class V731cSkillExperiencePipelineStatus(V731cSafetyBase):
+    version: str = "v7.31c"
+    status: str = "skill_experience_pool_and_draft_builder_metadata_ready"
+    skill_experience_pool_ready: bool = True
+    approved_experience_import_ready: bool = True
+    experience_binding_ready: bool = True
+    codex_skill_draft_builder_ready: bool = True
+    manual_confirmation_queue_ready: bool = True
+    source_trace_ready: bool = True
+    audit_ready: bool = True
+    safety_ready: bool = True
+    experience_count: int = 0
+    binding_count: int = 0
+    draft_count: int = 0
+    warnings: list[str] = Field(default_factory=list)
