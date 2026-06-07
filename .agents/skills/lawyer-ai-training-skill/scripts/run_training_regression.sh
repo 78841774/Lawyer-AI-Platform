@@ -23,6 +23,7 @@ scripts=(
   check_personal_training_dataset_v735_apis.sh
   check_personal_codex_training_dryrun_v736_apis.sh
   check_personal_codex_training_run_v737_apis.sh
+  check_personal_training_external_ocr_v735a_apis.sh
   check_personal_raw_training_material_v735a_apis.sh
   check_personal_redacted_experience_output_v735b_apis.sh
   check_personal_training_dataset_v736_apis.sh

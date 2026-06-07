@@ -95,6 +95,27 @@ from personal_skill_studio.training_artifacts.experience_candidate_registry impo
     redact_experience_candidate,
     review_experience_candidate,
 )
+from personal_skill_studio.training_artifacts.external_ocr_training_runtime import (
+    build_external_ocr_redacted_summary,
+    fetch_external_ocr_result,
+    get_external_ocr_run,
+    get_external_ocr_job_audit,
+    get_external_ocr_job_source_trace,
+    get_external_ocr_job_status,
+    get_external_ocr_provider_status_diagnostics,
+    list_external_ocr_runs,
+    poll_external_ocr_job,
+    record_external_ocr_job_submission,
+    run_external_ocr_parse_quality_gate,
+    start_external_ocr_parse,
+)
+from personal_skill_studio.training_artifacts.external_ocr_paddle_adapter import (
+    ExternalOCRRequest,
+    check_external_ocr_ready,
+    external_ocr_diagnostics,
+    redacted_file_ref,
+    submit_paddle_ocr_job,
+)
 from personal_skill_studio.training_artifacts.experience_lifecycle_registry import (
     build_v732_status,
     get_lifecycle,
@@ -349,6 +370,48 @@ def _safe_list(items: list[Any]) -> dict[str, Any]:
         artifact_count=len(items),
         warnings=["Synthetic training artifact manifests only."],
     ).model_dump()
+
+
+def _looks_like_local_path(value: str) -> bool:
+    text = str(value or "")
+    return text.startswith(("/Users/", "/Volumes/", "/", "./", "../", "file://")) or ":\\" in text
+
+
+def _is_http_url(value: str) -> bool:
+    text = str(value or "").strip().lower()
+    return text.startswith("http://") or text.startswith("https://")
+
+
+def _external_ocr_source_ref(payload: dict[str, Any]) -> tuple[str, str]:
+    for key in ("file_url", "fileUrl", "file_path_or_url"):
+        value = str(payload.get(key) or "").strip()
+        if value:
+            return value, "url" if _is_http_url(value) else "invalid_path"
+    for key in ("fileRef", "file_ref", "controlled_file_ref"):
+        value = str(payload.get(key) or "").strip()
+        if value:
+            return value, "file_ref"
+    return "", "missing"
+
+
+def _controlled_file_ref_exists(file_ref: str) -> bool:
+    material = get_training_material(file_ref)
+    if material:
+        return True
+    materials = list_training_materials().get("materials", [])
+    for item in materials:
+        if not isinstance(item, dict):
+            continue
+        allowed_values = {
+            str(item.get("file_ref") or ""),
+            str(item.get("fileRef") or ""),
+            str(item.get("file_ref_id") or ""),
+            str(item.get("controlled_file_ref") or ""),
+            str(item.get("training_material_id") or ""),
+        }
+        if file_ref in allowed_values:
+            return True
+    return False
 
 
 @router.get("/status")
@@ -1500,6 +1563,142 @@ def v735b_status() -> dict[str, Any]:
 @router.get("/training-materials/{training_material_id}")
 def training_material_detail(training_material_id: str) -> dict[str, Any]:
     return _ensure(get_training_material(training_material_id))
+
+
+@router.post("/training-materials/external-ocr/parse")
+async def training_material_external_ocr_parse(request: Request) -> dict[str, Any]:
+    return start_external_ocr_parse(await _safe_request_payload(request))
+
+
+@router.get("/external-ocr/status")
+def external_ocr_status() -> dict[str, Any]:
+    return check_external_ocr_ready()
+
+
+@router.get("/external-ocr/diagnostics")
+def external_ocr_provider_diagnostics() -> dict[str, Any]:
+    return external_ocr_diagnostics()
+
+
+@router.post("/external-ocr/jobs/submit")
+async def external_ocr_job_submit(request: Request) -> dict[str, Any]:
+    payload = await _safe_request_payload(request)
+    material_id = str(payload.get("material_id") or "").strip()
+    source_ref, source_mode = _external_ocr_source_ref(payload)
+    if not source_ref:
+        status = check_external_ocr_ready()
+        return record_external_ocr_job_submission(
+            {
+                "ocr_mode": "external_ocr_failed",
+                "parse_status": "failed",
+                "provider_job_id": None,
+                "file_ref": "file_ref_missing",
+                "credential_loaded": bool(status.get("credential_loaded")),
+                "provider_call_allowed": bool(status.get("provider_call_allowed")),
+                "external_ocr_completed": False,
+                "real_material_training_allowed": False,
+                "training_status": "blocked_for_external_ocr",
+                "redacted_error_summary": "material_id and controlled file reference are required.",
+            },
+            material_id=material_id or "controlled_file_ref",
+            file_ref="file_ref_missing",
+        )
+    if source_mode == "invalid_path" or _looks_like_local_path(source_ref):
+        status = check_external_ocr_ready()
+        return record_external_ocr_job_submission(
+            {
+                "ocr_mode": "external_ocr_failed",
+                "parse_status": "failed",
+                "provider_job_id": None,
+                "file_ref": redacted_file_ref(source_ref),
+                "credential_loaded": bool(status.get("credential_loaded")),
+                "provider_call_allowed": False,
+                "external_ocr_completed": False,
+                "real_material_training_allowed": False,
+                "training_status": "blocked_for_external_ocr",
+                "redacted_error_summary": "Invalid file reference. Raw path was not exposed.",
+            },
+            material_id=material_id or "controlled_file_ref",
+            file_ref=redacted_file_ref(source_ref),
+        )
+    if source_mode == "file_ref" and not _controlled_file_ref_exists(source_ref):
+        status = check_external_ocr_ready()
+        return record_external_ocr_job_submission(
+            {
+                "ocr_mode": "external_ocr_failed",
+                "parse_status": "failed",
+                "provider_job_id": None,
+                "file_ref": redacted_file_ref(source_ref),
+                "credential_loaded": bool(status.get("credential_loaded")),
+                "provider_call_allowed": bool(status.get("provider_call_allowed")),
+                "external_ocr_completed": False,
+                "real_material_training_allowed": False,
+                "training_status": "blocked_for_external_ocr",
+                "redacted_error_summary": "Controlled file reference not found.",
+            },
+            material_id=material_id or "controlled_file_ref",
+            file_ref=redacted_file_ref(source_ref),
+        )
+    response = submit_paddle_ocr_job(
+        ExternalOCRRequest(
+            material_id=material_id or "controlled_file_ref",
+            file_path_or_url=source_ref,
+            use_doc_orientation_classify=bool(payload.get("use_doc_orientation_classify")),
+            use_doc_unwarping=bool(payload.get("use_doc_unwarping")),
+            use_chart_recognition=bool(payload.get("use_chart_recognition")),
+        )
+    )
+    return record_external_ocr_job_submission(response, material_id=material_id or "controlled_file_ref", file_ref=source_ref)
+
+
+@router.get("/external-ocr/jobs/{job_id}/status")
+def external_ocr_job_status(job_id: str) -> dict[str, Any]:
+    return _ensure(get_external_ocr_job_status(job_id))
+
+
+@router.post("/external-ocr/jobs/{job_id}/poll")
+async def external_ocr_job_poll(job_id: str, request: Request) -> dict[str, Any]:
+    return _ensure(poll_external_ocr_job(job_id, await _safe_request_payload(request)))
+
+
+@router.post("/external-ocr/jobs/{job_id}/fetch-result")
+async def external_ocr_job_fetch_result(job_id: str, request: Request) -> dict[str, Any]:
+    return _ensure(fetch_external_ocr_result(job_id, await _safe_request_payload(request)))
+
+
+@router.post("/external-ocr/jobs/{job_id}/build-redacted-summary")
+async def external_ocr_job_build_redacted_summary(job_id: str, request: Request) -> dict[str, Any]:
+    return _ensure(build_external_ocr_redacted_summary(job_id, await _safe_request_payload(request)))
+
+
+@router.post("/external-ocr/jobs/{job_id}/parse-quality-gate")
+def external_ocr_job_parse_quality_gate(job_id: str) -> dict[str, Any]:
+    return _ensure(run_external_ocr_parse_quality_gate(job_id))
+
+
+@router.get("/external-ocr/jobs/{job_id}/audit")
+def external_ocr_job_audit(job_id: str) -> dict[str, Any]:
+    return _ensure(get_external_ocr_job_audit(job_id))
+
+
+@router.get("/external-ocr/jobs/{job_id}/source-trace")
+def external_ocr_job_source_trace(job_id: str) -> dict[str, Any]:
+    return _ensure(get_external_ocr_job_source_trace(job_id))
+
+
+@router.get("/external-ocr/jobs/{job_id}/provider-status-diagnostics")
+def external_ocr_job_provider_status_diagnostics(job_id: str) -> dict[str, Any]:
+    return _ensure(get_external_ocr_provider_status_diagnostics(job_id))
+
+
+@router.get("/training-materials/external-ocr/runs")
+def training_material_external_ocr_runs() -> dict[str, Any]:
+    return list_external_ocr_runs()
+
+
+@router.get("/training-materials/external-ocr/runs/{external_ocr_run_id}")
+def training_material_external_ocr_run_detail(external_ocr_run_id: str) -> dict[str, Any]:
+    return _ensure(get_external_ocr_run(external_ocr_run_id))
 
 
 @router.post("/training-datasets/build")

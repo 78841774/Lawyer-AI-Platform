@@ -1,0 +1,51 @@
+{
+  "providers": [
+    {
+      "provider_type": "external_ocr",
+      "provider_name": "paddleocr_aistudio",
+      "credential_alias": "OCR_PROVIDER_API_KEY",
+      "base_url_alias": "OCR_PROVIDER_JOB_URL",
+      "model_alias": "OCR_PROVIDER_MODEL",
+      "credential_loaded_return_only": true,
+      "raw_response_return_allowed": false
+    },
+    {
+      "provider_type": "external_legal_retrieval",
+      "provider_name": "fazhi_law_search",
+      "credential_alias": "FAZHI_LAW_API_KEY",
+      "credential_loaded_return_only": true,
+      "raw_response_return_allowed": false
+    },
+    {
+      "provider_type": "external_enterprise_lookup",
+      "provider_name": "tianyan_ai",
+      "credential_alias": "TIANYAN_AI_API_KEY",
+      "credential_loaded_return_only": true,
+      "raw_response_return_allowed": false
+    }
+  ],
+  "allowed_response_fields": [
+    "provider_type",
+    "credential_alias",
+    "credential_loaded",
+    "provider_configured",
+    "provider_call_allowed",
+    "last_check_status",
+    "redacted_error_summary",
+    "parse_status",
+    "per_file_parse_summary_redacted",
+    "source_trace_id",
+    "audit_id"
+  ],
+  "forbidden_response_fields": [
+    "api_key",
+    "token",
+    "authorization",
+    "provider_raw_response",
+    "raw_text",
+    "ocr_text",
+    "local_path",
+    "absolute_path",
+    "raw_material"
+  ]
+}

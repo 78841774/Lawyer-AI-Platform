@@ -48,6 +48,8 @@ RAW_BASED_EXPERIENCE_CANDIDATES_DIR = RUNTIME_ROOT / "v735b_raw_based_experience
 REDACTED_EXPERIENCE_PACKAGES_DIR = RUNTIME_ROOT / "v735b_redacted_experience_packages"
 CODEX_TRAINING_SKILLS_DIR = RUNTIME_ROOT / "v737_codex_training_skills"
 CODEX_SKILL_TRAINING_RUNS_DIR = RUNTIME_ROOT / "v738_codex_skill_training_runs"
+EXTERNAL_OCR_PARSE_RUNS_DIR = RUNTIME_ROOT / "v735a_external_ocr_parse_runs"
+EXTERNAL_OCR_JOBS_DIR = RUNTIME_ROOT / "v738c_external_ocr_jobs"
 
 
 def write_payload(directory: Path, record_id: str, payload: dict) -> None:

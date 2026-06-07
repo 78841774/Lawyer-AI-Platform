@@ -1,19 +1,19 @@
 ---
 name: lawyer-ai-training-skill
-description: Use this skill for Lawyer-AI-Platform training pipeline work, including controlled raw material parsing, OCR/legal retrieval gates, redacted experience package generation, Codex training skill generation, dry-run/internal training, safety checks, and regression validation.
+description: 用于 Lawyer-AI-Platform 训练链路工作的 Codex Skill，包括受控原始材料解析、OCR/法律检索门禁、脱敏经验包生成、Codex 训练 Skill 生成、dry-run/内部训练、安全检查和回归验证。
 ---
 
 # Lawyer AI Training Skill
 
-## Purpose
+## 用途
 
-This Skill guides Codex when working on Lawyer-AI-Platform training workflows.
+本 Skill 用于指导 Codex 处理 Lawyer-AI-Platform 的训练链路开发与校验工作。
 
-It is a Codex panel / agent Skill for training workflow orchestration.
+它是 Codex 面板 / 代理可加载的训练工作流 Skill，用于约束训练材料、经验包、训练产物和回归检查的处理方式。
 
-It is not a production legal analysis Skill.
-It is not a published runtime Skill.
-It must not contain secrets, raw case materials, OCR text, provider raw responses, or local absolute paths.
+它不是生产法律分析 Skill。
+它不是已发布的 runtime Skill。
+它不得包含密钥、原始案件材料、OCR 原文、provider raw response 或本地绝对路径。
 
 ## Mandatory Boundaries
 

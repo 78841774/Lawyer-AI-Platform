@@ -1,0 +1,7 @@
+interface:
+  display_name: "律师 AI 训练链路 Skill"
+  short_description: "受控训练链路与安全边界"
+  default_prompt: "使用 $lawyer-ai-training-skill 处理 Lawyer-AI-Platform 训练链路工作，并保持脱敏、metadata-only 和律师复核边界。"
+
+policy:
+  allow_implicit_invocation: true

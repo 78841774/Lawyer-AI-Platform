@@ -60,6 +60,7 @@ checks=(
   "check_personal_case_analysis_workbench_v733_apis.sh"
   "check_personal_case_analysis_improvement_v734_apis.sh"
   "check_personal_raw_training_material_v735a_apis.sh"
+  "check_personal_training_external_ocr_v738c_apis.sh"
   "check_personal_redacted_experience_output_v735b_apis.sh"
   "check_personal_training_dataset_v735_apis.sh"
   "check_personal_training_dataset_v736_apis.sh"
