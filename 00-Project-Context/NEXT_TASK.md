@@ -6,7 +6,7 @@ Next recommended task: an explicitly scoped next personal-version sub-stage.
 
 v7.24 Personal Practical Production Workbench is complete at commit `b4e4bca`, tag `v7.24-personal-practical-production-workbench`, and release `v7.24 Personal Practical Production Workbench`.
 
-v7.25-v7.31a are complete through commit `86a0246` and tag `v7.31a`. v7.31b-v7.33 are complete through commits `e22281f` and `01259cf`. v7.34-v7.37 are complete at the `v7.37` tag target. v7.35a-v7.38b are complete in the current uncommitted worktree:
+v7.25-v7.31a are complete through commit `86a0246` and tag `v7.31a`. v7.31b-v7.33 are complete through commits `e22281f` and `01259cf`. v7.34-v7.37 are complete at the `v7.37` tag target. v7.35a-v7.38c are complete in the current uncommitted worktree:
 
 - v7.25 Personal Practical Case Trial Readiness.
 - v7.26 Provider Live Readiness & Secret Boundary.
@@ -36,6 +36,7 @@ v7.25-v7.31a are complete through commit `86a0246` and tag `v7.31a`. v7.31b-v7.3
 - v7.37 add-on Safe Callable Training Skill Spec.
 - v7.38 Safe Codex Skill Internal Training Chain Connection.
 - v7.38b Codex Panel Training Skill Packaging & Loading Fix.
+- v7.38c Real External OCR Provider Gate Verification.
 
 Do not commit, tag, push, or release until the user explicitly approves release handling.
 
@@ -52,12 +53,13 @@ Do not commit, tag, push, or release until the user explicitly approves release 
 - v7.37 add-on generates safe callable Training Skill Specs with provider type, credential alias, `credential_loaded`, gate requirements, output schema, prompt strategy, audit, and source trace metadata.
 - v7.38 connects the safe Training Skill Spec into dry-run / internal simulation artifacts with differentiated experience package, facts diff, legal summary, readiness, audit, and source trace checks.
 - v7.38b adds `.agents/skills/lawyer-ai-training-skill/` so Codex panel / agent sessions can load training workflow rules before future training development, dry-run validation, safety checks, and regression work.
+- v7.38c records a real external OCR provider gate verification for public PDF test material only. The verified chain reached `ready_for_real_material_training` for job id `56935129759133696`, but this is only a training precondition gate verification and does not mean real closed-case training is complete.
 
 ## Current Direction
 
-The implementation chain is complete through v7.38b in the current uncommitted worktree. The next task should be lightweight validation / release preparation only after explicit approval, or a new clearly scoped personal-version sub-stage.
+The implementation chain is complete through v7.38c in the current uncommitted worktree. The next task should be lightweight validation / release preparation only after explicit approval, or a new clearly scoped personal-version sub-stage.
 
-Do not repeat v7.27-v7.38b provider / training / lifecycle implementations. Keep Team Workspace and External Client Delivery deferred.
+Do not repeat v7.27-v7.38c provider / training / lifecycle implementations. Keep Team Workspace and External Client Delivery deferred.
 
 ## Validation Goal Before Any Release Handling
 
